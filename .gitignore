@@ -34,6 +34,3 @@ fastlane/report.xml
 fastlane/Preview.html
 fastlane/screenshots/**/*.png
 fastlane/test_output/
-
-# Ignore Xcode project if unnecessary
-Reverie.xcodeproj/
