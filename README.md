@@ -3,5 +3,7 @@ Log and finish your dreams, discover patterns and hidden links, and bring your d
 
 # Officers
 Technical Leaders: Amber Verma, Brayden Huguenard
+
 Senior Developers: Shreeya Garg, Ross Klaiber, Nithya Ravula
+
 Senior Designer:
