@@ -15,22 +15,9 @@
 		66EEDBE22E679D1B0011493C /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		66EEDBF72E67A3AB0011493C /* Exceptions for "Reverie" folder in "Reverie" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Logic/Logic.swift,
-			);
-			target = 66EEDBB12E6798000011493C /* Reverie */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		66EEDBB42E6798000011493C /* Reverie */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				66EEDBF72E67A3AB0011493C /* Exceptions for "Reverie" folder in "Reverie" target */,
-			);
 			path = Reverie;
 			sourceTree = "<group>";
 		};
