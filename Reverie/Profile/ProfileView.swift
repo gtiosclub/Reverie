@@ -9,7 +9,12 @@ import SwiftUI
 
 struct ProfileView: View {
     var body: some View {
-        Text("reverie profile")
+        ZStack {
+            VStack {
+                Text("reverie profile")
+            }
+            TabbarView()
+        }
     }
 }
 

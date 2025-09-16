@@ -14,6 +14,7 @@ struct Star: Identifiable {
     let size: CGFloat
     let speedX: CGFloat
     let speedY: CGFloat
+    let brightness: CGFloat
 }
 
 struct StarsView: View {
@@ -44,14 +45,15 @@ struct StarsView: View {
                             let y = CGFloat.random(in: 0...(geometry.size.height - bottomPadding))
                             let speedX = CGFloat.random(in: -20...20) // negative = left, positive = right
                             let speedY = CGFloat.random(in: -20...20) // negative = up, positive = down
-                            stars.append(Star(x: x, y: y, size: size, speedX: speedX, speedY: speedY))
+                            let brightness = CGFloat.random(in: 0.3...0.8)
+                            stars.append(Star(x: x, y: y, size: size, speedX: speedX, speedY: speedY, brightness: brightness))
                         }
                     }
                 }
                 
                 if timer == nil {
                     //Every .05 seconds update star location
-                    Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true) { _ in
+                    timer = Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true) { _ in
                         for i in stars.indices {
                             stars[i].x += stars[i].speedX * 0.05
                             stars[i].y += stars[i].speedY * 0.05

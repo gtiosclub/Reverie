@@ -9,7 +9,12 @@ import SwiftUI
 
 struct NewsView: View {
     var body: some View {
-        Text("reverie news")
+        ZStack {
+            VStack {
+                Text("reverie news")
+            }
+            TabbarView()
+        }
     }
 }
 

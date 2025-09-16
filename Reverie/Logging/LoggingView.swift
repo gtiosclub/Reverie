@@ -9,7 +9,12 @@ import SwiftUI
 
 struct LoggingView: View {
     var body: some View {
-        Text("reverie logging")
+        ZStack {
+            VStack {
+                Text("reverie logging")
+            }
+            TabbarView()
+        }
     }
 }
 
