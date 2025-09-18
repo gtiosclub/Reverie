@@ -1,33 +1,37 @@
 //
-//  TabbarView.swift
+//  TabbarFloating.swift
 //  Reverie
 //
-//  Created by Brayden Huguenard on 9/14/25.
+//  Created by Brayden Huguenard on 9/18/25.
 //
 
 import SwiftUI
 
 struct TabbarView: View {
     var body: some View {
-        VStack(spacing: 0) {
-            Divider()
-                .background(Color.gray)
-            
-            HStack {
-                TabButton(title: "Home", destination: HomeView())
-                TabButton(title: "Analytics", destination: ProfileView())
-                TabButton(title: "Profile", destination: ProfileView()) // placeholder
-                TabButton(title: "Explore", destination: NewsView())
+        NavigationStack {
+            VStack {
+                HStack {
+                    TabButton(title: Image(systemName: "house"), destination: HomeView())
+                    TabButton(title: Image(systemName: "chart.bar"), destination: ProfileView())
+                    TabButton(title: Image(systemName: "doc.text"), destination: LoggingView()) // placeholder
+                    TabButton(title: Image(systemName: "newspaper"), destination: NewsView())
+                }
+                .padding()
+                .frame(maxWidth: 300, maxHeight: 50)
+                .glassEffect(.regular, in: .rect)
+                .cornerRadius(20)
+                .padding(.horizontal, 50)
             }
+            .frame(maxHeight: .infinity, alignment: .bottom)
+            .padding(.bottom, -20)
         }
-        .frame(maxHeight: .infinity, alignment: .bottom)
-        .padding(.bottom, -10)
     }
 }
 
 // Tab Buttons
 struct TabButton<Destination: View>: View {
-    let title: String
+    let title: Image
     let destination: Destination
     
     var body: some View {
@@ -35,7 +39,7 @@ struct TabButton<Destination: View>: View {
             Text(title)
                 .frame(maxWidth: .infinity)
                 .padding()
-                .font(.system(size: 14))
+                .font(.system(size: 18))
                 .foregroundColor(.gray)
         }
         .navigationBarBackButtonHidden(true)
