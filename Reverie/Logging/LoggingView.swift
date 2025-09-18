@@ -11,7 +11,7 @@ struct LoggingView: View {
     var body: some View {
         ZStack {
             VStack {
-                Text("reverie logging")
+                Text("reverie is now logging")
             }
             TabbarView()
         }
