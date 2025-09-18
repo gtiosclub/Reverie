@@ -14,13 +14,12 @@ struct Star: Identifiable {
     let size: CGFloat
     let speedX: CGFloat
     let speedY: CGFloat
-    let brightness: CGFloat
+    var brightness: CGFloat
 }
 
 struct StarsView: View {
     @State private var stars: [Star] = []
     let starCount = 80
-    let bottomPadding: CGFloat = 50
     @State private var timer: Timer? = nil
     
     var body: some View {
@@ -42,7 +41,7 @@ struct StarsView: View {
                         for _ in 0..<starCount {
                             let size = CGFloat.random(in: 1...3)
                             let x = CGFloat.random(in: 0...geometry.size.width)
-                            let y = CGFloat.random(in: 0...(geometry.size.height - bottomPadding))
+                            let y = CGFloat.random(in: 0...geometry.size.height)
                             let speedX = CGFloat.random(in: -20...20) // negative = left, positive = right
                             let speedY = CGFloat.random(in: -20...20) // negative = up, positive = down
                             let brightness = CGFloat.random(in: 0.3...0.8)
@@ -57,6 +56,7 @@ struct StarsView: View {
                         for i in stars.indices {
                             stars[i].x += stars[i].speedX * 0.05
                             stars[i].y += stars[i].speedY * 0.05
+                            stars[i].brightness *= CGFloat.random(in: 0.8...1.2)
                             
                             // Wrap Star around screen horizontally
                             if stars[i].x > geometry.size.width + stars[i].size {
@@ -66,10 +66,20 @@ struct StarsView: View {
                             }
                             
                             // Wrap Star around screen vertically
-                            if stars[i].y > geometry.size.height - bottomPadding + stars[i].size {
+                            if stars[i].y > geometry.size.height - stars[i].size {
                                 stars[i].y = -stars[i].size
                             } else if stars[i].y < -stars[i].size {
-                                stars[i].y = geometry.size.height - bottomPadding + stars[i].size
+                                stars[i].y = geometry.size.height - stars[i].size
+                            }
+                            
+                            // A star will never have brightness < 0.1
+                            if stars[i].brightness < 0.1 {
+                                stars[i].brightness = 0.3
+                            }
+                            
+                            // A star will never have brightness > 1
+                            if stars[i].size > 1 {
+                                stars[i].brightness = 0.7
                             }
                         }
                     }

@@ -14,10 +14,10 @@ struct TabbarView: View {
                 .background(Color.gray)
             
             HStack {
-                TabButton(title: "Log", destination: LoggingView())
-                TabButton(title: "Profile", destination: ProfileView())
-                TabButton(title: "Analytics", destination: ProfileView()) // placeholder
-                TabButton(title: "News", destination: NewsView())
+                TabButton(title: "Home", destination: HomeView())
+                TabButton(title: "Analytics", destination: ProfileView())
+                TabButton(title: "Profile", destination: ProfileView()) // placeholder
+                TabButton(title: "Explore", destination: NewsView())
             }
         }
         .frame(maxHeight: .infinity, alignment: .bottom)
@@ -38,6 +38,7 @@ struct TabButton<Destination: View>: View {
                 .font(.system(size: 14))
                 .foregroundColor(.gray)
         }
+        .navigationBarBackButtonHidden(true)
     }
 }
 
