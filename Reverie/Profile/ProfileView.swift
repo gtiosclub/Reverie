@@ -11,7 +11,7 @@ struct ProfileView: View {
     var body: some View {
         ZStack {
             VStack {
-                Text("reverie profile")
+                Text("reverie has a profile")
             }
             TabbarView()
         }
