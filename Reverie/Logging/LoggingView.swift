@@ -18,7 +18,7 @@ struct LoggingView: View {
                 HStack {
                     Spacer()
                     NavigationLink {
-                        
+                        // TODO: Add navigation link
                     } label: {
                         Image(systemName: "checkmark")
                             .font(.system(size: 24, weight: .bold))
