@@ -26,7 +26,7 @@ struct LoggingView: View {
                             .padding(6)
                             .background(Circle().fill(.gray.opacity(0.9)))
                             .padding(.vertical, 4)
-                            .opacity(title == "" || dream == "" ? 0 : 1)
+                            .opacity(title.isEmpty || dream.isEmpty ? 0 : 1)
                     }
                 }
                 HStack {
