@@ -9,23 +9,26 @@ import SwiftUI
 
 struct NewsView: View {
     var body: some View {
-        ZStack {
-            BackgroundView()
-            VStack {
-                HStack {
-                    Text("Dream News")
-                        .foregroundColor(.white)
-                        .font(.system(size: 40))
-                        .bold()
-                        .padding(.leading, 16)
-                    Spacer()
-                    ProfilePictureView()
-                        .padding(.trailing, 16)
+        VStack {
+            ScrollView {
+                VStack {
+                    HStack {
+                        Text("Dream News")
+                            .foregroundColor(.white)
+                            .font(.system(size: 40))
+                            .bold()
+                            .padding(.leading, 16)
+                        Spacer()
+                        ProfilePictureView()
+                            .padding(.trailing, 16)
+                    }
+                    TrendingView()
                 }
+                .frame(maxHeight: .infinity, alignment: .topLeading)
             }
-            .frame(maxHeight: .infinity, alignment: .topLeading)
             TabbarView()
         }
+        .background(BackgroundView())
     }
 }
 

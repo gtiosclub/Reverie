@@ -13,7 +13,6 @@ struct TrendingView: View {
     
     var body: some View {
         ZStack {
-            BackgroundView()
             VStack(alignment: .leading) {
                 Text("Trending This Week")
                     .font(.title)
@@ -56,5 +55,6 @@ struct TrendingView: View {
 
 #Preview {
     TrendingView()
+        .background(BackgroundView())
 }
 
