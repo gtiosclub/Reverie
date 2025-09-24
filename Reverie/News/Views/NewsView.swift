@@ -10,8 +10,10 @@ import SwiftUI
 struct NewsView: View {
     var body: some View {
         ZStack {
+            BackgroundView()
             VStack {
                 Text("reverie news")
+                    .foregroundColor(Color(.white))
             }
             TabbarView()
         }
