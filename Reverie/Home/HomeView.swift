@@ -13,6 +13,7 @@ struct HomeView: View {
     var body: some View {
         NavigationStack {
             ZStack {
+                BackgroundView()
                 StarsView()
                 VStack {
                     Text("Good Morning, \(user.name)")
@@ -22,6 +23,7 @@ struct HomeView: View {
                         .padding(.bottom, 20)
                     NewLogView()
                 }
+                .padding(.bottom, 40)
                 TabbarView()
             }
         }
