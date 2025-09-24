@@ -10,6 +10,7 @@ import SwiftUI
 struct LoggingView: View {
     var body: some View {
         ZStack {
+            BackgroundView()
             VStack {
                 Text("reverie logging")
             }

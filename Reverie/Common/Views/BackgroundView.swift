@@ -18,6 +18,7 @@ struct BackgroundView: View {
                 startPoint: .top,
                 endPoint: .bottom
             )
+            StarsView()
         }
         .ignoresSafeArea(edges: .all)
     }
