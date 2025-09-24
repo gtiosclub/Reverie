@@ -10,6 +10,7 @@ import SwiftUI
 struct ProfileView: View {
     var body: some View {
         ZStack {
+            BackgroundView()
             VStack {
                 Text("reverie profile")
             }

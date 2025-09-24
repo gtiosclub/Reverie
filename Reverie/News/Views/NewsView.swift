@@ -12,9 +12,18 @@ struct NewsView: View {
         ZStack {
             BackgroundView()
             VStack {
-                Text("reverie news")
-                    .foregroundColor(Color(.white))
+                HStack {
+                    Text("Dream News")
+                        .foregroundColor(.white)
+                        .font(.system(size: 40))
+                        .bold()
+                        .padding(.leading, 16)
+                    Spacer()
+                    ProfilePictureView()
+                        .padding(.trailing, 16)
+                }
             }
+            .frame(maxHeight: .infinity, alignment: .topLeading)
             TabbarView()
         }
     }
