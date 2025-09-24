@@ -20,7 +20,6 @@ struct TabbarView: View {
             .frame(maxWidth: 300, maxHeight: 50)
             .glassEffect(.regular, in: .rect)
             .cornerRadius(20)
-            .padding(.horizontal, 50)
         }
         .frame(maxHeight: .infinity, alignment: .bottom)
         .padding(.bottom, -10)
