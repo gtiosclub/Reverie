@@ -8,20 +8,18 @@
 import SwiftUI
 
 struct ProfilePictureView: View {
-    var image: Image?
     var size: CGFloat = 96
     
     var body: some View {
         ZStack{
-            
             Image(systemName: "person.crop.circle.fill")
                 .resizable()
                 .scaledToFit()
                 .symbolRenderingMode(.hierarchical)
-                .padding(size * 0.12)
+                .foregroundColor(.white)
             
         }
-        .frame(width: size, height: size)
+        .frame(maxWidth: 48, maxHeight: 48)
         .clipShape(Circle())
         .accessibilityLabel("Profile picture")
 
@@ -30,4 +28,5 @@ struct ProfilePictureView: View {
 
 #Preview {
     ProfilePictureView()
+        .background(BackgroundView())
 }
