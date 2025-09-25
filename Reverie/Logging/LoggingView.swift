@@ -17,6 +17,18 @@ struct LoggingView: View {
             ZStack {
                 VStack() {
                     HStack {
+                        NavigationLink {
+                            HomeView()
+                        }
+                        label: {
+                            HStack{
+                                Image(systemName: "chevron.backward")
+                                    .foregroundStyle(.black)
+                                Text("Back")
+                                    .foregroundColor(.black)
+                            }
+                        }
+                        
                         Spacer()
                         NavigationLink {
                             // TODO: Add navigation link
