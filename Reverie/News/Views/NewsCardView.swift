@@ -10,67 +10,51 @@ import SwiftUI
 
 struct NewsCardView: View {
     let title: String
-    let image_string: String
+    let description: String
     let viewDim : CGFloat = 300
-    let bookmarked = false
     var body: some View {
         
-        ZStack (alignment: .topTrailing) {
-            VStack (spacing: 0) {
-                Image(image_string)
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(width: viewDim, height: viewDim - viewDim / 4)
-                    .clipShape(
-                        UnevenRoundedRectangle(
-                            topLeadingRadius: 20,
-                            bottomLeadingRadius: 0,
-                            bottomTrailingRadius: 0,
-                            topTrailingRadius: 20
-                        )
-                    )
-                
-                HStack {
-                    Text(title)
-                        .font(.headline)
-                        .padding()
-
-                    Spacer()
-
-                    Button {
-                        // add more button functionality
-                    } label : {
-                        Image(systemName: "chevron.forward.circle.fill")
-                            .resizable()
-                            .frame(width: viewDim / 10, height: viewDim / 10)
-                    }
-                    .padding(10)
-                    .foregroundColor(.gray.opacity(0.5))
-
-
-                }
-                .background(
-                    UnevenRoundedRectangle(
-                        topLeadingRadius: 0,
-                        bottomLeadingRadius: 20,
-                        bottomTrailingRadius: 20,
-                        topTrailingRadius: 0
-                    ).fill(Color.gray.opacity(0.4))
-                        .frame(width: viewDim, height: viewDim / 4)
+        ZStack (alignment: .leading) {
+            RoundedRectangle(cornerRadius: 20)
+                .fill(Color(red: 0.47, green: 0.2, blue: 0.97, opacity: 0.4))
+                .stroke(
+                    LinearGradient(colors: [.purple, .blue], startPoint: .topLeading, endPoint: .bottomTrailing)
                 )
-                .frame(width: viewDim, height: viewDim / 4)
-            }
             
-            Button {
-                // add bookmarking functionality
-            } label : {
-                Image(systemName: bookmarked ? "bookmark.fill" : "bookmark")
+            VStack (alignment: .leading) {
+                Text("Daily Insight")
+                    .font(.custom("baskerville-bold", size: 15))
+                    .foregroundColor(.purple)
+                
+                Image(systemName: "key.fill")
                     .resizable()
-                    .frame(width: viewDim / 10, height: viewDim / 8)
+                    .frame(width: viewDim / 13, height: viewDim / 7)
+                    .padding(10)
                     .foregroundColor(.white)
+                    .shadow(color: Color(red: 0.7, green: 0.2, blue: 0.8, opacity: 1.0), radius: 10)
+                Text(title)
+                    .font(.custom("baskerville-bold", size: 25))
+                    .foregroundColor(.white)
+                    .padding(.bottom, 5)
+                
+                Text(description)
+                    .font(.custom("baskerville-semibold", size: 18))
+                    .foregroundColor(.gray)
+                    
+                    
             }
-            .padding(10)
+            .padding(25)
         }
+        .frame(width: viewDim, height: viewDim)
+        .background(
+            RoundedRectangle(cornerRadius: 20)
+                .stroke(
+                    LinearGradient(colors: [.purple, .blue], startPoint: .topLeading, endPoint: .bottomTrailing)
+                )
+                .fill(.black)
+                .shadow(color: Color(red: 0.7, green: 0.2, blue: 0.8, opacity: 0.7), radius: 10)
+                
+        )
         .frame(width: viewDim, height: viewDim)
         
         
@@ -79,5 +63,5 @@ struct NewsCardView: View {
 }
 
 #Preview {
-    NewsCardView(title: "Article title for dream news card view", image_string: "AIFly")
+    NewsCardView(title: "Example Daily Inisght Title", description: "Example description of daily insight article.")
 }
