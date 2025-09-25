@@ -9,23 +9,20 @@ import SwiftUI
 
 struct TabbarView: View {
     var body: some View {
-        NavigationStack {
-            VStack {
-                HStack {
-                    TabButton(title: Image(systemName: "house"), destination: HomeView())
-                    TabButton(title: Image(systemName: "chart.bar"), destination: ProfileView())
-                    TabButton(title: Image(systemName: "doc.text"), destination: LoggingView()) // placeholder
-                    TabButton(title: Image(systemName: "newspaper"), destination: NewsView())
-                }
-                .padding()
-                .frame(maxWidth: 300, maxHeight: 50)
-                .glassEffect(.regular, in: .rect)
-                .cornerRadius(20)
-                .padding(.horizontal, 50)
+        VStack {
+            HStack {
+                TabButton(title: Image(systemName: "house"), destination: HomeView())
+                TabButton(title: Image(systemName: "chart.bar"), destination: ProfileView())
+                TabButton(title: Image(systemName: "doc.text"), destination: LoggingView()) // placeholder
+                TabButton(title: Image(systemName: "newspaper"), destination: NewsView())
             }
-            .frame(maxHeight: .infinity, alignment: .bottom)
-            .padding(.bottom, -20)
+            .padding()
+            .frame(maxWidth: 300, maxHeight: 50)
+            .glassEffect(.regular, in: .rect)
+            .cornerRadius(20)
         }
+        .frame(maxHeight: .infinity, alignment: .bottom)
+        .padding(.bottom, -10)
     }
 }
 
@@ -36,7 +33,7 @@ struct TabButton<Destination: View>: View {
     
     var body: some View {
         NavigationLink(destination: destination) {
-            Text(title)
+            title
                 .frame(maxWidth: .infinity)
                 .padding()
                 .font(.system(size: 18))
@@ -48,4 +45,5 @@ struct TabButton<Destination: View>: View {
 
 #Preview {
     TabbarView()
+        .background(BackgroundView())
 }
