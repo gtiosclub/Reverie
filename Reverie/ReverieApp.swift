@@ -11,7 +11,9 @@ import SwiftUI
 struct ReverieApp: App {
     var body: some Scene {
         WindowGroup {
-            HomeView()
+            NavigationStack {
+                HomeView()
+            }
         }
     }
 }
