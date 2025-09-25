@@ -7,12 +7,13 @@ struct SearchBarView: View {
         HStack {
             Image(systemName: "magnifyingglass")
                 .foregroundColor(.gray)
+                .padding(.leading, 6)
             TextField("Search", text: $searchText)
         }
-        .padding()
-        .background(Color(.systemGray4))
+        .padding(.vertical, 4)
+        .background(.white)
         .cornerRadius(12)
-        .padding()
+        .padding(.horizontal, 10)
     }
 }
 
