@@ -22,24 +22,6 @@ struct HomeView: View {
                         .font(.largeTitle)
                         .bold()
                         .padding(.bottom, 20)
-                    Button(action: {
-                        Task {
-                            do {
-                                let dreams = try await FirebaseService().getUserInfo()
-                                print("Fetched dreams: \(dreams)")
-                            } catch {
-                                print("Failed to fetch user info: \(error)")
-                            }
-                        }
-                    }) {
-                        Text("Remove")
-                            .font(.system(size: 12, weight: .bold))
-                            .foregroundColor(.white)
-                            .padding(.horizontal, 12)
-                            .padding(.vertical, 6)
-                            .background(Color.pink)
-                            .cornerRadius(20)
-                    }
                     NewLogView()
                 }
                 .padding(.bottom, 40)
