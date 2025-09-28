@@ -3,7 +3,7 @@
 //  Reverie
 //
 //  Created by Brayden Huguenard on 9/22/25.
-//
+
 
 let sampleArticles: [DreamArticleModel] = [
         DreamArticleModel(
