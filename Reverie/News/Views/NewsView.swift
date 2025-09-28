@@ -19,8 +19,8 @@ struct NewsView: View {
                             .bold()
                             .padding(.leading, 16)
                         Spacer()
-                        ProfilePictureView()
-                            .padding(.trailing, 16)
+//                        ProfilePictureView()
+//                            .padding(.trailing, 16)
                     }
                     TrendingView()
                 }
