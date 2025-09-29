@@ -38,12 +38,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-<<<<<<< Updated upstream
 				BDE7571A2E83618900D3C183 /* FirebaseAuth in Frameworks */,
 				BDF5F2102E8724DA000FABD3 /* FirebaseCore in Frameworks */,
 				BDE7571C2E83618900D3C183 /* FirebaseFirestore in Frameworks */,
-=======
->>>>>>> Stashed changes
 				6632F2A82E862EC000FED9AB /* Vision.framework in Frameworks */,
 				6632F26A2E85851A00FED9AB /* StableDiffusion in Frameworks */,
 			);
@@ -100,12 +97,9 @@
 			);
 			name = Reverie;
 			packageProductDependencies = (
-<<<<<<< Updated upstream
 				BDE757192E83618900D3C183 /* FirebaseAuth */,
 				BDE7571B2E83618900D3C183 /* FirebaseFirestore */,
 				BDF5F20F2E8724DA000FABD3 /* FirebaseCore */,
-=======
->>>>>>> Stashed changes
 				6632F2692E85851A00FED9AB /* StableDiffusion */,
 			);
 			productName = Reverie;
@@ -137,10 +131,7 @@
 			mainGroup = 66EEDBA92E6798000011493C;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-<<<<<<< Updated upstream
 				BDE757182E83618900D3C183 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
-=======
->>>>>>> Stashed changes
 				6632F2682E85851A00FED9AB /* XCRemoteSwiftPackageReference "ml-stable-diffusion" */,
 			);
 			preferredProjectObjectVersion = 77;
@@ -384,15 +375,12 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-<<<<<<< Updated upstream
 		BDE757182E83618900D3C183 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 12.3.0;
-=======
->>>>>>> Stashed changes
 		6632F2682E85851A00FED9AB /* XCRemoteSwiftPackageReference "ml-stable-diffusion" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/apple/ml-stable-diffusion";
@@ -404,7 +392,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-<<<<<<< Updated upstream
 		BDE757192E83618900D3C183 /* FirebaseAuth */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = BDE757182E83618900D3C183 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
@@ -419,8 +406,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = BDE757182E83618900D3C183 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseCore;
-=======
->>>>>>> Stashed changes
 		6632F2692E85851A00FED9AB /* StableDiffusion */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 6632F2682E85851A00FED9AB /* XCRemoteSwiftPackageReference "ml-stable-diffusion" */;

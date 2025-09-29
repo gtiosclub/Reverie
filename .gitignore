@@ -57,3 +57,5 @@ APIKeys.plist
 
 # Ignore Core ML models
 StableDiffusionResources/
+Reverie/StableDiffusionResources/merges.txt
+Reverie/StableDiffusionResources/vocab.json
