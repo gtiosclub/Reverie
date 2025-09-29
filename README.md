@@ -8,7 +8,9 @@ Senior Developers: Shreeya Garg, Ross Klaiber, Nithya Ravula
 
 Senior Designer: Molly Butler
 
-🤖 Core ML Models
+
+# CoreML
+
 This project uses Core ML models to generate images from text prompts. The model files are not included in this repository due to their large size.
 
 Hugging Face Repository: apple/coreml-stable-diffusion-2-1-base-palettized
