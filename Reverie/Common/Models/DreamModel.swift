@@ -7,7 +7,7 @@
 
 import Foundation
 
-class DreamModel  {
+class DreamModel: Decodable {
     var id: String
     var userId: String
     var date: Date
@@ -17,11 +17,11 @@ class DreamModel  {
     var image: String
     var emotion: Emotions
     
-    enum Tags {
+    enum Tags: String, Codable, CaseIterable {
         case mountains, rivers, forests, animals, school
     }
     
-    enum Emotions {
+    enum Emotions: String, Codable, CaseIterable {
         case happiness, sadness, anger, fear, embarrassment, anxiety
     }
 
