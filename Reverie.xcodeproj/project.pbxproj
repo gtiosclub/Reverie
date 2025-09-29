@@ -381,6 +381,8 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 12.3.0;
+			};
+		};
 		6632F2682E85851A00FED9AB /* XCRemoteSwiftPackageReference "ml-stable-diffusion" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/apple/ml-stable-diffusion";
@@ -406,6 +408,7 @@
 			isa = XCSwiftPackageProductDependency;
 			package = BDE757182E83618900D3C183 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseCore;
+		};
 		6632F2692E85851A00FED9AB /* StableDiffusion */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 6632F2682E85851A00FED9AB /* XCRemoteSwiftPackageReference "ml-stable-diffusion" */;
