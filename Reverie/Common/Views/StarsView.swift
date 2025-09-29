@@ -25,7 +25,6 @@ struct StarsView: View {
     var body: some View {
         GeometryReader { geometry in
             ZStack {
-                
                 ForEach(stars.indices, id: \.self) { i in
                     Circle()
                         .fill(Color.white)
@@ -87,6 +86,7 @@ struct StarsView: View {
                 timer = nil
             }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
 
