@@ -18,6 +18,7 @@ struct HomeView: View {
         NavigationStack {
             ZStack {
                 BackgroundView()
+                MoonView()
                 VStack {
                     Text("Good Morning, \(fus.currentUser?.displayName ?? "Dreamer")")
                         .foregroundColor(.white)
