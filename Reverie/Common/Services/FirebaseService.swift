@@ -7,6 +7,7 @@
 
 import Foundation
 import Firebase
+
 public class FirebaseService {
     let db = Firebase.db
     
