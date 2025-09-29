@@ -14,13 +14,11 @@ struct TabbarView: View {
                 TabButton(title: Image(systemName: "house"), destination: HomeView())
                 TabButton(title: Image(systemName: "chart.bar"), destination: ProfileView())
                 TabButton(title: Image(systemName: "doc.text"), destination: LoggingView()) // placeholder
-                TabButton(title: Image(systemName: "newspaper"), destination: NewsView())
             }
             .padding()
             .frame(maxWidth: 300, maxHeight: 50)
             .glassEffect(.regular, in: .rect)
             .cornerRadius(20)
-            .padding(.horizontal, 50)
         }
         .frame(maxHeight: .infinity, alignment: .bottom)
         .padding(.bottom, -10)
