@@ -7,10 +7,6 @@
 
 import SwiftUI
 import Firebase
-import FirebaseCore
-import FirebaseAuth
-import FirebaseFirestore
-
 
 class AppDelegate: NSObject, UIApplicationDelegate {
   func application(_ application: UIApplication,
@@ -23,12 +19,12 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 @main
 struct ReverieApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
+
     var body: some Scene {
         WindowGroup {
-            NavigationStack {
-                ContentView()
-            }
+            AuthRoutingView()
+                .environment(FirebaseUserService.shared)
+                .environment(FirebaseLoginService.shared)
         }
     }
 }
-
