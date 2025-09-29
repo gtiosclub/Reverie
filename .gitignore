@@ -9,7 +9,7 @@ DerivedData/
 *.pbxuser
 !default.pbxuser
 *.mode1v3
-*.mode2v3
+*.mode2v-3
 *.perspectivev3
 xcuserdata/
 *.xccheckout
@@ -20,11 +20,9 @@ xcuserdata/
 # Swift Package Manager
 .build/
 Packages/
-Package.resolved
 
 # CocoaPods
 Pods/
-Podfile.lock
 
 # Carthage
 Carthage/Build/
@@ -34,3 +32,30 @@ fastlane/report.xml
 fastlane/Preview.html
 fastlane/screenshots/**/*.png
 fastlane/test_output/
+
+# Testing
+*.xccovreport
+*.xccovarchive
+
+# Ignore Core ML models
+*.mlmodelc/
+
+# Ignore any downloaded model archives
+*.zip
+*.bin
+*.safetensors
+
+# Secrets and API Keys
+# Never commit sensitive data to a public repository!
+*.env
+Secrets.xcconfig
+APIKeys.plist
+*.p8
+
+# VS Code
+.vscode/
+
+# Ignore Core ML models
+StableDiffusionResources/
+Reverie/StableDiffusionResources/merges.txt
+Reverie/StableDiffusionResources/vocab.json
