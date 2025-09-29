@@ -6,9 +6,11 @@
 //
 
 import SwiftUI
+import FirebaseAuth
 
 struct HomeView: View {
-    let user = UserModel.init(name: "Brayden")
+    @Environment(FirebaseUserService.self) private var fus
+    
     @State private var showSecondView = false
     @State private var dragOffset: CGSize = .zero
     
@@ -17,7 +19,7 @@ struct HomeView: View {
             ZStack {
                 BackgroundView()
                 VStack {
-                    Text("Good Morning, \(user.name)")
+                    Text("Good Morning, \(fus.currentUser?.displayName ?? "Dreamer")")
                         .foregroundColor(.white)
                         .font(.largeTitle)
                         .bold()
@@ -35,8 +37,8 @@ struct HomeView: View {
                     self.dragOffset = value.translation
                 }
                 .onEnded { value in
-                    // When the swipe ends, check if it's a significant upward swipe
-                    // A negative vertical translation indicates an upward swipe
+                    // Check if it's a significant upward swipe
+                    // Negative indicates an upward swipe
                     if value.translation.height < -100 {
                         self.showSecondView = true
                     }
@@ -52,4 +54,5 @@ struct HomeView: View {
 
 #Preview {
     HomeView()
+        .environment(FirebaseUserService.shared)
 }
