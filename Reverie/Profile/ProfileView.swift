@@ -3,14 +3,13 @@ import FirebaseFirestore
 
 struct ProfileView: View {
     @State private var dreamCount = 0
-    var userId: String   // Pass the logged-in user's ID here
 
     var body: some View {
         ZStack {
             BackgroundView()
             
             VStack(spacing: 20) {
-                Text("reverie profile")
+                Text("Reverie Profile")
                     .font(.title)
                     .foregroundColor(.white)
                 
@@ -18,7 +17,7 @@ struct ProfileView: View {
                     .font(.headline)
                     .foregroundColor(.white)
                 
-                // Button to manually fetch dreams
+                // Button to manually refresh dream count
                 Button(action: {
                     fetchDreamCount()
                 }) {
@@ -28,35 +27,46 @@ struct ProfileView: View {
                         .background(Color.blue)
                         .cornerRadius(8)
                 }
-                .onAppear(){
-                    fetchDreamCount()
-                }
             }
+            .padding()
             
             TabbarView()
+        }
+        .onAppear {
+            fetchDreamCount()
         }
     }
     
     private func fetchDreamCount() {
-        Firebase.db.collection("users")
-            .document(userId)
-            .collection("dreams")
-            .getDocuments { snapshot, error in
-                if let error = error {
-                    print("Error fetching dreams: \(error)")
-                    return
-                }
-                
-                if let snapshot = snapshot {
-                    dreamCount = snapshot.documents.count
-                    print("Fetched \(dreamCount) dreams")
-                }
+        print("🔍 Fetching dream count...")
+        let db = Firestore.firestore()
+        
+        let userDocRef = db.collection("USERS").document("OtAj4vL9Xzz8lsm4nCuL")
+        
+        userDocRef.getDocument { snapshot, error in
+            if let error = error {
+                print("❌ Error fetching user document: \(error.localizedDescription)")
+                return
             }
+            
+            guard let data = snapshot?.data() else {
+                print("❌ No data found for user")
+                return
+            }
+            
+            if let dreams = data["dreams"] as? [String] {
+                DispatchQueue.main.async {
+                    self.dreamCount = dreams.count
+                    print("✨ Updated dreamCount to: \(self.dreamCount)")
+                }
+            } else {
+                print("❌ 'dreams' field is missing or not an array")
+            }
+        }
     }
 }
 
 func findMostCommonTags(dreams: [DreamModel]) -> [DreamModel.Tags] {
-    
     var tagsDict = [DreamModel.Tags: Int]()
     
     for d in dreams {
@@ -64,9 +74,9 @@ func findMostCommonTags(dreams: [DreamModel]) -> [DreamModel.Tags] {
             tagsDict[t, default: 0] += 1
         }
     }
-    return tagsDict.sorted {$0.value > $1.value}.map{$0.key}
+    return tagsDict.sorted { $0.value > $1.value }.map { $0.key }
 }
 
 #Preview {
-    ProfileView(userId: "OtAj4vL9Xzz8lsm4nCuL")
+    ProfileView()
 }
