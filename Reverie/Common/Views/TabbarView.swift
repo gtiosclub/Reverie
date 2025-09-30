@@ -1,24 +1,24 @@
 //
-//  TabbarView.swift
+//  TabbarFloating.swift
 //  Reverie
 //
-//  Created by Brayden Huguenard on 9/14/25.
+//  Created by Brayden Huguenard on 9/18/25.
 //
 
 import SwiftUI
 
 struct TabbarView: View {
     var body: some View {
-        VStack(spacing: 0) {
-            Divider()
-                .background(Color.gray)
-            
+        VStack {
             HStack {
-                TabButton(title: "Home", destination: HomeView())
-                TabButton(title: "Analytics", destination: ProfileView())
-                TabButton(title: "Profile", destination: ProfileView()) // placeholder
-                TabButton(title: "Explore", destination: NewsView())
+                TabButton(title: Image(systemName: "house"), destination: HomeView())
+                TabButton(title: Image(systemName: "chart.bar"), destination: ProfileView())
+                TabButton(title: Image(systemName: "doc.text"), destination: LoggingView()) // placeholder
             }
+            .padding()
+            .frame(maxWidth: 300, maxHeight: 50)
+            .glassEffect(.regular, in: .rect)
+            .cornerRadius(20)
         }
         .frame(maxHeight: .infinity, alignment: .bottom)
         .padding(.bottom, -10)
@@ -27,15 +27,15 @@ struct TabbarView: View {
 
 // Tab Buttons
 struct TabButton<Destination: View>: View {
-    let title: String
+    let title: Image
     let destination: Destination
     
     var body: some View {
         NavigationLink(destination: destination) {
-            Text(title)
+            title
                 .frame(maxWidth: .infinity)
                 .padding()
-                .font(.system(size: 14))
+                .font(.system(size: 18))
                 .foregroundColor(.gray)
         }
         .navigationBarBackButtonHidden(true)
@@ -44,4 +44,5 @@ struct TabButton<Destination: View>: View {
 
 #Preview {
     TabbarView()
+        .background(BackgroundView())
 }
