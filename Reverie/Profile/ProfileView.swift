@@ -22,6 +22,16 @@ struct ProfileView: View {
     }
 }
 
+func getDreamsOfCategory(dreams: [DreamModel], category: DreamModel.Tags) -> [DreamModel] {
+    return dreams.filter { dream in
+        return dream.tags.contains { tag in
+            return tag == category
+        }
+    }
+}
+
+
+
 #Preview {
     ProfileView()
 }
