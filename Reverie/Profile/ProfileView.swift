@@ -13,6 +13,9 @@ struct ProfileView: View {
             BackgroundView()
             VStack {
                 Text("reverie profile")
+                NavigationLink(destination: TestView()) {
+                    Text("Test Page")
+                }
             }
             TabbarView()
         }
