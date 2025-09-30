@@ -7,9 +7,11 @@
 
 import Foundation
 import Firebase
+import FoundationModels
 
 public class FirebaseService {
     let db = Firebase.db
+    let tagsModelSession = FoundationModel.tagsModelSession
     
     func getUserInfo() async throws -> [String] {
         let userRef = db.collection("USERS").document("OtAj4vL9Xzz8lsm4nCuL")
@@ -28,4 +30,8 @@ public class FirebaseService {
         return []
     }
     
+    func getRecommendedTags(dreamText: String) async throws -> Void {
+        let response = try await tagsModelSession.respond(to: dreamText)
+        print(response.content) // needs to be changed to return (whatever gives the array of strings)
+    }
 }
