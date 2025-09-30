@@ -25,11 +25,11 @@ struct StarsView: View {
     var body: some View {
         GeometryReader { geometry in
             ZStack {
-                Color.black.ignoresSafeArea()
-                
                 ForEach(stars.indices, id: \.self) { i in
                     Circle()
                         .fill(Color.white)
+                        .opacity(stars[i].brightness)
+                        .shadow(color: Color.white.opacity(stars[i].brightness), radius: 2)
                         .frame(width: stars[i].size, height: stars[i].size)
                         .position(x: stars[i].x, y: stars[i].y)
                 }
@@ -44,7 +44,7 @@ struct StarsView: View {
                             let y = CGFloat.random(in: 0...geometry.size.height)
                             let speedX = CGFloat.random(in: -20...20) // negative = left, positive = right
                             let speedY = CGFloat.random(in: -20...20) // negative = up, positive = down
-                            let brightness = CGFloat.random(in: 0.3...0.8)
+                            let brightness = CGFloat.random(in: 0.1...0.4)
                             stars.append(Star(x: x, y: y, size: size, speedX: speedX, speedY: speedY, brightness: brightness))
                         }
                     }
@@ -56,7 +56,7 @@ struct StarsView: View {
                         for i in stars.indices {
                             stars[i].x += stars[i].speedX * 0.05
                             stars[i].y += stars[i].speedY * 0.05
-                            stars[i].brightness *= CGFloat.random(in: 0.8...1.2)
+                            stars[i].brightness *= CGFloat.random(in: 0.9...1.1)
                             
                             // Wrap Star around screen horizontally
                             if stars[i].x > geometry.size.width + stars[i].size {
@@ -72,15 +72,10 @@ struct StarsView: View {
                                 stars[i].y = geometry.size.height - stars[i].size
                             }
                             
-                            // A star will never have brightness < 0.1
-                            if stars[i].brightness < 0.1 {
-                                stars[i].brightness = 0.3
-                            }
-                            
-                            // A star will never have brightness > 1
-                            if stars[i].size > 1 {
-                                stars[i].brightness = 0.7
-                            }
+                            // A star will never have brightness < 0 or > 0.4
+                            let delta = CGFloat.random(in: -0.02...0.02)
+                            stars[i].brightness += delta
+                            stars[i].brightness = min(max(stars[i].brightness, 0.1), 0.4)
                         }
                     }
                 }
@@ -91,9 +86,11 @@ struct StarsView: View {
                 timer = nil
             }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
 
 #Preview {
     StarsView()
+        .background(BackgroundView())
 }
