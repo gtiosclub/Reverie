@@ -1,5 +1,6 @@
 import SwiftUI
 import FirebaseFirestore
+import FirebaseAuth // <-- add this
 
 struct ProfileView: View {
     @State private var dreamCount = 0
@@ -41,7 +42,13 @@ struct ProfileView: View {
         print("🔍 Fetching dream count...")
         let db = Firestore.firestore()
         
-        let userDocRef = db.collection("USERS").document("OtAj4vL9Xzz8lsm4nCuL")
+        // Get current logged-in user ID
+        guard let userId = Auth.auth().currentUser?.uid else {
+            print("❌ No logged-in user")
+            return
+        }
+        
+        let userDocRef = db.collection("USERS").document(userId)
         
         userDocRef.getDocument { snapshot, error in
             if let error = error {
