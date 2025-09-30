@@ -6,28 +6,54 @@
 //
 
 import SwiftUI
+import FirebaseAuth
 
 struct HomeView: View {
-    let user = UserModel.init(name: "Brayden")
+    @Environment(FirebaseUserService.self) private var fus
+    
+    @State private var showSecondView = false
+    @State private var dragOffset: CGSize = .zero
     
     var body: some View {
         NavigationStack {
             ZStack {
-                StarsView()
+                BackgroundView()
+                MoonView()
                 VStack {
-                    Text("Good Morning, \(user.name)")
+                    Text("Good Morning, \(fus.currentUser?.displayName ?? "Dreamer")")
                         .foregroundColor(.white)
                         .font(.largeTitle)
                         .bold()
                         .padding(.bottom, 20)
                     NewLogView()
                 }
+                .padding(.bottom, 40)
                 TabbarView()
             }
+        }
+        .gesture(
+            DragGesture()
+                .onChanged { value in
+                    // Update the drag offset as the user swipes
+                    self.dragOffset = value.translation
+                }
+                .onEnded { value in
+                    // Check if it's a significant upward swipe
+                    // Negative indicates an upward swipe
+                    if value.translation.height < -100 {
+                        self.showSecondView = true
+                    }
+                    // Reset the drag offset
+                    self.dragOffset = .zero
+                }
+        )
+        .fullScreenCover(isPresented: $showSecondView) {
+            DreamCardView()
         }
     }
 }
 
 #Preview {
     HomeView()
+        .environment(FirebaseUserService.shared)
 }
