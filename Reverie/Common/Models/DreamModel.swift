@@ -39,6 +39,4 @@ class DreamModel: Decodable {
         self.image = image
         self.emotion = emotion
     }
-
-
 }
