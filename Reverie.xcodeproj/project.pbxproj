@@ -7,20 +7,22 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6632F26A2E85851A00FED9AB /* StableDiffusion in Frameworks */ = {isa = PBXBuildFile; productRef = 6632F2692E85851A00FED9AB /* StableDiffusion */; };
+		6632F2A82E862EC000FED9AB /* Vision.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6632F2A72E862EC000FED9AB /* Vision.framework */; };
 		66EEDBE32E679D220011493C /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 66EEDBE22E679D1B0011493C /* .gitignore */; };
-		D25528C82E8C9241004E6C9E /* StableDiffusion in Frameworks */ = {isa = PBXBuildFile; productRef = D25528C72E8C9241004E6C9E /* StableDiffusion */; };
-		D298DEFB2E8C8DF60083A971 /* StableDiffusionResources in Resources */ = {isa = PBXBuildFile; fileRef = D298DEFA2E8C8DF60083A971 /* StableDiffusionResources */; };
-		D298DF392E8C903F0083A971 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D298DF382E8C903F0083A971 /* GoogleService-Info.plist */; };
-		D298DF3C2E8C90870083A971 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = D298DF3B2E8C90870083A971 /* FirebaseAuth */; };
-		D298DF3E2E8C90870083A971 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = D298DF3D2E8C90870083A971 /* FirebaseCore */; };
-		D298DF402E8C90870083A971 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = D298DF3F2E8C90870083A971 /* FirebaseFirestore */; };
+		D298DF402E8C90870083A971 /* StableDiffusionResources in Resources */ = {isa = PBXBuildFile; fileRef = 849E88722E8C8E46006F12F4 /* StableDiffusionResources */; };
+		D298DF402E8C90870083A971 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BD9435C62E84F664009CE7D0 /* GoogleService-Info.plist */; };
+		BDE7571A2E83618900D3C183 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = BDE757192E83618900D3C183 /* FirebaseAuth */; };
+		BDE7571C2E83618900D3C183 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = BDE7571B2E83618900D3C183 /* FirebaseFirestore */; };
+		BDF5F2102E8724DA000FABD3 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = BDF5F20F2E8724DA000FABD3 /* FirebaseCore */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		6632F2A72E862EC000FED9AB /* Vision.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Vision.framework; path = System/Library/Frameworks/Vision.framework; sourceTree = SDKROOT; };
 		66EEDBB22E6798000011493C /* Reverie.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Reverie.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		66EEDBE22E679D1B0011493C /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
-		D298DEFA2E8C8DF60083A971 /* StableDiffusionResources */ = {isa = PBXFileReference; lastKnownFileType = folder; name = StableDiffusionResources; path = ../../Downloads/StableDiffusionResources; sourceTree = "<group>"; };
-		D298DF382E8C903F0083A971 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "/Users/jacobymelton/Downloads/GoogleService-Info.plist"; sourceTree = "<absolute>"; };
+		D298DF402E8C90870083A971 /* StableDiffusionResources */ = {isa = PBXFileReference; lastKnownFileType = folder; name = StableDiffusionResources; path = ../StableDiffusionResources; sourceTree = "<group>"; };
+		D298DF402E8C90870083A971 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
