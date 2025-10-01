@@ -25,81 +25,143 @@ struct DreamArchiveView : View {
     var body: some View {
         NavigationStack {
             ZStack {
-                VStack {
-                    HStack {
-                        Text("My Dreams")
-                            .bold()
-                            .font(.title)
-                        Spacer()
+                ScrollView {
+                    VStack {
                         HStack {
-                            Button {
-                                // TODO: Implement list button
-                            } label: {
-                                Image(systemName: "line.3.horizontal")
-                                    .font(.system(size: 24, weight: .bold))
-                                    .foregroundColor(.black)
-                                    .background(
-                                        RoundedRectangle(cornerRadius: 8)
-                                            .fill(.white)
-                                            .frame(width: 32, height: 32)
-                                    )
-                            }
-                            Button {
-                                // TODO: Implement calendar button
-                            } label: {
-                                Image(systemName: "calendar")
-                                    .font(.system(size: 24, weight: .bold))
-                                    .foregroundColor(.black)
-                                    .background(
-                                        RoundedRectangle(cornerRadius: 8)
-                                            .fill(.gray)
-                                            .frame(width: 32, height: 32)
-                                    )
-
+                            Text("My Dreams")
+                                .bold()
+                                .font(.title)
+                            Spacer()
+                            HStack {
+                                Button {
+                                    // TODO: Implement list button
+                                } label: {
+                                    Image(systemName: "line.3.horizontal")
+                                        .font(.system(size: 24, weight: .bold))
+                                        .foregroundColor(.black)
+                                        .background(
+                                            RoundedRectangle(cornerRadius: 8)
+                                                .fill(.white)
+                                                .frame(width: 32, height: 32)
+                                        )
+                                }
+                                Button {
+                                    // TODO: Implement calendar button
+                                } label: {
+                                    Image(systemName: "calendar")
+                                        .font(.system(size: 24, weight: .bold))
+                                        .foregroundColor(.black)
+                                        .background(
+                                            RoundedRectangle(cornerRadius: 8)
+                                                .fill(.gray)
+                                                .frame(width: 32, height: 32)
+                                        )
+                                    
+                                }
                             }
                         }
-                    }
-                    
-                    HStack {
-                        HStack {
-                            Image(systemName: "magnifyingglass")
-                            TextField("Search", text: $search)
-                        }
-                        .padding(8)
-                        .background(Color(.systemGray4))
-                        .cornerRadius(10)
                         
-                        Picker("Tags", selection: $selectedTag) {
-                            ForEach(Tag.allCases, id: \.self) { tag in
-                                Text(tag.rawValue)
+                        HStack {
+                            HStack {
+                                Image(systemName: "magnifyingglass")
+                                TextField("Search", text: $search)
+                            }
+                            .padding(8)
+                            .background(Color(.systemGray4))
+                            .cornerRadius(10)
+                            
+                            Picker("Tags", selection: $selectedTag) {
+                                ForEach(Tag.allCases, id: \.self) { tag in
+                                    Text(tag.rawValue)
+                                }
+                            }
+                            .background(RoundedRectangle(cornerRadius: 8).fill(Color(.systemGray4)))
+                            .accentColor(.white)
+                            Picker("Dates", selection: $selectedDate) {
+                                ForEach(Date.allCases, id: \.self) { date in
+                                    Text(date.rawValue)
+                                }
+                            }
+                            .background(RoundedRectangle(cornerRadius: 8).fill(Color(.systemGray4)))
+                            .accentColor(.white)
+                        }
+                        
+                        HStack {
+                            Text("Today")
+                                .font(.title2)
+                                .bold()
+                                .padding(.trailing, 10)
+                            Text("September 14th, 2025")
+                                .font(.caption)
+                            Spacer()
+                        }
+                        .padding(.vertical, 20)
+                        Spacer()
+                        
+                        HStack {
+                            SectionView(
+                                title: "Cave Diving",
+                                date: "September 14th, 2024",
+                                tags: ["Love", "Falling", "Being Chased", "Scared"],
+                                description: "Dream description preview Dream description preview Dream description preview Dream description preview"
+                            )
+                        }
+                        
+                        HStack {
+                            Text("This Week")
+                                .font(.title2)
+                                .bold()
+                                .padding(.trailing, 10)
+                            Spacer()
+                        }
+                        ScrollView (.horizontal, showsIndicators: false){
+                            HStack {
+                                SectionView(
+                                    title: "Cave Diving",
+                                    date: "September 14th, 2024",
+                                    tags: ["Love", "Falling", "Being Chased", "Scared"],
+                                    description: "Dream description preview Dream description preview Dream description preview Dream description preview"
+                                )
+                                SectionView(
+                                    title: "Cave Diving",
+                                    date: "September 14th, 2024",
+                                    tags: ["Love", "Falling", "Being Chased", "Scared"],
+                                    description: "Dream description preview Dream description preview Dream description preview Dream description preview"
+                                )
+                                SectionView(
+                                    title: "Cave Diving",
+                                    date: "September 14th, 2024",
+                                    tags: ["Love", "Falling", "Being Chased", "Scared"],
+                                    description: "Dream description preview Dream description preview Dream description preview Dream description preview"
+                                )
                             }
                         }
-                        .background(RoundedRectangle(cornerRadius: 8).fill(Color(.systemGray4)))
-                        .accentColor(.white)
-                        Picker("Dates", selection: $selectedDate) {
-                            ForEach(Date.allCases, id: \.self) { date in
-                                Text(date.rawValue)
+                        .padding(.vertical, 20)
+                        Spacer()
+                        
+                        HStack {
+                            Text("This Month")
+                                .font(.title2)
+                                .bold()
+                                .padding(.trailing, 10)
+                            Spacer()
+                        }
+                        ScrollView (.horizontal, showsIndicators: false) {
+                            HStack {
+                                SectionView(
+                                    title: "Cave Diving",
+                                    date: "September 14th, 2024",
+                                    tags: ["Love", "Falling", "Being Chased", "Scared"],
+                                    description: "Dream description preview Dream description preview Dream description preview Dream description preview"
+                                )
                             }
                         }
-                        .background(RoundedRectangle(cornerRadius: 8).fill(Color(.systemGray4)))
-                        .accentColor(.white)
-                    }
-                    
-                    HStack {
-                        Text("Today")
-                            .font(.title2)
-                            .bold()
-                            .padding(.trailing, 10)
-                        Text("September 14th, 2025")
-                            .font(.caption)
+                        .padding(.vertical, 20)
                         Spacer()
                     }
-                    .padding(.vertical, 20)
-
-                    Spacer()
+                    .padding()
+                    TabbarView()
                 }
-                .padding()
-                TabbarView()
             }
         }
     }
