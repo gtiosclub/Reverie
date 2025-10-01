@@ -25,6 +25,7 @@ struct ReverieApp: App {
             AuthRoutingView()
                 .environment(FirebaseUserService.shared)
                 .environment(FirebaseLoginService.shared)
+                .environment(FirebaseDreamService.shared)
         }
     }
 }
