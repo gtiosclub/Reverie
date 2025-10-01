@@ -26,4 +26,4 @@ To get the app working, you need to download the `split_einsum` variant of the m
 7.  Expand the **"Copy Bundle Resources"** section.
 8.  Now drag the `StableDiffusionResources` folder into this list. Do **NOT** copy, but do **create folder references**.
 
-**To test, run it on your phone or the simulator. It will not run on the canvas.**
+**To test, you must run it on your phone**
