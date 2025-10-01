@@ -1,5 +1,5 @@
 {
-  "originHash" : "52fc4ef9bc6290b6509098b097a8129a14e0bcf8970117f5d379718bd00fe452",
+  "originHash" : "01cbd02782ccab66bd2e88e95a64b52c51d504b24b51d3cdb87dfef0eb7e54df",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -103,7 +103,7 @@
     {
       "identity" : "ml-stable-diffusion",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/apple/ml-stable-diffusion.git",
+      "location" : "https://github.com/apple/ml-stable-diffusion",
       "state" : {
         "revision" : "5a170d29cf38e674b80541d7ce22929c6a11cdde",
         "version" : "1.1.1"
