@@ -30,8 +30,11 @@ public class FirebaseService {
         return []
     }
     
-    func getRecommendedTags(dreamText: String) async throws -> Void {
+    func getRecommendedTags(dreamText: String) async throws -> [FoundationModel.Tag] {
         let response = try await tagsModelSession.respond(to: dreamText)
-        print(response.content) // needs to be changed to return (whatever gives the array of strings)
+        let data = response.content.data(using: .utf8)!
+        let tags = try JSONDecoder().decode([FoundationModel.Tag].self, from: data)
+        print(tags)
+        return tags
     }
 }
