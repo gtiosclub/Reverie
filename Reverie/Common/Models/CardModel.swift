@@ -14,8 +14,7 @@ struct CardModel: Identifiable {  // Conforms to Identifiable to uniquely identi
     
     var characterName: String  // Name of the character featured on the card
     var archetype: String  // Archetype or role of the character in the dream context
-    var description: String  // Description or story related to the card's character or theme
-    var footerText: String  // Additional text displayed at the bottom of the card
+    var description: String  // Description or story related to the card's character or them
     var imageURL: URL?  // Optional URL to an image associated with the card
     var base64Image: String?  // Optional base64 encoded string representing the card's image
     var cardColorName: Color  // Color used for the card's background or theme
