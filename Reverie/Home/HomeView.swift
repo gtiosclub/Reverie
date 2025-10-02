@@ -8,15 +8,20 @@
 import SwiftUI
 import FirebaseAuth
 
+
 struct HomeView: View {
     @Environment(FirebaseUserService.self) private var fus
     
     @State private var showSecondView = false
     @State private var dragOffset: CGSize = .zero
+    let service = FirebaseService()
+    
+    
     
     var body: some View {
         NavigationStack {
             ZStack {
+                
                 BackgroundView()
                 MoonView()
                 VStack {

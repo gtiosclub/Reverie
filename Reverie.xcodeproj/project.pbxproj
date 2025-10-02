@@ -18,6 +18,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		062FBCE02E8EFD4100BE336F /* StableDiffusionResources */ = {isa = PBXFileReference; lastKnownFileType = folder; name = StableDiffusionResources; path = ../../Downloads/StableDiffusionResources; sourceTree = "<group>"; };
 		39B335872E8EDEFA00D559AE /* StableDiffusionResources */ = {isa = PBXFileReference; lastKnownFileType = folder; name = StableDiffusionResources; path = ../../Downloads/StableDiffusionResources; sourceTree = "<group>"; };
 		6632F2A72E862EC000FED9AB /* Vision.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Vision.framework; path = System/Library/Frameworks/Vision.framework; sourceTree = SDKROOT; };
 		66EEDBB22E6798000011493C /* Reverie.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Reverie.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -61,6 +62,7 @@
 			isa = PBXGroup;
 			children = (
 				39B335872E8EDEFA00D559AE /* StableDiffusionResources */,
+				062FBCE02E8EFD4100BE336F /* StableDiffusionResources */,
 				66EEDBE22E679D1B0011493C /* .gitignore */,
 				66EEDBB42E6798000011493C /* Reverie */,
 				6632F2A62E862EBF00FED9AB /* Frameworks */,
