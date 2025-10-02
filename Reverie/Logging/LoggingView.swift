@@ -57,6 +57,18 @@ struct LoggingView: View {
                     TextField("Start new dream entry...", text: $dream, axis: .vertical)
                         .padding(.vertical)
                     Spacer()
+                    Button {
+                        Task {
+                            do {
+                                try await getOverallAnalysis(dream_description: dream)
+                            } catch {
+                                print("Error: \(error)")
+                            }
+                        }
+                    } label: {
+                        Text("Get Overall Analysis")
+                    }
+                    Spacer()
                 }
                 .padding()
                 TabbarView()
