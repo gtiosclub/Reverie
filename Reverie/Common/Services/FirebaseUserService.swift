@@ -19,7 +19,7 @@ class FirebaseUserService {
     var currentUser: User?
     private var handle: AuthStateDidChangeListenerHandle?
     
-    var userDreams: [DreamModel] = []
+    let db = Firebase.db
     
     init() {
         handle = Auth.auth().addStateDidChangeListener { [weak self] _, user in
@@ -27,21 +27,20 @@ class FirebaseUserService {
         }
     }
     
-    func fetchCurrentUserDreams() async {
-        guard let userId = Auth.auth().currentUser?.uid else {
-            print("Error: No user is logged in.")
-            return
+    func getUserInfo() async throws -> [String] {
+        let userRef = db.collection("USERS").document("OtAj4vL9Xzz8lsm4nCuL")
+        print("Fetching document…")
+        let snapshot = try await userRef.getDocument()
+        guard let data = snapshot.data() else {
+            print("No data in snapshot")
+            return []
         }
-        
-        do {
-            let dreams = try await Firestore.firestore().collection("USERS").document(userId).collection("DREAMS").getDocuments()
-            
-            self.userDreams = try dreams.documents.compactMap {
-                try $0.data(as: DreamModel.self)
-            }
-            print("Successfully fetched \(self.userDreams.count) dreams.")
-        } catch {
-            print("Error fetching dreams: \(error.localizedDescription)")
+        print("Document data: \(data)")
+        if let dreams = data["dreams"] as? [String] {
+            return dreams
+        } else if let dreams = data["dreams"] as? [Any] {
+            return dreams.compactMap { $0 as? String }
         }
+        return []
     }
 }
