@@ -15,8 +15,7 @@ struct DreamCardView: View {
         id: UUID(), // Unique identifier for the card
         characterName: "Morpheus", // Name of the character featured on the card
         archetype: "The Architect", // Archetype or role of the character
-        description: "Builds the landscapes of your dreams.", // Description of the character or card's theme
-        footerText: "Swipe to reveal the next insight", // Instructional or informational footer text on the card
+        description: "Builds the landscapes of your dreams.", // Description of the character or card's them.
         imageURL: nil, // URL for an image to display on the card, if available
         base64Image: nil, // Base64-encoded image data as an alternative to imageURL
         cardColorName: Color.blue // The color theme used for the card's background or accents
