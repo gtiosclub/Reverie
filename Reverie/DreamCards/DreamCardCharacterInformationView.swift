@@ -87,7 +87,7 @@ struct DreamCardCharacterInformationView: View {
                 
                 Spacer()
                 
-                Text(card.footerText)
+                Text("Swipe to reveal the next insight")
                     .font(.footnote)
                     .foregroundColor(.white.opacity(0.7))
                     .padding(.bottom, 10)
@@ -136,8 +136,6 @@ VStack {
             // description: Short description of the character
             description: "Builds the landscapes of your dreams.",
             // footerText: Text shown in the footer of the card
-            footerText: "Swipe to reveal the next insight",
-            // imageURL: Optional URL for the character's image
             imageURL: nil,
             // base64Image: Optional base64-encoded image data for the character
             base64Image: nil,
