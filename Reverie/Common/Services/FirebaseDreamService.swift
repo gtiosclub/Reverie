@@ -79,6 +79,7 @@ class FirebaseDreamService {
             let dream: DreamModel = .init(
                 userId: userId,
                 id: id,
+                title: "", //this should probably change
                 date: date,
                 loggedContent: loggedContent,
                 generatedContent: generatedContent,
