@@ -7,9 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6607D33A2E9099CC0035AE33 /* StableDiffusionResources in Resources */ = {isa = PBXBuildFile; fileRef = 6607D3392E9099CC0035AE33 /* StableDiffusionResources */; };
 		6632F26A2E85851A00FED9AB /* StableDiffusion in Frameworks */ = {isa = PBXBuildFile; productRef = 6632F2692E85851A00FED9AB /* StableDiffusion */; };
 		6632F2A82E862EC000FED9AB /* Vision.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6632F2A72E862EC000FED9AB /* Vision.framework */; };
-		66AC47A42E8A0F5F008FB289 /* StableDiffusionResources in Resources */ = {isa = PBXBuildFile; fileRef = 66AC47A32E8A0F5F008FB289 /* StableDiffusionResources */; };
 		66EEDBE32E679D220011493C /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 66EEDBE22E679D1B0011493C /* .gitignore */; };
 		BD9435C72E84F664009CE7D0 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BD9435C62E84F664009CE7D0 /* GoogleService-Info.plist */; };
 		BDE7571A2E83618900D3C183 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = BDE757192E83618900D3C183 /* FirebaseAuth */; };
@@ -18,8 +18,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		6607D3392E9099CC0035AE33 /* StableDiffusionResources */ = {isa = PBXFileReference; lastKnownFileType = folder; name = StableDiffusionResources; path = ../StableDiffusionResources; sourceTree = "<group>"; };
 		6632F2A72E862EC000FED9AB /* Vision.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Vision.framework; path = System/Library/Frameworks/Vision.framework; sourceTree = SDKROOT; };
-		66AC47A32E8A0F5F008FB289 /* StableDiffusionResources */ = {isa = PBXFileReference; lastKnownFileType = folder; name = StableDiffusionResources; path = ../StableDiffusionResources; sourceTree = "<group>"; };
 		66EEDBB22E6798000011493C /* Reverie.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Reverie.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		66EEDBE22E679D1B0011493C /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		BD9435C62E84F664009CE7D0 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -60,7 +60,7 @@
 		66EEDBA92E6798000011493C = {
 			isa = PBXGroup;
 			children = (
-				66AC47A32E8A0F5F008FB289 /* StableDiffusionResources */,
+				6607D3392E9099CC0035AE33 /* StableDiffusionResources */,
 				66EEDBE22E679D1B0011493C /* .gitignore */,
 				66EEDBB42E6798000011493C /* Reverie */,
 				6632F2A62E862EBF00FED9AB /* Frameworks */,
@@ -149,7 +149,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				66AC47A42E8A0F5F008FB289 /* StableDiffusionResources in Resources */,
+				6607D33A2E9099CC0035AE33 /* StableDiffusionResources in Resources */,
 				66EEDBE32E679D220011493C /* .gitignore in Resources */,
 				BD9435C72E84F664009CE7D0 /* GoogleService-Info.plist in Resources */,
 			);
