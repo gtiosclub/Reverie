@@ -9,10 +9,10 @@ import Foundation
 
 class DreamModel: Decodable {
     var id: String
-    var userId: String
-    var date: Date?
+    var userID: String
+    var date: Date
     var loggedContent: String
-    var genereatedContent: String
+    var generatedContent: String
     var tags: [Tags]
     var image: String
     var emotion: Emotions
@@ -26,12 +26,15 @@ class DreamModel: Decodable {
     }
 
 
-    init(userId: String, id: String, date: Date, loggedContent: String, generatedContent:String, tags: [Tags], image: String, emotion: Emotions) {
-        self.userId = userId
+
+
+
+    init(userID: String, id: String, date: Date, loggedContent: String, generatedContent:String, tags: [Tags], image: String, emotion: Emotions) {
+        self.userID = userID
         self.id = id
         self.date = date
         self.loggedContent = loggedContent
-        self.genereatedContent = generatedContent
+        self.generatedContent = generatedContent
         self.tags = tags
         self.image = image
         self.emotion = emotion
