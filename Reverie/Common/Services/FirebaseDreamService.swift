@@ -34,6 +34,7 @@ class FirebaseDreamService {
                 let userId = data["userID"] as? String,
                 let id = data["id"] as? String,
                 let dateString = data["date"] as? String,  // adjust if stored as Timestamp
+                let title = data["title"] as? String,
                 let loggedContent = data["loggedContent"] as? String,
                 let generatedContent = data["generatedContent"] as? String,
                 let image = data["image"] as? String,
@@ -83,6 +84,7 @@ class FirebaseDreamService {
                 userId: userId,
                 id: id,
                 date: date,
+                title: title,
                 loggedContent: loggedContent,
                 generatedContent: generatedContent,
                 tags: tags,
@@ -115,6 +117,7 @@ class FirebaseDreamService {
                 "date": dateFormatter.string(from: dream.date ?? Date()),
                   "emotion": String(describing: dream.emotion),
                   "generatedContent": dream.genereatedContent,
+                "title": dream.title,
                    "id": dream.id,
                   "image": dream.image,
                   "loggedContent": dream.loggedContent,
