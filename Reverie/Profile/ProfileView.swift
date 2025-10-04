@@ -22,6 +22,18 @@ struct ProfileView: View {
     }
 }
 
+func findMostCommonTags(dreams: [DreamModel]) -> [DreamModel.Tags] {
+    
+    var tagsDict = [DreamModel.Tags: Int]()
+    
+    for d in dreams {
+        for t in d.tags {
+            tagsDict[t, default: 0] += 1
+        }
+    }
+    return tagsDict.sorted {$0.value > $1.value}.map{$0.key}
+}
+
 func getDreamsOfCategory(dreams: [DreamModel], category: DreamModel.Tags) -> [DreamModel] {
     return dreams.filter { dream in
         return dream.tags.contains { tag in
@@ -29,7 +41,6 @@ func getDreamsOfCategory(dreams: [DreamModel], category: DreamModel.Tags) -> [Dr
         }
     }
 }
-
 
 
 #Preview {
