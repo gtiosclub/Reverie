@@ -16,11 +16,11 @@ struct DreamEntryView: View {
                 // Header Section (Title and Date)
                 VStack(alignment: .leading, spacing: 4) {
                     Text(sampleDream.title)
-                        .font(.title)
+                        .font(Font.title)
                         .bold()
                         .foregroundColor(.white)
                     Text(sampleDream.date?.formatted() ?? "09/23/2025")
-                        .font(.subheadline)
+                        .font(Font.subheadline)
                         .foregroundColor(.gray)
                 }
                 .padding(.horizontal)
@@ -56,3 +56,4 @@ struct DreamEntryView: View {
     }
     
 }
+
