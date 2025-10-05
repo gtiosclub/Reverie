@@ -83,9 +83,8 @@ class FirebaseDreamService {
             let dream: DreamModel = .init(
                 userId: userId,
                 id: id,
-                title: "", //this should probably change
-                date: date,
                 title: title,
+                date: date,
                 loggedContent: loggedContent,
                 generatedContent: generatedContent,
                 tags: tags,
@@ -114,7 +113,7 @@ class FirebaseDreamService {
           print("USER ID: \(dream.userId)")
 
           do {
-              let ref = try await fb.db.collection("DREAMS").addDocument(data: [
+              let ref = fb.db.collection("DREAMS").addDocument(data: [
                 "date": dateFormatter.string(from: dream.date ?? Date()),
                   "emotion": String(describing: dream.emotion),
                   "generatedContent": dream.genereatedContent,
@@ -128,7 +127,7 @@ class FirebaseDreamService {
               let dreamRef = ref.documentID
               print("Added Data with ref: \(dreamRef)")
 
-              let userRef = try await fb.db.collection("USERS").document(dream.userId)
+              let userRef = fb.db.collection("USERS").document(dream.userId)
 
               try await userRef.updateData([
                   "dreams": FieldValue.arrayUnion([dreamRef])

@@ -66,7 +66,7 @@ struct ImageGenerationView: View {
                     throw NSError(domain: "ContentView", code: 1, userInfo: [NSLocalizedDescriptionKey: "Could not find model resources."])
                 }
                 
-                let loadedPipeline = try await StableDiffusionPipeline(
+                let loadedPipeline = try StableDiffusionPipeline(
                     resourcesAt: resourceURL,
                     controlNet: [],
                     reduceMemory: true

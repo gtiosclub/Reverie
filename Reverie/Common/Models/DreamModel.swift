@@ -12,7 +12,6 @@ class DreamModel: Decodable {
     var userId: String
     var title: String
     var date: Date?
-    var title: String
     var loggedContent: String
     var genereatedContent: String
     var tags: [Tags]
