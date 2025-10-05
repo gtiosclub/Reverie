@@ -12,6 +12,7 @@ class DreamModel: Decodable {
     var userId: String
     var title: String
     var date: Date?
+    var title: String
     var loggedContent: String
     var genereatedContent: String
     var tags: [Tags]
@@ -32,6 +33,7 @@ class DreamModel: Decodable {
         self.id = id
         self.title = title
         self.date = date
+        self.title = title
         self.loggedContent = loggedContent
         self.genereatedContent = generatedContent
         self.tags = tags
