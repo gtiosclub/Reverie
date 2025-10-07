@@ -9,15 +9,6 @@ import Foundation
 import FoundationModels
 
 public class FoundationModel {
-    enum Tag: String, CaseIterable, Decodable {
-        case love = "Love"
-        case falling = "Falling"
-        case beingChased = "Being Chased"
-        case family = "Family"
-        case friends = "Friends"
-        case nightmare = "Nightmare"
-    }
-    
-    private static let tagsInstructions: String = "There are six releated dream tags: \(Tag.allCases.map { $0.rawValue }.joined(separator: ", ")). You are given a dream text, identify related tags (you can choose multiple). Return an array of strings (like [\"Family\", \"Friends\"]) that includes the related tags listed before without any other text."
+    private static let tagsInstructions: String = "You are given a dream text. The only valid dream tags are: \(DreamModel.Tags.allCases.map { $0.rawValue }.joined(separator: ", ")). Identify which of these tags are relevant to the dream. Return your answer strictly as a JSON array of strings, for example: [\"family\", \"friends\"]. Rules: - You may include only tags from the list above. - Do not invent or modify tag names. - If none of the tags apply, return []. - Return only the array — no explanations or extra text."
     static let tagsModelSession = LanguageModelSession(instructions: tagsInstructions)
 }
