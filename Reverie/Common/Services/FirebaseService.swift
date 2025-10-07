@@ -12,6 +12,7 @@ import FoundationModels
 public class FirebaseService {
     let db = Firebase.db
     let tagsModelSession = FoundationModel.tagsModelSession
+    let emotionsModelSession = FoundationModel.emotionsModelSession
     
     func getUserInfo() async throws -> [String] {
         let userRef = db.collection("USERS").document("OtAj4vL9Xzz8lsm4nCuL")
@@ -33,12 +34,28 @@ public class FirebaseService {
     func getRecommendedTags(dreamText: String) async throws -> [DreamModel.Tags] {
         do {
             let response = try await tagsModelSession.respond(to: dreamText)
-            let data = try response.content.data(using: .utf8)!
+            let data = response.content.data(using: .utf8)!
             let tags = try JSONDecoder().decode([DreamModel.Tags].self, from: data)
             return tags
         } catch {
             print(error)
             return []
+        }
+    }
+    
+    func getEmotion(dreamText: String) async throws -> DreamModel.Emotions {
+        do {
+            let response = try await emotionsModelSession.respond(to: dreamText)
+            let content = response.content.trimmingCharacters(in: .whitespacesAndNewlines)
+
+            if let emotion = DreamModel.Emotions(rawValue: content) {
+                return emotion
+            }
+            
+            return .neutral
+        } catch {
+            print(error)
+            return .neutral
         }
     }
 }
