@@ -15,6 +15,10 @@ struct SaveDreamView: View {
     @State private var entryTagsArray: [String] = []
     @State private var entryTags: String = ""
     @State private var showingAddTagSheet = false
+    var dreamAnalysis: String
+    var recommendedTags: [DreamModel.Tags]
+    var emotion: DreamModel.Emotions
+    
     
     var body: some View {
         NavigationView {
@@ -141,5 +145,5 @@ struct SaveDreamView: View {
     }
 }
 #Preview {
-    SaveDreamView()
+    SaveDreamView(dreamAnalysis: "analysis", recommendedTags: [], emotion: DreamModel.Emotions(rawValue: "sadness")!)
 }

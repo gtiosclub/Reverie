@@ -1,12 +1,16 @@
 import SwiftUI
 
 struct SectionView: View {
+    let title: String
+    let date: String
+    let tags: [String]
+    let description: String
     var body: some View {
-        NavigationStack {
+
             HStack {
                 VStack (alignment: .leading) {
                     HStack {
-                        Text("Cave Diving")
+                        Text(title)
                             .font(.title)
                             .fontWeight(.bold)
                             .textFieldStyle(PlainTextFieldStyle())
@@ -14,33 +18,25 @@ struct SectionView: View {
                             .padding(.vertical,12)
                             .cornerRadius(6)
                             .foregroundColor(.white)
-                        Text("September 14th, 2025")
+                        Text(date)
                             .foregroundColor(.white)
                             .font(.subheadline)
                     }
-                    HStack{
-                        Text("Love")
-                            .foregroundColor(.white)
-                            .font(.subheadline)
-                            .padding(.horizontal,10)
-                            .background(Color(white: 0.7))
-                            .cornerRadius(15)
-                        Text("Falling")
-                            .foregroundColor(.white)
-                            .font(.subheadline)
-                            .padding(.horizontal,10)
-                            .background(Color(white: 0.7))
-                            .cornerRadius(15)
-                        Text("Being Chased")
-                            .foregroundColor(.white)
-                            .font(.subheadline)
-                            .padding(.horizontal,10)
-                            .background(Color(white: 0.7))
-                            .cornerRadius(15)
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack {
+                            ForEach(tags, id: \.self) { tag in
+                                Text(tag)
+                                    .foregroundColor(.white)
+                                    .font(.subheadline)
+                                    .padding(.horizontal,10)
+                                    .background(Color(white: 0.7))
+                                    .cornerRadius(15)
+                            }
+                        }
+                        .padding(.horizontal, 18)
                     }
-                    .padding(.horizontal, 18)
                     HStack {
-                        Text("Dream description preview Dream description preview Dream description preview Dream description preview Dream description preview")
+                        Text(description)
                             .foregroundColor(.white)
                             .font(.subheadline)
                             .lineLimit(1)
@@ -48,20 +44,24 @@ struct SectionView: View {
                             .padding(.vertical,10)
                     }
                 }
-                HStack {
-                    Image(systemName: "chevron.right")
-                        .foregroundColor(.white)
-                        .font(.title)
-                        .padding(.horizontal,10)
-                }
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .foregroundColor(.white)
+                    .font(.title)
+                    .padding(.horizontal,10)
             }
             .background(Color(white: 0.4))
             .cornerRadius(10)
             .padding(.horizontal, 10)
             .padding(.vertical)
+            .frame(maxWidth: 384)
         }
     }
-}
 #Preview {
-    SectionView()
+    SectionView(
+        title: "Cave Diving",
+        date: "September 14th, 2024",
+        tags: ["Love", "Falling", "Being Chased", "Scared"],
+        description: "Dream description preview Dream description preview Dream description preview Dream description preview"
+    )
 }
