@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		6632F26A2E85851A00FED9AB /* StableDiffusion in Frameworks */ = {isa = PBXBuildFile; productRef = 6632F2692E85851A00FED9AB /* StableDiffusion */; };
-		6632F2A82E862EC000FED9AB /* Vision.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6632F2A72E862EC000FED9AB /* Vision.framework */; };
 		66EEDBE32E679D220011493C /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 66EEDBE22E679D1B0011493C /* .gitignore */; };
 		BD9435C72E84F664009CE7D0 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BD9435C62E84F664009CE7D0 /* GoogleService-Info.plist */; };
 		BDE7571A2E83618900D3C183 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = BDE757192E83618900D3C183 /* FirebaseAuth */; };
@@ -16,7 +14,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		6632F2A72E862EC000FED9AB /* Vision.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Vision.framework; path = System/Library/Frameworks/Vision.framework; sourceTree = SDKROOT; };
 		66EEDBB22E6798000011493C /* Reverie.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Reverie.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		66EEDBE22E679D1B0011493C /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		BD9435C62E84F664009CE7D0 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
