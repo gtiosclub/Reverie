@@ -33,6 +33,7 @@ class FirebaseDreamService {
             guard
                 let userId = data["userID"] as? String,
                 let id = data["id"] as? String,
+                let title = data["title"] as? String,
                 let dateString = data["date"] as? String,  // adjust if stored as Timestamp
                 let title = data["title"] as? String,
                 let loggedContent = data["loggedContent"] as? String,
@@ -81,7 +82,7 @@ class FirebaseDreamService {
             
             // Build model
             let dream: DreamModel = .init(
-                userId: userId,
+                userID: userId,
                 id: id,
                 title: title,
                 date: date,

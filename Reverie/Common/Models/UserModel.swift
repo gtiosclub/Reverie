@@ -19,7 +19,7 @@ class UserModel: Decodable {
         self.userId = userId
         self.username = username
         self.overallAnalysis = overallAnalysis
-        self.dreams = []
+        self.dreams = dreams
     }
     
     init(name: String) {
