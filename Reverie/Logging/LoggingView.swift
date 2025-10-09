@@ -45,6 +45,7 @@ struct LoggingView: View {
                     TextField("Start new dream entry...", text: $dream, axis: .vertical)
                         .padding(.vertical)
                     Spacer()
+                    
                 }
                 .padding()
                 TabbarView()
