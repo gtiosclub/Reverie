@@ -10,99 +10,18 @@ import Foundation
 @MainActor
 @Observable
 class FirebaseDreamService {
+    
     static let shared = FirebaseDreamService()
     
-    let fb = FirebaseUserService()
+    let fb = FirebaseLoginService()
     
-    func getDreams() async throws -> [DreamModel] {
-        let dreamKeys = try await fb.getUserInfo()
-        var dreams: [DreamModel] = []
-        
-        for dreamKey in dreamKeys {
-            let dreamRef = fb.db.collection("DREAMS").document(dreamKey)
-            print("Fetching document for key \(dreamKey)…")
-            
-            let snapshot = try await dreamRef.getDocument()
-            guard let data = snapshot.data() else {
-                print("⚠️ No data in snapshot for key: \(dreamKey)")
-                continue
-            }
-            
-            print("✅ Document data: \(data)")
-            
-            guard
-                let userId = data["userID"] as? String,
-                let id = data["id"] as? String,
-                let title = data["title"] as? String,
-                let dateString = data["date"] as? String,  // adjust if stored as Timestamp
-                let title = data["title"] as? String,
-                let loggedContent = data["loggedContent"] as? String,
-                let generatedContent = data["generatedContent"] as? String,
-                let image = data["image"] as? String,
-                let emotionString = data["emotion"] as? String,
-                let tagsArray = data["tags"] as? [String]
-            else {
-                print("⚠️ Missing or invalid fields for dream \(dreamKey)")
-                continue
-            }
-            
-            // Convert date
-            let formatter = DateFormatter()
-            let date = formatter.date(from: dateString) ?? Date()
-            
-            // Convert emotion string → enum
-//            let emotion: DreamModel.Emotions
-//            switch emotionString.lowercased() {
-//                case "happiness": emotion = .happiness
-//                case "sadness": emotion = .sadness
-//                case "anger": emotion = .anger
-//                case "fear": emotion = .fear
-//                case "embarrassment": emotion = .embarrassment
-//                case "anxiety": emotion = .anxiety
-//                default:
-//                    print("⚠️ Unknown emotion: \(emotionString), defaulting to .anxiety")
-//                    emotion = .anxiety
-//            }
-            let emotion = DreamModel.Emotions(rawValue: emotionString.lowercased())
-            
-            // Convert tags strings → enum
-//            let tags: [DreamModel.Tags] = tagsArray.compactMap { tagStr in
-//                switch tagStr.lowercased() {
-//                case "mountains": return .mountains
-//                case "rivers": return .rivers
-//                case "forests": return .forests
-//                case "animals": return .animals
-//                case "school": return .school
-//                default:
-//                    print("⚠️ Unknown tag: \(tagStr)")
-//                    return nil
-//                }
-//            }
-            let tags: [DreamModel.Tags] = tagsArray.compactMap { DreamModel.Tags(rawValue: $0.lowercased()) }
-            
-            // Build model
-            let dream: DreamModel = .init(
-                userID: userId,
-                id: id,
-                title: title,
-                date: date,
-                loggedContent: loggedContent,
-                generatedContent: generatedContent,
-                tags: tags,
-                image: image,
-                emotion: emotion ?? .happiness
-            )
-            
-            dreams.append(dream)
-        }
-        
-        return dreams
-    }
-    
+    // !!when using createDream, you can use any id value for the dream you pass in, it will update with the accurate dream id once the dream is initialized in firebase!!
+  
     func createDream(dream: DreamModel) async {
 
           let dateFormatter = DateFormatter()
           dateFormatter.dateStyle = .short
+          dateFormatter.locale = Locale(identifier: "en_US_POSIX")
 
           //create array of tag strings
           var tagArray: [String] = []
@@ -114,30 +33,41 @@ class FirebaseDreamService {
           print("USER ID: \(dream.userID)")
 
           do {
-              let ref = try await fb.db.collection("DREAMS").addDocument(data: [
-                "date": dateFormatter.string(from: dream.date ?? Date()),
-                  "emotion": String(describing: dream.emotion),
-                  "generatedContent": dream.generatedContent,
-                "title": dream.title,
-                   "id": dream.id,
-                  "image": dream.image,
-                  "loggedContent": dream.loggedContent,
-                  "tags": tagArray,
-                  "userID": dream.userID
+              let ref = try await fb.db.collection("DREAMS").addDocument(
+                data: [
+                 "date": dateFormatter.string(from: dream.date),
+                 "emotion": dream.emotion.rawValue,
+                 "generatedContent": dream.generatedContent,
+                 "title": dream.title,
+                 "id": dream.id,
+                 "image": dream.image,
+                 "loggedContent": dream.loggedContent,
+                 "tags": tagArray,
+                 "userID": dream.userID
               ])
               let dreamRef = ref.documentID
+              dream.id = dreamRef
               print("Added Data with ref: \(dreamRef)")
+              
+              try await ref.updateData(["id": dreamRef])
 
               let userRef = try await fb.db.collection("USERS").document(dream.userID)
 
               try await userRef.updateData([
                   "dreams": FieldValue.arrayUnion([dreamRef])
                   ])
+              
 
               print("Appended \(dreamRef) to user \(dream.userID)")
 
           } catch {
               print("Error adding document: \(error)")
           }
+        
+        
+        
+        FirebaseLoginService.shared.currUser?.dreams.append(dream)
+        
       }
 }
+
