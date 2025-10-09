@@ -24,6 +24,8 @@ extension DreamModel.Emotions {
             return .orange
         case .anxiety:
             return .green
+        case .neutral:
+            return .green
         }
     }
 }
