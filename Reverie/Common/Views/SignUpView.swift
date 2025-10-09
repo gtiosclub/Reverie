@@ -127,8 +127,8 @@ struct SignUpView: View {
         Task {
             isSigningUp = true
             
-            await fls.signUp(
-                email: cleanEmail,
+            await fls.createUser(
+                withEmail: cleanEmail,
                 password: password,
                 name: cleanName
             )
