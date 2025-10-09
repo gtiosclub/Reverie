@@ -38,31 +38,11 @@ struct DreamCardView: View {
                 }
                 .padding(.top, 40)
 
-                // --- START: ADD THIS OVERLAY CODE ---
-                
-                // This entire block appears when a character is selected
                 if let character = selectedCharacter {
-                    // 1. The darkening background layer
-                    Color.black.opacity(0.75)
-                        .ignoresSafeArea()
-                        // Add a fade transition for the background
-                        .transition(.opacity)
-                        .onTapGesture {
-                            // Dismiss by tapping the background
-                            withAnimation {
-                                selectedCharacter = nil
-                            }
-                        }
-
-                    // 2. The focused card view, placed on top of the dark layer
                     DreamCardCharacterInformationView(character: character)
-                         // Add a fade and scale transition for the card
                         .transition(.asymmetric(insertion: .opacity.combined(with: .scale(scale: 0.8)), removal: .opacity))
-
                 }
-                // --- END: ADD THIS OVERLAY CODE ---
             }
-            // REMOVE the .sheet() or .fullScreenCover() modifier from here
         }
     }
 }
