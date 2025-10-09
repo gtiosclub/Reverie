@@ -30,3 +30,16 @@ func getOverallAnalysis(dream_description: String ) async throws -> String{
     return response.content
     
 }
+
+func getPrompting(dreamFragment: String) async throws -> String {
+    let instructions = """
+        You are a dream therapist.
+        You will be provided a fragment of a dream that the user inputs.
+        Your job is to return a question to ask the user. The goal is to prompt the user for more details about their dream they may have forgotten.
+        """
+    let session = LanguageModelSession(instructions: instructions)
+    let response = try await session.respond(to: dreamFragment)
+
+    print(response.content)
+    return response.content
+}
