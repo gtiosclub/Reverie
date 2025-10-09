@@ -16,71 +16,118 @@ import Observation
 class FirebaseLoginService {
     static let shared = FirebaseLoginService()
     
+    var currUser: UserModel?
+    var userSession: FirebaseAuth.User?
+    
     let auth = Auth.auth()
     let db = Firestore.firestore()
     
     var errorText: String? = nil
-    var isLoading: Bool = false
+//    var isLoading: Bool = false
     
-    private init() {}
+    init() {
+        self.userSession = auth.currentUser
 
-    func signUp(email: String, password: String, name: String) async {
-        isLoading = true
-        errorText = nil
-        
-        do {
-            print("Creating user in Auth")
-            let authResult = try await auth.createUser(withEmail: email, password: password)
-            let user = authResult.user
-            print("Auth user created successfully with UID: \(user.uid)")
-            
-            let changeRequest = user.createProfileChangeRequest()
-            changeRequest.displayName = name
-            try await changeRequest.commitChanges()
-            print("Display name updated")
-            
-            let userid = user.uid
-            
-            print("Attempting to set data in Firestore")
-            try await db.collection("USERS").document(userid).setData([
-                "username": email,
-                "name": name,
-                "dreams": [],
-                "userID": userid,
-                "overallAnalysis": ""
-            ])
-            print("Firestore data set successfully")
-            
-        } catch {
-            print("--- ❌ ERROR ---")
-            print("Error during sign up: \(error.localizedDescription)")
-            self.errorText = parseFirebaseError(error)
+        Task {
+            await fetchUser()
         }
-        
-        isLoading = false
     }
     
-    func signIn(email: String, password: String) async {
-        isLoading = true
-        errorText = nil
-        
-        do {
-            // Sign in the user
-            try await auth.signIn(withEmail: email, password: password)
-            print("Sign in successful.")
-            
-        } catch {
-            // If sign in fails, catch the error.
-            print("Error during sign in: \(error)")
-            self.errorText = parseFirebaseError(error)
-        }
-        
-        isLoading = false
-    }
+    func fetchUser() async {
+        guard let uid = auth.currentUser?.uid else {return}
+        var dreamModels: [DreamModel] = []
 
+        guard let snapshot = try? await Firestore.firestore().collection("USERS").document(uid).getDocument() else { return }
+        if snapshot.exists {
+            if let userID = snapshot.get("userID") as? String,
+               let name = snapshot.get("name") as? String,
+               let username = snapshot.get("username") as? String,
+               let overallAnalysis = snapshot.get("overallAnalysis") as? String,
+               let dreams = snapshot.get("dreams") as? [String]
+                
+            {
+                for dream in dreams {
+                    guard let snapshot = try? await Firestore.firestore().collection("DREAMS").document(dream).getDocument() else { return }
+                    if snapshot.exists {
+                        if let userID = snapshot.get("userID") as? String,
+                           let id = snapshot.get("id") as? String,
+                           let title = snapshot.get("title") as? String,
+                           let date = snapshot.get("date") as? String,
+                           let loggedContent = snapshot.get("loggedContent") as? String,
+                           let generatedContent = snapshot.get("generatedContent") as? String,
+                           let tags = snapshot.get("tags") as? [String],
+                           let image = snapshot.get("image") as? String,
+                           let emotion = snapshot.get("emotion") as? String
+                           
+                           
+                        {
+                            let dateF: Date = {
+                                if let ts = snapshot.get("date") as? Timestamp {
+                                    return ts.dateValue()
+                                } else {
+                                    return Date()
+                                }
+                            }()
+                            let tagF: [DreamModel.Tags] = tags.compactMap { DreamModel.Tags(rawValue: $0.lowercased()) }
+                            let emotionF: DreamModel.Emotions = DreamModel.Emotions(rawValue: emotion.lowercased()) ?? .neutral
+
+                            let dreamModel = DreamModel(userID: userID, id: id, title: title, date: dateF, loggedContent: loggedContent, generatedContent: generatedContent, tags: tagF, image: image, emotion: emotionF)
+                            dreamModels.append(dreamModel)
+                            
+                        }
+                    }
+                    
+                }
+
+                let user = UserModel(name: name, userID: userID, username: username, overallAnalysis: overallAnalysis, dreams: dreamModels)
+
+                self.currUser = user
+
+            }
+        }
+    }
+    
+    
+    func createUser(withEmail email: String, password: String, name: String) async {
+        do {
+            let result = try await auth.createUser(withEmail: email, password: password)
+            self.userSession = result.user
+            let user = UserModel( name: name, userID: result.user.uid, username: email, overallAnalysis: "Not enough dreams for an overall analysis", dreams: [])
+            let userData: [String: Any] = [
+                "userID": user.userID,
+                "name": user.name,
+                "username": user.username,
+                "overallAnalysis": user.overallAnalysis,
+                "dreams": user.dreams
+
+            ]
+            try await Firestore.firestore().collection("USERS").document(user.userID).setData(userData)
+            await fetchUser()
+
+        } catch {
+            let message = parseFirebaseError(error)
+            self.errorText = message
+            print("Create user error: \(error.localizedDescription)")
+        }
+    }
+    
+    func signIn(withEmail email: String, password: String) async {
+        do {
+            let result = try await auth.signIn(withEmail: email, password: password)
+            self.userSession = result.user
+            await fetchUser()
+        } catch {
+            let message = parseFirebaseError(error)
+            self.errorText = message
+            print("Sign in error: \(error.localizedDescription)")
+        }
+    }
+    
     func signOut() {
         do {
             try auth.signOut()
+            self.userSession = nil
+            self.currUser = nil
             print("Sign out successful.")
         } catch let signOutError {
             print("Error signing out: %@", signOutError)
@@ -109,3 +156,4 @@ class FirebaseLoginService {
         }
     }
 }
+
