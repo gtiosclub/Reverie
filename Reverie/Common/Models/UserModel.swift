@@ -7,7 +7,7 @@
 
 import Foundation
 
-class UserModel {
+class UserModel: Decodable {
     var name: String
     var userId: String
     var username: String
@@ -19,7 +19,7 @@ class UserModel {
         self.userId = userId
         self.username = username
         self.overallAnalysis = overallAnalysis
-        self.dreams = []
+        self.dreams = dreams
     }
     
     init(name: String) {
