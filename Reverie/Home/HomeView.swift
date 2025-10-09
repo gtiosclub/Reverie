@@ -28,6 +28,7 @@ struct HomeView: View {
                     NewLogView()
 
 
+
                 }
                 .padding(.bottom, 40)
                 TabbarView()
