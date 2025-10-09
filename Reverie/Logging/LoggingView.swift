@@ -8,13 +8,48 @@
 import SwiftUI
 
 struct LoggingView: View {
+    @State private var dream = ""
+    @State private var title = ""
+    @State private var date = Date()
+    
     var body: some View {
-        ZStack {
-            BackgroundView()
-            VStack {
-                Text("reverie logging")
+        NavigationStack {
+            ZStack {
+                VStack() {
+                    HStack {
+                        Spacer()
+                        NavigationLink {
+                            // TODO: Add navigation link
+                        } label: {
+                            Image(systemName: "checkmark")
+                                .font(.system(size: 24, weight: .bold))
+                                .foregroundColor(.black)
+                                .padding(6)
+                                .background(Circle().fill(.gray.opacity(0.9)))
+                                .padding(.vertical, 4)
+                                .opacity(title.isEmpty || dream.isEmpty ? 0 : 1)
+                        }
+                    }
+                    HStack {
+                        TextField("Dream Name", text: $title)
+                            .font(.title)
+                            .bold()
+                        Spacer()
+                        DatePicker(
+                            "",
+                            selection: $date,
+                            displayedComponents: [.date]
+                        )
+                    }
+                    
+                    TextField("Start new dream entry...", text: $dream, axis: .vertical)
+                        .padding(.vertical)
+                    Spacer()
+                    
+                }
+                .padding()
+                TabbarView()
             }
-            TabbarView()
         }
     }
 }
