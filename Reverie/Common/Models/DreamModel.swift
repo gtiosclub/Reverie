@@ -6,6 +6,8 @@
 //
 
 import Foundation
+import FoundationModels
+
 
 class DreamModel: Decodable {
     var id: String
@@ -18,12 +20,14 @@ class DreamModel: Decodable {
     var image: String
     var emotion: Emotions
     
+    @Generable
     enum Tags: String, Codable, CaseIterable {
         case mountains, rivers, forests, animals, school
     }
     
+    @Generable
     enum Emotions: String, Codable, CaseIterable {
-        case happiness, sadness, anger, fear, embarrassment, anxiety
+        case happiness, sadness, anger, fear, embarrassment, anxiety, neutral
     }
 
 
@@ -35,6 +39,7 @@ class DreamModel: Decodable {
         self.id = id
         self.title = title
         self.date = date
+        self.title = title
         self.loggedContent = loggedContent
         self.generatedContent = generatedContent
         self.tags = tags
