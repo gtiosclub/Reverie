@@ -111,30 +111,30 @@ class FirebaseDreamService {
               tagArray.append(tag.rawValue)
           }
 
-          print("USER ID: \(dream.userId)")
+          print("USER ID: \(dream.userID)")
 
           do {
               let ref = try await fb.db.collection("DREAMS").addDocument(data: [
                 "date": dateFormatter.string(from: dream.date ?? Date()),
                   "emotion": String(describing: dream.emotion),
-                  "generatedContent": dream.genereatedContent,
+                  "generatedContent": dream.generatedContent,
                 "title": dream.title,
                    "id": dream.id,
                   "image": dream.image,
                   "loggedContent": dream.loggedContent,
                   "tags": tagArray,
-                  "userID": dream.userId
+                  "userID": dream.userID
               ])
               let dreamRef = ref.documentID
               print("Added Data with ref: \(dreamRef)")
 
-              let userRef = try await fb.db.collection("USERS").document(dream.userId)
+              let userRef = try await fb.db.collection("USERS").document(dream.userID)
 
               try await userRef.updateData([
                   "dreams": FieldValue.arrayUnion([dreamRef])
                   ])
 
-              print("Appended \(dreamRef) to user \(dream.userId)")
+              print("Appended \(dreamRef) to user \(dream.userID)")
 
           } catch {
               print("Error adding document: \(error)")

@@ -9,7 +9,7 @@ import SwiftUI
 
 struct DreamEntryView: View {
     // Sample data, should be replaced with real data source
-    let sampleDream: DreamModel = .init(userId: "12133", id: "78274623", title: "Hello Dream", date: Date(), loggedContent: String(repeating: "DREAM ", count: 200), generatedContent: "gen content", tags: [.animals, .forests], image: "image", emotion: .anger)
+    let sampleDream: DreamModel = .init(userID: "12133", id: "78274623", title: "Hello Dream", date: Date(), loggedContent: String(repeating: "DREAM ", count: 200), generatedContent: "gen content", tags: [.animals, .forests], image: "image", emotion: .anger)
     
     var body: some View {
             VStack(alignment: .leading, spacing: 16) {
@@ -19,7 +19,7 @@ struct DreamEntryView: View {
                         .font(Font.title)
                         .bold()
                         .foregroundColor(.white)
-                    Text(sampleDream.date?.formatted() ?? "09/23/2025")
+                    Text(sampleDream.date.formatted())
                         .font(Font.subheadline)
                         .foregroundColor(.gray)
                 }
