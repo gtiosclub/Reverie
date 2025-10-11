@@ -26,7 +26,8 @@ class DreamService {
     }
     
     func getTags(from dream: DreamModel) -> [DreamModel.Tags] {
-            return dream.tags
+        return dream.tags
+    }
     
     func sortByTags(tag: DreamModel.Tags) -> [DreamModel] {
         var dreams: [DreamModel] = []
@@ -43,6 +44,7 @@ class DreamService {
         return dreams;
     }
 }
+    
 
 
 
