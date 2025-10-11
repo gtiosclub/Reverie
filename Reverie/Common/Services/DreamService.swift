@@ -27,6 +27,20 @@ class DreamService {
     
     func getTags(from dream: DreamModel) -> [DreamModel.Tags] {
             return dream.tags
+    
+    func sortByTags(tag: DreamModel.Tags) -> [DreamModel] {
+        var dreams: [DreamModel] = []
+        let user = FirebaseLoginService.shared.currUser
+        let dreamList = user?.dreams ?? []
+        
+        for dream in dreamList {
+            for dreamTag in dream.tags {
+                if dreamTag == tag {
+                    dreams.append(dream)
+                }
+            }
+        }
+        return dreams;
     }
 }
 
