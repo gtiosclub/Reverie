@@ -15,6 +15,8 @@ struct SaveDreamView: View {
     @State private var entryTagsArray: [String] = []
     @State private var entryTags: String = ""
     @State private var showingAddTagSheet = false
+    @State private var navigateToDreamEntry = false
+    @State private var createdDream: DreamModel?
     var dreamAnalysis: String
     var recommendedTags: [DreamModel.Tags]
     var emotion: DreamModel.Emotions
@@ -49,8 +51,9 @@ struct SaveDreamView: View {
                         HStack {
                             Image(systemName: "calendar")
                                 .foregroundColor(.white)
-                            Text("September 24, 2025")
+                            DatePicker("", selection: $entryDate, displayedComponents: [.date])
                                 .foregroundColor(.white)
+                                .colorScheme(.dark)
                             Spacer()
                         }
                         .padding(.horizontal,10)
@@ -133,7 +136,11 @@ struct SaveDreamView: View {
                     }
                 }
                 ToolbarItem(placement: .navigationBarTrailing){
-                    Button("Save"){}
+                    Button("Save"){
+                        Task {
+                            await saveDream()
+                        }
+                    }
                         .padding(.horizontal, 24)
                         .padding(.vertical, 8)
                         .foregroundColor(.black)
@@ -141,7 +148,44 @@ struct SaveDreamView: View {
                         .background(Color(white: 0.7))
                 }
             }
+            .background(
+                NavigationLink(destination: createdDream.map { DreamEntryView(dream: $0) }, isActive: $navigateToDreamEntry) {
+                    EmptyView()
+                }
+                .hidden()
+            )
         }
+    }
+    
+    func saveDream() async {
+        // Get user ID from FirebaseLoginService
+        guard let userID = FirebaseLoginService.shared.currUser?.userID else {
+            print("Error: No user ID found")
+            return
+        }
+        
+        // Convert string tags to DreamModel.Tags
+        let dreamTags = entryTagsArray.compactMap { DreamModel.Tags(rawValue: $0.lowercased()) }
+        
+        // Create DreamModel
+        let newDream = DreamModel(
+            userID: userID,
+            id: "temp_id", // Placeholder ID, will be replaced by createDream
+            title: entryTitle.isEmpty ? "Untitled Dream" : entryTitle,
+            date: entryDate,
+            loggedContent: dreamAnalysis,
+            generatedContent: dreamAnalysis,
+            tags: dreamTags,
+            image: "", // Empty placeholder for image
+            emotion: emotion
+        )
+        
+        // Call createDream
+        await FirebaseDreamService.shared.createDream(dream: newDream)
+        
+        // Store the created dream and trigger navigation
+        createdDream = newDream
+        navigateToDreamEntry = true
     }
 }
 #Preview {
