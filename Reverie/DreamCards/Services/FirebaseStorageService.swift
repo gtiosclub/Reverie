@@ -19,7 +19,7 @@ class FirebaseStorageService {
         forUserID userID: String,
         dreamID: String
     ) async throws -> URL {
-        guard let imageData = image.jpegData(compressionQuality: 0.8) else {
+        guard let imageData = image.pngData() else {
             throw ImageProcessingErrorService.failedToGetCGImage
         }
         

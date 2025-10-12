@@ -8,26 +8,49 @@
 import SwiftUI
 
 struct DreamCardCharacterInformationView: View {
-    @Environment(\.dismiss) private var dismiss
+    @Binding var selectedCharacter: CardModel?
+        
     @State private var isUnlocked = false
-    
     let character: CardModel
     
     var body: some View {
         ZStack {
             // A semi-transparent background to focus on the card
             Color.black.opacity(0.8).ignoresSafeArea()
-                .onTapGesture { dismiss() }
+                .onTapGesture {
+                    // When tapped, set the binding to nil to dismiss
+                    withAnimation(.spring()) {
+                        selectedCharacter = nil
+                    }
+                }
 
             // The Card
             VStack(spacing: 16) {
 
                 VStack(spacing: 16) {
-                    Image(systemName: character.image ?? "person.fill")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 90, height: 90)
-                        .foregroundColor(.white)
+//                    Image(systemName: character.image ?? "person.fill")
+//                        .resizable()
+//                        .scaledToFit()
+//                        .frame(width: 90, height: 90)
+//                        .foregroundColor(.white)
+                    AsyncImage(url: URL(string: character.image ?? "")) { phase in
+                        switch phase {
+                        case .empty:
+                            ProgressView()
+                                .tint(.white)
+                        case .success(let image):
+                            image
+                                .resizable()
+                                .scaledToFit()
+                        case .failure:
+                            Image(systemName: "photo.fill")
+                                .foregroundColor(.white.opacity(0.8))
+                        @unknown default:
+                            EmptyView()
+                        }
+                    }
+                    .frame(width: 90, height: 90)
+                    .foregroundColor(.white)
 
                     Text(character.name)
                         .font(.largeTitle)
@@ -53,7 +76,11 @@ struct DreamCardCharacterInformationView: View {
             )
             .overlay(
                 // Close button
-                Button(action: { dismiss() }) {
+                Button(action: {
+                    withAnimation(.spring()) {
+                        selectedCharacter = nil
+                    }
+                }) {
                     Image(systemName: "xmark.circle.fill")
                         .font(.largeTitle)
                         .foregroundColor(.white.opacity(0.5))
