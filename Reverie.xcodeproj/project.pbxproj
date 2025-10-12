@@ -7,19 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		16440E512E90CBFF00A1432E /* StableDiffusionResources in Resources */ = {isa = PBXBuildFile; fileRef = 16440E502E90CBFF00A1432E /* StableDiffusionResources */; };
-		6632F2A82E862EC000FED9AB /* Vision.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6632F2A72E862EC000FED9AB /* Vision.framework */; };
+		6607D33A2E9099CC0035AE33 /* StableDiffusionResources in Resources */ = {isa = PBXBuildFile; fileRef = 6607D3392E9099CC0035AE33 /* StableDiffusionResources */; };
+		669E5C102E98012D00848E94 /* StableDiffusion in Frameworks */ = {isa = PBXBuildFile; productRef = 669E5C0F2E98012D00848E94 /* StableDiffusion */; };
 		66EEDBE32E679D220011493C /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 66EEDBE22E679D1B0011493C /* .gitignore */; };
 		BD9435C72E84F664009CE7D0 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BD9435C62E84F664009CE7D0 /* GoogleService-Info.plist */; };
 		BDE7571A2E83618900D3C183 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = BDE757192E83618900D3C183 /* FirebaseAuth */; };
 		BDE7571C2E83618900D3C183 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = BDE7571B2E83618900D3C183 /* FirebaseFirestore */; };
-		BDF5F2102E8724DA000FABD3 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = BDF5F20F2E8724DA000FABD3 /* FirebaseCore */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		16440E4F2E90CB8E00A1432E /* StableDiffusionResources */ = {isa = PBXFileReference; lastKnownFileType = folder; path = StableDiffusionResources; sourceTree = "<group>"; };
-		16440E502E90CBFF00A1432E /* StableDiffusionResources */ = {isa = PBXFileReference; lastKnownFileType = folder; path = StableDiffusionResources; sourceTree = "<group>"; };
-		6632F2A72E862EC000FED9AB /* Vision.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Vision.framework; path = System/Library/Frameworks/Vision.framework; sourceTree = SDKROOT; };
+		6607D3392E9099CC0035AE33 /* StableDiffusionResources */ = {isa = PBXFileReference; lastKnownFileType = folder; name = StableDiffusionResources; path = ../StableDiffusionResources; sourceTree = "<group>"; };
 		66EEDBB22E6798000011493C /* Reverie.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Reverie.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		66EEDBE22E679D1B0011493C /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		BD9435C62E84F664009CE7D0 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -39,7 +36,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BDE7571A2E83618900D3C183 /* FirebaseAuth in Frameworks */,
-				BDF5F2102E8724DA000FABD3 /* FirebaseCore in Frameworks */,
+				669E5C102E98012D00848E94 /* StableDiffusion in Frameworks */,
 				BDE7571C2E83618900D3C183 /* FirebaseFirestore in Frameworks */,
 				6632F2A82E862EC000FED9AB /* Vision.framework in Frameworks */,
 			);
@@ -48,22 +45,12 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		6632F2A62E862EBF00FED9AB /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				16440E4F2E90CB8E00A1432E /* StableDiffusionResources */,
-				6632F2A72E862EC000FED9AB /* Vision.framework */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
 		66EEDBA92E6798000011493C = {
 			isa = PBXGroup;
 			children = (
-				16440E502E90CBFF00A1432E /* StableDiffusionResources */,
+				6607D3392E9099CC0035AE33 /* StableDiffusionResources */,
 				66EEDBE22E679D1B0011493C /* .gitignore */,
 				66EEDBB42E6798000011493C /* Reverie */,
-				6632F2A62E862EBF00FED9AB /* Frameworks */,
 				66EEDBB32E6798000011493C /* Products */,
 				BD9435C62E84F664009CE7D0 /* GoogleService-Info.plist */,
 			);
@@ -100,6 +87,7 @@
 				BDE757192E83618900D3C183 /* FirebaseAuth */,
 				BDE7571B2E83618900D3C183 /* FirebaseFirestore */,
 				BDF5F20F2E8724DA000FABD3 /* FirebaseCore */,
+				669E5C0F2E98012D00848E94 /* StableDiffusion */,
 			);
 			productName = Reverie;
 			productReference = 66EEDBB22E6798000011493C /* Reverie.app */;
@@ -131,6 +119,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				BDE757182E83618900D3C183 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				669E5C0E2E98012D00848E94 /* XCRemoteSwiftPackageReference "ml-stable-diffusion" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 66EEDBB32E6798000011493C /* Products */;
@@ -147,7 +136,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				16440E512E90CBFF00A1432E /* StableDiffusionResources in Resources */,
+				6607D33A2E9099CC0035AE33 /* StableDiffusionResources in Resources */,
 				66EEDBE32E679D220011493C /* .gitignore in Resources */,
 				BD9435C72E84F664009CE7D0 /* GoogleService-Info.plist in Resources */,
 			);
@@ -373,6 +362,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		669E5C0E2E98012D00848E94 /* XCRemoteSwiftPackageReference "ml-stable-diffusion" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/ml-stable-diffusion";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.1.1;
+			};
+		};
 		BDE757182E83618900D3C183 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
@@ -384,6 +381,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		669E5C0F2E98012D00848E94 /* StableDiffusion */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 669E5C0E2E98012D00848E94 /* XCRemoteSwiftPackageReference "ml-stable-diffusion" */;
+			productName = StableDiffusion;
+		};
 		BDE757192E83618900D3C183 /* FirebaseAuth */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = BDE757182E83618900D3C183 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
@@ -393,11 +395,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = BDE757182E83618900D3C183 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseFirestore;
-		};
-		BDF5F20F2E8724DA000FABD3 /* FirebaseCore */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = BDE757182E83618900D3C183 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseCore;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
