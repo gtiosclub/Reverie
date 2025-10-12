@@ -4,26 +4,41 @@
 //
 //  Created by Shreeya Garg on 9/30/25.
 //
-import Foundation
-import SwiftUI
+
+import SwiftUI  // ✅ Use SwiftUI, not UIKit
 
 struct TestView: View {
+    @State private var message = "Tap the button to test"
+
     var body: some View {
         ZStack {
             BackgroundView()
-            VStack {
-                Text("To use, simply add a button to this page and in the onclick handler of the button call your function. Then see if the funciton works as desired")
-                    .foregroundColor(.white)
-                Button ("Example Test"){
-                    exampleTest()
-                }
 
+            VStack(spacing: 20) {
+                Text(message)
+                    .foregroundColor(.white)
+                    .multilineTextAlignment(.center)
+                    .padding()
+
+                Button("Example Test") {
+                    exampleTest()
+                    message = "✅ Button tapped!"
+                }
+                .foregroundColor(.white)
+                .padding()
+                .background(Color.blue)
+                .cornerRadius(8)
             }
+
             TabbarView()
         }
     }
 }
 
 func exampleTest() {
-    print("This is logged in the console")
+    print("✅ This is logged in the console")
+}
+
+#Preview {
+    TestView()
 }
