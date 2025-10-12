@@ -9,11 +9,11 @@ import SwiftUI
 import Observation
 
 struct AuthRoutingView: View {
-    @Environment(FirebaseLoginService.self) private var fbls
-    @Environment(FirebaseUserService.self) private var fus
-
+    @Environment(FirebaseLoginService.self) private var fls
+//    @Environment(FirebaseUserService.self) private var fus
+    @Environment(FirebaseDreamService.self) private var fds
     var body: some View {
-        if fus.currentUser != nil {
+        if fls.currUser != nil {
             HomeView()
         } else {
             LoginView()
