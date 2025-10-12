@@ -38,6 +38,7 @@
 				BDE7571A2E83618900D3C183 /* FirebaseAuth in Frameworks */,
 				669E5C102E98012D00848E94 /* StableDiffusion in Frameworks */,
 				BDE7571C2E83618900D3C183 /* FirebaseFirestore in Frameworks */,
+				6632F2A82E862EC000FED9AB /* Vision.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -85,6 +86,7 @@
 			packageProductDependencies = (
 				BDE757192E83618900D3C183 /* FirebaseAuth */,
 				BDE7571B2E83618900D3C183 /* FirebaseFirestore */,
+				BDF5F20F2E8724DA000FABD3 /* FirebaseCore */,
 				669E5C0F2E98012D00848E94 /* StableDiffusion */,
 			);
 			productName = Reverie;
