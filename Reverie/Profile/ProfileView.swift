@@ -31,7 +31,10 @@ struct ProfileView: View {
             }
             .padding()
             
-            TabbarView()
+            VStack {
+                Spacer()
+                TabbarView()
+            }
         }
         .onAppear {
             fetchDreamCount()

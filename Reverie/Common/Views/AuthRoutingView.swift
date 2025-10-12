@@ -15,7 +15,7 @@ struct AuthRoutingView: View {
 
     var body: some View {
         if fus.currentUser != nil {
-            HomeView()
+            StartView()
         } else {
             LoginView()
         }
