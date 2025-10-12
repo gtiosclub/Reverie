@@ -110,6 +110,15 @@ func findEmotionFrequency(dreams: [DreamModel]) -> [DreamModel.Emotions: Int] {
 
 
 
+func getRecentDreams(dreams: [DreamModel], count: Int = 10) -> [DreamModel] {
+    // Make sure we don't try to return more dreams than exist
+    let numberToReturn = min(count, dreams.count)
+    
+    // Sort dreams by date (most recent first) and return the last `numberToReturn` dreams
+    let sortedDreams = dreams.sorted { $0.date > $1.date }
+    return Array(sortedDreams.prefix(numberToReturn))
+}
+
 
 #Preview {
     ProfileView()
