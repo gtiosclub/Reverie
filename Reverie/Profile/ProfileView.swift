@@ -98,6 +98,18 @@ func getDreamsOfCategory(dreams: [DreamModel], category: DreamModel.Tags) -> [Dr
     }
 }
 
+func findEmotionFrequency(dreams: [DreamModel]) -> [DreamModel.Emotions: Int] {
+    var emotionsDict = [DreamModel.Emotions: Int]()
+    
+    for d in dreams {
+        emotionsDict[d.emotion, default: 0] += 1
+    }
+    return emotionsDict
+}
+
+
+
+
 func getRecentDreams(dreams: [DreamModel], count: Int = 10) -> [DreamModel] {
     // Make sure we don't try to return more dreams than exist
     let numberToReturn = min(count, dreams.count)
