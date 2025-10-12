@@ -10,28 +10,26 @@ import SwiftUI
 struct StartView: View {
     var body: some View {
         NavigationStack{
-            GeometryReader { geometry in
-                ZStack {
-                    BackgroundView()
-                    
-                    ScrollView(.vertical) {
-                        LazyVStack(spacing: 80) {
-                            HomeView()
-                                .frame(height: geometry.size.height)
-                            
-                            DreamCardView()
-                                .frame(height: geometry.size.height)
-                        }
-                        .scrollTargetLayout()
+            ZStack {
+                BackgroundView()
+                
+                ScrollView(.vertical) {
+                    VStack(spacing: 0) {
+                        HomeView()
+                            .frame(height: UIScreen.main.bounds.height)
+                        
+                        DreamCardView()
+                            .frame(height: UIScreen.main.bounds.height)
                     }
-                    .scrollTargetBehavior(.paging)
-                    .scrollIndicators(.hidden)
-                    .ignoresSafeArea()
-                    
-                    VStack {
-                        Spacer()
-                        TabbarView()
-                    }
+                    .scrollTargetLayout()
+                }
+                .scrollTargetBehavior(.paging)
+                .scrollIndicators(.hidden)
+                .ignoresSafeArea()
+                
+                VStack {
+                    Spacer()
+                    TabbarView()
                 }
             }
         }
