@@ -9,7 +9,7 @@ import SwiftUI
 import FirebaseAuth
 
 struct HomeView: View {
-    @Environment(FirebaseUserService.self) private var fus
+    @Environment(FirebaseLoginService.self) private var fls
     
     @State private var showSecondView = false
     @State private var dragOffset: CGSize = .zero
@@ -20,12 +20,14 @@ struct HomeView: View {
                 BackgroundView()
                 MoonView()
                 VStack {
-                    Text("Good Morning, \(fus.currentUser?.displayName ?? "Dreamer")")
+                    Text("Good Morning, \(fls.currUser?.name ?? "Dreamer")")
                         .foregroundColor(.white)
                         .font(.largeTitle)
                         .bold()
                         .padding(.bottom, 20)
                     NewLogView()
+
+
                 }
                 .padding(.bottom, 40)
                 TabbarView()
@@ -55,5 +57,6 @@ struct HomeView: View {
 
 #Preview {
     HomeView()
-        .environment(FirebaseUserService.shared)
+//        .environment(FirebaseUserService.shared)
 }
+
