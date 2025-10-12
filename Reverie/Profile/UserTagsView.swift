@@ -9,9 +9,9 @@ import SwiftUI
 
 
 //test dreams
-let d1 = DreamModel(userId: "hi", id: "hi", date: Date(), loggedContent: "hi", generatedContent: "hi", tags: [DreamModel.Tags.animals, DreamModel.Tags.forests], image: "hi", emotion: DreamModel.Emotions.sadness)
+let d1 = DreamModel(userID: "hi", id: "hi", title: "The title", date: Date(), loggedContent: "hi", generatedContent: "hi", tags: [DreamModel.Tags.animals, DreamModel.Tags.forests], image: "hi", emotion: DreamModel.Emotions.sadness)
 
-let d2 = DreamModel(userId: "hi", id: "hi", date: Date(), loggedContent: "hi", generatedContent: "hi", tags: [DreamModel.Tags.mountains, DreamModel.Tags.forests, DreamModel.Tags.animals, DreamModel.Tags.rivers, DreamModel.Tags.school, DreamModel.Tags.school], image: "hi", emotion: DreamModel.Emotions.happiness)
+let d2 = DreamModel(userID: "hi", id: "hi", title: "The title2", date: Date(), loggedContent: "hi", generatedContent: "hi", tags: [DreamModel.Tags.mountains, DreamModel.Tags.forests, DreamModel.Tags.animals, DreamModel.Tags.rivers, DreamModel.Tags.school, DreamModel.Tags.school], image: "hi", emotion: DreamModel.Emotions.happiness)
 
 let thisWeekDreams: [DreamModel] = [d1,d2]
 let allDreams: [DreamModel] = [d2,d2,d2,d2]
