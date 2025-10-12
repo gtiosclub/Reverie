@@ -17,7 +17,7 @@ struct DreamCardCharacterInformationView: View {
     var body: some View {
         ZStack {
             // A semi-transparent background to focus on the card
-            Color.black.opacity(0.7).ignoresSafeArea()
+            Color.black.opacity(0.8).ignoresSafeArea()
                 .onTapGesture { dismiss() }
 
             // The Card
@@ -40,10 +40,10 @@ struct DreamCardCharacterInformationView: View {
                         .fontWeight(.bold)
                         .foregroundColor(.white)
 
-                    Text(character.archetype)
-                        .font(.headline)
-                        .italic()
-                        .foregroundColor(.white.opacity(0.9))
+//                    Text(character.archetype)
+//                        .font(.headline)
+//                        .italic()
+//                        .foregroundColor(.white.opacity(0.9))
                 
                     Text(character.description)
                         .font(.body)
@@ -57,10 +57,10 @@ struct DreamCardCharacterInformationView: View {
             }
             .frame(width: 320, height: 450)
             .background(
-                Circle()
-                    .fill(character.cardColor.gradient)
-                    .shadow(color: character.cardColor.opacity(0.7), radius: 20, x: 0, y: 0)
-                    .shadow(color: character.cardColor.opacity(0.4), radius: 40, x: 0, y: 0)
+                RoundedRectangle(cornerRadius: 20)
+                    .fill(character.cardColor.swiftUIColor.gradient.opacity(0.5))
+                    .shadow(color: character.cardColor.swiftUIColor.opacity(0.7), radius: 20, x: 0, y: 0)
+                    .shadow(color: character.cardColor.swiftUIColor.opacity(0.4), radius: 40, x: 0, y: 0)
             )
             .overlay(
                 // Close button
@@ -73,11 +73,11 @@ struct DreamCardCharacterInformationView: View {
                 alignment: .topTrailing
             )
             // Animation for when the card appears
-            .rotation3DEffect(.degrees(isUnlocked ? 0 : 90), axis: (x: 0, y: 1, z: 0))
+            .rotation3DEffect(.degrees(isUnlocked ? 0 : 120), axis: (x: 0, y: 1, z: 0))
             .scaleEffect(isUnlocked ? 1.0 : 0.5)
             .opacity(isUnlocked ? 1.0 : 0.0)
             .onAppear {
-                withAnimation(.spring(response: 0.6, dampingFraction: 0.7)) {
+                withAnimation(.spring(response: 0.8, dampingFraction: 0.7)) {
                     isUnlocked = true
                 }
             }
