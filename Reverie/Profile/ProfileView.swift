@@ -28,7 +28,11 @@ struct ProfileView: View {
                         .background(Color.blue)
                         .cornerRadius(8)
                 }
+                
+                NavigationLink(destination: UserTagsView()) {
+                    Text("Tags View")
 
+                }
                 Text("reverie profile")
                 NavigationLink(destination: TestView()) {
                     Text("Test Page")
