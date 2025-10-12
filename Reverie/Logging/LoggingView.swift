@@ -48,7 +48,11 @@ struct LoggingView: View {
                     
                 }
                 .padding()
-                TabbarView()
+                
+                VStack {
+                    Spacer()
+                    TabbarView()
+                }
             }
         }
     }

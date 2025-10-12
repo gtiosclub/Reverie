@@ -6,6 +6,8 @@
 
 import Firebase
 import Foundation
+import FirebaseStorage
+import SwiftUI
 
 @MainActor
 @Observable
@@ -13,6 +15,12 @@ class FirebaseDreamService {
     static let shared = FirebaseDreamService()
     
     let fb = FirebaseUserService()
+    
+    let dcfms = DCFoundationModelService()
+    
+    let igs = ImageGenerationService()
+    
+    let fdcs = FirebaseDCService()
     
     func getDreams() async throws -> [DreamModel] {
         let dreamKeys = try await fb.getUserInfo()
@@ -50,34 +58,8 @@ class FirebaseDreamService {
             let formatter = DateFormatter()
             let date = formatter.date(from: dateString) ?? Date()
             
-            // Convert emotion string → enum
-//            let emotion: DreamModel.Emotions
-//            switch emotionString.lowercased() {
-//                case "happiness": emotion = .happiness
-//                case "sadness": emotion = .sadness
-//                case "anger": emotion = .anger
-//                case "fear": emotion = .fear
-//                case "embarrassment": emotion = .embarrassment
-//                case "anxiety": emotion = .anxiety
-//                default:
-//                    print("⚠️ Unknown emotion: \(emotionString), defaulting to .anxiety")
-//                    emotion = .anxiety
-//            }
             let emotion = DreamModel.Emotions(rawValue: emotionString.lowercased())
             
-            // Convert tags strings → enum
-//            let tags: [DreamModel.Tags] = tagsArray.compactMap { tagStr in
-//                switch tagStr.lowercased() {
-//                case "mountains": return .mountains
-//                case "rivers": return .rivers
-//                case "forests": return .forests
-//                case "animals": return .animals
-//                case "school": return .school
-//                default:
-//                    print("⚠️ Unknown tag: \(tagStr)")
-//                    return nil
-//                }
-//            }
             let tags: [DreamModel.Tags] = tagsArray.compactMap { DreamModel.Tags(rawValue: $0.lowercased()) }
             
             // Build model
@@ -114,13 +96,13 @@ class FirebaseDreamService {
           print("USER ID: \(dream.userID)")
 
           do {
-              let ref = try await fb.db.collection("DREAMS").addDocument(data: [
-                "date": dateFormatter.string(from: dream.date ?? Date()),
+              let ref = fb.db.collection("DREAMS").addDocument(data: [
+                "date": dateFormatter.string(from: dream.date),
                   "emotion": String(describing: dream.emotion),
                   "generatedContent": dream.generatedContent,
                 "title": dream.title,
                    "id": dream.id,
-                  "image": dream.image,
+                "image": "",//stickerURL.absoluteString,
                   "loggedContent": dream.loggedContent,
                   "tags": tagArray,
                   "userID": dream.userID
@@ -128,14 +110,44 @@ class FirebaseDreamService {
               let dreamRef = ref.documentID
               print("Added Data with ref: \(dreamRef)")
 
-              let userRef = try await fb.db.collection("USERS").document(dream.userID)
+              let userRef = fb.db.collection("USERS").document(dream.userID)
 
               try await userRef.updateData([
                   "dreams": FieldValue.arrayUnion([dreamRef])
                   ])
-
               print("Appended \(dreamRef) to user \(dream.userID)")
 
+              do {
+                  let character = try await dcfms.getCharacterPrompt(dreamText: dream.loggedContent)
+                  print("Prompt generated: \(character)")
+
+                  if character.count == 3 {
+                      let prompt = character[0]
+                      let name = character[1]
+                      let description = character[2]
+                      
+                      print("Prompt: \(prompt)")
+                      print("Name: \(name)")
+                      print("Description: \(description)")
+                      
+                      guard let sticker = try await igs.generateSticker(prompt: prompt) else {
+                          print("Failed to generate sticker image")
+                          return
+                      }
+                      print("Sticker image generated.")
+                      
+                      let stickerURL = try await FirebaseStorageService.shared.uploadSticker(
+                          sticker,
+                          forUserID: dream.userID,
+                          dreamID: dream.id
+                      )
+                      print("Sticker uploaded with URL: \(stickerURL.absoluteString)")
+                      
+                      await fdcs.createDC(card: CardModel(userID: dream.userID, id: dream.id, name: name, description: description, image: stickerURL.absoluteString, cardColor: .blue))
+                  }
+              } catch {
+                  print("Failed to get character details: \(error)")
+              }
           } catch {
               print("Error adding document: \(error)")
           }
