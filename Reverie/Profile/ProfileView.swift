@@ -28,6 +28,12 @@ struct ProfileView: View {
                         .background(Color.blue)
                         .cornerRadius(8)
                 }
+
+                Text("reverie profile")
+                NavigationLink(destination: TestView()) {
+                    Text("Test Page")
+
+                }
             }
             .padding()
             
@@ -83,6 +89,15 @@ func findMostCommonTags(dreams: [DreamModel]) -> [DreamModel.Tags] {
     }
     return tagsDict.sorted { $0.value > $1.value }.map { $0.key }
 }
+
+func getDreamsOfCategory(dreams: [DreamModel], category: DreamModel.Tags) -> [DreamModel] {
+    return dreams.filter { dream in
+        return dream.tags.contains { tag in
+            return tag == category
+        }
+    }
+}
+
 
 #Preview {
     ProfileView()
