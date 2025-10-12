@@ -49,11 +49,29 @@ struct CharacterView: View {
                 .fill(.ultraThinMaterial)
                 .shadow(color: .black.opacity(0.2), radius: 10)
 
-            Image(systemName: character.image ?? "person.fill")
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: 50, height: 50)
-                .foregroundStyle(.white.opacity(0.8))
+//            Image(systemName: character.image ?? "person.fill")
+//                .resizable()
+//                .aspectRatio(contentMode: .fit)
+//                .frame(width: 50, height: 50)
+//                .foregroundStyle(.white.opacity(0.8))
+            AsyncImage(url: URL(string: character.image ?? "")) { phase in
+                switch phase {
+                case .empty:
+                    ProgressView()
+                        .tint(.white)
+                case .success(let image):
+                    image
+                        .resizable()
+                        .scaledToFit()
+                case .failure:
+                    Image(systemName: "photo.fill")
+                        .foregroundColor(.white.opacity(0.8))
+                @unknown default:
+                    EmptyView()
+                }
+            }
+            .frame(width: 90, height: 90)
+            .foregroundColor(.white)
         }
         .frame(width: 105, height: 105)
     }
