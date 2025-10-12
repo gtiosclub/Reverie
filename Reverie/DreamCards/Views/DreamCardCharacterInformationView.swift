@@ -11,7 +11,6 @@ struct DreamCardCharacterInformationView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var isUnlocked = false
     
-    // This view takes a single character object
     let character: CardModel
     
     var body: some View {
@@ -22,11 +21,6 @@ struct DreamCardCharacterInformationView: View {
 
             // The Card
             VStack(spacing: 16) {
-//                Text("CHARACTER UNLOCKED")
-//                    .font(.caption)
-//                    .fontWeight(.semibold)
-//                    .foregroundColor(.white.opacity(0.7))
-//                    .padding(.top, 20)
 
                 VStack(spacing: 16) {
                     Image(systemName: character.image ?? "person.fill")
@@ -39,11 +33,6 @@ struct DreamCardCharacterInformationView: View {
                         .font(.largeTitle)
                         .fontWeight(.bold)
                         .foregroundColor(.white)
-
-//                    Text(character.archetype)
-//                        .font(.headline)
-//                        .italic()
-//                        .foregroundColor(.white.opacity(0.9))
                 
                     Text(character.description)
                         .font(.body)
