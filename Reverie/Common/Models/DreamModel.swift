@@ -30,7 +30,15 @@ class DreamModel: Decodable {
         case happiness, sadness, anger, fear, embarrassment, anxiety, neutral
     }
 
-
+    static func getTagImage(tag: Tags) -> String {
+       switch tag {
+           case .mountains: return "mountain.2.fill"
+           case .rivers: return "figure.open.water.swim"
+           case .forests: return "tree.fill"
+           case .animals: return "pawprint.fill"
+           case .school: return "graduationcap.fill"
+       }
+    }
 
 
 
