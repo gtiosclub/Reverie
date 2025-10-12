@@ -10,6 +10,7 @@ import SwiftUI
 struct LoginView: View {
     @Environment(FirebaseLoginService.self) private var fls
     
+    
     @State private var email = ""
     @State private var password = ""
     @State private var isSigningIn = false
@@ -102,7 +103,7 @@ struct LoginView: View {
         isSigningIn = true
         Task {
             await fls.signIn(
-                email: email.trimmingCharacters(in: .whitespacesAndNewlines),
+                withEmail: email.trimmingCharacters(in: .whitespacesAndNewlines),
                 password: password.trimmingCharacters(in: .whitespacesAndNewlines)
             )
             isSigningIn = false
