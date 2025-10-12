@@ -40,19 +40,15 @@ struct CharacterView: View {
     let character: CardModel
 
     var body: some View {
-        // The outer VStack was removed to simplify the view hierarchy.
         ZStack {
-            // Background glow
             Circle()
                 .fill(LinearGradient(colors: [character.cardColor.swiftUIColor, .blue.opacity(0.5)], startPoint: .topLeading, endPoint: .bottomTrailing))
                 .blur(radius: 5)
 
-            // Frosted glass layer
             Circle()
                 .fill(.ultraThinMaterial)
                 .shadow(color: .black.opacity(0.2), radius: 10)
 
-            // Icon on top
             Image(systemName: character.image ?? "person.fill")
                 .resizable()
                 .aspectRatio(contentMode: .fit)
