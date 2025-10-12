@@ -63,6 +63,7 @@ class FoundationModelService {
         let tagsModelSession = LanguageModelSession(instructions: tagsInstructions)
         do {
             let response = try await tagsModelSession.respond(to: dreamText, generating: TagsSuggestion.self)
+            print("TAGS: ", response.content)
             return response.content.tags
         } catch {
             print(error)
@@ -76,6 +77,7 @@ class FoundationModelService {
        
        do {
            let response = try await emotionsModelSession.respond(to: dreamText, generating: EmotionSuggestion.self)
+           print("Emotion: ", response.content)
            return response.content.emotion
        } catch {
            print(error)
