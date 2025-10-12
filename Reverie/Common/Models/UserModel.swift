@@ -7,24 +7,25 @@
 
 import Foundation
 
+
 class UserModel: Decodable {
     var name: String
-    var userId: String
+    var userID: String
     var username: String
     var overallAnalysis: String
     var dreams: [DreamModel]
     
-    init(name: String, userId: String, username: String, overallAnalysis: String, dreams: [DreamModel]) {
+    init(name: String, userID: String, username: String, overallAnalysis: String, dreams: [DreamModel]) {
         self.name = name
-        self.userId = userId
+        self.userID = userID
         self.username = username
         self.overallAnalysis = overallAnalysis
-        self.dreams = []
+        self.dreams = dreams
     }
     
     init(name: String) {
         self.name = name
-        self.userId = ""
+        self.userID = ""
         self.username = ""
         self.overallAnalysis = ""
         self.dreams = []
