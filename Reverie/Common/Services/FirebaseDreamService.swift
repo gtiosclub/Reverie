@@ -15,7 +15,7 @@ class FirebaseDreamService {
     
     static let shared = FirebaseDreamService()
     
-    let fb = FirebaseUserService()
+    let fb = FirebaseLoginService()
     
     let dcfms = DCFoundationModelService()
     
@@ -24,7 +24,11 @@ class FirebaseDreamService {
     let fdcs = FirebaseDCService()
     
     func getDreams() async throws -> [DreamModel] {
-        let dreamKeys = try await fb.getUserInfo()
+        guard let user = FirebaseLoginService.shared.currUser else {
+            print("No current user found.")
+            return []
+        }
+        let dreamKeys = user.dreams.map { $0.id }
         var dreams: [DreamModel] = []
         
         for dreamKey in dreamKeys {

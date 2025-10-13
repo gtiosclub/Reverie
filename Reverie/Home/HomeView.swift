@@ -12,9 +12,12 @@ struct HomeView: View {
     @Environment(FirebaseLoginService.self) private var fls
     
     var body: some View {
+        ZStack {
+            MoonView()
+            FloatingStickersView()
             
             VStack {
-                Text("Good Morning, \(fus.currentUser?.displayName ?? "Dreamer")")
+                Text("Good Morning, \(fls.currUser?.name ?? "Dreamer")")
                     .foregroundColor(.white)
                     .font(.largeTitle)
                     .bold()
@@ -28,11 +31,9 @@ struct HomeView: View {
 }
 
 #Preview {
+    HomeView()
+        .environment(FirebaseLoginService.shared)
 }
 
-#Preview {
-    HomeView()
-//        .environment(FirebaseUserService.shared)
-}
 
 

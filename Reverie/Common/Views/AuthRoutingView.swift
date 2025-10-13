@@ -16,7 +16,7 @@ struct AuthRoutingView: View {
 
     var body: some View {
         if fls.currUser != nil {
-            HomeView()
+            StartView()
         } else {
             LoginView()
         }
