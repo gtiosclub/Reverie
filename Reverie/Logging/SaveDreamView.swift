@@ -17,12 +17,6 @@ struct SaveDreamView: View {
     @State private var showingAddTagSheet = false
     @State private var navigateToDreamEntry = false
     @State private var createdDream: DreamModel?
-//    var dreamAnalysis: String
-//    var recommendedTags: [DreamModel.Tags]
-//    var emotion: DreamModel.Emotions
-//    var title: String
-//    var date: Date
-//    var dream: String
     var newDream: DreamModel
     
     
@@ -162,33 +156,14 @@ struct SaveDreamView: View {
     }
     
     func saveDream() async {
-        // Get user ID from FirebaseLoginService
-        guard let userID = FirebaseLoginService.shared.currUser?.userID else {
-            print("Error: No user ID found")
-            return
-        }
+
         
-        // Convert string tags to DreamModel.Tags
         let dreamTags = entryTagsArray.compactMap { DreamModel.Tags(rawValue: $0.lowercased()) }
-        
-        // Create DreamModel
-//        let newDream = DreamModel(
-//            userID: userID,
-//            id: "temp_id", // Placeholder ID, will be replaced by createDream
-//            title: title.isEmpty ? "Untitled Dream" : title,
-//            date: date,
-//            loggedContent: dream,
-//            generatedContent: dreamAnalysis,
-//            tags: dreamTags,
-//            image: "", // Empty placeholder for image
-//            emotion: emotion
-//        )
+
         newDream.tags = dreamTags
         
-        // Call createDream
         await FirebaseDreamService.shared.createDream(dream: newDream)
         
-        // Store the created dream and trigger navigation
         createdDream = newDream
         navigateToDreamEntry = true
     }
