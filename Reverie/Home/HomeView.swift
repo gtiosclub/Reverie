@@ -14,6 +14,7 @@ struct HomeView: View {
     var body: some View {
         ZStack {
             MoonView()
+            FloatingStickersView()
             
             VStack {
                 Text("Good Morning, \(fus.currentUser?.displayName ?? "Dreamer")")
