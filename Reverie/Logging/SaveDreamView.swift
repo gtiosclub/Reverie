@@ -20,6 +20,9 @@ struct SaveDreamView: View {
     var dreamAnalysis: String
     var recommendedTags: [DreamModel.Tags]
     var emotion: DreamModel.Emotions
+    var title: String
+    var date: Date
+    var dream: String
     
     
     var body: some View {
@@ -171,9 +174,9 @@ struct SaveDreamView: View {
         let newDream = DreamModel(
             userID: userID,
             id: "temp_id", // Placeholder ID, will be replaced by createDream
-            title: entryTitle.isEmpty ? "Untitled Dream" : entryTitle,
-            date: entryDate,
-            loggedContent: dreamAnalysis,
+            title: title.isEmpty ? "Untitled Dream" : title,
+            date: date,
+            loggedContent: dream,
             generatedContent: dreamAnalysis,
             tags: dreamTags,
             image: "", // Empty placeholder for image
@@ -189,5 +192,5 @@ struct SaveDreamView: View {
     }
 }
 #Preview {
-    SaveDreamView(dreamAnalysis: "analysis", recommendedTags: [], emotion: DreamModel.Emotions(rawValue: "sadness")!)
+    SaveDreamView(dreamAnalysis: "analysis", recommendedTags: [], emotion: DreamModel.Emotions(rawValue: "sadness")!, title: "dream title", date: Date(), dream: "dream")
 }
