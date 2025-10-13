@@ -28,6 +28,16 @@ struct ProfileView: View {
                         .background(Color.blue)
                         .cornerRadius(8)
                 }
+                
+                NavigationLink(destination: UserTagsView()) {
+                    Text("Tags View")
+
+                }
+                Text("reverie profile")
+                NavigationLink(destination: TestView()) {
+                    Text("Test Page")
+
+                }
             }
             .padding()
             
@@ -93,6 +103,27 @@ func getDreamsOfCategory(dreams: [DreamModel], category: DreamModel.Tags) -> [Dr
             return tag == category
         }
     }
+}
+
+func findEmotionFrequency(dreams: [DreamModel]) -> [DreamModel.Emotions: Int] {
+    var emotionsDict = [DreamModel.Emotions: Int]()
+    
+    for d in dreams {
+        emotionsDict[d.emotion, default: 0] += 1
+    }
+    return emotionsDict
+}
+
+
+
+
+func getRecentDreams(dreams: [DreamModel], count: Int = 10) -> [DreamModel] {
+    // Make sure we don't try to return more dreams than exist
+    let numberToReturn = min(count, dreams.count)
+    
+    // Sort dreams by date (most recent first) and return the last `numberToReturn` dreams
+    let sortedDreams = dreams.sorted { $0.date > $1.date }
+    return Array(sortedDreams.prefix(numberToReturn))
 }
 
 

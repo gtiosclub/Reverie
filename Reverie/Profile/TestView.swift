@@ -7,6 +7,7 @@
 import Foundation
 import SwiftUI
 
+
 struct TestView: View {
     var body: some View {
         ZStack {
@@ -16,6 +17,11 @@ struct TestView: View {
                     .foregroundColor(.white)
                 Button ("Example Test"){
                     exampleTest()
+                }
+                
+                Button ("Emotions Dict Test"){
+                    let dict = findEmotionFrequency(dreams: [d1, d2]);
+                    print(dict)
                 }
 
             }

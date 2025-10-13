@@ -8,7 +8,6 @@
 import Foundation
 import FoundationModels
 
-
 class DreamModel: Decodable {
     var id: String
     var userID: String
@@ -47,7 +46,6 @@ class DreamModel: Decodable {
         self.id = id
         self.title = title
         self.date = date
-        self.title = title
         self.loggedContent = loggedContent
         self.generatedContent = generatedContent
         self.tags = tags
