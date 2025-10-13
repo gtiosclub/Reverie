@@ -16,7 +16,7 @@ import FirebaseAuth
 class FirebaseDCService {
     static let shared = FirebaseDCService()
     
-    let fb = FirebaseUserService()
+    let fb = FirebaseLoginService()
     
     let dcfms = DCFoundationModelService()
     
@@ -42,7 +42,7 @@ class FirebaseDCService {
     }
     
     func fetchDCCards() async throws -> [CardModel] {
-        guard let userID = fb.currentUser?.uid else {
+        guard let userID = fb.currUser?.userID else {
             print("User not logged in, cannot fetch cards.")
             return []
         }
