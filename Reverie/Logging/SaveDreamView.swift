@@ -17,12 +17,13 @@ struct SaveDreamView: View {
     @State private var showingAddTagSheet = false
     @State private var navigateToDreamEntry = false
     @State private var createdDream: DreamModel?
-    var dreamAnalysis: String
-    var recommendedTags: [DreamModel.Tags]
-    var emotion: DreamModel.Emotions
-    var title: String
-    var date: Date
-    var dream: String
+//    var dreamAnalysis: String
+//    var recommendedTags: [DreamModel.Tags]
+//    var emotion: DreamModel.Emotions
+//    var title: String
+//    var date: Date
+//    var dream: String
+    var newDream: DreamModel
     
     
     var body: some View {
@@ -171,17 +172,18 @@ struct SaveDreamView: View {
         let dreamTags = entryTagsArray.compactMap { DreamModel.Tags(rawValue: $0.lowercased()) }
         
         // Create DreamModel
-        let newDream = DreamModel(
-            userID: userID,
-            id: "temp_id", // Placeholder ID, will be replaced by createDream
-            title: title.isEmpty ? "Untitled Dream" : title,
-            date: date,
-            loggedContent: dream,
-            generatedContent: dreamAnalysis,
-            tags: dreamTags,
-            image: "", // Empty placeholder for image
-            emotion: emotion
-        )
+//        let newDream = DreamModel(
+//            userID: userID,
+//            id: "temp_id", // Placeholder ID, will be replaced by createDream
+//            title: title.isEmpty ? "Untitled Dream" : title,
+//            date: date,
+//            loggedContent: dream,
+//            generatedContent: dreamAnalysis,
+//            tags: dreamTags,
+//            image: "", // Empty placeholder for image
+//            emotion: emotion
+//        )
+        newDream.tags = dreamTags
         
         // Call createDream
         await FirebaseDreamService.shared.createDream(dream: newDream)
@@ -192,5 +194,5 @@ struct SaveDreamView: View {
     }
 }
 #Preview {
-    SaveDreamView(dreamAnalysis: "analysis", recommendedTags: [], emotion: DreamModel.Emotions(rawValue: "sadness")!, title: "dream title", date: Date(), dream: "dream")
+    SaveDreamView(newDream: DreamModel(userID: "idk", id: "idk", title: "idk", date: Date(), loggedContent: "", generatedContent: "", tags: [], image: "", emotion: .happiness))
 }
