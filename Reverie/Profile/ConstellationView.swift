@@ -8,7 +8,7 @@
 import SwiftUI
 import SceneKit
 
-let (testDreams, testSimMatrix) = generateRandomDreamsAndMatrix(count: 5)
+let (testDreams, testSimMatrix) = generateRandomDreamsAndMatrix(count: 20)
 
 struct DreamSimilarityGraph: UIViewRepresentable {
     let dreams: [DreamModel]
