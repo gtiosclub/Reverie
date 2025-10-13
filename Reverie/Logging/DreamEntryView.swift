@@ -12,7 +12,6 @@ struct DreamEntryView: View {
     
     var body: some View {
             VStack(alignment: .leading, spacing: 16) {
-                // Header Section (Title and Date)
                 VStack(alignment: .leading, spacing: 4) {
                     Text(dream.title)
                         .font(Font.title)
@@ -25,7 +24,7 @@ struct DreamEntryView: View {
                 .padding(.horizontal)
                 .padding(.top, 8)
                 .background(Color(.darkGray))
-                .zIndex(1) // Keep header above scrolling content
+                .zIndex(1)
                
                 // Gap for future tags (empty spacer with fixed height)
                 Color(.darkGray).frame(height: 40).opacity(0)
