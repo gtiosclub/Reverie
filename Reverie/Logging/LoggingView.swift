@@ -42,7 +42,7 @@ struct LoggingView: View {
                                 .opacity(title.isEmpty || dream.isEmpty ? 0 : 1)
                         }
                         
-                        NavigationLink(destination: SaveDreamView(dreamAnalysis: analysis, recommendedTags: tags, emotion: emotion, title: title, date: date, dream: dream), isActive: $canNavigate) {
+                        NavigationLink(destination: SaveDreamView(newDream: DreamModel(userID: FirebaseLoginService.shared.currUser?.userID ?? "no id", id: "blank", title: title, date: date, loggedContent: dream, generatedContent: analysis, tags: tags, image: "", emotion: emotion)), isActive: $canNavigate) {
                             EmptyView()
                         }
                     }
