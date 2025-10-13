@@ -12,6 +12,7 @@ import SwiftUI
 @MainActor
 @Observable
 class FirebaseDreamService {
+    
     static let shared = FirebaseDreamService()
     
     let fb = FirebaseUserService()
@@ -85,6 +86,7 @@ class FirebaseDreamService {
 
           let dateFormatter = DateFormatter()
           dateFormatter.dateStyle = .short
+          dateFormatter.locale = Locale(identifier: "en_US_POSIX")
 
           //create array of tag strings
           var tagArray: [String] = []
@@ -108,13 +110,18 @@ class FirebaseDreamService {
                   "userID": dream.userID
               ])
               let dreamRef = ref.documentID
+              dream.id = dreamRef
               print("Added Data with ref: \(dreamRef)")
+              
+              try await ref.updateData(["id": dreamRef])
 
               let userRef = fb.db.collection("USERS").document(dream.userID)
 
               try await userRef.updateData([
                   "dreams": FieldValue.arrayUnion([dreamRef])
                   ])
+              
+
               print("Appended \(dreamRef) to user \(dream.userID)")
 
               do {
@@ -151,5 +158,11 @@ class FirebaseDreamService {
           } catch {
               print("Error adding document: \(error)")
           }
+        
+        
+        
+        FirebaseLoginService.shared.currUser?.dreams.append(dream)
+        
       }
 }
+

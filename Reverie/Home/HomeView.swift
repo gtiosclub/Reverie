@@ -9,12 +9,9 @@ import SwiftUI
 import FirebaseAuth
 
 struct HomeView: View {
-    @Environment(FirebaseUserService.self) private var fus
+    @Environment(FirebaseLoginService.self) private var fls
     
     var body: some View {
-        ZStack {
-            MoonView()
-            FloatingStickersView()
             
             VStack {
                 Text("Good Morning, \(fus.currentUser?.displayName ?? "Dreamer")")
@@ -31,6 +28,11 @@ struct HomeView: View {
 }
 
 #Preview {
-    HomeView()
-        .environment(FirebaseUserService.shared)
 }
+
+#Preview {
+    HomeView()
+//        .environment(FirebaseUserService.shared)
+}
+
+
