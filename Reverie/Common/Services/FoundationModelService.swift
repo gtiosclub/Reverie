@@ -63,6 +63,7 @@ class FoundationModelService {
         let tagsModelSession = LanguageModelSession(instructions: tagsInstructions)
         do {
             let response = try await tagsModelSession.respond(to: dreamText, generating: TagsSuggestion.self)
+            print("TAGS: ", response.content)
             return response.content.tags
         } catch {
             print(error)
@@ -76,6 +77,7 @@ class FoundationModelService {
        
        do {
            let response = try await emotionsModelSession.respond(to: dreamText, generating: EmotionSuggestion.self)
+           print("Emotion: ", response.content)
            return response.content.emotion
        } catch {
            print(error)
@@ -83,6 +85,18 @@ class FoundationModelService {
        }
    }
 
-
+    func getFinishedDream(dream_description: String ) async throws -> String{
+        let instructions = """
+        Instruction (Strict):
+        You are a memory editor. Take the user’s dream text and lightly correct grammar. Keep all of the user’s sentences almost exactly as written. Only insert short, natural connecting sentences where the dream has gaps or unclear jumps, and add an ending if the dream feels imcomplete. Do not add new creative details, analysis, or new storylines. The result should feel like the user remembered their dream in full.
+        """
+        
+        let session = LanguageModelSession(instructions: instructions)
+        let response = try await session.respond(to: dream_description)
+        
+        print(response.content)
+        return response.content
+        
+    }
 
 }
