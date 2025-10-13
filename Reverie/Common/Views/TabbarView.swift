@@ -13,7 +13,7 @@ struct TabbarView: View {
             HStack {
                 TabButton(title: Image(systemName: "house"), destination: StartView())
                 TabButton(title: Image(systemName: "chart.bar"), destination: ProfileView())
-                TabButton(title: Image(systemName: "doc.text"), destination: LoggingView()) // placeholder
+                TabButton(title: Image(systemName: "doc.text"), destination: DreamArchiveView())
             }
             .padding()
             .frame(maxWidth: 300, maxHeight: 50)
