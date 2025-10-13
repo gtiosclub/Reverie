@@ -10,13 +10,13 @@ import Observation
 
 struct AuthRoutingView: View {
     @Environment(FirebaseLoginService.self) private var fls
-    @Environment(FirebaseUserService.self) private var fus
+//    @Environment(FirebaseUserService.self) private var fus
     @Environment(FirebaseDreamService.self) private var fds
     @Environment(FirebaseDCService.self) private var fbdcs
 
     var body: some View {
-        if fus.currentUser != nil {
-            StartView()
+        if fls.currUser != nil {
+            HomeView()
         } else {
             LoginView()
         }
