@@ -17,6 +17,7 @@ struct CardModel: Identifiable, Codable {  // Conforms to Identifiable to unique
     var description: String  // Description or story related to the card's character or them
     var image: String?  // Optional URL to an image associated with the card
     var cardColor: DreamColor  // Color used for the card's background or theme
+    var isShown: Bool = false  
     
     enum DreamColor: String, Codable, CaseIterable {
         case purple

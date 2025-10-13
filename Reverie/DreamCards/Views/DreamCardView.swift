@@ -71,4 +71,6 @@ struct DreamCardView: View {
 
 #Preview {
     DreamCardView()
+        .environment(FirebaseDCService.shared)
+        .environment(FirebaseDreamService.shared)
 }
