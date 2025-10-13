@@ -42,7 +42,7 @@ struct LoggingView: View {
                                 .opacity(title.isEmpty || dream.isEmpty ? 0 : 1)
                         }
                         
-                        NavigationLink(destination: SaveDreamView(dreamAnalysis: analysis, recommendedTags: tags, emotion: emotion), isActive: $canNavigate) {
+                        NavigationLink(destination: SaveDreamView(dreamAnalysis: analysis, recommendedTags: tags, emotion: emotion, title: title, date: date, dream: dream), isActive: $canNavigate) {
                             EmptyView()
                         }
                     }
