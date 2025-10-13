@@ -38,5 +38,5 @@ struct StartView: View {
 
 #Preview {
     StartView()
-        .environment(FirebaseUserService.shared)
+        .environment(FirebaseLoginService.shared)
 }
