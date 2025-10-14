@@ -8,45 +8,69 @@
 import SwiftUI
 
 struct DreamCardView: View {
-    @State private var characters: [CardModel] = [
-        // ... (your character data remains the same)
-        CardModel(name: "Morpheus", archetype: "The Architect", description: "Builds the very landscapes of your dreams, weaving reality from thought.", image: "square.stack.3d.up.fill", cardColor: .blue),
-        CardModel(name: "Luna", archetype: "The Guide", description: "A silent guide who appears in dreams to offer wisdom and direction.", image: "moon.stars.fill", cardColor: .purple),
-        CardModel(name: "Phobetor", archetype: "The Shapeshifter", description: "Embodies your fears, creating nightmares to be confronted.", image: "figure.walk.diamond.fill", cardColor: .red),
-        CardModel(name: "Hypnos", archetype: "The Weaver", description: "Spins the threads of slumber, granting rest and peace.", image: "bed.double.fill", cardColor: .teal),
-        CardModel(name: "Oneiros", archetype: "The Messenger", description: "Carries prophetic messages and symbols through the dream world.", image: "envelope.badge.fill", cardColor: .orange),
-        CardModel(name: "Kairos", archetype: "The Trickster", description: "Bends the rules of time and logic within the dream state.", image: "hourglass", cardColor: .green)
-    ]
+    @Environment(FirebaseDreamService.self) private var fbds
+    @Environment(FirebaseDCService.self) private var fbdcs
+    
+//    @State private var characters: [CardModel] = [
+//        CardModel(userID: "1", id: "1", name: "Morpheus", description: "Builds the very landscapes of your dreams, weaving reality from thought.", image: "square.stack.3d.up.fill", cardColor: .blue),
+//        CardModel(userID: "2", id: "2", name: "Luna", description: "A silent guide who appears in dreams to offer wisdom and direction.", image: "moon.stars.fill", cardColor: .purple),
+//        CardModel(userID: "3", id: "3", name: "Phobetor", description: "Embodies your fears, creating nightmares to be confronted.", image: "figure.walk.diamond.fill", cardColor: .yellow),
+//        CardModel(userID: "4", id: "4", name: "Hypnos", description: "Spins the threads of slumber, granting rest and peace.", image: "bed.double.fill", cardColor: .pink),
+//        CardModel(userID: "5", id: "5", name: "Oneiros", description: "Carries prophetic messages and symbols through the dream world.", image: "envelope.badge.fill", cardColor: .blue),
+//        CardModel(userID: "6", id: "6", name: "Kairos", description: "Bends the rules of time and logic within the dream state.", image: "hourglass", cardColor: .green)
+//    ]
+    @State private var characters: [CardModel] = []
     
     @State private var selectedCharacter: CardModel?
+    
+    @State private var dreamCount: Int = 0
+    
+    var progress: Float {
+        return Float((dreamCount - 1) % 4 + 1) / 4.0
+    }
 
     var body: some View {
-        NavigationStack {
-            ZStack {
-                BackgroundView()
-                VStack(spacing: 30) {
-                    StickerView(characters: characters, selectedCharacter: $selectedCharacter)
-                    
-                    Spacer()
-                    
-                    Text("Future Card Pack Area")
-                        .foregroundStyle(.gray)
-                        .padding()
-                        .border(Color.gray, width: 1)
-
-                    Spacer()
-                }
-                .padding(.top, 40)
-
-                if let character = selectedCharacter {
-                    DreamCardCharacterInformationView(character: character)
-                        .transition(.asymmetric(insertion: .opacity.combined(with: .scale(scale: 0.8)), removal: .opacity))
+        ZStack {
+            VStack(spacing: 30) {
+//                StickerView(characters: characters, selectedCharacter: $selectedCharacter)
+                StickerView(characters: characters, selectedCharacter: $selectedCharacter)
+                    .padding(.top, 50)
+                
+                Spacer()
+                
+                DreamCardProgressView(progress: progress)
+                    .task {
+                        do {
+                            let dreams = try await fbds.getDreams()
+                            self.dreamCount = dreams.count
+                        } catch {
+                            print("Error fetching dreams: \(error)")
+                        }
+                    }
+            }
+            .padding(.top, 20)
+            .padding(.bottom, 120)
+            .task {
+                do {
+                    // fetch the cards when the view appears
+                    self.characters = try await fbdcs.fetchDCCards()
+                } catch {
+                    print("Error: \(error.localizedDescription)")
                 }
             }
+            
+            if let character = selectedCharacter {
+                DreamCardCharacterInformationView(selectedCharacter: $selectedCharacter, character: character)
+                    .transition(.asymmetric(insertion: .opacity.combined(with: .scale(scale: 0.8)), removal: .opacity))
+                    .id(character.id)
+            }
         }
+        .background(.clear)
     }
 }
 
 #Preview {
     DreamCardView()
+        .environment(FirebaseDCService.shared)
+        .environment(FirebaseDreamService.shared)
 }
