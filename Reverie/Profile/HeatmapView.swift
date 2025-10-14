@@ -85,19 +85,11 @@ struct HeatmapView: View {
                 .padding(.horizontal, 15)
             }
             .refreshable {
-                if let uid = Auth.auth().currentUser?.uid {
-                    await viewModel.fetchDreams(for: uid)
-                } else {
-                    print("No logged in user")
-                }
+                viewModel.fetchDreams()
             }
         }
         .task {
-            if let uid = Auth.auth().currentUser?.uid {
-                await viewModel.fetchDreams(for: uid)
-            } else {
-                print("No logged in user")
-            }
+            viewModel.fetchDreams()
         }
     }
 }
