@@ -9,11 +9,10 @@ import SwiftUI
 import Foundation
 
 struct SaveDreamView: View {
-    @State private var entryTags: String = ""
-    @State private var showingAddTagSheet = false
     @State private var navigateToDreamEntry = false
     @State private var createdDream: DreamModel?
-    
+    @State private var showTagDropdown = false
+
     @Environment(\.presentationMode) var presentationMode
     
     var newDream: DreamModel
@@ -25,65 +24,99 @@ struct SaveDreamView: View {
                 
                 VStack(alignment: .leading, spacing: 8) {
                     
-                    // --- Tags Section ---
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Edit Entry Tags")
                             .foregroundColor(.white)
                             .font(.subheadline)
                         
-                        ScrollView(.horizontal, showsIndicators: false) {
-                            HStack(spacing: 8) {
-                                ForEach(newDream.tags, id: \.self) { tag in
-                                    HStack(spacing: 5) {
-                                        Text(tag.rawValue)
-                                            .foregroundStyle(Color.white)
-                                            .font(.caption)
-                                        
+                        VStack(alignment: .leading, spacing: 8) {
+                            ScrollView(.horizontal, showsIndicators: false) {
+                                HStack(spacing: 8) {
+                                    ForEach(newDream.tags, id: \.self) { tag in
+                                        HStack(spacing: 5) {
+                                            Text(tag.rawValue.capitalized)
+                                                .foregroundStyle(Color.white)
+                                                .font(.caption)
+                                            
+                                            Button(action: {
+                                                if let index = newDream.tags.firstIndex(of: tag) {
+                                                    newDream.tags.remove(at: index)
+                                                    showTagDropdown.toggle()
+                                                    showTagDropdown.toggle()
+                                                }
+                                            }) {
+                                                Image(systemName: "xmark.circle.fill")
+                                                    .foregroundColor(.white)
+                                            }
+                                            .buttonStyle(.plain)
+                                        }
+                                        .padding(.horizontal, 10)
+                                        .padding(.vertical, 5)
+                                        .background(Color(white: 0.5))
+                                        .cornerRadius(20)
+                                    }
+                                }
+                                .padding(.horizontal, 6)
+                            }
+                            
+                            ZStack(alignment: .topLeading) {
+                                VStack(spacing: 0) {
+                                    HStack {
                                         Button(action: {
-                                            if let index = newDream.tags.firstIndex(of: tag) {
-                                                newDream.tags.remove(at: index)
+                                            withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
+                                                showTagDropdown.toggle()
                                             }
                                         }) {
-                                            Image(systemName: "xmark.circle.fill")
-                                                .foregroundColor(Color.white)
+                                            Image(systemName: "plus")
+                                                .foregroundColor(.black)
+                                                .padding(8)
+                                                .background(Color.white)
+                                                .clipShape(Circle())
                                         }
-                                        .buttonStyle(.plain)
+                                        Spacer()
                                     }
                                     .padding(.horizontal, 10)
-                                    .padding(.vertical, 5)
-                                    .background(Color(white: 0.5))
-                                    .cornerRadius(20)
-                                }
-                            }
-                        }
-                        .padding(.bottom, 5)
-                        
-                        HStack {
-                            Button(action: {
-                                let trimmedTag = entryTags.trimmingCharacters(in: .whitespacesAndNewlines)
-                                if !trimmedTag.isEmpty {
-                                    if let tag = DreamModel.Tags(rawValue: trimmedTag) {
-                                        newDream.tags.append(tag)
+                                    .padding(.vertical, 12)
+                                    .background(Color(.darkGray))
+                                    .cornerRadius(6)
+                                    
+                                    if showTagDropdown {
+                                        VStack(alignment: .leading, spacing: 0) {
+                                            ForEach(DreamModel.Tags.allCases.filter { !newDream.tags.contains($0) }, id: \.self) { tag in
+                                                Button(action: {
+                                                    newDream.tags.append(tag)
+                                                    withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
+                                                        showTagDropdown.toggle()
+                                                        showTagDropdown.toggle()
+                                                    }
+                                                }) {
+                                                    Text(tag.rawValue.capitalized)
+                                                        .foregroundColor(.white)
+                                                        .padding(.vertical, 10)
+                                                        .padding(.horizontal, 12)
+                                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                                        .background(Color(.darkGray))
+                                                }
+                                                .buttonStyle(.plain)
+                                                
+                                                if tag != DreamModel.Tags.allCases.last {
+                                                    Divider()
+                                                        .background(Color.gray.opacity(0.3))
+                                                }
+                                            }
+                                        }
+                                        .background(Color(.darkGray))
+                                        .cornerRadius(6)
+                                        .shadow(color: Color.black.opacity(0.6), radius: 6, x: 0, y: 3)
+                                        .transition(.asymmetric(
+                                            insertion: .opacity.combined(with: .move(edge: .top)),
+                                            removal: .opacity
+                                        ))
+                                        .padding(.top, 2)
                                     }
-                                    entryTags = ""
                                 }
-                            }) {
-                                Image(systemName: "plus")
-                                    .foregroundColor(.black)
-                                    .padding(8)
-                                    .background(Color.white)
-                                    .clipShape(Circle())
                             }
-                            
-                            TextField("", text: $entryTags)
-                                .foregroundColor(.white)
-                            
-                            Spacer()
                         }
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 12)
-                        .background(Color(.darkGray))
-                        .cornerRadius(6)
                     }
                     
                     Spacer()
@@ -92,7 +125,6 @@ struct SaveDreamView: View {
             }
             .navigationBarBackButtonHidden(true)
             .toolbar {
-                
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button(action: {
                         presentationMode.wrappedValue.dismiss()
@@ -109,9 +141,7 @@ struct SaveDreamView: View {
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
-                        Task {
-                            await saveDream()
-                        }
+                        Task { await saveDream() }
                     }) {
                         Text("Save")
                             .font(.body.bold())
@@ -157,3 +187,4 @@ struct SaveDreamView: View {
         )
     )
 }
+
