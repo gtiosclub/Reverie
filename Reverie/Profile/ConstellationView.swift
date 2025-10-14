@@ -191,7 +191,7 @@ struct DreamPopupView: View {
                     Text(dream.loggedContent)
                         .font(.headline)
                         .fontWeight(.semibold)
-                    Text(dream.genereatedContent)
+                    Text(dream.generatedContent)
                         .font(.subheadline)
                         .foregroundColor(.white.opacity(0.85))
                 }
