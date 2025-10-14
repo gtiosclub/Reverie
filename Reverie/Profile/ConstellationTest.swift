@@ -15,8 +15,9 @@ func generateRandomDreamsAndMatrix(count: Int, strongConnections: Int = 3) -> ([
         let allEmotions = DreamModel.Emotions.allCases
 
         let dream = DreamModel(
-            userId: "user\(i)",
+            userID: "user\(i)",
             id: UUID().uuidString,
+            title: "Dream \(i + 1)",
             date: Date(),
             loggedContent: "Dream \(i + 1)",
             generatedContent: "Generated content for dream \(i + 1)",
