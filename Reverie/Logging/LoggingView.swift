@@ -21,6 +21,7 @@ struct LoggingView: View {
     var body: some View {
         NavigationStack {
             ZStack {
+                
                 VStack() {
                     HStack {
                         Spacer()
