@@ -17,8 +17,17 @@ struct SaveDreamView: View {
     @State private var showingAddTagSheet = false
     @State private var navigateToDreamEntry = false
     @State private var createdDream: DreamModel?
+    @State private var tagFieldEditing = false
     var newDream: DreamModel
     
+    var filteredTags: [String] {
+        let allTags = DreamModel.Tags.allCases.map(\.rawValue)
+        if entryTags.isEmpty {
+            return allTags
+        } else {
+            return allTags.filter { $0.lowercased().contains(entryTags.lowercased())}
+        }
+    }
     
     var body: some View {
         NavigationView {
@@ -93,20 +102,20 @@ struct SaveDreamView: View {
                         .padding(.bottom,5)
                         
                         HStack {
-                            Button(action:{
-                                let trimmedTag = entryTags.trimmingCharacters(in: .whitespacesAndNewlines)
-                                if !trimmedTag.isEmpty {
-                                    entryTagsArray.append(trimmedTag)
-                                    entryTags = ""
-                                }
-                            }){
-                                Image(systemName: "plus")
-                                    .foregroundColor(.black)
-                                    .padding(8)
-                                    .background(Color.white)
-                                    .clipShape(Circle())
-                            }
-                            TextField("",text: $entryTags)
+//                            Button(action:{
+//                                let trimmedTag = entryTags.trimmingCharacters(in: .whitespacesAndNewlines)
+//                                if !trimmedTag.isEmpty {
+//                                    entryTagsArray.append(trimmedTag)
+//                                    entryTags = ""
+//                                }
+//                            }){
+//                                Image(systemName: "plus")
+//                                    .foregroundColor(.black)
+//                                    .padding(8)
+//                                    .background(Color.white)
+//                                    .clipShape(Circle())
+//                            }
+                            TextField("",text: $entryTags, onEditingChanged: {editing in tagFieldEditing = editing})
                                 .foregroundColor(.white)
                             Spacer()
                         }
@@ -114,7 +123,41 @@ struct SaveDreamView: View {
                         .padding(.vertical, 12)
                         .background(Color(.darkGray))
                         .cornerRadius(6)
-
+                        
+                        if tagFieldEditing && !filteredTags.isEmpty {
+                            ScrollView {
+                                VStack(alignment: .leading, spacing: 0) {
+                                    ForEach(filteredTags, id: \.self) { tag in
+                                        if !entryTagsArray.contains(tag) {
+                                            HStack {
+                                                Text(tag)
+                                                    .foregroundColor(.white)
+                                                Spacer()
+                                                Button (action: {
+                                                    entryTagsArray.append(tag)
+                                                    entryTags = ""
+                                                }) {
+                                                    Image(systemName: "plus.circle.fill")
+                                                        .foregroundStyle(Color.white)
+                                                }
+                                                
+                                            }
+                                            .padding(.horizontal, 12)
+                                            .padding(.vertical, 10)
+                                            .background(Color(.darkGray))
+                                            .cornerRadius(6)
+                                        }
+                            
+                                        Divider()
+                                            .background(Color(.gray))
+                                    }
+                                }
+                            }
+                            .fixedSize(horizontal: false, vertical: true)
+                            .background(Color(.darkGray))
+                            .cornerRadius(8)
+                            .padding(.top, 5)
+                        }
                         
                     }
                     Spacer()
