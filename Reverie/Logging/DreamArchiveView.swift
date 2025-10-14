@@ -63,7 +63,6 @@ struct DreamArchiveView: View {
                         Spacer()
                         HStack(spacing: 8) {
                             Button {
-                                // TODO: Implement list button
                             } label: {
                                 Image(systemName: "line.3.horizontal")
                                     .font(.system(size: 24, weight: .bold))
@@ -76,7 +75,6 @@ struct DreamArchiveView: View {
                             }
                             
                             Button {
-                                // TODO: Implement calendar button
                             } label: {
                                 Image(systemName: "calendar")
                                     .font(.system(size: 24, weight: .bold))
@@ -123,7 +121,6 @@ struct DreamArchiveView: View {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 24) {
                         
-                        // Today's Dreams
                         if !todayDreams.isEmpty {
                             VStack(alignment: .leading, spacing: 8) {
                                 HStack {
@@ -137,18 +134,20 @@ struct DreamArchiveView: View {
                                 
                                 VStack(spacing: 16) {
                                     ForEach(todayDreams, id: \.id) { dream in
-                                        SectionView(
-                                            title: dream.title,
-                                            date: formatDate(dream.date),
-                                            tags: dream.tags.map { $0.rawValue.capitalized },
-                                            description: dream.loggedContent
-                                        )
+                                        NavigationLink(destination: DreamEntryView(dream: dream)) {
+                                                    SectionView(
+                                                        title: dream.title,
+                                                        date: formatDate(dream.date),
+                                                        tags: dream.tags.map { $0.rawValue.capitalized },
+                                                        description: dream.loggedContent
+                                                    )
+                                                }
+                                                .buttonStyle(PlainButtonStyle())
                                     }
                                 }
                             }
                         }
                         
-                        // This Week's Dreams
                         if !thisWeekDreams.isEmpty {
                             VStack(alignment: .leading, spacing: 8) {
                                 Text("This Week")
@@ -156,12 +155,15 @@ struct DreamArchiveView: View {
                                     .bold()
                                 VStack(spacing: 16) {
                                     ForEach(thisWeekDreams, id: \.id) { dream in
-                                        SectionView(
-                                            title: dream.title,
-                                            date: formatDate(dream.date),
-                                            tags: dream.tags.map { $0.rawValue.capitalized },
-                                            description: dream.loggedContent
-                                        )
+                                        NavigationLink(destination: DreamEntryView(dream: dream)) {
+                                                    SectionView(
+                                                        title: dream.title,
+                                                        date: formatDate(dream.date),
+                                                        tags: dream.tags.map { $0.rawValue.capitalized },
+                                                        description: dream.loggedContent
+                                                    )
+                                                }
+                                                .buttonStyle(PlainButtonStyle())
                                     }
                                 }
                             }
@@ -174,12 +176,15 @@ struct DreamArchiveView: View {
                                     .bold()
                                 VStack(spacing: 16) {
                                     ForEach(thisMonthDreams, id: \.id) { dream in
-                                        SectionView(
-                                            title: dream.title,
-                                            date: formatDate(dream.date),
-                                            tags: dream.tags.map { $0.rawValue.capitalized },
-                                            description: dream.loggedContent
-                                        )
+                                        NavigationLink(destination: DreamEntryView(dream: dream)) {
+                                                    SectionView(
+                                                        title: dream.title,
+                                                        date: formatDate(dream.date),
+                                                        tags: dream.tags.map { $0.rawValue.capitalized },
+                                                        description: dream.loggedContent
+                                                    )
+                                                }
+                                                .buttonStyle(PlainButtonStyle())
                                     }
                                 }
                             }
@@ -214,32 +219,47 @@ struct DreamArchiveView: View {
     
     private func formatDate(_ date: Date) -> String {
         let formatter = DateFormatter()
-        formatter.dateStyle = .long
+        formatter.dateStyle = .medium
         formatter.timeStyle = .none
         return formatter.string(from: date)
     }
+    
     
     private func filterDreamsByDate(_ dreams: [DreamModel], for period: DatePeriod) -> [DreamModel] {
         let calendar = Calendar.current
         let now = Date()
         
+        var startDate: Date?
+        var endDate: Date?
+        
         switch period {
         case .today:
-            let startOfDay = calendar.startOfDay(for: now)
-            let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay)!
-            return dreams.filter { $0.date >= startOfDay && $0.date < endOfDay }
+            startDate = calendar.startOfDay(for: now)
+            endDate = calendar.date(byAdding: .day, value: 1, to: startDate!)
             
         case .thisWeek:
-            let startOfWeek = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: now))!
-            let endOfWeek = calendar.date(byAdding: .weekOfYear, value: 1, to: startOfWeek)!
-            return dreams.filter { $0.date >= startOfWeek && $0.date < endOfWeek }
+            let sevenDaysAgo = calendar.date(byAdding: .day, value: -7, to: now)!
+            let startOfSevenDaysAgo = calendar.startOfDay(for: sevenDaysAgo)
+            let startOfToday = calendar.startOfDay(for: now)
+            startDate = startOfSevenDaysAgo
+            endDate = startOfToday
             
         case .thisMonth:
-            let startOfMonth = calendar.date(from: calendar.dateComponents([.year, .month], from: now))!
-            let endOfMonth = calendar.date(byAdding: .month, value: 1, to: startOfMonth)!
-            return dreams.filter { $0.date >= startOfMonth && $0.date < endOfMonth }
+            let thirtyDaysAgo = calendar.date(byAdding: .day, value: -30, to: now)!
+            let sevenDaysAgo = calendar.date(byAdding: .day, value: -7, to: now)!
+            let startOfThirtyDaysAgo = calendar.startOfDay(for: thirtyDaysAgo)
+            let startOfSevenDaysAgo = calendar.startOfDay(for: sevenDaysAgo)
+            startDate = startOfThirtyDaysAgo
+            endDate = startOfSevenDaysAgo
         }
+        
+        guard let start = startDate, let end = endDate else { return [] }
+        
+        return dreams
+            .filter { $0.date >= start && $0.date < end }
+            .sorted(by: { $0.date > $1.date })
     }
+
 }
 
 enum DatePeriod {
