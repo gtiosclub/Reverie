@@ -8,32 +8,30 @@
 import SwiftUI
 
 struct DreamEntryView: View {
-    // Sample data, should be replaced with real data source
-    let sampleDream: DreamModel = .init(userID: "12133", id: "78274623", title: "Hello Dream", date: Date(), loggedContent: String(repeating: "DREAM ", count: 200), generatedContent: "gen content", tags: [.animals, .forests], image: "image", emotion: .anger)
+    let dream: DreamModel
     
     var body: some View {
             VStack(alignment: .leading, spacing: 16) {
-                // Header Section (Title and Date)
                 VStack(alignment: .leading, spacing: 4) {
-                    Text(sampleDream.title)
+                    Text(dream.title)
                         .font(Font.title)
                         .bold()
                         .foregroundColor(.white)
-                    Text(sampleDream.date.formatted())
+                    Text(dream.date.formatted())
                         .font(Font.subheadline)
                         .foregroundColor(.gray)
                 }
                 .padding(.horizontal)
                 .padding(.top, 8)
                 .background(Color(.darkGray))
-                .zIndex(1) // Keep header above scrolling content
+                .zIndex(1)
                
                 // Gap for future tags (empty spacer with fixed height)
                 Color(.darkGray).frame(height: 40).opacity(0)
                
                 // Scrollable Dream Entry
                 ScrollView {
-                    Text(sampleDream.loggedContent)
+                    Text(dream.loggedContent)
                         .foregroundColor(.white)
                         .padding(.horizontal)
                         .padding(.bottom, 24)
@@ -49,8 +47,10 @@ struct DreamEntryView: View {
 }
 
 #Preview {
+    let sampleDream = DreamModel(userID: "12133", id: "78274623", title: "Hello Dream", date: Date(), loggedContent: String(repeating: "DREAM ", count: 200), generatedContent: "gen content", tags: [.animals, .forests], image: "image", emotion: .anger)
+    
     NavigationStack {
-        DreamEntryView()
+        DreamEntryView(dream: sampleDream)
             .background(Color(.darkGray))
             .navigationBarTitleDisplayMode(.inline)
     }
