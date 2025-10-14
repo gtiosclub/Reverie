@@ -7,19 +7,19 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		6607D33A2E9099CC0035AE33 /* StableDiffusionResources in Resources */ = {isa = PBXBuildFile; fileRef = 6607D3392E9099CC0035AE33 /* StableDiffusionResources */; };
-		669E5C102E98012D00848E94 /* StableDiffusion in Frameworks */ = {isa = PBXBuildFile; productRef = 669E5C0F2E98012D00848E94 /* StableDiffusion */; };
 		66EEDBE32E679D220011493C /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 66EEDBE22E679D1B0011493C /* .gitignore */; };
 		BD9435C72E84F664009CE7D0 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BD9435C62E84F664009CE7D0 /* GoogleService-Info.plist */; };
 		BDE7571A2E83618900D3C183 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = BDE757192E83618900D3C183 /* FirebaseAuth */; };
 		BDE7571C2E83618900D3C183 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = BDE7571B2E83618900D3C183 /* FirebaseFirestore */; };
+		EC888D472E8C914500B26CC0 /* StableDiffusionResources in Resources */ = {isa = PBXBuildFile; fileRef = EC888D462E8C914500B26CC0 /* StableDiffusionResources */; };
+		EC888D4A2E8DA4BA00B26CC0 /* StableDiffusion in Frameworks */ = {isa = PBXBuildFile; productRef = EC888D492E8DA4BA00B26CC0 /* StableDiffusion */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		6607D3392E9099CC0035AE33 /* StableDiffusionResources */ = {isa = PBXFileReference; lastKnownFileType = folder; name = StableDiffusionResources; path = ../StableDiffusionResources; sourceTree = "<group>"; };
 		66EEDBB22E6798000011493C /* Reverie.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Reverie.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		66EEDBE22E679D1B0011493C /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		BD9435C62E84F664009CE7D0 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		EC888D462E8C914500B26CC0 /* StableDiffusionResources */ = {isa = PBXFileReference; lastKnownFileType = folder; name = StableDiffusionResources; path = "../../Library/CloudStorage/OneDrive-GeorgiaInstituteofTechnology/Clubs/iOS Club/StableDiffusionResources"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -36,7 +36,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BDE7571A2E83618900D3C183 /* FirebaseAuth in Frameworks */,
-				669E5C102E98012D00848E94 /* StableDiffusion in Frameworks */,
+				EC888D4A2E8DA4BA00B26CC0 /* StableDiffusion in Frameworks */,
 				BDE7571C2E83618900D3C183 /* FirebaseFirestore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -47,7 +47,7 @@
 		66EEDBA92E6798000011493C = {
 			isa = PBXGroup;
 			children = (
-				6607D3392E9099CC0035AE33 /* StableDiffusionResources */,
+				EC888D462E8C914500B26CC0 /* StableDiffusionResources */,
 				66EEDBE22E679D1B0011493C /* .gitignore */,
 				66EEDBB42E6798000011493C /* Reverie */,
 				66EEDBB32E6798000011493C /* Products */,
@@ -85,7 +85,7 @@
 			packageProductDependencies = (
 				BDE757192E83618900D3C183 /* FirebaseAuth */,
 				BDE7571B2E83618900D3C183 /* FirebaseFirestore */,
-				669E5C0F2E98012D00848E94 /* StableDiffusion */,
+				EC888D492E8DA4BA00B26CC0 /* StableDiffusion */,
 			);
 			productName = Reverie;
 			productReference = 66EEDBB22E6798000011493C /* Reverie.app */;
@@ -117,7 +117,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				BDE757182E83618900D3C183 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
-				669E5C0E2E98012D00848E94 /* XCRemoteSwiftPackageReference "ml-stable-diffusion" */,
+				EC888D482E8DA4BA00B26CC0 /* XCRemoteSwiftPackageReference "ml-stable-diffusion" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 66EEDBB32E6798000011493C /* Products */;
@@ -134,7 +134,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6607D33A2E9099CC0035AE33 /* StableDiffusionResources in Resources */,
+				EC888D472E8C914500B26CC0 /* StableDiffusionResources in Resources */,
 				66EEDBE32E679D220011493C /* .gitignore in Resources */,
 				BD9435C72E84F664009CE7D0 /* GoogleService-Info.plist in Resources */,
 			);
@@ -360,14 +360,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		669E5C0E2E98012D00848E94 /* XCRemoteSwiftPackageReference "ml-stable-diffusion" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/apple/ml-stable-diffusion";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.1.1;
-			};
-		};
 		BDE757182E83618900D3C183 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
@@ -376,14 +368,17 @@
 				minimumVersion = 12.3.0;
 			};
 		};
+		EC888D482E8DA4BA00B26CC0 /* XCRemoteSwiftPackageReference "ml-stable-diffusion" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/ml-stable-diffusion.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.1.1;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		669E5C0F2E98012D00848E94 /* StableDiffusion */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 669E5C0E2E98012D00848E94 /* XCRemoteSwiftPackageReference "ml-stable-diffusion" */;
-			productName = StableDiffusion;
-		};
 		BDE757192E83618900D3C183 /* FirebaseAuth */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = BDE757182E83618900D3C183 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
@@ -393,6 +388,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = BDE757182E83618900D3C183 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseFirestore;
+		};
+		EC888D492E8DA4BA00B26CC0 /* StableDiffusion */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EC888D482E8DA4BA00B26CC0 /* XCRemoteSwiftPackageReference "ml-stable-diffusion" */;
+			productName = StableDiffusion;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
