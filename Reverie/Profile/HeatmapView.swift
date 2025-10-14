@@ -25,7 +25,7 @@ extension DreamModel.Emotions {
         case .anxiety:
             return .green
         case .neutral:
-            return .green
+            return .gray
         }
     }
 }
@@ -367,7 +367,7 @@ struct MonthlyHeatmapGrid: View {
 
 // MARK: - Emotion Legend View
 struct EmotionLegendView: View {
-    let emotions: [DreamModel.Emotions] = [.sadness, .happiness, .fear, .anger, .embarrassment, .anxiety]
+    let emotions: [DreamModel.Emotions] = [.sadness, .happiness, .fear, .anger, .embarrassment, .anxiety, .neutral]
     private let columns: [GridItem] = [GridItem(.adaptive(minimum: 120), spacing: 10)]
     
     var body: some View {
