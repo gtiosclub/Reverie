@@ -25,6 +25,8 @@ struct DreamCardView: View {
     
     @State private var dreamCount: Int = 0
     
+    @State private var unlockCards: Bool = false
+    
     var progress: Float {
         return Float((dreamCount - 1) % 4 + 1) / 4.0
     }
@@ -39,6 +41,12 @@ struct DreamCardView: View {
                 Spacer()
                 
                 DreamCardProgressView(progress: progress)
+                    .onTapGesture {
+                        // opens cards when tapped
+                        withAnimation(.spring()) {
+                            self.unlockCards = true
+                        }
+                    }
                     .task {
                         do {
                             let dreams = try await fbds.getDreams()
@@ -63,6 +71,11 @@ struct DreamCardView: View {
                 DreamCardCharacterInformationView(selectedCharacter: $selectedCharacter, character: character)
                     .transition(.asymmetric(insertion: .opacity.combined(with: .scale(scale: 0.8)), removal: .opacity))
                     .id(character.id)
+            }
+            
+            if unlockCards {
+                CardUnlockView(unlockCards: $unlockCards, cards: characters)
+                    .transition(.opacity.combined(with: .scale(scale: 0.9)))
             }
         }
         .background(.clear)

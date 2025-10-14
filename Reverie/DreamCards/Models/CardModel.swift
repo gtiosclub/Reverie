@@ -19,7 +19,7 @@ struct CardModel: Identifiable, Codable {  // Conforms to Identifiable to unique
     var cardColor: DreamColor  // Color used for the card's background or theme
     var isShown: Bool = false  
     
-    enum DreamColor: String, Codable, CaseIterable {
+    enum DreamColor: String, Codable, CaseIterable, ShapeStyle {
         case purple
         case green
         case pink
