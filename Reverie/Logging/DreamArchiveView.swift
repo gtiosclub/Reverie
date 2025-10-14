@@ -134,12 +134,15 @@ struct DreamArchiveView: View {
                                 
                                 VStack(spacing: 16) {
                                     ForEach(todayDreams, id: \.id) { dream in
-                                        SectionView(
-                                            title: dream.title,
-                                            date: formatDate(dream.date),
-                                            tags: dream.tags.map { $0.rawValue.capitalized },
-                                            description: dream.loggedContent
-                                        )
+                                        NavigationLink(destination: DreamEntryView(dream: dream)) {
+                                                    SectionView(
+                                                        title: dream.title,
+                                                        date: formatDate(dream.date),
+                                                        tags: dream.tags.map { $0.rawValue.capitalized },
+                                                        description: dream.loggedContent
+                                                    )
+                                                }
+                                                .buttonStyle(PlainButtonStyle())
                                     }
                                 }
                             }
@@ -152,12 +155,15 @@ struct DreamArchiveView: View {
                                     .bold()
                                 VStack(spacing: 16) {
                                     ForEach(thisWeekDreams, id: \.id) { dream in
-                                        SectionView(
-                                            title: dream.title,
-                                            date: formatDate(dream.date),
-                                            tags: dream.tags.map { $0.rawValue.capitalized },
-                                            description: dream.loggedContent
-                                        )
+                                        NavigationLink(destination: DreamEntryView(dream: dream)) {
+                                                    SectionView(
+                                                        title: dream.title,
+                                                        date: formatDate(dream.date),
+                                                        tags: dream.tags.map { $0.rawValue.capitalized },
+                                                        description: dream.loggedContent
+                                                    )
+                                                }
+                                                .buttonStyle(PlainButtonStyle())
                                     }
                                 }
                             }
@@ -170,12 +176,15 @@ struct DreamArchiveView: View {
                                     .bold()
                                 VStack(spacing: 16) {
                                     ForEach(thisMonthDreams, id: \.id) { dream in
-                                        SectionView(
-                                            title: dream.title,
-                                            date: formatDate(dream.date),
-                                            tags: dream.tags.map { $0.rawValue.capitalized },
-                                            description: dream.loggedContent
-                                        )
+                                        NavigationLink(destination: DreamEntryView(dream: dream)) {
+                                                    SectionView(
+                                                        title: dream.title,
+                                                        date: formatDate(dream.date),
+                                                        tags: dream.tags.map { $0.rawValue.capitalized },
+                                                        description: dream.loggedContent
+                                                    )
+                                                }
+                                                .buttonStyle(PlainButtonStyle())
                                     }
                                 }
                             }
