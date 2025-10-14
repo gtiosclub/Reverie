@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		66A534352E9B42B30074D9B2 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 669E5C1C2E980D4B00848E94 /* FirebaseStorage */; };
 		66EEDBE32E679D220011493C /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 66EEDBE22E679D1B0011493C /* .gitignore */; };
 		BD9435C72E84F664009CE7D0 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BD9435C62E84F664009CE7D0 /* GoogleService-Info.plist */; };
 		BDE7571A2E83618900D3C183 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = BDE757192E83618900D3C183 /* FirebaseAuth */; };
@@ -35,6 +36,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				66A534352E9B42B30074D9B2 /* FirebaseStorage in Frameworks */,
 				BDE7571A2E83618900D3C183 /* FirebaseAuth in Frameworks */,
 				EC888D4A2E8DA4BA00B26CC0 /* StableDiffusion in Frameworks */,
 				BDE7571C2E83618900D3C183 /* FirebaseFirestore in Frameworks */,
@@ -44,6 +46,13 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		669E5C1B2E980D4B00848E94 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		66EEDBA92E6798000011493C = {
 			isa = PBXGroup;
 			children = (
@@ -52,6 +61,7 @@
 				66EEDBB42E6798000011493C /* Reverie */,
 				66EEDBB32E6798000011493C /* Products */,
 				BD9435C62E84F664009CE7D0 /* GoogleService-Info.plist */,
+				669E5C1B2E980D4B00848E94 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -86,6 +96,7 @@
 				BDE757192E83618900D3C183 /* FirebaseAuth */,
 				BDE7571B2E83618900D3C183 /* FirebaseFirestore */,
 				EC888D492E8DA4BA00B26CC0 /* StableDiffusion */,
+				669E5C1C2E980D4B00848E94 /* FirebaseStorage */,
 			);
 			productName = Reverie;
 			productReference = 66EEDBB22E6798000011493C /* Reverie.app */;
@@ -379,6 +390,16 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		669E5C0F2E98012D00848E94 /* StableDiffusion */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 669E5C0E2E98012D00848E94 /* XCRemoteSwiftPackageReference "ml-stable-diffusion" */;
+			productName = StableDiffusion;
+		};
+		669E5C1C2E980D4B00848E94 /* FirebaseStorage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BDE757182E83618900D3C183 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseStorage;
+		};
 		BDE757192E83618900D3C183 /* FirebaseAuth */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = BDE757182E83618900D3C183 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;

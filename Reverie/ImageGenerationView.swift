@@ -113,16 +113,16 @@ struct ImageGenerationView: View {
             if let finalCG = images.compactMap({ $0 }).first {
                 let finalUIImage = UIImage(cgImage: finalCG)
                 
-                print("Starting background removal...")
+//                print("Starting background removal...")
                 
-                stickerGeneration(from: finalUIImage) { stickerImage in
-                    if let finalUIImage = stickerImage {
-                        print("Successfully created sticker!")
-                        self.generatedImage = finalUIImage
-                    } else {
-                        print("Could not remove background.")
-                    }
-                }
+//                stickerGeneration(from: finalUIImage) { stickerImage in
+//                    if let finalUIImage = stickerImage {
+//                        print("Successfully created sticker!")
+//                        self.generatedImage = finalUIImage
+//                    } else {
+//                        print("Could not remove background.")
+//                    }
+//                }
             }
             
         } catch {
