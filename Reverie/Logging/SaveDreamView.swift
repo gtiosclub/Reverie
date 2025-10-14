@@ -15,9 +15,9 @@ struct SaveDreamView: View {
     @State private var entryTagsArray: [String] = []
     @State private var entryTags: String = ""
     @State private var showingAddTagSheet = false
-    var dreamAnalysis: String
-    var recommendedTags: [DreamModel.Tags]
-    var emotion: DreamModel.Emotions
+    @State private var navigateToDreamEntry = false
+    @State private var createdDream: DreamModel?
+    var newDream: DreamModel
     
     
     var body: some View {
@@ -49,8 +49,9 @@ struct SaveDreamView: View {
                         HStack {
                             Image(systemName: "calendar")
                                 .foregroundColor(.white)
-                            Text("September 24, 2025")
+                            DatePicker("", selection: $entryDate, displayedComponents: [.date])
                                 .foregroundColor(.white)
+                                .colorScheme(.dark)
                             Spacer()
                         }
                         .padding(.horizontal,10)
@@ -133,7 +134,11 @@ struct SaveDreamView: View {
                     }
                 }
                 ToolbarItem(placement: .navigationBarTrailing){
-                    Button("Save"){}
+                    Button("Save"){
+                        Task {
+                            await saveDream()
+                        }
+                    }
                         .padding(.horizontal, 24)
                         .padding(.vertical, 8)
                         .foregroundColor(.black)
@@ -141,9 +146,28 @@ struct SaveDreamView: View {
                         .background(Color(white: 0.7))
                 }
             }
+            .background(
+                NavigationLink(destination: createdDream.map { DreamEntryView(dream: $0) }, isActive: $navigateToDreamEntry) {
+                    EmptyView()
+                }
+                .hidden()
+            )
         }
+    }
+    
+    func saveDream() async {
+
+        
+        let dreamTags = entryTagsArray.compactMap { DreamModel.Tags(rawValue: $0.lowercased()) }
+
+        newDream.tags = dreamTags
+        
+        await FirebaseDreamService.shared.createDream(dream: newDream)
+        
+        createdDream = newDream
+        navigateToDreamEntry = true
     }
 }
 #Preview {
-    SaveDreamView(dreamAnalysis: "analysis", recommendedTags: [], emotion: DreamModel.Emotions(rawValue: "sadness")!)
+    SaveDreamView(newDream: DreamModel(userID: "idk", id: "idk", title: "idk", date: Date(), loggedContent: "", generatedContent: "", tags: [], image: "", emotion: .happiness))
 }
