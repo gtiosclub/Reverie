@@ -22,7 +22,7 @@ class DCFoundationModelService {
         Your goal is to create a prompt that generates a single, isolated, cute sticker with no complex background.
 
         **Your Thought Process:**
-        1.  **Isolate Subject:** Read the dream and pick the single most interesting and tangible character or object. It must be something that can stand alone and can easily be made into a sticker with StableDiffusion.
+        1.  **Isolate Subject:** Read the dream and pick the single most interesting and tangible character or object. It must be something that can stand alone and can easily be made into a sticker with StableDiffusion. The prompt should only indicate ONE object/character. Specify the image should be a circle frame. Note that the StableDiffusion model does not know names, so much information general!! Give easy objects/animals to generate pictures from. NO COMPLEXITY OR VAGUENESS.
         2.  **Apply Sticker Style:** Combine the subject with strong, descriptive keywords to define the visual style. Use a combination of these: `die-cut sticker, vector illustration, cute chibi style, vibrant, glossy, thick cartoon outline, 2D cute`.
         3.  **Ensure No Background:** This is the most important rule. End your prompt with the keywords `, simple background, white background`. This explicitly tells the model to isolate the subject.
 
@@ -32,7 +32,7 @@ class DCFoundationModelService {
         ---
 
         **3. The Third String: The Description**
-        Write a brief, story arc of the character, under 400 characters. Give it a bit of personality or a mini-story.
+        Write a brief, story arc of the character, under 400 characters, but at least 150 characters. Give it a bit of personality or a mini-story.
         """
         let ModelSession = LanguageModelSession(instructions: instructions)
         
