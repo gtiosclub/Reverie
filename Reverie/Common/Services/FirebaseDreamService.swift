@@ -125,48 +125,13 @@ class FirebaseDreamService {
                   "dreams": FieldValue.arrayUnion([dreamRef])
                   ])
               
-
               print("Appended \(dreamRef) to user \(dream.userID)")
-
-              do {
-                  let character = try await dcfms.getCharacterPrompt(dreamText: dream.loggedContent)
-                  print("Prompt generated: \(character)")
-
-                  if character.count == 3 {
-                      let prompt = character[0]
-                      let name = character[1]
-                      let description = character[2]
-                      
-                      print("Prompt: \(prompt)")
-                      print("Name: \(name)")
-                      print("Description: \(description)")
-                      
-                      guard let sticker = try await igs.generateSticker(prompt: prompt) else {
-                          print("Failed to generate sticker image")
-                          return
-                      }
-                      print("Sticker image generated.")
-                      
-                      let stickerURL = try await FirebaseStorageService.shared.uploadSticker(
-                          sticker,
-                          forUserID: dream.userID,
-                          dreamID: dream.id
-                      )
-                      print("Sticker uploaded with URL: \(stickerURL.absoluteString)")
-                      
-                      await fdcs.createDC(card: CardModel(userID: dream.userID, id: dream.id, name: name, description: description, image: stickerURL.absoluteString, cardColor: .blue))
-                  }
-              } catch {
-                  print("Failed to get character details: \(error)")
-              }
+              
           } catch {
               print("Error adding document: \(error)")
           }
         
-        
-        
         FirebaseLoginService.shared.currUser?.dreams.append(dream)
-        
       }
 }
 
