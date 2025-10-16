@@ -175,6 +175,50 @@ func calculateStreaks(dates: [Date]) -> (longest: Int, current: Int) {
 
     return (longestStreak, currentStreakCount)
 }
+func renderEmotionCircles(from dreams: [DreamModel]) -> some View {
+    var emotionsDict = [DreamModel.Emotions: Int]()
+    for dream in dreams {
+        emotionsDict[dream.emotion, default: 0] += 1
+    }
+    let colorFor: (DreamModel.Emotions) -> Color = { e in
+        switch e {
+        case .sadness:       return .blue
+        case .happiness:     return .yellow
+        case .fear:          return .purple
+        case .anger:         return .red
+        case .embarrassment: return .orange
+        case .anxiety:       return .green
+        case .neutral:       return .gray
+        }
+    }
+    // Predefined positions that are spaced apart
+    let positions: [CGPoint] = [
+        CGPoint(x: 160, y: 220),
+        CGPoint(x: 280, y: 280),
+        CGPoint(x: 100, y: 350),
+        CGPoint(x: 250, y: 420),
+        CGPoint(x: 200, y: 500),
+        CGPoint(x: 320, y: 380),
+        CGPoint(x: 140, y: 460)
+    ]
+    return ZStack {
+        ForEach(Array(emotionsDict.keys.enumerated()), id: \.offset) { index, emotion in
+            if let count = emotionsDict[emotion] {
+                let size = CGFloat(80 + (count * 25)) // ✅ size = frequency-based
+                let pos = index < positions.count
+                    ? positions[index]
+                    : CGPoint(x: 150 + CGFloat(index * 40), y: 300)
+                EmotionBubbleView(
+                    size: size,
+                    color: colorFor(emotion),
+                    start: pos,
+                    jitter: max(28, min(54, size * 0.18))
+                )
+                .zIndex(Double(-size))
+            }
+        }
+    }
+}
 
 #Preview {
     ProfileView()
