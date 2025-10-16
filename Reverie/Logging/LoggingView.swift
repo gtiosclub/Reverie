@@ -128,8 +128,10 @@ struct LoggingView: View {
                     }
                     .transition(.opacity)
                 }
-                
-                TabbarView()
+                VStack {
+                    Spacer()
+                    TabbarView()
+                }
             }
         }
     }
