@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+
 struct TestView: View {
     @State private var recentDreamsOutput: [DreamModel] = []
 
@@ -24,10 +25,11 @@ struct TestView: View {
                 Button("Run Test: getRecentDreams()") {
                     testGetRecentDreams()
                 }
-                .padding()
-                .background(Color.white.opacity(0.2))
-                .cornerRadius(10)
-                .foregroundColor(.white)
+                
+                Button ("Emotions Dict Test"){
+                    let dict = findEmotionFrequency(dreams: [d1, d2]);
+                    print(dict)
+                }
 
                 if !recentDreamsOutput.isEmpty {
                     Text("Recent Dreams:")
