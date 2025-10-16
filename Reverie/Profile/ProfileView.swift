@@ -28,7 +28,11 @@ struct ProfileView: View {
                         .background(Color.blue)
                         .cornerRadius(8)
                 }
+                
+                NavigationLink(destination: UserTagsView()) {
+                    Text("Tags View")
 
+                }
                 Text("reverie profile")
                 NavigationLink(destination: TestView()) {
                     Text("Test Page")
@@ -97,6 +101,18 @@ func getDreamsOfCategory(dreams: [DreamModel], category: DreamModel.Tags) -> [Dr
         }
     }
 }
+
+func findEmotionFrequency(dreams: [DreamModel]) -> [DreamModel.Emotions: Int] {
+    var emotionsDict = [DreamModel.Emotions: Int]()
+    
+    for d in dreams {
+        emotionsDict[d.emotion, default: 0] += 1
+    }
+    return emotionsDict
+}
+
+
+
 
 func getRecentDreams(dreams: [DreamModel], count: Int = 10) -> [DreamModel] {
     // Make sure we don't try to return more dreams than exist

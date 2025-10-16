@@ -6,15 +6,16 @@
 //
 
 import SwiftUI
+ 
 
 
 //test dreams
-let d1 = DreamModel(userID: "hi", id: "hi", title: "The title", date: Date(), loggedContent: "hi", generatedContent: "hi", tags: [DreamModel.Tags.animals, DreamModel.Tags.forests], image: "hi", emotion: DreamModel.Emotions.sadness)
+let d1 = DreamModel(userID: "hi", id: "hi", title: "Dream 1", date: Date(), loggedContent: "hi", generatedContent: "hi", tags: [DreamModel.Tags.animals, DreamModel.Tags.forests], image: "hi", emotion: DreamModel.Emotions.sadness)
 
-let d2 = DreamModel(userID: "hi", id: "hi", title: "The title2", date: Date(), loggedContent: "hi", generatedContent: "hi", tags: [DreamModel.Tags.mountains, DreamModel.Tags.forests, DreamModel.Tags.animals, DreamModel.Tags.rivers, DreamModel.Tags.school, DreamModel.Tags.school], image: "hi", emotion: DreamModel.Emotions.happiness)
+let d2 = DreamModel(userID: "hi", id: "hi", title: "Dream2", date: Date(), loggedContent: "hi", generatedContent: "hi", tags: [DreamModel.Tags.mountains, DreamModel.Tags.forests, DreamModel.Tags.animals, DreamModel.Tags.rivers, DreamModel.Tags.school, DreamModel.Tags.school], image: "hi", emotion: DreamModel.Emotions.happiness)
 
-let thisWeekDreams: [DreamModel] = [d1,d2]
-let allDreams: [DreamModel] = [d2,d2,d2,d2]
+let thisWeekDreams = getRecentDreams(dreams: FirebaseLoginService.shared.currUser?.dreams ?? [], count:  10)
+let allDreams = FirebaseLoginService.shared.currUser?.dreams ?? []
 
 
 let thisWeekTags: [DreamModel.Tags] = findMostCommonTags(dreams: thisWeekDreams)
@@ -22,13 +23,16 @@ let allTags: [DreamModel.Tags] = findMostCommonTags(dreams: allDreams)
 
 struct UserTagsView: View {
     var body: some View {
-        ScrollView {
-            VStack (alignment: .leading, spacing: 20) {
-                TagViewBlock(title: "This Week", tags: thisWeekTags, isExpandable: true)
-                TagViewBlock(title: "Archive", tags: allTags, isExpandable: false)
+        ZStack() {
+            BackgroundView()
+            ScrollView {
+                VStack (alignment: .leading, spacing: 20) {
+                    TagViewBlock(title: "This Week", tags: thisWeekTags, isExpandable: true)
+                    TagViewBlock(title: "Archive", tags: allTags, isExpandable: false)
+                }
             }
+            .padding(.bottom, 80)
         }
-        .padding(.bottom, 80)
 
     }
 }
