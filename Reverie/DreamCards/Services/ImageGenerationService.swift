@@ -13,7 +13,6 @@ import SwiftUI
 import Combine
 
 @Observable
-@MainActor
 class ImageGenerationService {
     var generatedImage: UIImage?
     var isLoading = false
@@ -23,7 +22,7 @@ class ImageGenerationService {
     private var pipeline: StableDiffusionPipeline?
 
     init() {
-        Task(priority: .high) {
+        Task(priority: .utility) {
             await loadModel()
         }
     }
@@ -33,12 +32,16 @@ class ImageGenerationService {
             throw NSError(domain: "ImageGenerator", code: 1, userInfo: [NSLocalizedDescriptionKey: "Pipeline not ready."])
         }
 
-        self.isLoading = true
-        self.loadingStateText = "Generating..."
-        
+        await MainActor.run {
+                self.isLoading = true
+                self.loadingStateText = "Generating..."
+            }
+
         defer {
-            self.isLoading = false
-            self.loadingStateText = ""
+            Task { @MainActor in
+                self.isLoading = false
+                self.loadingStateText = ""
+            }
         }
         
         var configuration = StableDiffusionPipeline.Configuration(prompt: prompt)
@@ -60,8 +63,10 @@ class ImageGenerationService {
     private func loadModel() async {
         if pipeline != nil { return }
         
-        isLoading = true
-        loadingStateText = "Loading model..."
+        await MainActor.run {
+            isLoading = true
+            loadingStateText = "Loading model..."
+        }
         
         do {
             guard let resourceURL = Bundle.main.url(forResource: "StableDiffusionResources", withExtension: nil) else {
@@ -74,14 +79,18 @@ class ImageGenerationService {
                 reduceMemory: true
             )
             
-            self.pipeline = loadedPipeline
-            self.isLoading = false
-            self.loadingStateText = ""
+            await MainActor.run {
+                self.pipeline = loadedPipeline
+                self.isLoading = false
+                self.loadingStateText = ""
+            }
             print("✅ Model loaded successfully.")
             
         } catch {
             print("❌ Error loading Stable Diffusion pipeline: \(error)")
-            self.loadingStateText = "Error loading model."
+            await MainActor.run {
+                self.loadingStateText = "Error loading model."
+            }
         }
     }
     

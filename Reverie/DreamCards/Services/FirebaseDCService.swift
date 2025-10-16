@@ -11,7 +11,6 @@ import FirebaseStorage
 import FirebaseFirestore
 import FirebaseAuth
 
-@MainActor
 @Observable
 class FirebaseDCService {
     static let shared = FirebaseDCService()
@@ -21,6 +20,42 @@ class FirebaseDCService {
     let dcfms = DCFoundationModelService()
     
     let igs = ImageGenerationService()
+    
+    func generateImage(for dream: DreamModel) {
+        Task.detached(priority: .utility) {
+            do {
+                let character = try await self.dcfms.getCharacterPrompt(dreamText: dream.loggedContent)
+                print("Prompt generated: \(character)")
+                
+                if character.count == 3 {
+                    let prompt = character[0]
+                    let name = character[1]
+                    let description = character[2]
+                    
+                    print("Prompt: \(prompt)")
+                    print("Name: \(name)")
+                    print("Description: \(description)")
+                    
+                    guard let sticker = try await self.igs.generateSticker(prompt: prompt) else {
+                        print("Failed to generate sticker image")
+                        return
+                    }
+                    print("Sticker image generated.")
+                    
+                    let stickerURL = try await FirebaseStorageService.shared.uploadSticker(
+                      sticker,
+                      forUserID: dream.userID,
+                      dreamID: dream.id
+                    )
+                    print("Sticker uploaded with URL: \(stickerURL.absoluteString)")
+                    
+                    await self.createDC(card: CardModel(userID: dream.userID, id: dream.id, name: name, description: description, image: stickerURL.absoluteString, cardColor: .purple))
+                }
+            } catch {
+                print("Failed to get character details: \(error)")
+            }
+        }
+    }
     
     func createDC(card: CardModel) async {
         print("USER ID: \(card.userID)")
