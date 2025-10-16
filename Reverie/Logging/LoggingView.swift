@@ -21,7 +21,7 @@ struct LoggingView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                
+            BackgroundView()
                 VStack() {
                     HStack {
                         Spacer()
@@ -48,19 +48,46 @@ struct LoggingView: View {
                         }
                     }
                     HStack {
-                        TextField("Dream Name", text: $title)
-                            .font(.title)
-                            .bold()
+                        ZStack(alignment: .leading) {
+                            if title.isEmpty {
+                                Text("Dream Name")
+                                    .foregroundColor(.white.opacity(0.6))
+                                    .font(.custom("Inter", size: 30))
+                                    .font(.title)
+                                    .fontWeight(.bold)
+                            }
+                            TextField("", text: $title)
+                                .foregroundColor(.white)
+                                .textFieldStyle(.plain)
+                                .tint(.white)
+                                .font(.title)
+                        }
+
                         Spacer()
-                        DatePicker(
-                            "",
-                            selection: $date,
-                            displayedComponents: [.date]
-                        )
+                        ZStack {
+                            DatePicker("", selection: $date, displayedComponents: [.date])
+                                .glassEffect(.regular, in: .rect)
+                                .labelsHidden()
+                            Text(date.formatted(date: .abbreviated, time: .omitted))
+                                .foregroundColor(.white)
+                        }
+
+                        
                     }
                     
-                    TextField("Start new dream entry...", text: $dream, axis: .vertical)
-                        .padding(.vertical)
+                    ZStack(alignment: .topLeading) {
+                        if dream.isEmpty {
+                            Text("Start new dream entry...")
+                                .foregroundColor(.white.opacity(0.6))
+                                .padding(.vertical, 8)
+                        }
+                        TextField("", text: $dream, axis: .vertical)
+                            .foregroundColor(.white)
+                            .textFieldStyle(.plain)
+                            .tint(.white)
+                            .padding(.vertical, 8)
+                    }
+
                     Spacer()
                     
                 }
