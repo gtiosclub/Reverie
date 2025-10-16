@@ -22,14 +22,15 @@ struct DreamArchiveView: View {
     
     enum DreamFilterTag: String, CaseIterable, Identifiable {
         case allTags = "Tags - All"
-        case love = "Love"
-        case falling = "Falling"
-        case beingChased = "Being Chased"
-        case scared = "Scared"
+        case mountains = "mountains"
+        case rivers = "rivers"
+        case forests = "forests"
+        case animals = "animals"
+        case school = "school"
         
         var id: Self { self }
     }
-    
+    // mountains, rivers, forests, animals, school
     enum DateFilter: String, CaseIterable, Identifiable {
         case allDates = "Dates - All"
         case lastSevenDays = "Last 7 Days"
