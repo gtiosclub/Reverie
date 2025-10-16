@@ -99,6 +99,7 @@ struct SaveDreamView: View {
                                         newDream.tags.append(tag)
                                         withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
                                             showTagDropdown = false
+                                            showTagDropdown = true
                                         }
                                     }) {
                                         Text(tag.rawValue.capitalized)
@@ -136,6 +137,13 @@ struct SaveDreamView: View {
                     Spacer()
                 }
                 .padding()
+                NavigationLink(
+                                destination: DreamEntryView(dream: createdDream ?? newDream),
+                                isActive: $navigateToDreamEntry
+                            ) {
+                                EmptyView()
+                            }
+                            .hidden()
             }
             .navigationBarBackButtonHidden(true)
             .toolbar {
@@ -170,6 +178,7 @@ struct SaveDreamView: View {
         .navigationBarBackButtonHidden(true)
         .preferredColorScheme(.dark)
     }
+    
     
     func saveDream() async {
         await FirebaseDreamService.shared.createDream(dream: newDream)
