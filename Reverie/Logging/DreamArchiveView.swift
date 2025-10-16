@@ -53,167 +53,172 @@ struct DreamArchiveView: View {
     
     var body: some View {
         NavigationStack {
-            VStack(spacing: 0) {
-                
-                VStack(alignment: .leading, spacing: 16) {
-                    HStack {
-                        Text("My Dreams")
-                            .bold()
-                            .font(.title)
-                        Spacer()
-                        HStack(spacing: 8) {
-                            Button {
-                            } label: {
-                                Image(systemName: "line.3.horizontal")
-                                    .font(.system(size: 24, weight: .bold))
-                                    .foregroundColor(.black)
-                                    .background(
-                                        RoundedRectangle(cornerRadius: 8)
-                                            .fill(.white)
-                                            .frame(width: 32, height: 32)
-                                    )
-                            }
-                            
-                            Button {
-                            } label: {
-                                Image(systemName: "calendar")
-                                    .font(.system(size: 24, weight: .bold))
-                                    .foregroundColor(.black)
-                                    .background(
-                                        RoundedRectangle(cornerRadius: 8)
-                                            .fill(.gray)
-                                            .frame(width: 32, height: 32)
-                                    )
-                            }
-                        }
-                    }
-                    
-                    HStack {
+            ZStack {
+                BackgroundView()
+                VStack(spacing: 0) {
+                    VStack(alignment: .leading, spacing: 16) {
                         HStack {
-                            Image(systemName: "magnifyingglass")
-                            TextField("Search", text: $search)
-                        }
-                        .padding(8)
-                        .background(Color(.systemGray4))
-                        .cornerRadius(10)
-                        
-                        Picker("Tags", selection: $selectedTag) {
-                            ForEach(DreamFilterTag.allCases, id: \.self) { tag in
-                                Text(tag.rawValue)
-                            }
-                        }
-                        .background(RoundedRectangle(cornerRadius: 8).fill(Color(.systemGray4)))
-                        .accentColor(.white)
-                        
-                        Picker("Dates", selection: $selectedDateFilter) {
-                            ForEach(DateFilter.allCases, id: \.self) { date in
-                                Text(date.rawValue)
-                            }
-                        }
-                        .background(RoundedRectangle(cornerRadius: 8).fill(Color(.systemGray4)))
-                        .accentColor(.white)
-                    }
-                }
-                .padding()
-                .background(Color.white)
-                .shadow(color: Color.black.opacity(0.1), radius: 4, y: 2)
-                
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 24) {
-                        
-                        if !todayDreams.isEmpty {
-                            VStack(alignment: .leading, spacing: 8) {
-                                HStack {
-                                    Text("Today")
-                                        .font(.title2)
-                                        .bold()
-                                    Text(DateFormatter.localizedString(from: Date(), dateStyle: .medium, timeStyle: .none))
-                                        .font(.caption)
-                                    Spacer()
+                            Text("My Dreams")
+                                .bold()
+                                .font(.title)
+                                .foregroundColor(.white)
+                            Spacer()
+                            HStack(spacing: 8) {
+                                Button {
+                                } label: {
+                                    Image(systemName: "line.3.horizontal")
+                                        .font(.system(size: 24, weight: .bold))
+                                        .foregroundColor(.white)
+                                        .frame(width: 32, height: 32)
+                          //              .background(
+                           //                 RoundedRectangle(cornerRadius: 8)
+                          //                      .fill(.white)
+                           //                     .frame(width: 32, height: 32)
+                             //           )
                                 }
                                 
-                                VStack(spacing: 16) {
-                                    ForEach(todayDreams, id: \.id) { dream in
-                                        NavigationLink(destination: DreamEntryView(dream: dream)) {
-                                                    SectionView(
-                                                        title: dream.title,
-                                                        date: formatDate(dream.date),
-                                                        tags: dream.tags.map { $0.rawValue.capitalized },
-                                                        description: dream.loggedContent
-                                                    )
-                                                }
-                                                .buttonStyle(PlainButtonStyle())
-                                    }
+                                Button {
+                                } label: {
+                                    Image(systemName: "calendar")
+                                        .font(.system(size: 24, weight: .bold))
+                                        .foregroundColor(.white)
+                                   //     .background(
+                                    //        RoundedRectangle(cornerRadius: 8)
+                                      //          .fill(.gray)
+                                     //           .frame(width: //32, height: 32)
+                                     //   )
                                 }
                             }
                         }
                         
-                        if !thisWeekDreams.isEmpty {
-                            VStack(alignment: .leading, spacing: 8) {
-                                Text("This Week")
-                                    .font(.title2)
-                                    .bold()
-                                VStack(spacing: 16) {
-                                    ForEach(thisWeekDreams, id: \.id) { dream in
-                                        NavigationLink(destination: DreamEntryView(dream: dream)) {
-                                                    SectionView(
-                                                        title: dream.title,
-                                                        date: formatDate(dream.date),
-                                                        tags: dream.tags.map { $0.rawValue.capitalized },
-                                                        description: dream.loggedContent
-                                                    )
-                                                }
-                                                .buttonStyle(PlainButtonStyle())
-                                    }
+                        HStack {
+                            HStack {
+                                Image(systemName: "magnifyingglass")
+                                TextField("Search", text: $search)
+                            }
+                            .padding(8)
+                            .cornerRadius(10)
+                            .glassEffect(.regular, in: .rect)
+                            
+                            Picker("Tags", selection: $selectedTag) {
+                                ForEach(DreamFilterTag.allCases, id: \.self) { tag in
+                                    Text(tag.rawValue)
                                 }
                             }
-                        }
-                        
-                        if !thisMonthDreams.isEmpty {
-                            VStack(alignment: .leading, spacing: 8) {
-                                Text("This Month")
-                                    .font(.title2)
-                                    .bold()
-                                VStack(spacing: 16) {
-                                    ForEach(thisMonthDreams, id: \.id) { dream in
-                                        NavigationLink(destination: DreamEntryView(dream: dream)) {
-                                                    SectionView(
-                                                        title: dream.title,
-                                                        date: formatDate(dream.date),
-                                                        tags: dream.tags.map { $0.rawValue.capitalized },
-                                                        description: dream.loggedContent
-                                                    )
-                                                }
-                                                .buttonStyle(PlainButtonStyle())
-                                    }
+                            .background(RoundedRectangle(cornerRadius: 8))
+                            .accentColor(.white)
+                            .glassEffect(.regular, in: .rect)
+                            
+                            Picker("Dates", selection: $selectedDateFilter) {
+                                ForEach(DateFilter.allCases, id: \.self) { date in
+                                    Text(date.rawValue)
                                 }
                             }
+                            .background(RoundedRectangle(cornerRadius: 8))
+                            .accentColor(.white)
+                            .glassEffect(.regular, in: .rect)
                         }
-                        
-                        if userDreams.isEmpty {
-                            VStack(spacing: 16) {
-                                Image(systemName: "moon.zzz")
-                                    .font(.system(size: 64))
-                                    .foregroundColor(.gray)
-                                Text("No dreams yet")
-                                    .font(.title2)
-                                    .foregroundColor(.gray)
-                                Text("Start logging your dreams to see them here!")
-                                    .font(.body)
-                                    .foregroundColor(.gray)
-                                    .multilineTextAlignment(.center)
-                            }
-                            .frame(maxWidth: .infinity)
-                            .padding(.top, 100)
-                        }
-                        
-                        Spacer(minLength: 60)
-                        TabbarView()
                     }
                     .padding()
+                    .shadow(color: Color.black.opacity(0.1), radius: 4, y: 2)
+                    
+                    ScrollView {
+                        VStack(alignment: .leading, spacing: 24) {
+                            
+                            if !todayDreams.isEmpty {
+                                VStack(alignment: .leading, spacing: 8) {
+                                    HStack {
+                                        Text("Today")
+                                            .font(.title2)
+                                            .bold()
+                                        Text(DateFormatter.localizedString(from: Date(), dateStyle: .medium, timeStyle: .none))
+                                            .font(.caption)
+                                        Spacer()
+                                    }
+                                    
+                                    VStack(spacing: 16) {
+                                        ForEach(todayDreams, id: \.id) { dream in
+                                            NavigationLink(destination: DreamEntryView(dream: dream)) {
+                                                SectionView(
+                                                    title: dream.title,
+                                                    date: formatDate(dream.date),
+                                                    tags: dream.tags.map { $0.rawValue.capitalized },
+                                                    description: dream.loggedContent
+                                                )
+                                            }
+                                            .buttonStyle(PlainButtonStyle())
+                                        }
+                                    }
+                                }
+                            }
+                            
+                            if !thisWeekDreams.isEmpty {
+                                VStack(alignment: .leading, spacing: 8) {
+                                    Text("This Week")
+                                        .font(.title2)
+                                        .bold()
+                                    VStack(spacing: 16) {
+                                        ForEach(thisWeekDreams, id: \.id) { dream in
+                                            NavigationLink(destination: DreamEntryView(dream: dream)) {
+                                                SectionView(
+                                                    title: dream.title,
+                                                    date: formatDate(dream.date),
+                                                    tags: dream.tags.map { $0.rawValue.capitalized },
+                                                    description: dream.loggedContent
+                                                )
+                                            }
+                                            .buttonStyle(PlainButtonStyle())
+                                        }
+                                    }
+                                }
+                            }
+                            
+                            if !thisMonthDreams.isEmpty {
+                                VStack(alignment: .leading, spacing: 8) {
+                                    Text("This Month")
+                                        .font(.title2)
+                                        .bold()
+                                    VStack(spacing: 16) {
+                                        ForEach(thisMonthDreams, id: \.id) { dream in
+                                            NavigationLink(destination: DreamEntryView(dream: dream)) {
+                                                SectionView(
+                                                    title: dream.title,
+                                                    date: formatDate(dream.date),
+                                                    tags: dream.tags.map { $0.rawValue.capitalized },
+                                                    description: dream.loggedContent
+                                                )
+                                            }
+                                            .buttonStyle(PlainButtonStyle())
+                                        }
+                                    }
+                                }
+                            }
+                            
+                            if userDreams.isEmpty {
+                                VStack(spacing: 16) {
+                                    Image(systemName: "moon.zzz")
+                                        .font(.system(size: 64))
+                                        .foregroundColor(.gray)
+                                    Text("No dreams yet")
+                                        .font(.title2)
+                                        .foregroundColor(.gray)
+                                    Text("Start logging your dreams to see them here!")
+                                        .font(.body)
+                                        .foregroundColor(.gray)
+                                        .multilineTextAlignment(.center)
+                                }
+                                .frame(maxWidth: .infinity)
+                                .padding(.top, 100)
+                            }
+                            
+                            Spacer(minLength: 60)
+                        }
+                        .padding()
+                    }
                 }
+                .ignoresSafeArea(edges: .bottom)
+                TabbarView()
             }
-            .ignoresSafeArea(edges: .bottom)
         }
     }
     
