@@ -62,11 +62,15 @@ class FirebaseLoginService {
                            
                         {
                             let dateF: Date = {
-                                if let ts = snapshot.get("date") as? Timestamp {
-                                    return ts.dateValue()
-                                } else {
-                                    return Date()
+                                if let dateString = snapshot.get("date") as? String {
+                                    let formatter = DateFormatter()
+                                    formatter.dateFormat = "M/d/yy" 
+                                    formatter.locale = Locale(identifier: "en_US_POSIX")
+                                    if let parsedDate = formatter.date(from: dateString) {
+                                        return parsedDate
+                                    }
                                 }
+                                return Date()
                             }()
                             let tagF: [DreamModel.Tags] = tags.compactMap { DreamModel.Tags(rawValue: $0.lowercased()) }
                             let emotionF: DreamModel.Emotions = DreamModel.Emotions(rawValue: emotion.lowercased()) ?? .neutral
