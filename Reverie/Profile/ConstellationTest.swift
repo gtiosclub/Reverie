@@ -19,7 +19,7 @@ func generateRandomDreamsAndMatrix(count: Int, strongConnections: Int = 3) -> ([
             id: UUID().uuidString,
             title: "Dream \(i + 1)",
             date: Date(),
-            loggedContent: "Dream \(i + 1)",
+            loggedContent: "Dream \(i + 1) content",
             generatedContent: "Generated content for dream \(i + 1)",
             tags: Array(randomTags),
             image: "placeholder",
