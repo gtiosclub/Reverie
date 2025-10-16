@@ -8,29 +8,26 @@
 import SwiftUI
 
 struct NewLogView: View {
-    
     var body: some View {
-        NavigationStack {
+        NavigationLink {
+            LoggingView()
+        } label: {
             HStack {
                 Text("New Log")
                     .font(.system(size: 18))
                     .bold()
                     .padding(.leading, 16)
-                    .foregroundColor(.white)
+                
                 Spacer()
-                NavigationLink {
-                    LoggingView()
-                } label: {
-                    Image(systemName: "plus")
-                        .font(.system(size: 12, weight: .bold))
-                        .foregroundColor(.white)
-                        .padding(6)
-                        .background(Circle().fill(.gray.opacity(0.9)))
-                        .padding(.horizontal, 12)
-                }
+                
+                Image(systemName: "plus")
+                    .font(.system(size: 16, weight: .bold))
+                    .padding(.trailing, 16)
+                    .background(Circle().fill(.white.opacity(0.4)).padding(16))
             }
-            .padding()
-            .frame(maxWidth: 300, minHeight: 50)
+            .foregroundColor(.white)
+            .padding(.vertical, 16)
+            .frame(maxWidth: 300)
             .glassEffect(.regular, in: .rect)
             .cornerRadius(20)
             .padding(.horizontal, 50)
