@@ -19,13 +19,34 @@ struct DreamEntryView: View {
 
                 VStack(alignment: .leading, spacing: 1) {
                     VStack(alignment: .leading, spacing: 4) {
-                        Text(dream.title)
-                            .font(.title)
-                            .bold()
-                            .foregroundColor(.white)
-                        Text(dream.date.formatted())
-                            .font(.subheadline)
-                            .foregroundColor(.gray)
+                        
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(dream.title)
+                                .font(.title)
+                                .bold()
+                                .foregroundColor(.white)
+                            Text(dream.date.formatted())
+                                .font(.subheadline)
+                                .foregroundColor(.gray)
+                        }
+                        if !dream.tags.isEmpty {
+                            ScrollView(.horizontal, showsIndicators: false) {
+                                HStack(spacing: 8) {
+                                    ForEach(dream.tags, id: \.self) { tag in
+                                        Text(tag.rawValue.capitalized)
+                                            .font(.caption)
+                                            .foregroundColor(.white)
+                                            .padding(.vertical, 4)
+                                            .padding(.horizontal, 8)
+                                            .background(
+                                                Capsule()
+                                                    .fill(Color.white.opacity(0.15))
+                                            )
+                                    }
+                                    .padding(.vertical, 4) //
+                                }
+                            }
+                        }
                     }
                     .padding(.horizontal)
                     .padding(.top, 8)
@@ -35,10 +56,9 @@ struct DreamEntryView: View {
                         Text("Generated").tag(1)
                     }
                     .pickerStyle(.segmented)
-                 //   .padding(.horizontal)
-                //    .padding(.vertical, 6)
                     .glassEffect(.regular)
                     
+
                     TabView(selection: $selectedTab) {
                         ScrollView {
                             Text(dream.loggedContent)
@@ -78,6 +98,7 @@ struct DreamEntryView: View {
                 DreamArchiveView()
             }
         }
+        .preferredColorScheme(.dark)
     }
 }
 
@@ -85,7 +106,7 @@ struct DreamEntryView: View {
     DreamEntryView(dream: DreamModel(
         userID: "1",
         id: "1",
-        title: "Test",
+        title: "Test Dream Entry",
         date: Date(),
         loggedContent: "This is a logged dream example. You can scroll through it here.",
         generatedContent: "This is a generated analysis of the dream content.",
@@ -94,4 +115,3 @@ struct DreamEntryView: View {
         emotion: .happiness
     ))
 }
-
