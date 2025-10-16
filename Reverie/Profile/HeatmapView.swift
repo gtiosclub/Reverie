@@ -25,7 +25,7 @@ extension DreamModel.Emotions {
         case .anxiety:
             return .green
         case .neutral:
-            return .green
+            return .gray
         }
     }
 }
@@ -85,19 +85,11 @@ struct HeatmapView: View {
                 .padding(.horizontal, 15)
             }
             .refreshable {
-                if let uid = Auth.auth().currentUser?.uid {
-                    await viewModel.fetchDreams(for: uid)
-                } else {
-                    print("No logged in user")
-                }
+                viewModel.fetchDreams()
             }
         }
         .task {
-            if let uid = Auth.auth().currentUser?.uid {
-                await viewModel.fetchDreams(for: uid)
-            } else {
-                print("No logged in user")
-            }
+            viewModel.fetchDreams()
         }
     }
 }
@@ -375,7 +367,7 @@ struct MonthlyHeatmapGrid: View {
 
 // MARK: - Emotion Legend View
 struct EmotionLegendView: View {
-    let emotions: [DreamModel.Emotions] = [.sadness, .happiness, .fear, .anger, .embarrassment, .anxiety]
+    let emotions: [DreamModel.Emotions] = [.sadness, .happiness, .fear, .anger, .embarrassment, .anxiety, .neutral]
     private let columns: [GridItem] = [GridItem(.adaptive(minimum: 120), spacing: 10)]
     
     var body: some View {
