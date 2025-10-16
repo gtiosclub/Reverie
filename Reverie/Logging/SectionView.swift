@@ -14,14 +14,16 @@ struct SectionView: View {
                             .font(.title)
                             .fontWeight(.bold)
                             .textFieldStyle(PlainTextFieldStyle())
-                            .padding(.horizontal,8)
-                            .padding(.vertical,12)
+                            .padding(.horizontal, 15)
+                            .padding(.top,12)
                             .cornerRadius(6)
                             .foregroundColor(.white)
-                        Text(date)
-                            .foregroundColor(.white)
-                            .font(.subheadline)
+
                     }
+                    Text(date)
+                        .foregroundColor(.white)
+                        .font(.subheadline)
+                        .padding(.leading, 20)
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack {
                             ForEach(tags, id: \.self) { tag in
