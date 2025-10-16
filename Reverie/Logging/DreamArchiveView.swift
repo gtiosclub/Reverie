@@ -1,8 +1,8 @@
 //
-//  DreamArchiveView.swift
-//  Reverie
+//  DreamArchiveView.swift
+//  Reverie
 //
-//  Created by Artem Kim on 9/23/25.
+//  Created by Artem Kim on 9/23/25.
 //
 
 import SwiftUI
@@ -30,7 +30,7 @@ struct DreamArchiveView: View {
         
         var id: Self { self }
     }
-    // mountains, rivers, forests, animals, school
+
     enum DateFilter: String, CaseIterable, Identifiable {
         case allDates = "Dates - All"
         case lastSevenDays = "Last 7 Days"
@@ -52,7 +52,6 @@ struct DreamArchiveView: View {
         
         if selectedDateFilter != .allDates,
            let (startDate, endDate) = getDateRange(for: selectedDateFilter) {
-            
             dreams = dreams.filter { dream in
                 return dream.date >= startDate && dream.date <= endDate
             }
@@ -60,7 +59,6 @@ struct DreamArchiveView: View {
         
         if selectedTag != .allTags {
             let selectedRawTag = selectedTag.rawValue
-            
             dreams = dreams.filter { dream in
                 return dream.tags.map { $0.rawValue }.contains(selectedRawTag)
             }
@@ -68,6 +66,42 @@ struct DreamArchiveView: View {
 
         return dreams
     }
+    
+    private var groupedDreams: [(title: String, dreams: [DreamModel])] {
+        let calendar = Calendar.current
+        let now = Date()
+        let startOfToday = calendar.startOfDay(for: now)
+        
+        guard !filteredDreams.isEmpty else { return [] }
+        
+        let sevenDaysAgo = calendar.date(byAdding: .day, value: -7, to: startOfToday)!
+        let thirtyDaysAgo = calendar.date(byAdding: .day, value: -30, to: startOfToday)!
+        
+        let today = filteredDreams.filter {
+            calendar.isDate($0.date, inSameDayAs: now)
+        }
+        
+        let lastWeek = filteredDreams.filter {
+            $0.date >= sevenDaysAgo && $0.date < startOfToday && !calendar.isDate($0.date, inSameDayAs: now)
+        }
+        
+        let lastMonth = filteredDreams.filter {
+            $0.date >= thirtyDaysAgo && $0.date < sevenDaysAgo
+        }
+        
+        let earlier = filteredDreams.filter {
+            $0.date < thirtyDaysAgo
+        }
+        
+        var result: [(String, [DreamModel])] = []
+        if !today.isEmpty { result.append(("Today", today)) }
+        if !lastWeek.isEmpty { result.append(("Last Week", lastWeek)) }
+        if !lastMonth.isEmpty { result.append(("Last Month", lastMonth)) }
+        if !earlier.isEmpty { result.append(("Earlier", earlier)) }
+        
+        return result
+    }
+
     
     var body: some View {
         NavigationStack {
@@ -140,18 +174,24 @@ struct DreamArchiveView: View {
                     
                     ScrollView {
                         VStack(alignment: .leading, spacing: 24) {
-                            
-                            if !filteredDreams.isEmpty {
-                                ForEach(filteredDreams, id: \.id) { dream in
-                                    NavigationLink(destination: DreamEntryView(dream: dream)) {
-                                        SectionView(
-                                            title: dream.title,
-                                            date: formatDate(dream.date),
-                                            tags: dream.tags.map { $0.rawValue.capitalized },
-                                            description: dream.loggedContent
-                                        )
+                            if !groupedDreams.isEmpty {
+                                ForEach(groupedDreams, id: \.title) { group in
+                                    VStack(alignment: .leading, spacing: 12) {
+                                        Text(group.title)
+                                            .font(.headline)
+                                            .foregroundColor(.white)
+                                        ForEach(group.dreams, id: \.id) { dream in
+                                            NavigationLink(destination: DreamEntryView(dream: dream)) {
+                                                SectionView(
+                                                    title: dream.title,
+                                                    date: formatDate(dream.date),
+                                                    tags: dream.tags.map { $0.rawValue.capitalized },
+                                                    description: dream.loggedContent
+                                                )
+                                            }
+                                            .buttonStyle(PlainButtonStyle())
+                                        }
                                     }
-                                    .buttonStyle(PlainButtonStyle())
                                 }
                             } else if search.isEmpty && selectedTag == .allTags && selectedDateFilter == .allDates {
                                 VStack(spacing: 16) {
@@ -184,7 +224,6 @@ struct DreamArchiveView: View {
                                 .frame(maxWidth: .infinity)
                                 .padding(.top, 100)
                             }
-                            
                             Spacer(minLength: 60)
                         }
                         .padding()
@@ -227,12 +266,6 @@ struct DreamArchiveView: View {
             return nil
         }
     }
-}
-
-enum DatePeriod {
-    case today
-    case thisWeek
-    case thisMonth
 }
 
 #Preview {
