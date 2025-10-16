@@ -191,7 +191,10 @@ struct DreamArchiveView: View {
                     }
                 }
                 .ignoresSafeArea(edges: .bottom)
-                TabbarView()
+                VStack {
+                    Spacer()
+                    TabbarView()
+                }
             }
         }
         .preferredColorScheme(.dark)
