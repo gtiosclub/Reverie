@@ -112,8 +112,6 @@ func findEmotionFrequency(dreams: [DreamModel]) -> [DreamModel.Emotions: Int] {
 }
 
 
-
-
 func getRecentDreams(dreams: [DreamModel], count: Int = 10) -> [DreamModel] {
     // Make sure we don't try to return more dreams than exist
     let numberToReturn = min(count, dreams.count)
@@ -123,6 +121,60 @@ func getRecentDreams(dreams: [DreamModel], count: Int = 10) -> [DreamModel] {
     return Array(sortedDreams.prefix(numberToReturn))
 }
 
+func averageDreamWordCount(dreams: [DreamModel]) -> Int {
+    guard !dreams.isEmpty else { return 0 }
+    let total = dreams.reduce(0) { acc, d in
+        acc + d.loggedContent.split { $0.isWhitespace || $0.isNewline }.count
+    }
+    return total / dreams.count
+}
+
+
+func calculateStreaks(dates: [Date]) -> (longest: Int, current: Int) {
+    guard !dates.isEmpty else { return (0, 0) }
+
+    let calendar = Calendar.current
+    let today = calendar.startOfDay(for: Date())
+
+    // Normalize and dedupe to unique calendar days
+    let uniqueDates = Array(Set(dates.map { calendar.startOfDay(for: $0) })).sorted()
+
+    var longestStreak = 1
+    var streakCount = 1
+    var currentStreakCount = 0
+
+    // Seed current streak if last dream is today or yesterday
+    if let lastDate = uniqueDates.last {
+        let daysSinceLastDream = calendar.dateComponents([.day], from: lastDate, to: today).day ?? 0
+        if daysSinceLastDream <= 1 {
+            currentStreakCount = 1
+        }
+    }
+
+    for i in 1..<uniqueDates.count {
+        let daysBetween = calendar.dateComponents([.day],
+                                                  from: uniqueDates[i - 1],
+                                                  to: uniqueDates[i]).day ?? 0
+
+        if daysBetween == 1 {
+            streakCount += 1
+            longestStreak = max(longestStreak, streakCount)
+
+            // If we're at the last date, update current streak if it connects to today/yesterday
+            if i == uniqueDates.count - 1 {
+                let lastDate = uniqueDates[i]
+                let daysSinceLast = calendar.dateComponents([.day], from: lastDate, to: today).day ?? 0
+                if daysSinceLast <= 1 {
+                    currentStreakCount = streakCount
+                }
+            }
+        } else {
+            streakCount = 1
+        }
+    }
+
+    return (longestStreak, currentStreakCount)
+}
 
 #Preview {
     ProfileView()
