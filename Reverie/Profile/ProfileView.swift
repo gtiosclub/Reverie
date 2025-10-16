@@ -176,6 +176,8 @@ func calculateStreaks(dates: [Date]) -> (longest: Int, current: Int) {
     return (longestStreak, currentStreakCount)
 }
 
+//test comment
+
 #Preview {
     ProfileView()
 }
