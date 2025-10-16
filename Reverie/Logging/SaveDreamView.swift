@@ -167,6 +167,7 @@ struct SaveDreamView: View {
                 }
             }
         }
+        .navigationBarBackButtonHidden(true)
         .preferredColorScheme(.dark)
     }
     
