@@ -22,10 +22,8 @@ struct FloatingStickerIndividualView: View {
                 image
                     .resizable()
                     .scaledToFit()
-            case .failure:
-                Image(systemName: "photo.fill")
             default:
-                ProgressView()
+                EmptyView()
             }
         }
         .frame(width: 75, height: 75)
