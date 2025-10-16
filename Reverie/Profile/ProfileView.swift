@@ -86,8 +86,12 @@ struct ProfileView: View {
                 .padding(.horizontal, 16)
                 .padding(.bottom, 96)
             }
-
-            TabbarView()
+            .padding()
+            
+            VStack {
+                Spacer()
+                TabbarView()
+            }
         }
         .task { await loadDreamsAndStats() }
     }
