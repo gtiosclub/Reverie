@@ -69,7 +69,7 @@ struct DreamEntryView: View {
                         .tag(0)
                         
                         ScrollView {
-                            Text(dream.generatedContent)
+                            Text(.init(dream.generatedContent))
                                 .foregroundColor(.white)
                                 .padding()
                                 .multilineTextAlignment(.leading)
