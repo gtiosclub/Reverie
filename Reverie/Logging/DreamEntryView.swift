@@ -18,11 +18,8 @@ struct DreamEntryView: View {
                 BackgroundView()
 
                 VStack(alignment: .leading, spacing: 1) {
-                    
-                    // MARK: - Header Section (Title, Date, and Tags)
                     VStack(alignment: .leading, spacing: 4) {
                         
-                        // Title and Date
                         VStack(alignment: .leading, spacing: 4) {
                             Text(dream.title)
                                 .font(.title)
@@ -32,8 +29,6 @@ struct DreamEntryView: View {
                                 .font(.subheadline)
                                 .foregroundColor(.gray)
                         }
-                        
-                        // 🎯 TAGS DISPLAY SECTION (MOVED TO TOP HEADER) 🎯
                         if !dream.tags.isEmpty {
                             ScrollView(.horizontal, showsIndicators: false) {
                                 HStack(spacing: 8) {
@@ -41,14 +36,14 @@ struct DreamEntryView: View {
                                         Text(tag.rawValue.capitalized)
                                             .font(.caption)
                                             .foregroundColor(.white)
-                                            .padding(.vertical, 4) // Reduced padding for header tags
+                                            .padding(.vertical, 4)
                                             .padding(.horizontal, 8)
                                             .background(
                                                 Capsule()
-                                                    .fill(Color.white.opacity(0.15)) // Subtle, translucent background
+                                                    .fill(Color.white.opacity(0.15))
                                             )
                                     }
-                                    .padding(.vertical, 4) // Padding to visually separate tags from the date/picker
+                                    .padding(.vertical, 4) //
                                 }
                             }
                         }
@@ -56,7 +51,6 @@ struct DreamEntryView: View {
                     .padding(.horizontal)
                     .padding(.top, 8)
                     
-                    // Segmented Picker (Logged/Generated)
                     Picker("Dream Tabs", selection: $selectedTab) {
                         Text("Logged").tag(0)
                         Text("Generated").tag(1)
@@ -64,7 +58,7 @@ struct DreamEntryView: View {
                     .pickerStyle(.segmented)
                     .glassEffect(.regular)
                     
-                    // Tab Content (Logged Content / Generated Content)
+
                     TabView(selection: $selectedTab) {
                         ScrollView {
                             Text(dream.loggedContent)
