@@ -1,8 +1,8 @@
 //
-//  DreamArchiveView.swift
-//  Reverie
+//  DreamArchiveView.swift
+//  Reverie
 //
-//  Created by Artem Kim on 9/23/25.
+//  Created by Artem Kim on 9/23/25.
 //
 
 import SwiftUI
@@ -20,201 +20,181 @@ struct DreamArchiveView: View {
         currentUser?.dreams ?? []
     }
     
-    private var todayDreams: [DreamModel] {
-        filterDreamsByDate(userDreams, for: .today)
-    }
-    
-    private var thisWeekDreams: [DreamModel] {
-        filterDreamsByDate(userDreams, for: .thisWeek)
-    }
-    
-    private var thisMonthDreams: [DreamModel] {
-        filterDreamsByDate(userDreams, for: .thisMonth)
-    }
-    
     enum DreamFilterTag: String, CaseIterable, Identifiable {
         case allTags = "Tags - All"
-        case love = "Love"
-        case falling = "Falling"
-        case beingChased = "Being Chased"
-        case scared = "Scared"
+        case mountains = "mountains"
+        case rivers = "rivers"
+        case forests = "forests"
+        case animals = "animals"
+        case school = "school"
+        
+        var id: Self { self }
+    }
+    // mountains, rivers, forests, animals, school
+    enum DateFilter: String, CaseIterable, Identifiable {
+        case allDates = "Dates - All"
+        case lastSevenDays = "Last 7 Days"
+        case lastThirtyDays = "Last 30 Days"
+        case earlier = "Earlier"
         
         var id: Self { self }
     }
     
-    enum DateFilter: String, CaseIterable, Identifiable {
-        case allDates = "Dates - All"
-        case recent = "Recent"
-        case lastWeek = "Last Week"
-        case lastMonth = "Last Month"
+    private var filteredDreams: [DreamModel] {
+        var dreams = userDreams.sorted(by: { $0.date > $1.date })
         
-        var id: Self { self }
+        if !search.isEmpty {
+            dreams = dreams.filter { dream in
+                dream.title.localizedCaseInsensitiveContains(search) ||
+                dream.loggedContent.localizedCaseInsensitiveContains(search)
+            }
+        }
+        
+        if selectedDateFilter != .allDates,
+           let (startDate, endDate) = getDateRange(for: selectedDateFilter) {
+            
+            dreams = dreams.filter { dream in
+                return dream.date >= startDate && dream.date <= endDate
+            }
+        }
+        
+        if selectedTag != .allTags {
+            let selectedRawTag = selectedTag.rawValue
+            
+            dreams = dreams.filter { dream in
+                return dream.tags.map { $0.rawValue }.contains(selectedRawTag)
+            }
+        }
+
+        return dreams
     }
     
     var body: some View {
         NavigationStack {
-            VStack(spacing: 0) {
-                
-                VStack(alignment: .leading, spacing: 16) {
-                    HStack {
-                        Text("My Dreams")
-                            .bold()
-                            .font(.title)
-                        Spacer()
-                        HStack(spacing: 8) {
-                            Button {
-                            } label: {
-                                Image(systemName: "line.3.horizontal")
-                                    .font(.system(size: 24, weight: .bold))
-                                    .foregroundColor(.black)
-                                    .background(
-                                        RoundedRectangle(cornerRadius: 8)
-                                            .fill(.white)
-                                            .frame(width: 32, height: 32)
-                                    )
-                            }
-                            
-                            Button {
-                            } label: {
-                                Image(systemName: "calendar")
-                                    .font(.system(size: 24, weight: .bold))
-                                    .foregroundColor(.black)
-                                    .background(
-                                        RoundedRectangle(cornerRadius: 8)
-                                            .fill(.gray)
-                                            .frame(width: 32, height: 32)
-                                    )
-                            }
-                        }
-                    }
-                    
-                    HStack {
+            ZStack {
+                BackgroundView()
+                VStack(spacing: 0) {
+                    VStack(alignment: .leading, spacing: 16) {
                         HStack {
-                            Image(systemName: "magnifyingglass")
-                            TextField("Search", text: $search)
-                        }
-                        .padding(8)
-                        .background(Color(.systemGray4))
-                        .cornerRadius(10)
-                        
-                        Picker("Tags", selection: $selectedTag) {
-                            ForEach(DreamFilterTag.allCases, id: \.self) { tag in
-                                Text(tag.rawValue)
-                            }
-                        }
-                        .background(RoundedRectangle(cornerRadius: 8).fill(Color(.systemGray4)))
-                        .accentColor(.white)
-                        
-                        Picker("Dates", selection: $selectedDateFilter) {
-                            ForEach(DateFilter.allCases, id: \.self) { date in
-                                Text(date.rawValue)
-                            }
-                        }
-                        .background(RoundedRectangle(cornerRadius: 8).fill(Color(.systemGray4)))
-                        .accentColor(.white)
-                    }
-                }
-                .padding()
-                .background(Color.white)
-                .shadow(color: Color.black.opacity(0.1), radius: 4, y: 2)
-                
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 24) {
-                        
-                        if !todayDreams.isEmpty {
-                            VStack(alignment: .leading, spacing: 8) {
-                                HStack {
-                                    Text("Today")
-                                        .font(.title2)
-                                        .bold()
-                                    Text(DateFormatter.localizedString(from: Date(), dateStyle: .medium, timeStyle: .none))
-                                        .font(.caption)
-                                    Spacer()
+                            Text("My Dreams")
+                                .bold()
+                                .font(.title)
+                                .foregroundColor(.white)
+                            Spacer()
+                            HStack(spacing: 8) {
+                                Button {
+                                } label: {
+                                    Image(systemName: "line.3.horizontal")
+                                        .font(.system(size: 24, weight: .bold))
+                                        .foregroundColor(.white)
+                                        .frame(width: 32, height: 32)
                                 }
                                 
-                                VStack(spacing: 16) {
-                                    ForEach(todayDreams, id: \.id) { dream in
-                                        NavigationLink(destination: DreamEntryView(dream: dream)) {
-                                                    SectionView(
-                                                        title: dream.title,
-                                                        date: formatDate(dream.date),
-                                                        tags: dream.tags.map { $0.rawValue.capitalized },
-                                                        description: dream.loggedContent
-                                                    )
-                                                }
-                                                .buttonStyle(PlainButtonStyle())
-                                    }
+                                Button {
+                                } label: {
+                                    Image(systemName: "calendar")
+                                        .font(.system(size: 24, weight: .bold))
+                                        .foregroundColor(.white)
+                                        .frame(width: 32, height: 32)
                                 }
                             }
                         }
                         
-                        if !thisWeekDreams.isEmpty {
-                            VStack(alignment: .leading, spacing: 8) {
-                                Text("This Week")
-                                    .font(.title2)
-                                    .bold()
-                                VStack(spacing: 16) {
-                                    ForEach(thisWeekDreams, id: \.id) { dream in
-                                        NavigationLink(destination: DreamEntryView(dream: dream)) {
-                                                    SectionView(
-                                                        title: dream.title,
-                                                        date: formatDate(dream.date),
-                                                        tags: dream.tags.map { $0.rawValue.capitalized },
-                                                        description: dream.loggedContent
-                                                    )
-                                                }
-                                                .buttonStyle(PlainButtonStyle())
-                                    }
+                        HStack {
+                            HStack {
+                                Image(systemName: "magnifyingglass")
+                                    .foregroundColor(.white)
+                                TextField("Search", text: $search)
+                                    .foregroundColor(.white)
+                                    .accentColor(.white)
+                            }
+                            .padding(8)
+                            .cornerRadius(10)
+                            .glassEffect(.regular, in: .rect)
+                            
+                            Picker("Tags", selection: $selectedTag) {
+                                ForEach(DreamFilterTag.allCases, id: \.self) { tag in
+                                    Text(tag.rawValue)
+                                        .foregroundColor(.white)
                                 }
                             }
-                        }
-                        
-                        if !thisMonthDreams.isEmpty {
-                            VStack(alignment: .leading, spacing: 8) {
-                                Text("This Month")
-                                    .font(.title2)
-                                    .bold()
-                                VStack(spacing: 16) {
-                                    ForEach(thisMonthDreams, id: \.id) { dream in
-                                        NavigationLink(destination: DreamEntryView(dream: dream)) {
-                                                    SectionView(
-                                                        title: dream.title,
-                                                        date: formatDate(dream.date),
-                                                        tags: dream.tags.map { $0.rawValue.capitalized },
-                                                        description: dream.loggedContent
-                                                    )
-                                                }
-                                                .buttonStyle(PlainButtonStyle())
-                                    }
+                            .background(RoundedRectangle(cornerRadius: 8))
+                            .accentColor(.white)
+                            .colorMultiply(.white)
+                            .glassEffect(.regular, in: .rect)
+                            
+                            Picker("Dates", selection: $selectedDateFilter) {
+                                ForEach(DateFilter.allCases, id: \.self) { date in
+                                    Text(date.rawValue)
+                                        .foregroundColor(.white)
                                 }
                             }
+                            .background(RoundedRectangle(cornerRadius: 8))
+                            .accentColor(.white)
+                            .colorMultiply(.white)
+                            .glassEffect(.regular, in: .rect)
                         }
-                        
-                        if userDreams.isEmpty {
-                            VStack(spacing: 16) {
-                                Image(systemName: "moon.zzz")
-                                    .font(.system(size: 64))
-                                    .foregroundColor(.gray)
-                                Text("No dreams yet")
-                                    .font(.title2)
-                                    .foregroundColor(.gray)
-                                Text("Start logging your dreams to see them here!")
-                                    .font(.body)
-                                    .foregroundColor(.gray)
-                                    .multilineTextAlignment(.center)
-                            }
-                            .frame(maxWidth: .infinity)
-                            .padding(.top, 100)
-                        }
-                        
-                        Spacer(minLength: 60)
-                        TabbarView()
                     }
                     .padding()
+                    .shadow(color: Color.black.opacity(0.1), radius: 4, y: 2)
+                    
+                    ScrollView {
+                        VStack(alignment: .leading, spacing: 24) {
+                            
+                            if !filteredDreams.isEmpty {
+                                ForEach(filteredDreams, id: \.id) { dream in
+                                    NavigationLink(destination: DreamEntryView(dream: dream)) {
+                                        SectionView(
+                                            title: dream.title,
+                                            date: formatDate(dream.date),
+                                            tags: dream.tags.map { $0.rawValue.capitalized },
+                                            description: dream.loggedContent
+                                        )
+                                    }
+                                    .buttonStyle(PlainButtonStyle())
+                                }
+                            } else if search.isEmpty && selectedTag == .allTags && selectedDateFilter == .allDates {
+                                VStack(spacing: 16) {
+                                    Image(systemName: "moon.zzz")
+                                        .font(.system(size: 64))
+                                        .foregroundColor(.gray)
+                                    Text("No dreams yet")
+                                        .font(.title2)
+                                        .foregroundColor(.white)
+                                    Text("Start logging your dreams to see them here!")
+                                        .font(.body)
+                                        .foregroundColor(.gray)
+                                        .multilineTextAlignment(.center)
+                                }
+                                .frame(maxWidth: .infinity)
+                                .padding(.top, 100)
+                            } else {
+                                VStack(spacing: 16) {
+                                    Image(systemName: "tray.fill")
+                                        .font(.system(size: 64))
+                                        .foregroundColor(.gray)
+                                    Text("No Matching Dreams")
+                                        .font(.title2)
+                                        .foregroundColor(.white)
+                                    Text("Try adjusting your filters or search terms.")
+                                        .font(.body)
+                                        .foregroundColor(.gray)
+                                        .multilineTextAlignment(.center)
+                                }
+                                .frame(maxWidth: .infinity)
+                                .padding(.top, 100)
+                            }
+                            
+                            Spacer(minLength: 60)
+                        }
+                        .padding()
+                    }
                 }
+                .ignoresSafeArea(edges: .bottom)
+                TabbarView()
             }
-            .ignoresSafeArea(edges: .bottom)
         }
+        .preferredColorScheme(.dark)
     }
     
     private func formatDate(_ date: Date) -> String {
@@ -224,42 +204,29 @@ struct DreamArchiveView: View {
         return formatter.string(from: date)
     }
     
-    
-    private func filterDreamsByDate(_ dreams: [DreamModel], for period: DatePeriod) -> [DreamModel] {
+    private func getDateRange(for filter: DateFilter) -> (startDate: Date, endDate: Date)? {
         let calendar = Calendar.current
         let now = Date()
+        let startOfToday = calendar.startOfDay(for: now)
         
-        var startDate: Date?
-        var endDate: Date?
-        
-        switch period {
-        case .today:
-            startDate = calendar.startOfDay(for: now)
-            endDate = calendar.date(byAdding: .day, value: 1, to: startDate!)
+        switch filter {
+        case .lastSevenDays:
+            guard let sevenDaysAgo = calendar.date(byAdding: .day, value: -7, to: startOfToday) else { return nil }
+            return (startDate: sevenDaysAgo, endDate: now)
             
-        case .thisWeek:
-            let sevenDaysAgo = calendar.date(byAdding: .day, value: -7, to: now)!
-            let startOfSevenDaysAgo = calendar.startOfDay(for: sevenDaysAgo)
-            let startOfToday = calendar.startOfDay(for: now)
-            startDate = startOfSevenDaysAgo
-            endDate = startOfToday
+        case .lastThirtyDays:
+            guard let thirtyDaysAgo = calendar.date(byAdding: .day, value: -30, to: startOfToday) else { return nil }
+            return (startDate: thirtyDaysAgo, endDate: now)
             
-        case .thisMonth:
-            let thirtyDaysAgo = calendar.date(byAdding: .day, value: -30, to: now)!
-            let sevenDaysAgo = calendar.date(byAdding: .day, value: -7, to: now)!
-            let startOfThirtyDaysAgo = calendar.startOfDay(for: thirtyDaysAgo)
-            let startOfSevenDaysAgo = calendar.startOfDay(for: sevenDaysAgo)
-            startDate = startOfThirtyDaysAgo
-            endDate = startOfSevenDaysAgo
+        case .earlier:
+            guard let thirtyDaysAgo = calendar.date(byAdding: .day, value: -30, to: startOfToday) else { return nil }
+            guard let arbitraryStart = calendar.date(byAdding: .year, value: -100, to: now) else { return nil }
+            return (startDate: arbitraryStart, endDate: thirtyDaysAgo)
+            
+        case .allDates:
+            return nil
         }
-        
-        guard let start = startDate, let end = endDate else { return [] }
-        
-        return dreams
-            .filter { $0.date >= start && $0.date < end }
-            .sorted(by: { $0.date > $1.date })
     }
-
 }
 
 enum DatePeriod {
