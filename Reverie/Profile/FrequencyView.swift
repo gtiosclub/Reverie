@@ -98,35 +98,41 @@ private struct YearlyDreamGraphView: View {
     @State private var monthlyData: [MonthlyDreamData] = []
 
     var body: some View {
-        VStack {
-            Text("Dream frequency")
-                .font(.title3)
+        VStack(alignment: .leading) {
+            
+            Text("Dream Frequency")
+                .font(.title2)
                 .fontWeight(.bold)
                 .foregroundColor(.white)
                 .padding(.top)
-
-            if monthlyData.contains(where: { $0.frequency > 0 }) {
-                ZStack {
-                    DreamGraphShape(dataPoints: monthlyData.map { $0.frequency })
-                        .fill(createGradient())
-                    
-                    PeakCircles(data: monthlyData)
-                }
-            } else {
-                Spacer()
-                Text("No dream data for this year")
-                    .foregroundColor(.white.opacity(0.7))
-                Spacer()
-            }
+                .padding(.horizontal)
             
-            Text("Jan - Dec \(String(year))")
-                .font(.footnote)
-                .foregroundColor(.white.opacity(0.8))
-                .padding(.bottom)
+            VStack{
+                if monthlyData.contains(where: { $0.frequency > 0 }) {
+                    ZStack {
+                        DreamGraphShape(dataPoints: monthlyData.map { $0.frequency })
+                            .fill(createGradient())
+                        
+                        PeakCircles(data: monthlyData)
+                    }
+                } else {
+                    Spacer()
+                    Text("No dream data for this year")
+                        .foregroundColor(.white.opacity(0.7))
+                    Spacer()
+                }
+                
+                Text("Jan - Dec \(String(year))")
+                    .font(.footnote)
+                    .foregroundColor(.white.opacity(0.8))
+                    .padding(.bottom, 30)
+                    .padding(.horizontal)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.black.opacity(0.5))
-        .cornerRadius(20)
+        .background(Color(red: 35/255, green: 31/255, blue: 49/255))
+        .cornerRadius(10)
         .padding()
         .onAppear {
             monthlyData = processDreamsForYear()
@@ -157,17 +163,14 @@ private struct YearlyDreamGraphView: View {
         let dreamsForYear = dreams.filter { calendar.component(.year, from: $0.date) == year }
         var results: [MonthlyDreamData] = []
 
-        // Always loop through all 12 months
         for month in 1...12 {
             let dreamsForMonth = dreamsForYear.filter { calendar.component(.month, from: $0.date) == month }
             let frequency = CGFloat(dreamsForMonth.count)
             let dominantEmotionColor: Color
 
-            // If a month has no dreams, set frequency to 0 and color to neutral gray
             if dreamsForMonth.isEmpty {
                 dominantEmotionColor = .gray.opacity(0.3)
             } else {
-                // Otherwise, calculate the dominant emotion and its color
                 let emotionCounts = Dictionary(grouping: dreamsForMonth, by: { $0.emotion }).mapValues { $0.count }
                 let dominantEmotion = emotionCounts.max { $0.value < $1.value }?.key ?? .neutral
                 dominantEmotionColor = dominantEmotion.color
@@ -178,17 +181,12 @@ private struct YearlyDreamGraphView: View {
     }
 }
 
-struct DreamFrequencyView: View {
+struct FrequencyView: View {
     @StateObject private var viewModel = HeatmapViewModel()
     private let yearRange = 1980...2080
     @State private var selectedPageIndex: Int
 
-    init() {
-        if let uid = Auth.auth().currentUser?.uid {
-            await viewModel.fetchDreams(for: uid)
-        } else {
-            print("No logged in user")
-        }
+    init(){
         let currentYear = Calendar.current.component(.year, from: Date())
         let currentYearIndex = currentYear - yearRange.lowerBound
         
@@ -206,11 +204,15 @@ struct DreamFrequencyView: View {
             }
         }
         .tabViewStyle(.page(indexDisplayMode: .always))
-        .background(Color.gray.opacity(0.2))
+        .frame(height: 300)
+        .clipShape(RoundedRectangle(cornerRadius: 20))
+        .task{
+            viewModel.fetchDreams()
+        }
     }
 }
 
 
 #Preview {
-    DreamFrequencyView()
+    FrequencyView()
 }
