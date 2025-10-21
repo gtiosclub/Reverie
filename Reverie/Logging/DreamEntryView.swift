@@ -53,10 +53,11 @@ struct DreamEntryView: View {
                     
                     Picker("Dream Tabs", selection: $selectedTab) {
                         Text("Logged").tag(0)
-                        Text("Finished").tag(2)
                         if(dream.finishedDream != "None") {
-                            Text("Generated").tag(1)
+                            Text("Finished").tag(2)
                         }
+                        Text("Analysis").tag(1)
+                        
                     }
                     .pickerStyle(.segmented)
                     .glassEffect(.regular)
