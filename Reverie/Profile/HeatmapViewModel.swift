@@ -21,9 +21,7 @@ class HeatmapViewModel: ObservableObject {
             print("No current user found")
             return
         }
-        
         self.dreams = user.dreams
-        
         return
     }
     
