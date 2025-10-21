@@ -43,7 +43,8 @@ class FirebaseDreamService {
                  "image": dream.image,
                  "loggedContent": dream.loggedContent,
                  "tags": tagArray,
-                 "userID": dream.userID
+                 "userID": dream.userID,
+                 "finishedDream": dream.finishedDream
               ])
               let dreamRef = ref.documentID
               dream.id = dreamRef
