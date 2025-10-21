@@ -8,74 +8,90 @@
 import SwiftUI
 
 struct TestView: View {
-    @State private var message = "Tap the button to test"
-
-    // ✅ Sample dream data for testing (matches DreamModel structure)
-    private let sampleDreams: [DreamModel] = [
-        DreamModel(userID: "u1", id: "d1", title: "Beach", date: Date(),
-                   loggedContent: "Sunny beach", generatedContent: "Gen A",
-                   tags: [.animals], image: "img1", emotion: .happiness),
-        DreamModel(userID: "u1", id: "d2", title: "Exam", date: Date(),
-                   loggedContent: "Late to exam", generatedContent: "Gen B",
-                   tags: [.school], image: "img2", emotion: .anxiety),
-        DreamModel(userID: "u1", id: "d3", title: "Forest", date: Date(),
-                   loggedContent: "Lost in woods", generatedContent: "Gen C",
-                   tags: [.forests], image: "img3", emotion: .fear),
-        DreamModel(userID: "u1", id: "d4", title: "Embarrassed", date: Date(),
-                   loggedContent: "Forgot lines", generatedContent: "Gen D",
-                   tags: [.school], image: "img4", emotion: .embarrassment),
-        DreamModel(userID: "u1", id: "d5", title: "Argue", date: Date(),
-                   loggedContent: "Fight with friend", generatedContent: "Gen E",
-                   tags: [.rivers], image: "img5", emotion: .anger),
-        DreamModel(userID: "u1", id: "d6", title: "Happy again", date: Date(),
-                   loggedContent: "Won a prize", generatedContent: "Gen F",
-                   tags: [.mountains], image: "img6", emotion: .happiness),
-        DreamModel(userID: "u1", id: "d7", title: "Neutral day", date: Date(),
-                   loggedContent: "Nothing special", generatedContent: "Gen G",
-                   tags: [.animals], image: "img7", emotion: .neutral),
-        DreamModel(userID: "u1", id: "d8", title: "Sad scene", date: Date(),
-                   loggedContent: "Lost something", generatedContent: "Gen H",
-                   tags: [.rivers], image: "img8", emotion: .sadness)
-    ]
+    @State private var recentDreamsOutput: [DreamModel] = []
 
     var body: some View {
         ZStack {
-            BackgroundView()
+            // Simple background color instead of BackgroundView()
+            Color.black.ignoresSafeArea()
 
             VStack(spacing: 20) {
-                Text(message)
+                Text("Tap the button below to test getRecentDreams().")
                     .foregroundColor(.white)
                     .multilineTextAlignment(.center)
                     .padding()
 
-                Button("Example Test") {
-                    exampleTest()
-                    message = "✅ Button tapped!"
+                Button("Run Test: getRecentDreams()") {
+                    testGetRecentDreams()
+                }
+                
+                Button ("Emotions Dict Test"){
+                    let dict = findEmotionFrequency(dreams: [d1, d2]);
+                    print(dict)
                 }
 
-                Button("Emotions Dict Test") {
-                    let dict = findEmotionFrequency(dreams: sampleDreams)
-                    print("📊 Emotions frequency:", dict)
-                    message = "📜 Printed emotions dict to console"
-                }
-
-                // 👇 Scrollable visual test area using your renderEmotionCircles()
-                ScrollView {
-                    renderEmotionCircles(from: sampleDreams)
-                        .frame(height: 600)
-                        .padding(.horizontal)
+                if !recentDreamsOutput.isEmpty {
+                    Text("Recent Dreams:")
+                        .foregroundColor(.yellow)
+                        .bold()
+                    ForEach(recentDreamsOutput, id: \.id) { dream in
+                        Text("• \(dream.title)")
+                            .foregroundColor(.white)
+                    }
                 }
             }
-
-            TabbarView()
+            .padding()
         }
     }
-}
 
-func exampleTest() {
-    print("✅ This is logged in the console")
-}
+    func testGetRecentDreams() {
+        // Create sample dreams
+        let dream1 = DreamModel(
+            userID: "u1",
+            id: "1",
+            title: "Old Dream",
+            date: Date(timeIntervalSinceNow: -86400 * 3),
+            loggedContent: "Old dream content",
+            generatedContent: "Generated old content",
+            tags: [.mountains],
+            image: "mountain.2.fill",
+            emotion: .happiness
+        )
 
-#Preview {
-    TestView()
+        let dream2 = DreamModel(
+            userID: "u1",
+            id: "2",
+            title: "Recent Dream",
+            date: Date(timeIntervalSinceNow: -86400 * 1),
+            loggedContent: "Recent dream content",
+            generatedContent: "Generated recent content",
+            tags: [.school],
+            image: "graduationcap.fill",
+            emotion: .neutral
+        )
+
+        let dream3 = DreamModel(
+            userID: "u1",
+            id: "3",
+            title: "Newest Dream",
+            date: Date(),
+            loggedContent: "Newest dream content",
+            generatedContent: "Generated newest content",
+            tags: [.animals],
+            image: "pawprint.fill",
+            emotion: .anxiety
+        )
+
+        let allDreams = [dream1, dream2, dream3]
+
+        // Call your DreamModel function
+        let recentDreams = DreamModel.getRecentDreams(from: allDreams, count: 2)
+        recentDreamsOutput = recentDreams
+
+        // Log results
+        print("TEST: getRecentDreams()")
+        for dream in recentDreams {
+            print("- \(dream.title) (\(dream.date))")
+        }
+    }
 }
