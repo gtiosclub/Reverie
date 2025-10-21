@@ -53,7 +53,10 @@ struct DreamEntryView: View {
                     
                     Picker("Dream Tabs", selection: $selectedTab) {
                         Text("Logged").tag(0)
-                        Text("Generated").tag(1)
+                        Text("Finished").tag(2)
+                        if(dream.finishedDream != "None") {
+                            Text("Generated").tag(1)
+                        }
                     }
                     .pickerStyle(.segmented)
                     .glassEffect(.regular)
@@ -75,6 +78,14 @@ struct DreamEntryView: View {
                                 .multilineTextAlignment(.leading)
                         }
                         .tag(1)
+                        
+                        ScrollView {
+                            Text(dream.finishedDream)
+                                .foregroundColor(.white)
+                                .padding()
+                                .multilineTextAlignment(.leading)
+                        }
+                        .tag(2)
                     }
                     .tabViewStyle(.page(indexDisplayMode: .never))
                     .animation(.easeInOut, value: selectedTab)
