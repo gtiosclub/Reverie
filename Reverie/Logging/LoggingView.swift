@@ -11,12 +11,14 @@ struct LoggingView: View {
     @State private var dream = ""
     @State private var title = ""
     @State private var date = Date()
+    @State private var shouldFinishDream = false // Toggle state
     private let fms = FoundationModelService()
     
     @State private var analysis: String = ""
     @State private var emotion: DreamModel.Emotions = .neutral
     @State private var tags: [DreamModel.Tags] = []
     @State private var canNavigate = false
+    @State private var finishedContent: String = "None" // Store the finished content
     
     @State private var isLoading = false
     
@@ -26,6 +28,15 @@ struct LoggingView: View {
                 BackgroundView()
                 
                 VStack() {
+                    // Toggle at the top
+                    HStack {
+                        Toggle("Finish Dream", isOn: $shouldFinishDream)
+                            .toggleStyle(SwitchToggleStyle(tint: .blue))
+                            .foregroundColor(.white)
+                        Spacer()
+                    }
+                    .padding(.bottom, 8)
+                    
                     HStack {
                         Spacer()
                         Button {
@@ -36,6 +47,12 @@ struct LoggingView: View {
                                     analysis = try await fms.getOverallAnalysis(dream_description: dream)
                                     emotion = try await fms.getEmotion(dreamText: dream)
                                     tags = try await fms.getRecommendedTags(dreamText: dream)
+                                    
+                                    // Add finished dream content if toggle is on
+                                    finishedContent = "None" // Reset first
+                                    if shouldFinishDream {
+                                        finishedContent = try await fms.getFinishedDream(dream_description: dream)
+                                    }
                                     
                                     print(analysis, emotion, tags)
                                     canNavigate = true
@@ -55,10 +72,23 @@ struct LoggingView: View {
                                 .opacity(title.isEmpty || dream.isEmpty ? 0 : 1)
                         }
                         
-                        NavigationLink(destination: SaveDreamView(newDream: DreamModel(userID: FirebaseLoginService.shared.currUser?.userID ?? "no id", id: "blank", title: title, date: date, loggedContent: dream, generatedContent: analysis, tags: tags, image: "", emotion: emotion)), isActive: $canNavigate) {
+                        NavigationLink(destination: SaveDreamView(newDream: DreamModel(
+                            userID: FirebaseLoginService.shared.currUser?.userID ?? "no id",
+                            id: "blank",
+                            title: title,
+                            date: date,
+                            loggedContent: dream,
+                            generatedContent: analysis,
+                            tags: tags,
+                            image: "",
+                            emotion: emotion,
+                            finishedDream: finishedContent // Use the stored variable
+                        )), isActive: $canNavigate) {
                             EmptyView()
                         }
                     }
+                    
+                    // Rest of your existing UI code...
                     HStack {
                         ZStack(alignment: .leading) {
                             if title.isEmpty {
