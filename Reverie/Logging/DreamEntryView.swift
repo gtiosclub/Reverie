@@ -52,8 +52,11 @@ struct DreamEntryView: View {
                     .padding(.top, 8)
                     
                     Picker("Dream Tabs", selection: $selectedTab) {
-                        Text("Logged").tag(0)
-                        Text("Generated").tag(1)
+                        Text("Logged Dream").tag(0)
+                        if(dream.finishedDream != "None") {
+                             Text("Finished Dream").tag(1)
+                        }
+                        Text("Dream Analysis").tag(2)
                     }
                     .pickerStyle(.segmented)
                     .glassEffect(.regular)
@@ -67,6 +70,13 @@ struct DreamEntryView: View {
                                 .multilineTextAlignment(.leading)
                         }
                         .tag(0)
+                        ScrollView {
+                            Text(dream.finishedDream)
+                                .foregroundColor(.white)
+                                .padding()
+                                .multilineTextAlignment(.leading)
+                        }
+                        .tag(1)
                         
                         ScrollView {
                             Text(.init(dream.generatedContent))
@@ -74,7 +84,8 @@ struct DreamEntryView: View {
                                 .padding()
                                 .multilineTextAlignment(.leading)
                         }
-                        .tag(1)
+                        .tag(2)
+                        
                     }
                     .tabViewStyle(.page(indexDisplayMode: .never))
                     .animation(.easeInOut, value: selectedTab)
@@ -112,6 +123,7 @@ struct DreamEntryView: View {
         generatedContent: "This is a generated analysis of the dream content.",
         tags: [.mountains, .rivers],
         image: "Test",
-        emotion: .happiness
+        emotion: .happiness,
+        finishedDream: "I woke up"
     ))
 }
