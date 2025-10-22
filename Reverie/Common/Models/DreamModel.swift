@@ -64,3 +64,47 @@ class DreamModel: Decodable {
         self.emotion = emotion
     }
 }
+
+// MARK: - Dream Similarity Extension
+
+extension DreamModel {
+    /// Calculates a similarity score between two dreams based on shared tags and emotion.
+    /// - Parameters:
+    ///   - dream1: The first DreamModel.
+    ///   - dream2: The second DreamModel.
+    /// - Returns: A Double between 0.0 (no similarity) and 1.0 (identical).
+    static func calculateSimilarity(between dream1: DreamModel, and dream2: DreamModel) -> Double {
+        // Convert tags into sets for easy comparison
+        let tags1 = Set(dream1.tags)
+        let tags2 = Set(dream2.tags)
+        
+        // Shared tags ratio
+        let sharedTags = tags1.intersection(tags2)
+        let maxTags = max(tags1.count, tags2.count)
+        let tagSimilarity = maxTags > 0 ? Double(sharedTags.count) / Double(maxTags) : 0.0
+        
+        // Emotion similarity (1.0 if same, 0.0 otherwise)
+        let emotionSimilarity = dream1.emotion == dream2.emotion ? 1.0 : 0.0
+        
+        // Weighted total (tags = 70%, emotion = 30%)
+        let totalSimilarity = (tagSimilarity * 0.7) + (emotionSimilarity * 0.3)
+        
+        return totalSimilarity
+    }
+
+    /// Provides a text-based label for a given similarity score.
+    /// - Parameter score: Similarity value from 0.0 to 1.0.
+    /// - Returns: A human-readable label for similarity.
+    static func similarityLabel(for score: Double) -> String {
+        switch score {
+        case 0.8...1.0:
+            return "Highly Similar"
+        case 0.5..<0.8:
+            return "Moderately Similar"
+        case 0.2..<0.5:
+            return "Slightly Similar"
+        default:
+            return "Different"
+        }
+    }
+}
