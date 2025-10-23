@@ -19,13 +19,22 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 @main
 struct ReverieApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
+    @State private var linkActive = false
 
     var body: some Scene {
         WindowGroup {
-            AuthRoutingView()
-//                .environment(FirebaseUserService.shared)
-                .environment(FirebaseLoginService.shared)
-                .environment(FirebaseDreamService.shared)
+            NavigationStack {
+                AuthRoutingView()
+                    .environment(FirebaseLoginService.shared)
+                    .environment(FirebaseDreamService.shared)
+                    .onOpenURL { url in
+                        linkActive = true
+                        print("Received deep link:", url.absoluteString)
+                    }
+                    .navigationDestination(isPresented: $linkActive) {
+                        LoggingView()
+                    }
+            }
         }
     }
 }
