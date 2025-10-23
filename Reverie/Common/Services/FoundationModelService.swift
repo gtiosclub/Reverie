@@ -59,10 +59,11 @@ class FoundationModelService {
     
 
     func getRecommendedTags(dreamText: String) async throws -> [DreamModel.Tags] {
-        let tagsInstructions: String = "You are given a dream text. The only valid dream tags are (use exact spelling): \(DreamModel.Tags.allCases.map { $0.rawValue }.joined(separator: ", ")). Identify which of these tags are relevant to the dream. Return your answer strictly as a JSON array of strings, for example: [\"family\", \"friends\"]. Rules: - You may include only tags from the list above. - Do NOT return an object, dictionary, or key-value structure - Do not invent or modify tag names, use the tag names exactly as written (including pluralization and spelling) - Do not singularize, pluralize, or modify words - If none of the tags apply, return []. - Return only the JSON array, no code blocks, no text — no explanations or extra text."
+        let tagsInstructions: String = "You are given a dream text. The only valid dream tags are (use exact spelling): \(DreamModel.Tags.allCases.map { $0.rawValue }.joined(separator: ", ")). Identify which of these tags are relevant to the dream. Return your answer strictly as a JSON array of strings, for example: [\"family\", \"friends\"]. Rules: - You may include only tags from the list above. - Do NOT return an object, dictionary, or key-value structure - Do not invent or modify tag names, use the tag names exactly as written (including pluralization and spelling) - Do not singularize, pluralize, or modify words - If none of the tags apply, return []. - Return only the JSON array, no code blocks, no text — no explanations or extra text. - If there are no tags that apply to the dream, return an empty array []"
         let tagsModelSession = LanguageModelSession(instructions: tagsInstructions)
         do {
             let response = try await tagsModelSession.respond(to: dreamText, generating: TagsSuggestion.self)
+            print("TAGS: ", response.content)
             return response.content.tags
         } catch {
             print(error)
@@ -76,6 +77,7 @@ class FoundationModelService {
        
        do {
            let response = try await emotionsModelSession.respond(to: dreamText, generating: EmotionSuggestion.self)
+           print("Emotion: ", response.content)
            return response.content.emotion
        } catch {
            print(error)
