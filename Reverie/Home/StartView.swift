@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct StartView: View {
+    @EnvironmentObject var tabState: TabState
     var body: some View {
         NavigationStack{
             ZStack {
@@ -32,6 +33,9 @@ struct StartView: View {
                     TabbarView()
                 }
             }
+            .onAppear {
+                tabState.activeTab = .home
+            }
         }
     }
 }
@@ -39,4 +43,5 @@ struct StartView: View {
 #Preview {
     StartView()
         .environment(FirebaseLoginService.shared)
+        .environmentObject(TabState())
 }
