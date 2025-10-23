@@ -27,6 +27,7 @@ struct DreamCardView: View {
     
     @State private var unlockCards: Bool = false
     
+//    @State private var degrees: Double = 8.0
     var progress: Float {
         return Float((dreamCount - 1) % 4 + 1) / 4.0
     }
@@ -41,6 +42,12 @@ struct DreamCardView: View {
                 Spacer()
                 
                 DreamCardProgressView(progress: progress)
+//                    .rotationEffect(.degrees(degrees))
+//                    .onAppear {
+//                        withAnimation(.linear(duration: 0.12).repeatCount(6, autoreverses: true)) {
+//                            degrees = -degrees
+//                        }
+//                    }
                     .onTapGesture {
                         // opens cards when tapped
                         withAnimation(.spring()) {
