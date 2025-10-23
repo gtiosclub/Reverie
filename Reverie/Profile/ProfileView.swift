@@ -3,6 +3,7 @@ import FirebaseFirestore
 import FirebaseAuth
 
 struct ProfileView: View {
+    @EnvironmentObject var tabState: TabState
     // Raw data
     @State private var dreams: [DreamModel] = []
 
@@ -94,6 +95,10 @@ struct ProfileView: View {
             }
         }
         .task { await loadDreamsAndStats() }
+        .onAppear {                    
+            tabState.activeTab = .analytics
+        }
+
     }
 }
 
