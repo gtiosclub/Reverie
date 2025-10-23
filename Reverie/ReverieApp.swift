@@ -29,7 +29,6 @@ struct ReverieApp: App {
                     .environment(FirebaseDreamService.shared)
                     .onOpenURL { url in
                         linkActive = true
-                        print("Received deep link:", url.absoluteString)
                     }
                     .navigationDestination(isPresented: $linkActive) {
                         LoggingView()
