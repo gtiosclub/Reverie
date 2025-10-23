@@ -11,7 +11,7 @@ Log and finish your dreams, discover patterns and hidden links, and bring your d
 
 This project uses Core ML models to generate images from text prompts. The model files are not included in this repository due to their large size.
 
-* **Hugging Face Repository:** [apple/coreml-stable-diffusion-2-1-base-palettized](https'://huggingface.co/apple/coreml-stable-diffusion-2-1-base-palettized/tree/main)
+* **Hugging Face Repository:** https://huggingface.co/apple/coreml-stable-diffusion-2-1-base-palettized/tree/main
 
 ### How to Download and Set Up the Model
 
@@ -26,4 +26,4 @@ To get the app working, you need to download the `split_einsum` variant of the m
 7.  Expand the **"Copy Bundle Resources"** section.
 8.  Now drag the `StableDiffusionResources` folder into this list. Do **NOT** copy, but do **create folder references**.
 
-**To test, run it on your phone or the simulator. It will not run on the canvas.**
+**To test, you must run it on your phone**
