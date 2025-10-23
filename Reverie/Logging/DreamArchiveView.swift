@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct DreamArchiveView: View {
+    @EnvironmentObject var tabState: TabState
+
     @State private var search = ""
     @State private var selectedTag: DreamFilterTag = .allTags
     @State private var selectedDateFilter: DateFilter = .allDates
@@ -236,6 +238,9 @@ struct DreamArchiveView: View {
                 }
             }
         }
+        .onAppear {
+            tabState.activeTab = .archive
+        }
         .preferredColorScheme(.dark)
     }
     
@@ -273,4 +278,5 @@ struct DreamArchiveView: View {
 
 #Preview {
     DreamArchiveView()
+        .environmentObject(TabState())
 }
