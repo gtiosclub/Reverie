@@ -17,6 +17,14 @@ struct Moon: View {
     @State private var position: CGPoint = .zero
     @State private var rotation: Angle = .zero
     @State private var scale: CGFloat = 1.0
+    
+    @State private var isBeingDragged: Bool = false
+    // Tracks user's drag offset while moving the moon
+    @State private var dragOffset: CGSize = .zero
+    // Velocity applied when flicking the moon (controls throw speed and direction)
+    @State private var velocity: CGSize = .zero
+    // Tracks whether the moon is currently being thrown to pause eye animation
+    @State private var isThrown: Bool = false
 
     var body: some View {
         GeometryReader { geometry in
@@ -37,11 +45,45 @@ struct Moon: View {
                     )
                     .frame(width: 120, height: 120)
                 
-                MoonFaceView()
+                MoonFaceView(isThrown: isThrown)
             }
             .rotationEffect(rotation)
             .scaleEffect(scale)
-            .position(position)
+            .position(x: position.x + dragOffset.width, y: position.y + dragOffset.height)
+            .gesture(
+                LongPressGesture(minimumDuration: 0.1)
+                    .onEnded { _ in
+                        isBeingDragged = true
+                    }
+                    .sequenced(before: DragGesture())
+                    .onChanged { value in
+                        switch value {
+                        case .second(true, let drag?):
+                            dragOffset = drag.translation
+                        default:
+                            break
+                        }
+                    }
+                    .onEnded { value in
+                        switch value {
+                        case .second(true, let drag?):
+                            // Calculate flick velocity based on drag speed to simulate realistic throw physics
+                            let dragVelocity = drag.velocity
+                            velocity = CGSize(width: dragVelocity.width / 40, height: dragVelocity.height / 40)
+                            position.x += drag.translation.width
+                            position.y += drag.translation.height
+                            dragOffset = .zero
+                            isBeingDragged = false
+                            // Set thrown state when flicked to disable eye movement
+                            isThrown = true
+                            // Begin physics-based throw animation including wall bounces and gradual slowdown
+                            animateThrow(screenSize: geometry.size)
+                        default:
+                            dragOffset = .zero
+                            isBeingDragged = false
+                        }
+                    }
+            )
             .onAppear {
                 self.position = CGPoint(x: geometry.size.width / 4, y: geometry.size.height / 4)
                 startFloating(screenSize: geometry.size)
@@ -52,8 +94,10 @@ struct Moon: View {
     }
     
     private func startFloating(screenSize: CGSize) {
-        let safeXRange = (0...screenSize.width)
-        let safeYRange = (0...screenSize.height)
+        guard !isBeingDragged else { return }
+        
+        let safeXRange = (60...screenSize.width - 60)
+        let safeYRange = (60...screenSize.height - 60)
         
         let newPosition = CGPoint(
             x: CGFloat.random(in: safeXRange),
@@ -74,19 +118,58 @@ struct Moon: View {
             startFloating(screenSize: screenSize)
         }
     }
+    
+    private func animateThrow(screenSize: CGSize) {
+        // Timer-driven animation loop to continuously update moon's position and velocity
+        let throwDuration = 0.02 // smooth updates
+
+        Timer.scheduledTimer(withTimeInterval: throwDuration, repeats: true) { timer in
+            // Update position based on velocity
+            position.x += velocity.width * CGFloat(throwDuration * 60)
+            position.y += velocity.height * CGFloat(throwDuration * 60)
+
+            // Detect collisions with screen edges and bounce by reversing velocity
+            if position.x < 60 || position.x > screenSize.width - 60 {
+                velocity.width *= -0.8
+                position.x = min(max(position.x, 60), screenSize.width - 60)
+            }
+
+            if position.y < 60 || position.y > screenSize.height - 60 {
+                velocity.height *= -0.8
+                position.y = min(max(position.y, 60), screenSize.height - 60)
+            }
+
+            // Apply gradual friction to slow the moon over time
+            velocity.width *= 0.95
+            velocity.height *= 0.95
+
+            // Stop motion once velocity is low enough and resume gentle floating motion
+            if abs(velocity.width) < 0.1 && abs(velocity.height) < 0.1 {
+                timer.invalidate()
+                velocity = .zero
+                // Reset thrown state once motion slows and resume floating + eye animation
+                isThrown = false
+                startFloating(screenSize: screenSize)
+            }
+        }
+    }
 }
 
 struct MoonFaceView: View {
-    var pupilOffset: CGSize = CGSize(width: Double.random(in: -4...4), height: Double.random(in: -4...4))
-    
+    var isThrown: Bool
+    // Shared pupil movement to keep both eyes synced and prevent cross-eyed motion
+    @State private var sharedPupilOffset: CGSize = .zero
+
     var body: some View {
         VStack(spacing: 8) {
             // Eyes
             HStack(spacing: 20) {
-                GooglyEyeView(pupilOffset: pupilOffset).frame(width: 25, height: 25)
-                GooglyEyeView(pupilOffset: pupilOffset).frame(width: 25, height: 25)
+                // Both eyes use the same pupil offset for synchronized movement
+                GooglyEyeView(pupilOffset: sharedPupilOffset).frame(width: 25, height: 25)
+                // Both eyes use the same pupil offset for synchronized movement
+                GooglyEyeView(pupilOffset: sharedPupilOffset).frame(width: 25, height: 25)
             }
-            
+
             // Mouth
             Path { path in
                 path.move(to: CGPoint(x: 0, y: 2))
@@ -96,6 +179,16 @@ struct MoonFaceView: View {
             .frame(width: 40, height: 15)
         }
         .offset(y: 8)
+        .onAppear {
+            // Periodically animate both pupils unless moon is being thrown
+            Timer.scheduledTimer(withTimeInterval: 1.5, repeats: true) { _ in
+                if !isThrown {
+                    withAnimation(.easeInOut(duration: 1)) {
+                        sharedPupilOffset = CGSize(width: Double.random(in: -4...4), height: Double.random(in: -4...4))
+                    }
+                }
+            }
+        }
     }
 }
 
