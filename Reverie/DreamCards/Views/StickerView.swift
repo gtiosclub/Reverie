@@ -7,10 +7,6 @@
 
 import SwiftUI
 
-import SwiftUI
-
-import SwiftUI
-
 struct StickerView: View {
     let characters: [CardModel]
     @Binding var selectedCharacter: CardModel?
@@ -33,8 +29,6 @@ struct StickerView: View {
         .frame(height: 250)
     }
 }
-
-import SwiftUI
 
 struct CharacterView: View {
     let character: CardModel
