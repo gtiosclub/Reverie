@@ -7,13 +7,16 @@
 
 import SwiftUI
 
+
 struct TabbarView: View {
+    @EnvironmentObject var tabState: TabState
+
     var body: some View {
 //        VStack {
             HStack {
-                TabButton(title: Image(systemName: "house"), destination: StartView())
-                TabButton(title: Image(systemName: "chart.bar"), destination: ProfileView())
-                TabButton(title: Image(systemName: "doc.text"), destination: DreamArchiveView())
+                TabButton(title: Image(systemName: "house"), tab: .home, destination: StartView())
+                TabButton(title: Image(systemName: "chart.bar"), tab: .analytics, destination: ProfileView())
+                TabButton(title: Image(systemName: "doc.text"), tab: .archive, destination: DreamArchiveView())
             }
             .padding()
             .frame(maxWidth: 300, maxHeight: 50)
@@ -28,15 +31,21 @@ struct TabbarView: View {
 // Tab Buttons
 struct TabButton<Destination: View>: View {
     let title: Image
+    let tab: TabType
     let destination: Destination
     
+    @EnvironmentObject var tabState: TabState
+    
     var body: some View {
-        NavigationLink(destination: destination) {
+        NavigationLink(destination: destination
+            .onAppear {
+                tabState.activeTab = tab
+            }) {
             title
                 .frame(maxWidth: .infinity)
                 .padding()
                 .font(.system(size: 18))
-                .foregroundColor(.gray)
+                .foregroundColor(tabState.activeTab == tab ? Color.purple.opacity(0.6) : .gray)
         }
         .navigationBarBackButtonHidden(true)
     }
@@ -45,4 +54,5 @@ struct TabButton<Destination: View>: View {
 #Preview {
     TabbarView()
         .background(BackgroundView())
+        .environmentObject(TabState())
 }

@@ -18,6 +18,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 
 @main
 struct ReverieApp: App {
+    @StateObject private var tabState = TabState()
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
 
     var body: some Scene {
@@ -26,6 +27,7 @@ struct ReverieApp: App {
                 .environment(FirebaseLoginService.shared)
                 .environment(FirebaseDreamService.shared)
                 .environment(FirebaseDCService.shared)
+                .environmentObject(tabState)
         }
     }
 }
