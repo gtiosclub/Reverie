@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct LoggingView: View {
+    @EnvironmentObject var tabState: TabState
+    
     @State private var dream = ""
     @State private var title = ""
     @State private var date = Date()
@@ -134,9 +136,13 @@ struct LoggingView: View {
                 }
             }
         }
+        .onAppear {
+            tabState.activeTab = .none
+        }
     }
 }
 
 #Preview {
     LoggingView()
+        .environmentObject(TabState())
 }
