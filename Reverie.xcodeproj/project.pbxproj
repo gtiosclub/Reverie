@@ -17,6 +17,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		16B6DA732EAAB3D600829DDF /* StableDiffusionResources */ = {isa = PBXFileReference; lastKnownFileType = folder; name = StableDiffusionResources; path = ../StableDiffusionResources; sourceTree = "<group>"; };
 		666C10A12E9E9AD900DB023A /* StableDiffusionResources */ = {isa = PBXFileReference; lastKnownFileType = folder; name = StableDiffusionResources; path = ../StableDiffusionResources; sourceTree = "<group>"; };
 		66EEDBB22E6798000011493C /* Reverie.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Reverie.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		66EEDBE22E679D1B0011493C /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
@@ -57,6 +58,7 @@
 			isa = PBXGroup;
 			children = (
 				666C10A12E9E9AD900DB023A /* StableDiffusionResources */,
+				16B6DA732EAAB3D600829DDF /* StableDiffusionResources */,
 				66EEDBE22E679D1B0011493C /* .gitignore */,
 				66EEDBB42E6798000011493C /* Reverie */,
 				66EEDBB32E6798000011493C /* Products */,
