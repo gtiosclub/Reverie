@@ -18,7 +18,7 @@ struct LoggingView: View {
     @State private var emotion: DreamModel.Emotions = .neutral
     @State private var tags: [DreamModel.Tags] = []
     @State private var canNavigate = false
-    @State private var finishedContent: String = "None" // Store the finished content
+    @State private var finishedContent: String = "None"
     
     @State private var isLoading = false
     
@@ -28,7 +28,7 @@ struct LoggingView: View {
                 BackgroundView()
                 
                 VStack() {
-                    // Toggle at the top
+
                     HStack {
                         Toggle("Finish Dream", isOn: $shouldFinishDream)
                             .toggleStyle(SwitchToggleStyle(tint: .blue))
@@ -47,9 +47,7 @@ struct LoggingView: View {
                                     analysis = try await fms.getOverallAnalysis(dream_description: dream)
                                     emotion = try await fms.getEmotion(dreamText: dream)
                                     tags = try await fms.getRecommendedTags(dreamText: dream)
-                                    
-                                    // Add finished dream content if toggle is on
-                                    finishedContent = "None" // Reset first
+                                    finishedContent = "None"
                                     if shouldFinishDream {
                                         finishedContent = try await fms.getFinishedDream(dream_description: dream)
                                     }
@@ -82,13 +80,12 @@ struct LoggingView: View {
                             tags: tags,
                             image: "",
                             emotion: emotion,
-                            finishedDream: finishedContent // Use the stored variable
+                            finishedDream: finishedContent
                         )), isActive: $canNavigate) {
                             EmptyView()
                         }
                     }
                     
-                    // Rest of your existing UI code...
                     HStack {
                         ZStack(alignment: .leading) {
                             if title.isEmpty {
