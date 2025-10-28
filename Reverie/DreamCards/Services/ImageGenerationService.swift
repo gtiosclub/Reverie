@@ -6,139 +6,99 @@
 //
 
 import Foundation
+import SwiftUI
 import CoreML
 import StableDiffusion
 import Vision
-import SwiftUI
-import Combine
 
-@Observable
-class ImageGenerationService {
-    var generatedImage: UIImage?
-    var isLoading = false
-    var loadingStateText = ""
-    var progress: StableDiffusionPipeline.Progress?
+actor ImageGenerationService {
+    static let shared = ImageGenerationService()
     
-    private var pipeline: StableDiffusionPipeline?
+    private var pipeline: StableDiffusionPipeline!
 
-    init() {
+    private init() {
         Task(priority: .utility) {
             await loadModel()
         }
     }
-    
-    func generateSticker(prompt: String) async throws -> UIImage? {
-        guard let pipeline = self.pipeline else {
-            throw NSError(domain: "ImageGenerator", code: 1, userInfo: [NSLocalizedDescriptionKey: "Pipeline not ready."])
-        }
 
-        await MainActor.run {
-                self.isLoading = true
-                self.loadingStateText = "Generating..."
-            }
-
-        defer {
-            Task { @MainActor in
-                self.isLoading = false
-                self.loadingStateText = ""
-            }
+    func getPipeline() async -> StableDiffusionPipeline {
+        while pipeline == nil {
+            try? await Task.sleep(nanoseconds: 200_000_000)
         }
-        
-        var configuration = StableDiffusionPipeline.Configuration(prompt: prompt)
-        configuration.stepCount = 20
-        configuration.seed = UInt32.random(in: 0...UInt32.max)
-        
-        let images = try pipeline.generateImages(configuration: configuration)
-        
-        guard let finalCGImage = images.compactMap({ $0 }).first else {
-            print("⚠️ Stable Diffusion did not produce a valid image.")
-            return nil
-        }
-        
-        let uiImage = UIImage(cgImage: finalCGImage)
-        
-        return try await removeBackground(from: uiImage)
+        return pipeline
     }
 
-    private func loadModel() async {
-        if pipeline != nil { return }
-        
-        await MainActor.run {
-            isLoading = true
-            loadingStateText = "Loading model..."
-        }
-        
+    func generateSticker(prompt: String) async throws -> UIImage? {
+        print("coreml generating - waiting for pipeline")
+        let strongPipeline = await getPipeline()
+        print("coreml generating - pipeline acquired")
+
+        let generatedImage: UIImage? = try await Task.detached(priority: .utility) {
+            var config = StableDiffusionPipeline.Configuration(prompt: prompt)
+            config.stepCount = 20
+            config.seed = UInt32.random(in: 0...UInt32.max)
+            let images = try strongPipeline.generateImages(configuration: config)
+            guard let cgImage = images.compactMap({ $0 }).first else { return nil }
+            return UIImage(cgImage: cgImage)
+        }.value
+
+        guard let generatedImage = generatedImage, !Task.isCancelled else { return nil }
+
+        print("Removing background")
         do {
-            guard let resourceURL = Bundle.main.url(forResource: "StableDiffusionResources", withExtension: nil) else {
-                throw NSError(domain: "ImageGenerator", code: 1, userInfo: [NSLocalizedDescriptionKey: "Could not find model resources."])
+            return try await ImageGenerationService.removeBackground(from: generatedImage)
+        } catch {
+            print("Background removal failed. Returning original image.")
+            return generatedImage
+        }
+    }
+
+    func loadModel() async {
+        guard pipeline == nil else { return }
+        print("Loading Stable Diffusion model...")
+        do {
+            guard let url = Bundle.main.url(forResource: "StableDiffusionResources", withExtension: nil) else {
+                print("Error: Model resources missing")
+                return
             }
-            
-            let loadedPipeline = try StableDiffusionPipeline(
-                resourcesAt: resourceURL,
+            let config = MLModelConfiguration()
+            config.computeUnits = .cpuAndNeuralEngine
+            let loaded = try StableDiffusionPipeline(
+                resourcesAt: url,
                 controlNet: [],
+                configuration: config,
                 reduceMemory: true
             )
-            
-            await MainActor.run {
-                self.pipeline = loadedPipeline
-                self.isLoading = false
-                self.loadingStateText = ""
-            }
-            print("✅ Model loaded successfully.")
-            
+            pipeline = loaded
+            print("Model loaded successfully")
         } catch {
-            print("❌ Error loading Stable Diffusion pipeline: \(error)")
-            await MainActor.run {
-                self.loadingStateText = "Error loading model."
-            }
+            print("Error loading model: \(error)")
         }
     }
-    
-    func removeBackground(from image: UIImage) async throws -> UIImage? {
-        guard let cgImage = image.cgImage else {
-            print("❌ DEBUG: Failed to get CGImage.")
-            throw ImageProcessingErrorService.failedToGetCGImage
-        }
+
+    static func removeBackground(from image: UIImage) async throws -> UIImage? {
+        guard let cgImage = image.cgImage else { return nil }
+        guard !Task.isCancelled else { return nil }
 
         let request = VNGenerateForegroundInstanceMaskRequest()
-        let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
-        
+        let handler = VNImageRequestHandler(cgImage: cgImage)
         try handler.perform([request])
-        
-        guard let result = request.results?.first else {
-            print("❌ DEBUG: Vision request did not find any subject.")
-            throw ImageProcessingErrorService.visionRequestFailed
-        }
+        guard let result = request.results?.first else { return image }
 
-        let maskPixelBuffer = try result.generateMaskedImage(
+        let maskBuffer = try result.generateMaskedImage(
             ofInstances: result.allInstances,
             from: handler,
             croppedToInstancesExtent: false
         )
-
-        let originalCIImage = CIImage(cgImage: cgImage)
-        let maskCIImage = CIImage(cvPixelBuffer: maskPixelBuffer)
-
-        guard let compositingFilter = CIFilter(name: "CISourceInCompositing") else {
-            throw ImageProcessingErrorService.filterCreationFailed
-        }
-
-        compositingFilter.setValue(originalCIImage, forKey: kCIInputImageKey)
-        compositingFilter.setValue(maskCIImage, forKey: kCIInputBackgroundImageKey)
-
-        guard let outputCIImage = compositingFilter.outputImage else {
-            throw ImageProcessingErrorService.filterFailedToOutput
-        }
-        
-        if outputCIImage.extent.isInfinite || outputCIImage.extent.isEmpty {
-            throw ImageProcessingErrorService.infiniteOrEmptyOutput
-        }
-
-        let context = CIContext(options: nil)
-        guard let outputCGImage = context.createCGImage(outputCIImage, from: outputCIImage.extent) else {
-            throw ImageProcessingErrorService.finalImageCreationFailed
-        }
-        
-        return UIImage(cgImage: outputCGImage)
+        let originalCI = CIImage(cgImage: cgImage)
+        let maskCI = CIImage(cvPixelBuffer: maskBuffer)
+        guard let filter = CIFilter(name: "CISourceInCompositing") else { return image }
+        filter.setValue(originalCI, forKey: kCIInputImageKey)
+        filter.setValue(maskCI, forKey: kCIInputBackgroundImageKey)
+        guard let output = filter.outputImage else { return image }
+        let context = CIContext()
+        guard let outputCG = context.createCGImage(output, from: output.extent) else { return image }
+        return UIImage(cgImage: outputCG)
     }
 }

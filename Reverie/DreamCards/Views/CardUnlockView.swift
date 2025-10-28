@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct CardUnlockView: View {
-    @Environment(FirebaseDCService.self) private var fbdcs
+//    @Environment(FirebaseDCService.self) private var fbdcs
     @Binding var unlockCards: Bool
     
     // how many cards have been revealed?

@@ -19,7 +19,7 @@ class FirebaseDreamService {
     
     let dcfms = DCFoundationModelService()
     
-    let igs = ImageGenerationService()
+    let igs = ImageGenerationService.shared
     
     let fdcs = FirebaseDCService()
     
@@ -33,7 +33,7 @@ class FirebaseDreamService {
         
         for dreamKey in dreamKeys {
             let dreamRef = fb.db.collection("DREAMS").document(dreamKey)
-            print("Fetching document for key \(dreamKey)…")
+//            print("Fetching document for key \(dreamKey)…")
             
             let snapshot = try await dreamRef.getDocument()
             guard let data = snapshot.data() else {
@@ -41,7 +41,7 @@ class FirebaseDreamService {
                 continue
             }
             
-            print("✅ Document data: \(data)")
+//            print("✅ Document data: \(data)")
             
             guard
                 let userId = data["userID"] as? String,
@@ -53,7 +53,8 @@ class FirebaseDreamService {
                 let generatedContent = data["generatedContent"] as? String,
                 let image = data["image"] as? String,
                 let emotionString = data["emotion"] as? String,
-                let tagsArray = data["tags"] as? [String]
+                let tagsArray = data["tags"] as? [String],
+                let finishedDream = data["finishedDream"] as? String
             else {
                 print("⚠️ Missing or invalid fields for dream \(dreamKey)")
                 continue
@@ -77,7 +78,8 @@ class FirebaseDreamService {
                 generatedContent: generatedContent,
                 tags: tags,
                 image: image,
-                emotion: emotion ?? .happiness
+                emotion: emotion ?? .happiness,
+                finishedDream: finishedDream
             )
             
             dreams.append(dream)
@@ -111,7 +113,8 @@ class FirebaseDreamService {
                 "image": "",//stickerURL.absoluteString,
                   "loggedContent": dream.loggedContent,
                   "tags": tagArray,
-                  "userID": dream.userID
+                  "userID": dream.userID,
+                "finishedDream": dream.finishedDream
               ])
               let dreamRef = ref.documentID
               dream.id = dreamRef
@@ -130,7 +133,6 @@ class FirebaseDreamService {
           } catch {
               print("Error adding document: \(error)")
           }
-        
         FirebaseLoginService.shared.currUser?.dreams.append(dream)
       }
 }

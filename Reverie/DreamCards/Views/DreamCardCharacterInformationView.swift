@@ -100,3 +100,10 @@ struct DreamCardCharacterInformationView: View {
         }
     }
 }
+
+#Preview {
+    DreamCardCharacterInformationView(
+        selectedCharacter: .constant(nil),
+        character: CardModel(userID: "1", id: "1", name: "Morpheus", description: "Builds the very landscapes of your dreams, weaving reality from thought.", image: "square.stack.3d.up.fill", cardColor: .blue)
+    )
+}

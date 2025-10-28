@@ -20,13 +20,13 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 struct ReverieApp: App {
     @StateObject private var tabState = TabState()
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
-
+    
     var body: some Scene {
         WindowGroup {
             AuthRoutingView()
                 .environment(FirebaseLoginService.shared)
                 .environment(FirebaseDreamService.shared)
-                .environment(FirebaseDCService.shared)
+//                .environment(FirebaseDCService.shared)
                 .environmentObject(tabState)
         }
     }
