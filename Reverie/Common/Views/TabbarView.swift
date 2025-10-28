@@ -9,7 +9,7 @@ import SwiftUI
 
 
 struct TabbarView: View {
-    @EnvironmentObject var tabState: TabState
+    @EnvironmentObject var ts: TabState
 
     var body: some View {
 //        VStack {
@@ -34,18 +34,18 @@ struct TabButton<Destination: View>: View {
     let tab: TabType
     let destination: Destination
     
-    @EnvironmentObject var tabState: TabState
+    @EnvironmentObject var ts: TabState
     
     var body: some View {
         NavigationLink(destination: destination
             .onAppear {
-                tabState.activeTab = tab
+                ts.activeTab = tab
             }) {
             title
                 .frame(maxWidth: .infinity)
                 .padding()
                 .font(.system(size: 18))
-                .foregroundColor(tabState.activeTab == tab ? Color.purple.opacity(0.6) : .gray)
+                .foregroundColor(ts.activeTab == tab ? Color.purple.opacity(0.6) : .gray)
         }
         .navigationBarBackButtonHidden(true)
     }
