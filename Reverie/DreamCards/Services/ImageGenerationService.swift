@@ -29,7 +29,7 @@ actor ImageGenerationService {
         return pipeline
     }
 
-    func generateSticker(prompt: String) async throws -> UIImage? {
+    func generateSticker(prompt: String, isSticker: Bool) async throws -> UIImage? {
         print("coreml generating - waiting for pipeline")
         let strongPipeline = await getPipeline()
         print("coreml generating - pipeline acquired")
@@ -44,12 +44,16 @@ actor ImageGenerationService {
         }.value
 
         guard let generatedImage = generatedImage, !Task.isCancelled else { return nil }
-
-        print("Removing background")
-        do {
-            return try await ImageGenerationService.removeBackground(from: generatedImage)
-        } catch {
-            print("Background removal failed. Returning original image.")
+        
+        if isSticker {
+            print("Removing background")
+            do {
+                return try await ImageGenerationService.removeBackground(from: generatedImage)
+            } catch {
+                print("Background removal failed. Returning original image.")
+                return generatedImage
+            }
+        } else {
             return generatedImage
         }
     }
