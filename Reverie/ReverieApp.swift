@@ -26,6 +26,7 @@ struct ReverieApp: App {
 //                .environment(FirebaseUserService.shared)
                 .environment(FirebaseLoginService.shared)
                 .environment(FirebaseDreamService.shared)
+                .environment(FirebaseDCService.shared)
         }
     }
 }
