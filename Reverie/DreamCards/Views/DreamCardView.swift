@@ -21,6 +21,8 @@ struct DreamCardView: View {
 //    ]
     @State private var characters: [CardModel] = []
     
+    @State private var lockedCharacters: [CardModel] = []
+    
     @State private var selectedCharacter: CardModel?
     
     @State private var dreamCount: Int = 0
@@ -68,8 +70,17 @@ struct DreamCardView: View {
             .task {
                 do {
                     self.characters = try await FirebaseDCService.shared.fetchDCCards()
+                    self.lockedCharacters = characters.filter { !$0.isUnlocked }
                 } catch {
                     print("Error fetching cards: \(error.localizedDescription)")
+                }
+            }
+            .onChange(of: unlockCards) {
+                if unlockCards == false {
+                    Task {
+                        self.characters = try await FirebaseDCService.shared.fetchDCCards()
+                        self.lockedCharacters = characters.filter { !$0.isUnlocked }
+                    }
                 }
             }
             
@@ -80,7 +91,7 @@ struct DreamCardView: View {
             }
             
             if unlockCards {
-                CardUnlockView(unlockCards: $unlockCards, cards: characters)
+                CardUnlockView(unlockCards: $unlockCards, cards: lockedCharacters)
                     .transition(.opacity.combined(with: .scale(scale: 0.9)))
             }
         }
