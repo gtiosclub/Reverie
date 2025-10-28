@@ -15,7 +15,7 @@ class FirebaseDCService {
     static let shared = FirebaseDCService()
     let fb = FirebaseLoginService()
 
-    func generateImage(for dream: DreamModel) {
+    func generateImage(for dream: DreamModel, isSticker: Bool) {
         let dreamID = dream.id
         let dreamText = dream.loggedContent
         let userID = dream.userID
@@ -28,19 +28,21 @@ class FirebaseDCService {
                     return
                 }
                 print("generating image")
-                guard let sticker = try await ImageGenerationService.shared.generateSticker(prompt: character[0]) else { return }
+                guard let sticker = try await ImageGenerationService.shared.generateSticker(prompt: character[0], isSticker: isSticker) else { return }
                 print("storing in fb")
                 let url = try await FirebaseStorageService.shared.uploadSticker(sticker, forUserID: userID, dreamID: dreamID)
-                await FirebaseDCService.shared.createDC(
-                    card: CardModel(
-                        userID: userID,
-                        id: dreamID,
-                        name: character[1],
-                        description: character[2],
-                        image: url.absoluteString,
-                        cardColor: .purple
+                if isSticker {
+                    await FirebaseDCService.shared.createDC(
+                        card: CardModel(
+                            userID: userID,
+                            id: dreamID,
+                            name: character[1],
+                            description: character[2],
+                            image: url.absoluteString,
+                            cardColor: .purple
+                        )
                     )
-                )
+                }
                 print("finished")
             }
         } catch {
