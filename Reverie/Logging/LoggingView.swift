@@ -22,6 +22,49 @@ struct LoggingView: View {
     
     @State private var isLoading = false
     
+    func createNotification(title: String, description: String, hour: Int, minute: Int ) {
+        let content = UNMutableNotificationContent()
+        
+        content.title = title
+        content.body = description
+        
+        var dateComponents = DateComponents()
+        dateComponents.calendar = Calendar.current
+
+        dateComponents.hour = hour
+        dateComponents.minute = minute
+           
+        let trigger = UNCalendarNotificationTrigger(
+                 dateMatching: dateComponents, repeats: true)
+        
+        let uuidString = UUID().uuidString
+        let request = UNNotificationRequest(identifier: uuidString, content: content, trigger: trigger)
+
+
+        let notificationCenter = UNUserNotificationCenter.current()
+        Task {
+            do {
+                try await notificationCenter.add(request)
+            } catch {
+                print("notifcation error")
+            }
+        }
+    }
+ 
+    init() {
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { success, error in
+            if success {
+                print("notifications enabled!")
+            } else if let error {
+                print(error.localizedDescription)
+            }
+        }
+        
+        // TODO: Change time to what user prompts
+        createNotification(title: "Good morning!", description: "Time to log your dream", hour: 18, minute: 20)
+        createNotification(title: "Good Night!", description: "Dream well!", hour: 18, minute: 20)
+    }
+    
     var body: some View {
         NavigationStack {
             ZStack {
