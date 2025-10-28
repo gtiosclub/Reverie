@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct DreamCardView: View {
-    @Environment(FirebaseDreamService.self) private var fbds
-    @Environment(FirebaseDCService.self) private var fbdcs
+//    @Environment(FirebaseDreamService.self) private var fbds
+//    @Environment(FirebaseDCService.self) private var fbdcs
     
 //    @State private var characters: [CardModel] = [
 //        CardModel(userID: "1", id: "1", name: "Morpheus", description: "Builds the very landscapes of your dreams, weaving reality from thought.", image: "square.stack.3d.up.fill", cardColor: .blue),
@@ -56,7 +56,7 @@ struct DreamCardView: View {
                     }
                     .task {
                         do {
-                            let dreams = try await fbds.getDreams()
+                            let dreams = try await FirebaseDreamService.shared.getDreams()
                             self.dreamCount = dreams.count
                         } catch {
                             print("Error fetching dreams: \(error)")
@@ -67,10 +67,9 @@ struct DreamCardView: View {
             .padding(.bottom, 120)
             .task {
                 do {
-                    // fetch the cards when the view appears
-                    self.characters = try await fbdcs.fetchDCCards()
+                    self.characters = try await FirebaseDCService.shared.fetchDCCards()
                 } catch {
-                    print("Error: \(error.localizedDescription)")
+                    print("Error fetching cards: \(error.localizedDescription)")
                 }
             }
             
@@ -91,6 +90,4 @@ struct DreamCardView: View {
 
 #Preview {
     DreamCardView()
-        .environment(FirebaseDCService.shared)
-        .environment(FirebaseDreamService.shared)
 }

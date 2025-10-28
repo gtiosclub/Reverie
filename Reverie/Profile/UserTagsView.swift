@@ -10,9 +10,9 @@ import SwiftUI
 
 
 //test dreams
-let d1 = DreamModel(userID: "hi", id: "hi", title: "Dream 1", date: Date(), loggedContent: "hi", generatedContent: "hi", tags: [DreamModel.Tags.animals, DreamModel.Tags.forests], image: "hi", emotion: DreamModel.Emotions.sadness)
+let d1 = DreamModel(userID: "hi", id: "hi", title: "Dream 1", date: Date(), loggedContent: "hi", generatedContent: "hi", tags: [DreamModel.Tags.animals, DreamModel.Tags.forests], image: "hi", emotion: DreamModel.Emotions.sadness, finishedDream: "None")
 
-let d2 = DreamModel(userID: "hi", id: "hi", title: "Dream2", date: Date(), loggedContent: "hi", generatedContent: "hi", tags: [DreamModel.Tags.mountains, DreamModel.Tags.forests, DreamModel.Tags.animals, DreamModel.Tags.rivers, DreamModel.Tags.school, DreamModel.Tags.school], image: "hi", emotion: DreamModel.Emotions.happiness)
+let d2 = DreamModel(userID: "hi", id: "hi", title: "Dream2", date: Date(), loggedContent: "hi", generatedContent: "hi", tags: [DreamModel.Tags.mountains, DreamModel.Tags.forests, DreamModel.Tags.animals, DreamModel.Tags.rivers, DreamModel.Tags.school, DreamModel.Tags.school], image: "hi", emotion: DreamModel.Emotions.happiness, finishedDream: "None")
 
 let thisWeekDreams = getRecentDreams(dreams: FirebaseLoginService.shared.currUser?.dreams ?? [], count:  10)
 let allDreams = FirebaseLoginService.shared.currUser?.dreams ?? []

@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct StartView: View {
-    @EnvironmentObject var tabState: TabState
+    @EnvironmentObject var ts: TabState
     var body: some View {
         NavigationStack{
             ZStack {
@@ -34,7 +34,7 @@ struct StartView: View {
                 }
             }
             .onAppear {
-                tabState.activeTab = .home
+                ts.activeTab = .home
             }
         }
     }
