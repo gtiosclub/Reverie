@@ -9,19 +9,19 @@ import SwiftUI
 
 struct TabbarView: View {
     var body: some View {
-        VStack {
+//        VStack {
             HStack {
-                TabButton(title: Image(systemName: "house"), destination: HomeView())
+                TabButton(title: Image(systemName: "house"), destination: StartView())
                 TabButton(title: Image(systemName: "chart.bar"), destination: ProfileView())
-                TabButton(title: Image(systemName: "doc.text"), destination: LoggingView()) // placeholder
+                TabButton(title: Image(systemName: "doc.text"), destination: DreamArchiveView())
             }
             .padding()
             .frame(maxWidth: 300, maxHeight: 50)
             .glassEffect(.regular, in: .rect)
             .cornerRadius(20)
-        }
-        .frame(maxHeight: .infinity, alignment: .bottom)
-        .padding(.bottom, -10)
+//        }
+//        .frame(maxHeight: .infinity, alignment: .bottom)
+//        .padding(.bottom, -10)
     }
 }
 
