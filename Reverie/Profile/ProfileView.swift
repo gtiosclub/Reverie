@@ -3,7 +3,7 @@ import FirebaseFirestore
 import FirebaseAuth
 
 struct ProfileView: View {
-    @EnvironmentObject var tabState: TabState
+    @EnvironmentObject var ts: TabState
     // Raw data
     @State private var dreams: [DreamModel] = []
 
@@ -76,12 +76,12 @@ struct ProfileView: View {
                                 .background(Color(red: 35/255, green: 31/255, blue: 49/255))
                                 .cornerRadius(12)
                         }
-                        NavigationLink(destination: TestView()) {
-                            HStack { Image(systemName: "hammer"); Text("Test Page") }
-                                .font(.subheadline)
-                                .foregroundColor(.white)
-                                .padding(.vertical, 8)
-                        }
+//                        NavigationLink(destination: TestView()) {
+//                            HStack { Image(systemName: "hammer"); Text("Test Page") }
+//                                .font(.subheadline)
+//                                .foregroundColor(.white)
+//                                .padding(.vertical, 8)
+//                        }
                     }
                 }
                 .padding(.horizontal, 16)
@@ -96,7 +96,7 @@ struct ProfileView: View {
         }
         .task { await loadDreamsAndStats() }
         .onAppear {                    
-            tabState.activeTab = .analytics
+            ts.activeTab = .analytics
         }
 
     }
@@ -179,6 +179,7 @@ extension ProfileView {
             ?? (data["genereatedContent"] as? String) // seen misspelling in UI code
             ?? ""
         let image = (data["image"] as? String) ?? ""
+        let finishedDream = (data["finishedDream"] as? String) ?? "None"
 
         var date = Date()
         if let ts = data["date"] as? Timestamp { date = ts.dateValue() }
@@ -202,7 +203,8 @@ extension ProfileView {
             generatedContent: generatedContent,
             tags: tags,
             image: image,
-            emotion: emotion
+            emotion: emotion,
+            finishedDream: finishedDream
         )
     }
 

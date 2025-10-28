@@ -15,5 +15,6 @@ enum TabType {
 }
 
 final class TabState: ObservableObject {
-    @Published var activeTab: TabType = .home
+    static let shared = TabState()
+    var activeTab: TabType = .home
 }

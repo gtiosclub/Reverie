@@ -200,7 +200,8 @@ struct SaveDreamView: View {
             generatedContent: "",
             tags: [],
             image: "",
-            emotion: .happiness
+            emotion: .happiness,
+            finishedDream: "None"
         )
     )
 }
