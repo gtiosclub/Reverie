@@ -6,6 +6,8 @@
 
 import Firebase
 import Foundation
+import FirebaseStorage
+import SwiftUI
 
 @MainActor
 @Observable
@@ -15,8 +17,75 @@ class FirebaseDreamService {
     
     let fb = FirebaseLoginService()
     
-    // !!when using createDream, you can use any id value for the dream you pass in, it will update with the accurate dream id once the dream is initialized in firebase!!
-  
+    let dcfms = DCFoundationModelService()
+    
+    let igs = ImageGenerationService()
+    
+    let fdcs = FirebaseDCService()
+    
+    func getDreams() async throws -> [DreamModel] {
+        guard let user = FirebaseLoginService.shared.currUser else {
+            print("No current user found.")
+            return []
+        }
+        let dreamKeys = user.dreams.map { $0.id }
+        var dreams: [DreamModel] = []
+        
+        for dreamKey in dreamKeys {
+            let dreamRef = fb.db.collection("DREAMS").document(dreamKey)
+            print("Fetching document for key \(dreamKey)…")
+            
+            let snapshot = try await dreamRef.getDocument()
+            guard let data = snapshot.data() else {
+                print("⚠️ No data in snapshot for key: \(dreamKey)")
+                continue
+            }
+            
+            print("✅ Document data: \(data)")
+            
+            guard
+                let userId = data["userID"] as? String,
+                let id = data["id"] as? String,
+                let title = data["title"] as? String,
+                let dateString = data["date"] as? String,  // adjust if stored as Timestamp
+                let title = data["title"] as? String,
+                let loggedContent = data["loggedContent"] as? String,
+                let generatedContent = data["generatedContent"] as? String,
+                let image = data["image"] as? String,
+                let emotionString = data["emotion"] as? String,
+                let tagsArray = data["tags"] as? [String]
+            else {
+                print("⚠️ Missing or invalid fields for dream \(dreamKey)")
+                continue
+            }
+            
+            // Convert date
+            let formatter = DateFormatter()
+            let date = formatter.date(from: dateString) ?? Date()
+            
+            let emotion = DreamModel.Emotions(rawValue: emotionString.lowercased())
+            
+            let tags: [DreamModel.Tags] = tagsArray.compactMap { DreamModel.Tags(rawValue: $0.lowercased()) }
+            
+            // Build model
+            let dream: DreamModel = .init(
+                userID: userId,
+                id: id,
+                title: title,
+                date: date,
+                loggedContent: loggedContent,
+                generatedContent: generatedContent,
+                tags: tags,
+                image: image,
+                emotion: emotion ?? .happiness
+            )
+            
+            dreams.append(dream)
+        }
+        
+        return dreams
+    }
+    
     func createDream(dream: DreamModel) async {
 
           let dateFormatter = DateFormatter()
@@ -33,17 +102,16 @@ class FirebaseDreamService {
           print("USER ID: \(dream.userID)")
 
           do {
-              let ref = try await fb.db.collection("DREAMS").addDocument(
-                data: [
-                 "date": dateFormatter.string(from: dream.date),
-                 "emotion": dream.emotion.rawValue,
-                 "generatedContent": dream.generatedContent,
-                 "title": dream.title,
-                 "id": dream.id,
-                 "image": dream.image,
-                 "loggedContent": dream.loggedContent,
-                 "tags": tagArray,
-                 "userID": dream.userID
+              let ref = fb.db.collection("DREAMS").addDocument(data: [
+                "date": dateFormatter.string(from: dream.date),
+                  "emotion": String(describing: dream.emotion),
+                  "generatedContent": dream.generatedContent,
+                "title": dream.title,
+                   "id": dream.id,
+                "image": "",//stickerURL.absoluteString,
+                  "loggedContent": dream.loggedContent,
+                  "tags": tagArray,
+                  "userID": dream.userID
               ])
               let dreamRef = ref.documentID
               dream.id = dreamRef
@@ -51,23 +119,19 @@ class FirebaseDreamService {
               
               try await ref.updateData(["id": dreamRef])
 
-              let userRef = try await fb.db.collection("USERS").document(dream.userID)
+              let userRef = fb.db.collection("USERS").document(dream.userID)
 
               try await userRef.updateData([
                   "dreams": FieldValue.arrayUnion([dreamRef])
                   ])
               
-
               print("Appended \(dreamRef) to user \(dream.userID)")
-
+              
           } catch {
               print("Error adding document: \(error)")
           }
         
-        
-        
         FirebaseLoginService.shared.currUser?.dreams.append(dream)
-        
       }
 }
 
