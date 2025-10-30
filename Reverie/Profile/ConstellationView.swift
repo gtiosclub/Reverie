@@ -38,34 +38,9 @@ struct DreamSimilarityGraph: UIViewRepresentable {
             let scnView = gesture.view as! SCNView
             let location = gesture.location(in: scnView)
             let hitResults = scnView.hitTest(location, options: nil)
-            
-            guard let hit = hitResults.first, let dreamName = hit.node.name else { return }
-            
-            if let dream = parent.dreams.first(where: { $0.loggedContent == dreamName }) {
-                parent.selectedDream = dream
-                
-                // bring node to front
-                let node = hit.node
-                let mvClose = SCNAction.move(to: SCNVector3(node.position.x, node.position.y, 3), duration: 0.5)
-                mvClose.timingMode = .easeInEaseOut
-                
-                let scaleUp = SCNAction.scale(to: 1.5, duration: 0.3)
-                scaleUp.timingMode = .easeInEaseOut
-                
-                let highlight = SCNAction.group([mvClose, scaleUp])
-                
-                node.runAction(highlight)
-                
-                // rotate node to face my camera
-                if let cameraNode = scnView.scene?.rootNode.childNodes.first(where: { $0.camera != nil }) {
-                    let lookAt = SCNAction.rotateTo(
-                        x: CGFloat(node.eulerAngles.x),
-                        y: CGFloat(atan2(cameraNode.position.x - node.position.x, cameraNode.position.z - node.position.z)),
-                        z: 0,
-                        duration: 0.5,
-                        usesShortestUnitArc: true
-                    )
-                    node.runAction(lookAt)
+            if let hit = hitResults.first, let dreamName = hit.node.name {
+                if let dream = parent.dreams.first(where: { $0.loggedContent == dreamName }) {
+                    parent.selectedDream = dream
                 }
             }
         }
