@@ -19,6 +19,8 @@ struct DreamCardView: View {
 //        CardModel(userID: "5", id: "5", name: "Oneiros", description: "Carries prophetic messages and symbols through the dream world.", image: "envelope.badge.fill", cardColor: .blue),
 //        CardModel(userID: "6", id: "6", name: "Kairos", description: "Bends the rules of time and logic within the dream state.", image: "hourglass", cardColor: .green)
 //    ]
+    @Binding var isOnHomeScreen: Bool
+    
     @State private var characters: [CardModel] = []
     
     @State private var lockedCharacters: [CardModel] = []
@@ -104,7 +106,7 @@ struct DreamCardView: View {
             }
             
             if let character = selectedCharacter {
-                DreamCardCharacterInformationView(selectedCharacter: $selectedCharacter, character: character)
+                DreamCardCharacterInformationView(selectedCharacter: $selectedCharacter, character: character, isOnHomeScreen: $isOnHomeScreen)
                     .transition(.asymmetric(insertion: .opacity.combined(with: .scale(scale: 0.8)), removal: .opacity))
                     .id(character.id)
             }
@@ -119,5 +121,5 @@ struct DreamCardView: View {
 }
 
 #Preview {
-    DreamCardView()
+    DreamCardView(isOnHomeScreen: .constant(false))
 }
