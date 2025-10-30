@@ -95,7 +95,10 @@ private struct PeakCircles: View {
 private struct YearlyDreamGraphView: View {
     let dreams: [DreamModel]
     let year: Int
-    @State private var monthlyData: [MonthlyDreamData] = []
+    
+    private var monthlyData: [MonthlyDreamData] {
+        processDreamsForYear()
+    }
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -104,7 +107,7 @@ private struct YearlyDreamGraphView: View {
                 .font(.title2)
                 .fontWeight(.bold)
                 .foregroundColor(.white)
-                .padding(.top)
+                .padding(.top, 20)
                 .padding(.horizontal)
             
             VStack{
@@ -134,12 +137,6 @@ private struct YearlyDreamGraphView: View {
         .background(Color(red: 35/255, green: 31/255, blue: 49/255))
         .cornerRadius(10)
         .padding()
-        .onAppear {
-            monthlyData = processDreamsForYear()
-        }
-        .onChange(of: year) { newYear in
-            monthlyData = processDreamsForYear()
-        }
     }
 
     private func createGradient() -> LinearGradient {
