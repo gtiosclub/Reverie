@@ -32,6 +32,12 @@ struct StickerView: View {
 
 struct CharacterView: View {
     let character: CardModel
+    let size: CGFloat
+    
+    init(character: CardModel, size: CGFloat = 90) {
+            self.character = character
+            self.size = size
+    }
 
     var body: some View {
         ZStack {
@@ -64,10 +70,10 @@ struct CharacterView: View {
                     EmptyView()
                 }
             }
-            .frame(width: 90, height: 90)
+            .frame(width: size, height: size)
             .foregroundColor(.white)
         }
-        .frame(width: 105, height: 105)
+        .frame(width: size*1.17, height: size*1.17)
     }
 }
 
