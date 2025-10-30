@@ -45,7 +45,7 @@ struct DreamCardView: View {
                     Spacer()
                 }
                 .padding(.horizontal, 30)
-                .padding(.top, 180)
+                .padding(.top, 100)
                 
                 StickerView(characters: characters, selectedCharacter: $selectedCharacter)
                     .padding(.top, 50)
@@ -55,10 +55,12 @@ struct DreamCardView: View {
                 Text("Unlock in 3 days")
                     .font(.headline.bold())
                     .foregroundColor(.white.opacity(0.9))
-                    .padding(.top, 5)
+                
+                Spacer()
                 
                 DreamCardProgressView(progress: progress)
                     .scaleEffect(1.5)
+                    .padding(.top, 30)
 //                    .rotationEffect(.degrees(degrees))
 //                    .onAppear {
 //                        withAnimation(.linear(duration: 0.12).repeatCount(6, autoreverses: true)) {
