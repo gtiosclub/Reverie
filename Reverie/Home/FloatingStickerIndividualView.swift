@@ -38,7 +38,7 @@ struct FloatingStickerIndividualView: View {
         .rotationEffect(rotation)
         .position(x: position.x + dragOffset.width, y: position.y + dragOffset.height)
         .gesture(
-            LongPressGesture(minimumDuration: 0.3)
+            LongPressGesture(minimumDuration: 0.1)
                 .onEnded { _ in
                     isBeingDragged = true
                 }
