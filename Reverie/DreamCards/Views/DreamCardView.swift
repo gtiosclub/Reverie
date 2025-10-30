@@ -36,14 +36,33 @@ struct DreamCardView: View {
 
     var body: some View {
         ZStack {
-            VStack(spacing: 30) {
+            VStack(spacing: 20) {
 //                StickerView(characters: characters, selectedCharacter: $selectedCharacter)
+                HStack {
+                    Text("My Characters")
+                        .font(.title2.bold())
+                        .foregroundColor(.white)
+                    Image(systemName: "chevron.down")
+                        .foregroundColor(.white.opacity(0.8))
+                    Spacer()
+                }
+                .padding(.horizontal, 30)
+                .padding(.top, 100)
+                
                 StickerView(characters: characters, selectedCharacter: $selectedCharacter)
                     .padding(.top, 50)
                 
                 Spacer()
                 
+                Text("Unlock in 3 days")
+                    .font(.headline.bold())
+                    .foregroundColor(.white.opacity(0.9))
+                
+                Spacer()
+                
                 DreamCardProgressView(progress: progress)
+                    .scaleEffect(1.5)
+                    .padding(.top, 30)
 //                    .rotationEffect(.degrees(degrees))
 //                    .onAppear {
 //                        withAnimation(.linear(duration: 0.12).repeatCount(6, autoreverses: true)) {
