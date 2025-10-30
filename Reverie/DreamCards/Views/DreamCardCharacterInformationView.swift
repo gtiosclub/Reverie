@@ -9,9 +9,13 @@ import SwiftUI
 
 struct DreamCardCharacterInformationView: View {
     @Binding var selectedCharacter: CardModel?
-        
-    @State private var isUnlocked = false
+    
+    // Parent-provided action to persist pin changes
+    var onTogglePin: (CardModel) -> Void = { _ in }
+    
     let character: CardModel
+    
+    @State private var isUnlocked = false
     
     var body: some View {
         ZStack {
@@ -23,16 +27,16 @@ struct DreamCardCharacterInformationView: View {
                         selectedCharacter = nil
                     }
                 }
-
+            
             // The Card
             VStack(spacing: 16) {
-
+                
                 VStack(spacing: 16) {
-//                    Image(systemName: character.image ?? "person.fill")
-//                        .resizable()
-//                        .scaledToFit()
-//                        .frame(width: 90, height: 90)
-//                        .foregroundColor(.white)
+                    //                    Image(systemName: character.image ?? "person.fill")
+                    //                        .resizable()
+                    //                        .scaledToFit()
+                    //                        .frame(width: 90, height: 90)
+                    //                        .foregroundColor(.white)
                     AsyncImage(url: URL(string: character.image ?? "")) { phase in
                         switch phase {
                         case .empty:
@@ -51,12 +55,12 @@ struct DreamCardCharacterInformationView: View {
                     }
                     .frame(width: 90, height: 90)
                     .foregroundColor(.white)
-
+                    
                     Text(character.name)
                         .font(.largeTitle)
                         .fontWeight(.bold)
                         .foregroundColor(.white)
-                
+                    
                     Text(character.description)
                         .font(.body)
                         .foregroundColor(.white.opacity(0.85))
@@ -64,7 +68,7 @@ struct DreamCardCharacterInformationView: View {
                         .padding(.horizontal, 20)
                 }
                 .frame(maxHeight: .infinity, alignment: .center)
-
+                
                 Spacer()
             }
             .frame(width: 320, height: 450)
@@ -73,6 +77,23 @@ struct DreamCardCharacterInformationView: View {
                     .fill(character.cardColor.swiftUIColor.gradient.opacity(0.5))
                     .shadow(color: character.cardColor.swiftUIColor.opacity(0.7), radius: 20, x: 0, y: 0)
                     .shadow(color: character.cardColor.swiftUIColor.opacity(0.4), radius: 40, x: 0, y: 0)
+            )
+            .overlay(
+                // Pin button (toggles CardModel.isPinned); shown at top-left, tilted 45° NW.
+                Button(action: {
+                    togglePin()
+                }) {
+                    // Hollow when not pinned, filled when pinned
+                    let pinned = (selectedCharacter?.isPinned ?? character.isPinned)
+                    Image(systemName: pinned ? "pin.fill" : "pin")
+                        .font(.system(size: 18, weight: .bold))
+                        .rotationEffect(.degrees(-45)) // 45° northwest tilt
+                        .foregroundStyle(pinned ? Color.purple : Color.white.opacity(0.85)) // fill on, hollow off
+                        .padding(8)
+                        .background(.ultraThinMaterial, in: Circle()) // subtle legibility ring
+                }
+                    .padding(),
+                alignment: .topLeading
             )
             .overlay(
                 // Close button
@@ -85,7 +106,7 @@ struct DreamCardCharacterInformationView: View {
                         .font(.largeTitle)
                         .foregroundColor(.white.opacity(0.5))
                 }
-                .padding(),
+                    .padding(),
                 alignment: .topTrailing
             )
             // Animation for when the card appears
@@ -99,11 +120,18 @@ struct DreamCardCharacterInformationView: View {
             }
         }
     }
-}
-
-#Preview {
-    DreamCardCharacterInformationView(
-        selectedCharacter: .constant(nil),
-        character: CardModel(userID: "1", id: "1", name: "Morpheus", description: "Builds the very landscapes of your dreams, weaving reality from thought.", image: "square.stack.3d.up.fill", cardColor: .blue)
-    )
+    
+    private func togglePin() {
+        if var current = selectedCharacter {
+            current.isPinned.toggle()
+            selectedCharacter = current
+            onTogglePin(current)
+            PinStore.toggle(id: current.id) // persist the change
+        } else {
+            var copy = character
+            copy.isPinned.toggle()
+            onTogglePin(copy)
+            PinStore.toggle(id: copy.id) // persist the change
+        }
+    }
 }

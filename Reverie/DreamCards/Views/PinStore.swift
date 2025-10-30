@@ -17,7 +17,6 @@ enum PinStore {
     private static let key = "pinnedCardIDs"
 
     /// Loads the current set of pinned card IDs from UserDefaults.
-    /// - Returns: A Set<String> of pinned card IDs. Returns an empty set if nothing is stored yet.
     static func load() -> Set<String> {
         // We store as an array in UserDefaults (since it doesn't natively store Set),
         let array = UserDefaults.standard.stringArray(forKey: key) ?? []
