@@ -79,10 +79,9 @@ struct DreamEntryView: View {
                         .tag(1)
                         
                         ScrollView {
-                            Text(.init(dream.generatedContent))
-                                .foregroundColor(.white)
-                                .padding()
-                                .multilineTextAlignment(.leading)
+                            AnalysisCardView(analysis: dream.generatedContent)
+                                .padding(.top, 70)
+                            
                         }
                         .tag(2)
                         
