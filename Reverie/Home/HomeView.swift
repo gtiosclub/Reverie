@@ -9,29 +9,27 @@ import SwiftUI
 import FirebaseAuth
 
 struct HomeView: View {
-    @Environment(FirebaseLoginService.self) private var fls
+//    @Environment(FirebaseLoginService.self) private var fls
     
     @State private var showSecondView = false
     @State private var dragOffset: CGSize = .zero
     
     var body: some View {
-        NavigationStack {
-            ZStack {
-                BackgroundView()
-                MoonView()
-                VStack {
-                    Text("Good Morning, \(fls.currUser?.name ?? "Dreamer")")
-                        .foregroundColor(.white)
-                        .font(.largeTitle)
-                        .bold()
-                        .padding(.bottom, 20)
-                    NewLogView()
-
-
-                }
-                .padding(.bottom, 40)
-                TabbarView()
+        ZStack {
+            BackgroundView()
+            MoonView()
+            VStack {
+                Text("Good Morning, \(FirebaseLoginService.shared.currUser?.name ?? "Dreamer")")
+                    .foregroundColor(.white)
+                    .font(.largeTitle)
+                    .bold()
+                    .padding(.bottom, 20)
+                NewLogView()
+                
+                
             }
+            .padding(.bottom, 40)
+            TabbarView()
         }
         .gesture(
             DragGesture()

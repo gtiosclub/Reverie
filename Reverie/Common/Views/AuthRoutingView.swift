@@ -13,7 +13,7 @@ struct AuthRoutingView: View {
 //    @Environment(FirebaseUserService.self) private var fus
     @Environment(FirebaseDreamService.self) private var fds
     var body: some View {
-        if fls.currUser != nil {
+        if FirebaseLoginService.shared.currUser != nil {
             HomeView()
         } else {
             LoginView()
