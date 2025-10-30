@@ -47,6 +47,6 @@ struct DreamCardProgressView: View {
 }
 
 #Preview {
-    DreamCardProgressView(progress: 1.0)
+    DreamCardProgressView(progress: 0.0)
 }
 
