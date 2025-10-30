@@ -51,7 +51,7 @@ struct Moon: View {
             .scaleEffect(scale)
             .position(x: position.x + dragOffset.width, y: position.y + dragOffset.height)
             .gesture(
-                LongPressGesture(minimumDuration: 0.1)
+                LongPressGesture(minimumDuration: 0.05)
                     .onEnded { _ in
                         isBeingDragged = true
                     }

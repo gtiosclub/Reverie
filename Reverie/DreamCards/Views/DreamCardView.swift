@@ -38,7 +38,7 @@ struct DreamCardView: View {
         ZStack {
             VStack(spacing: 30) {
 //                StickerView(characters: characters, selectedCharacter: $selectedCharacter)
-                StickerView(characters: characters, selectedCharacter: $selectedCharacter)
+                StickerView(characters: $characters, selectedCharacter: $selectedCharacter)
                     .padding(.top, 50)
                 
                 Spacer()
@@ -70,6 +70,10 @@ struct DreamCardView: View {
             .task {
                 do {
                     self.characters = try await FirebaseDCService.shared.fetchDCCards()
+                    let pinnedIDs = PinStore.load()
+                    for i in self.characters.indices {
+                        self.characters[i].isPinned = pinnedIDs.contains(self.characters[i].id)
+                    }
                     self.lockedCharacters = characters.filter { !$0.isUnlocked }
                 } catch {
                     print("Error fetching cards: \(error.localizedDescription)")
@@ -85,9 +89,21 @@ struct DreamCardView: View {
             }
             
             if let character = selectedCharacter {
-                DreamCardCharacterInformationView(selectedCharacter: $selectedCharacter, character: character)
-                    .transition(.asymmetric(insertion: .opacity.combined(with: .scale(scale: 0.8)), removal: .opacity))
-                    .id(character.id)
+                DreamCardCharacterInformationView(
+                    selectedCharacter: $selectedCharacter,
+                    onTogglePin: { updatedCharacter in
+                        //  Persist toggle to PinStore
+                        PinStore.toggle(id: updatedCharacter.id)
+                        
+                        // Update local array to reflect change immediately
+                        if let index = characters.firstIndex(where: { $0.id == updatedCharacter.id }) {
+                            characters[index].isPinned = updatedCharacter.isPinned
+                        }
+                    },
+                    character: character
+                )
+                .transition(.asymmetric(insertion: .opacity.combined(with: .scale(scale: 0.8)), removal: .opacity))
+                .id(character.id)
             }
             
             if unlockCards {
@@ -99,6 +115,3 @@ struct DreamCardView: View {
     }
 }
 
-#Preview {
-    DreamCardView()
-}
