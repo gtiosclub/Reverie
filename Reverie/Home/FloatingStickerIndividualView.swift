@@ -22,6 +22,7 @@ struct FloatingStickerIndividualView: View {
     // Temporary drag offset to show movement during drag
     @State private var dragOffset: CGSize = .zero
     
+    
     var body: some View {
         AsyncImage(url: URL(string: character.image ?? "")) { phase in
             switch phase {
