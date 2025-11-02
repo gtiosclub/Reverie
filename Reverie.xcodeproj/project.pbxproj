@@ -58,6 +58,7 @@
 			children = (
 				ECEE5C492EB172B4008EDED8 /* StableDiffusionResources */,
 				66EEDBE22E679D1B0011493C /* .gitignore */,
+				666C10A12E9E9AD900DB023A /* StableDiffusionResources */,
 				66EEDBB42E6798000011493C /* Reverie */,
 				66EEDBB32E6798000011493C /* Products */,
 				BD9435C62E84F664009CE7D0 /* GoogleService-Info.plist */,
