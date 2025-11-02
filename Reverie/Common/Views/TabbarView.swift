@@ -37,16 +37,16 @@ struct TabButton<Destination: View>: View {
     @EnvironmentObject var ts: TabState
     
     var body: some View {
-        NavigationLink(destination: destination
-            .onAppear {
-                ts.activeTab = tab
-            }) {
+        NavigationLink(destination: destination) {
             title
                 .frame(maxWidth: .infinity)
                 .padding()
                 .font(.system(size: 18))
                 .foregroundColor(ts.activeTab == tab ? Color.purple.opacity(0.6) : .gray)
         }
+        .simultaneousGesture(TapGesture().onEnded{
+            ts.activeTab = tab
+        })
         .navigationBarBackButtonHidden(true)
     }
 }

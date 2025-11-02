@@ -19,6 +19,8 @@ struct DreamCardView: View {
 //        CardModel(userID: "5", id: "5", name: "Oneiros", description: "Carries prophetic messages and symbols through the dream world.", image: "envelope.badge.fill", cardColor: .blue),
 //        CardModel(userID: "6", id: "6", name: "Kairos", description: "Bends the rules of time and logic within the dream state.", image: "hourglass", cardColor: .green)
 //    ]
+    @Binding var isOnHomeScreen: Bool
+    
     @State private var characters: [CardModel] = []
     
     @State private var lockedCharacters: [CardModel] = []
@@ -36,14 +38,33 @@ struct DreamCardView: View {
 
     var body: some View {
         ZStack {
-            VStack(spacing: 30) {
+            VStack(spacing: 20) {
 //                StickerView(characters: characters, selectedCharacter: $selectedCharacter)
-                StickerView(characters: $characters, selectedCharacter: $selectedCharacter)
+                HStack {
+                    Text("My Characters")
+                        .font(.title2.bold())
+                        .foregroundColor(.white)
+                    Image(systemName: "chevron.down")
+                        .foregroundColor(.white.opacity(0.8))
+                    Spacer()
+                }
+                .padding(.horizontal, 30)
+                .padding(.top, 100)
+                
+                StickerView(characters: characters, selectedCharacter: $selectedCharacter)
                     .padding(.top, 50)
                 
                 Spacer()
                 
+                Text("Unlock in 3 days")
+                    .font(.headline.bold())
+                    .foregroundColor(.white.opacity(0.9))
+                
+                Spacer()
+                
                 DreamCardProgressView(progress: progress)
+                    .scaleEffect(1.5)
+                    .padding(.top, 30)
 //                    .rotationEffect(.degrees(degrees))
 //                    .onAppear {
 //                        withAnimation(.linear(duration: 0.12).repeatCount(6, autoreverses: true)) {
@@ -115,3 +136,6 @@ struct DreamCardView: View {
     }
 }
 
+#Preview {
+    DreamCardView(isOnHomeScreen: .constant(false))
+}

@@ -16,6 +16,7 @@ struct DreamCardCharacterInformationView: View {
     let character: CardModel
     
     @State private var isUnlocked = false
+    @Binding var isOnHomeScreen: Bool
     
     var body: some View {
         ZStack {
@@ -66,6 +67,12 @@ struct DreamCardCharacterInformationView: View {
                         .foregroundColor(.white.opacity(0.85))
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, 20)
+                    HStack{
+                        Toggle(isOn: $isOnHomeScreen) {
+                                    Text("Home Screen").foregroundColor(.white)
+                                }
+                                .padding(50)
+                    }
                 }
                 .frame(maxHeight: .infinity, alignment: .center)
                 
@@ -134,4 +141,11 @@ struct DreamCardCharacterInformationView: View {
             PinStore.toggle(id: copy.id) // persist the change
         }
     }
+}
+
+#Preview {
+    DreamCardCharacterInformationView(
+        selectedCharacter: .constant(nil),
+        character: CardModel(userID: "1", id: "1", name: "Morpheus", description: "Builds the very landscapes of your dreams, weaving reality from thought.", image: "square.stack.3d.up.fill", cardColor: .blue), isOnHomeScreen: .constant(true)
+    )
 }
