@@ -41,6 +41,12 @@ struct StickerView: View {
 
 struct CharacterView: View {
     @Binding var character: CardModel // Binding to allow toggling of isPinned
+    let size: CGFloat
+    
+    init(character: CardModel, size: CGFloat = 90) {
+            self.character = character
+            self.size = size
+    }
 
     var body: some View {
         ZStack(alignment: .topLeading) {
@@ -68,7 +74,7 @@ struct CharacterView: View {
                     EmptyView()
                 }
             }
-            .frame(width: 90, height: 90)
+            .frame(width: size, height: size)
             .foregroundColor(.white)
 
             // Small top-left filled pin indicator (only visible when pinned)
@@ -82,7 +88,7 @@ struct CharacterView: View {
                     .padding(6)                                     // inset from edges
             }
         }
-        .frame(width: 105, height: 105)
+        .frame(width: size*1.17, height: size*1.17)
     }
 }
 
