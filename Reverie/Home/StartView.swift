@@ -9,6 +9,7 @@ import SwiftUI
 
 struct StartView: View {
     @EnvironmentObject var ts: TabState
+    @State var isOnHomeScreen = false
     var body: some View {
         NavigationStack{
             ZStack {
@@ -16,10 +17,10 @@ struct StartView: View {
                 
                 ScrollView(.vertical) {
                     VStack(spacing: 0) {
-                        HomeView()
+                        HomeView(isOnHomeScreen: $isOnHomeScreen)
                             .frame(height: UIScreen.main.bounds.height)
                         
-                        DreamCardView()
+                        DreamCardView(isOnHomeScreen: $isOnHomeScreen)
                             .frame(height: UIScreen.main.bounds.height)
                     }
                     .scrollTargetLayout()
