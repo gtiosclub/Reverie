@@ -23,7 +23,7 @@ class DreamModel: Decodable {
     
     @Generable
     enum Tags: String, Codable, CaseIterable {
-        case mountains, rivers, forests, animals, school
+        case mountains, rivers, forests, animals, school, water, nature, fire, city, home, work, love, family, friends, authority, strangers, travel, chase, fight, death, fantasy, past, future, search, falling, flying, food, health, trapped, money, celebration, teeth, rooms, disasters
     }
     
     @Generable
