@@ -8,135 +8,119 @@ import Firebase
 import Foundation
 import FirebaseStorage
 import SwiftUI
+import FirebaseFirestore
 
-@MainActor
 @Observable
 class FirebaseDreamService {
     
     static let shared = FirebaseDreamService()
-    
     let fb = FirebaseLoginService()
     
-//    let dcfms = DCFoundationModelService()
-//    
-//    let igs = ImageGenerationService.shared
-//    
-//    let fdcs = FirebaseDCService()
-    
     func getDreams() async throws -> [DreamModel] {
-        guard let user = FirebaseLoginService.shared.currUser else {
+        guard let userID = fb.currUser?.userID else {
             print("No current user found.")
             return []
         }
-        let dreamKeys = user.dreams.map { $0.id }
-        var dreams: [DreamModel] = []
         
-        print("fetching dreams")
-        
-        for dreamKey in dreamKeys {
-            let dreamRef = fb.db.collection("DREAMS").document(dreamKey)
-//            print("Fetching document for key \(dreamKey)…")
-            
-            let snapshot = try await dreamRef.getDocument()
-            guard let data = snapshot.data() else {
-                print("⚠️ No data in snapshot for key: \(dreamKey)")
-                continue
-            }
-            
-//            print("✅ Document data: \(data)")
-            
-            guard
-                let userId = data["userID"] as? String,
-                let id = data["id"] as? String,
-                let title = data["title"] as? String,
-                let dateString = data["date"] as? String,  // adjust if stored as Timestamp
-                let title = data["title"] as? String,
-                let loggedContent = data["loggedContent"] as? String,
-                let generatedContent = data["generatedContent"] as? String,
-                let image = data["image"] as? String,
-                let emotionString = data["emotion"] as? String,
-                let tagsArray = data["tags"] as? [String],
-                let finishedDream = data["finishedDream"] as? String
-            else {
-                print("⚠️ Missing or invalid fields for dream \(dreamKey)")
-                continue
-            }
-            
-            // Convert date
-            let formatter = DateFormatter()
-            let date = formatter.date(from: dateString) ?? Date()
-            
-            let emotion = DreamModel.Emotions(rawValue: emotionString.lowercased())
-            
-            let tags: [DreamModel.Tags] = tagsArray.compactMap { DreamModel.Tags(rawValue: $0.lowercased()) }
-            
-            // Build model
-            let dream: DreamModel = .init(
-                userID: userId,
-                id: id,
-                title: title,
-                date: date,
-                loggedContent: loggedContent,
-                generatedContent: generatedContent,
-                tags: tags,
-                image: image,
-                emotion: emotion ?? .happiness,
-                finishedDream: finishedDream
-            )
-            
-            dreams.append(dream)
+        let userDocRef = fb.db.collection("USERS").document(userID)
+        let userDocument = try await userDocRef.getDocument()
+
+        guard let data = userDocument.data(),
+              let dreamKeys = data["dreams"] as? [String] else {
+            print("User document does not contain a 'dreams' array.")
+            return []
         }
         
-        return dreams
+        if dreamKeys.isEmpty {
+            return [] // User has no dreams
+        }
+        
+        print("Found \(dreamKeys.count) dream keys. Fetching in batches...")
+        
+        var allDreams: [DreamModel] = []
+        let dreamsRef = fb.db.collection("DREAMS")
+        
+        // split dreamKeys into chunks of 30 (the Firestore limit)
+        for i in stride(from: 0, to: dreamKeys.count, by: 30) {
+            let chunk = Array(dreamKeys[i..<min(i + 30, dreamKeys.count)])
+            
+            if chunk.isEmpty { continue }
+            
+            print("Fetching batch \(i/30 + 1) (\(chunk.count) items)...")
+            let query = dreamsRef.whereField("id", in: chunk)
+            let snapshot = try await query.getDocuments()
+            
+            let batchDreams = snapshot.documents.compactMap { document -> DreamModel? in
+                do {
+                    return try document.data(as: DreamModel.self)
+                } catch {
+                    print("⚠️ Failed to decode dream \(document.documentID): \(error)")
+                    return nil
+                }
+            }
+            allDreams.append(contentsOf: batchDreams)
+        }
+
+        print("Fetched a total of \(allDreams.count) dreams.")
+        
+        return allDreams.sorted(by: { $0.date > $1.date })
     }
     
-    func createDream(dream: DreamModel) async {
+    func createDream(dream: DreamModel) async throws -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .short
+        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
 
-          let dateFormatter = DateFormatter()
-          dateFormatter.dateStyle = .short
-          dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+        let tagArray = dream.tags.map { $0.rawValue }
 
-          //create array of tag strings
-          var tagArray: [String] = []
+        print("USER ID: \(dream.userID)")
 
-          for tag in dream.tags {
-              tagArray.append(tag.rawValue)
-          }
+        let dreamData: [String: Any] = [
+            "date": dateFormatter.string(from: dream.date),
+            "emotion": dream.emotion.rawValue,
+            "generatedContent": dream.generatedContent,
+            "title": dream.title,
+            "image": [],
+            "loggedContent": dream.loggedContent,
+            "tags": tagArray,
+            "userID": dream.userID,
+            "finishedDream": dream.finishedDream,
+        ]
 
-          print("USER ID: \(dream.userID)")
+        do {
+            let ref = try await fb.db.collection("DREAMS").addDocument(data: dreamData)
+            let dreamRef = ref.documentID
+            print("Added Data with ref: \(dreamRef)")
+            
+            try await ref.updateData(["id": dreamRef])
 
-          do {
-              let ref = try await fb.db.collection("DREAMS").addDocument(
-                data: [
-                 "date": dateFormatter.string(from: dream.date),
-                 "emotion": dream.emotion.rawValue,
-                 "generatedContent": dream.generatedContent,
-                 "title": dream.title,
-                 "id": dream.id,
-                 "image": dream.image,
-                 "loggedContent": dream.loggedContent,
-                 "tags": tagArray,
-                 "userID": dream.userID,
-                 "finishedDream": dream.finishedDream
-              ])
-              let dreamRef = ref.documentID
-              dream.id = dreamRef
-              print("Added Data with ref: \(dreamRef)")
-              
-              try await ref.updateData(["id": dreamRef])
+            let userRef = fb.db.collection("USERS").document(dream.userID)
+            try await userRef.updateData([
+                "dreams": FieldValue.arrayUnion([dreamRef])
+            ])
+            
+            print("Appended \(dreamRef) to user \(dream.userID)")
+            
+            return dreamRef
+            
+        } catch {
+            print("Error adding document: \(error)")
+            throw error
+        }
+    }
+    
+    func storeImages(dream: DreamModel, urls: [String]) async {
+        do {
+            try await self.fb.db.collection("DREAMS").document(dream.id).updateData(["image": urls])
+        } catch {
+            print("Firebase failed to add images to dream: \(error)")
+        }
+    }
 
-              let userRef = fb.db.collection("USERS").document(dream.userID)
-
-              try await userRef.updateData([
-                  "dreams": FieldValue.arrayUnion([dreamRef])
-                  ])
-              
-              print("Appended \(dreamRef) to user \(dream.userID)")
-              
-          } catch {
-              print("Error adding document: \(error)")
-          }
-        FirebaseLoginService.shared.currUser?.dreams.append(dream)
-      }
+    func fetchDream(dreamID: String) async throws -> DreamModel? {
+        let dreamRef = self.fb.db.collection("DREAMS").document(dreamID)
+        let document = try await dreamRef.getDocument()
+        
+        return try document.data(as: DreamModel.self)
+    }
 }
-
