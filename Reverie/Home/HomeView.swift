@@ -9,36 +9,30 @@ import SwiftUI
 import FirebaseAuth
 
 struct HomeView: View {
-    @Environment(FirebaseLoginService.self) private var fls
-    @Binding var isOnHomeScreen: Bool
+    //    @Environment(FirebaseLoginService.self) private var fls
     
     var body: some View {
         ZStack {
             MoonView()
-            
-            if isOnHomeScreen {
-                FloatingStickersView()
-                    .transition(.scale)
+            FloatingStickersView()
+            VStack {
+                Text("Good Morning, \(FirebaseLoginService.shared.currUser?.name ?? "Dreamer")")
+                    .foregroundColor(.white)
+                    .font(.largeTitle)
+                    .bold()
+                    .padding(.bottom, 20)
+                NewLogView()
             }
-                
-                VStack {
-                    Text("Good Morning, \(fls.currUser?.name ?? "Dreamer")")
-                        .foregroundColor(.white)
-                        .font(.largeTitle)
-                        .bold()
-                        .padding(.bottom, 20)
-                    NewLogView()
-                }
-                .padding(.bottom, 30)
-            }
-                .background(.clear)
+            .padding(.bottom, 30)
         }
+        .background(.clear)
     }
+}
     
 #Preview {
-        HomeView(isOnHomeScreen: .constant(false))
-            .environment(FirebaseLoginService.shared)
-    }
+    HomeView()
+        .environment(FirebaseLoginService.shared)
+}
     
     
     

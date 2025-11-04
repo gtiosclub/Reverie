@@ -11,32 +11,30 @@ struct StartView: View {
     @EnvironmentObject var ts: TabState
     @State var isOnHomeScreen = false
     var body: some View {
-        NavigationStack{
-            ZStack {
-                BackgroundView()
-                
-                ScrollView(.vertical) {
-                    VStack(spacing: 0) {
-                        HomeView(isOnHomeScreen: $isOnHomeScreen)
-                            .frame(height: UIScreen.main.bounds.height)
-                        
-                        DreamCardView(isOnHomeScreen: $isOnHomeScreen)
-                            .frame(height: UIScreen.main.bounds.height)
-                    }
-                    .scrollTargetLayout()
+        ZStack {
+            BackgroundView()
+            
+            ScrollView(.vertical) {
+                VStack(spacing: 0) {
+                    HomeView()
+                        .frame(height: UIScreen.main.bounds.height)
+                    
+                    DreamCardView(isOnHomeScreen: $isOnHomeScreen)
+                        .frame(height: UIScreen.main.bounds.height)
                 }
-                .scrollTargetBehavior(.paging)
-                .scrollIndicators(.hidden)
-                .ignoresSafeArea()
-                
-                VStack {
-                    Spacer()
-                    TabbarView()
-                }
+                .scrollTargetLayout()
             }
-            .onAppear {
-                ts.activeTab = .home
+            .scrollTargetBehavior(.paging)
+            .scrollIndicators(.hidden)
+            .ignoresSafeArea()
+            
+            VStack {
+                Spacer()
+                TabbarView()
             }
+        }
+        .onAppear {
+            ts.activeTab = .home
         }
     }
 }
