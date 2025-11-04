@@ -202,7 +202,7 @@ extension ProfileView {
             loggedContent: loggedContent,
             generatedContent: generatedContent,
             tags: tags,
-            image: image,
+            image: [image],
             emotion: emotion,
             finishedDream: finishedDream
         )
