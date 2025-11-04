@@ -35,15 +35,63 @@ struct DreamSimilarityGraph: UIViewRepresentable {
         init(_ parent: DreamSimilarityGraph) { self.parent = parent }
 
         @objc func handleTap(_ gesture: UITapGestureRecognizer) {
-            let scnView = gesture.view as! SCNView
+            guard let scnView = gesture.view as? SCNView else { return }
             let location = gesture.location(in: scnView)
             let hitResults = scnView.hitTest(location, options: nil)
-            if let hit = hitResults.first, let dreamName = hit.node.name {
-                if let dream = parent.dreams.first(where: { $0.loggedContent == dreamName }) {
-                    parent.selectedDream = dream
-                }
+            guard let hit = hitResults.first,
+                  let dreamName = hit.node.name,
+                  let dream = parent.dreams.first(where: { $0.loggedContent == dreamName }),
+                  let scene = scnView.scene
+            else { return }
+
+            parent.selectedDream = dream
+
+            let node = hit.node
+            let root = scene.rootNode
+
+            guard let cameraNode = root.childNodes.first(where: { $0.camera != nil }) else { return }
+
+            let nodePos = node.presentation.worldPosition
+            let rootPos = root.presentation.worldPosition
+            let dir = SCNVector3(nodePos.x - rootPos.x,
+                                 nodePos.y - rootPos.y,
+                                 nodePos.z - rootPos.z)
+            let len = sqrt(dir.x*dir.x + dir.y*dir.y + dir.z*dir.z)
+            guard len > 0.0001 else { return }
+            let normDir = SCNVector3(dir.x/len, dir.y/len, dir.z/len)
+
+            let camForward = cameraNode.presentation.convertVector(SCNVector3(0, 0, 1), to: nil)
+
+            let cross = SCNVector3(
+                normDir.y*camForward.z - normDir.z*camForward.y,
+                normDir.z*camForward.x - normDir.x*camForward.z,
+                normDir.x*camForward.y - normDir.y*camForward.x
+            )
+            let dot = max(-1, min(1, normDir.x*camForward.x + normDir.y*camForward.y + normDir.z*camForward.z))
+            let angle = acos(dot)
+            guard angle > 0.001 else {
+                pulse(node)
+                return
             }
+
+            let crossLen = sqrt(cross.x*cross.x + cross.y*cross.y + cross.z*cross.z)
+            let axis = crossLen == 0 ? SCNVector3(0,1,0) : SCNVector3(cross.x/crossLen, cross.y/crossLen, cross.z/crossLen)
+
+            let rotation = SCNAction.rotate(by: CGFloat(angle), around: axis, duration: 1.0)
+            rotation.timingMode = .easeInEaseOut
+            root.runAction(rotation)
+
+            pulse(node)
         }
+
+        private func pulse(_ node: SCNNode) {
+            let scaleUp = SCNAction.scale(to: 1.5, duration: 0.3)
+            let scaleDown = SCNAction.scale(to: 1.0, duration: 0.3)
+            node.runAction(.sequence([scaleUp, scaleDown]))
+        }
+
+        
+    
 
     }
 
