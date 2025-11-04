@@ -9,21 +9,36 @@ import SwiftUI
 
 struct DreamCardCharacterInformationView: View {
     @Binding var selectedCharacter: CardModel?
-    
-    // Parent-provided action to persist pin changes
-    var onTogglePin: (CardModel) -> Void = { _ in }
-    
     let character: CardModel
-    
     @State private var isUnlocked = false
-    @Binding var isOnHomeScreen: Bool
+    @State private var isShownOnHome: Bool
+    @State private var isPinned: Bool
     
+    init(selectedCharacter: Binding<CardModel?>,
+         character: CardModel) {
+        
+        self._selectedCharacter = selectedCharacter
+        self.character = character
+        self._isPinned = State(initialValue: character.isPinned)
+        self._isShownOnHome = State(initialValue: character.isShown)
+    }
+
     var body: some View {
         ZStack {
-            // A semi-transparent background to focus on the card
-            Color.black.opacity(0.8).ignoresSafeArea()
+//            Rectangle()
+////                .fill(.ultraThinMaterial)
+//                .blur(radius: 3)
+//                .ignoresSafeArea()
+//                .onTapGesture {
+//                    withAnimation(.spring()) {
+//                        selectedCharacter = nil
+//                    }
+//                }
+            
+            // Layer 2: The Dark Tint
+            Color.black.opacity(0.8)
+                .ignoresSafeArea()
                 .onTapGesture {
-                    // When tapped, set the binding to nil to dismiss
                     withAnimation(.spring()) {
                         selectedCharacter = nil
                     }
@@ -33,28 +48,23 @@ struct DreamCardCharacterInformationView: View {
             VStack(spacing: 16) {
                 
                 VStack(spacing: 16) {
-                    //                    Image(systemName: character.image ?? "person.fill")
-                    //                        .resizable()
-                    //                        .scaledToFit()
-                    //                        .frame(width: 90, height: 90)
-                    //                        .foregroundColor(.white)
                     AsyncImage(url: URL(string: character.image ?? "")) { phase in
                         switch phase {
                         case .empty:
-                            ProgressView()
-                                .tint(.white)
+                            ProgressView().tint(.white)
                         case .success(let image):
-                            image
+                            image.resizable().scaledToFit()
+                        case .failure:
+                            Image(systemName: "globe.americas.fill")
                                 .resizable()
                                 .scaledToFit()
-                        case .failure:
-                            Image(systemName: "photo.fill")
                                 .foregroundColor(.white.opacity(0.8))
                         @unknown default:
                             EmptyView()
                         }
                     }
-                    .frame(width: 90, height: 90)
+                    .padding(.top, 40)
+                    .frame(width: 150, height: 150)
                     .foregroundColor(.white)
                     
                     Text(character.name)
@@ -66,60 +76,78 @@ struct DreamCardCharacterInformationView: View {
                         .font(.body)
                         .foregroundColor(.white.opacity(0.85))
                         .multilineTextAlignment(.center)
-                        .padding(.horizontal, 20)
-                    HStack{
-                        Toggle(isOn: $isOnHomeScreen) {
-                                    Text("Home Screen").foregroundColor(.white)
-                                }
-                                .padding(50)
+                        .padding(.horizontal, 40)
+                    
+                    Spacer() // Pushes content up
+                    
+                    Toggle(isOn: $isShownOnHome) {
+                        EmptyView()
                     }
+                    .onChange(of: isShownOnHome) { _, newValue in
+                        Task {
+                            await FirebaseUpdateCardService.shared.setIsShown(card: character, isShown: newValue)
+                        }
+                    }
+                    .padding(.horizontal, 160)
+                    .tint(.purple)
+                    .padding(.bottom, 20)
                 }
                 .frame(maxHeight: .infinity, alignment: .center)
-                
-                Spacer()
             }
-            .frame(width: 320, height: 450)
-            .background(
+            .frame(width: 320, height: 520)
+            .overlay(
                 RoundedRectangle(cornerRadius: 20)
-                    .fill(character.cardColor.swiftUIColor.gradient.opacity(0.5))
-                    .shadow(color: character.cardColor.swiftUIColor.opacity(0.7), radius: 20, x: 0, y: 0)
-                    .shadow(color: character.cardColor.swiftUIColor.opacity(0.4), radius: 40, x: 0, y: 0)
+                    .stroke(character.cardColor.swiftUIColor.opacity(0.6), lineWidth: 3)
             )
-            .overlay(
-                // Pin button (toggles CardModel.isPinned); shown at top-left, tilted 45° NW.
-                Button(action: {
-                    togglePin()
-                }) {
-                    // Hollow when not pinned, filled when pinned
-                    let pinned = (selectedCharacter?.isPinned ?? character.isPinned)
-                    Image(systemName: pinned ? "pin.fill" : "pin")
-                        .font(.system(size: 18, weight: .bold))
-                        .rotationEffect(.degrees(-45)) // 45° northwest tilt
-                        .foregroundStyle(pinned ? Color.purple : Color.white.opacity(0.85)) // fill on, hollow off
-                        .padding(8)
-                        .background(.ultraThinMaterial, in: Circle()) // subtle legibility ring
+            .background(
+                ZStack {
+                    RoundedRectangle(cornerRadius: 20).fill(.ultraThinMaterial)
+                    RoundedRectangle(cornerRadius: 20).fill(Color.black.opacity(0.85))
                 }
-                    .padding(),
-                alignment: .topLeading
             )
+//            .overlay(
+//                RoundedRectangle(cornerRadius: 20)
+//                    .stroke(Color.white.opacity(0.1), lineWidth: 1)
+//            )
+//            .clipShape(RoundedRectangle(cornerRadius: 20))
+//            .shadow(color: character.cardColor.swiftUIColor.opacity(0.6), radius: 12, x: 0, y: 4)
             .overlay(
-                // Close button
+                // Back Button
                 Button(action: {
                     withAnimation(.spring()) {
                         selectedCharacter = nil
                     }
                 }) {
-                    Image(systemName: "xmark.circle.fill")
-                        .font(.largeTitle)
-                        .foregroundColor(.white.opacity(0.5))
+                    Image(systemName: "chevron.backward")
+                        .font(.system(size: 20, weight: .bold))
+                        .foregroundColor(.white.opacity(0.85))
+                        .padding(13)
+//                        .background(.ultraThinMaterial, in: Circle())
                 }
-                    .padding(),
+                .glassEffect(.regular, in: .circle)
+                .padding(20),
+                alignment: .topLeading
+            )
+            .overlay(
+                Button(action: {
+                    Task {
+                        await togglePin()
+                    }
+                }) {
+                    let pinned = (selectedCharacter?.isPinned ?? character.isPinned)
+                    Image(systemName: pinned ? "star.fill" : "star")
+                        .font(.system(size: 20, weight: .bold))
+                        .foregroundColor(pinned ? .yellow : .white.opacity(0.85))
+                        .padding(11)
+//                        .background(.ultraThinMaterial, in: Circle())
+                }
+                .glassEffect(.regular, in: .circle)
+                .padding(20),
                 alignment: .topTrailing
             )
-            // Animation for when the card appears
             .rotation3DEffect(.degrees(isUnlocked ? 0 : 120), axis: (x: 0, y: 1, z: 0))
             .scaleEffect(isUnlocked ? 1.0 : 0.5)
-            .opacity(isUnlocked ? 1.0 : 0.0)
+            .opacity(0.7)
             .onAppear {
                 withAnimation(.spring(response: 0.8, dampingFraction: 0.7)) {
                     isUnlocked = true
@@ -127,25 +155,23 @@ struct DreamCardCharacterInformationView: View {
             }
         }
     }
-    
-    private func togglePin() {
-        if var current = selectedCharacter {
-            current.isPinned.toggle()
-            selectedCharacter = current
-            onTogglePin(current)
-            PinStore.toggle(id: current.id) // persist the change
-        } else {
-            var copy = character
-            copy.isPinned.toggle()
-            onTogglePin(copy)
-            PinStore.toggle(id: copy.id) // persist the change
-        }
+
+    private func togglePin() async {
+        var cardToToggle = character
+        
+        let newPinState = !cardToToggle.isPinned
+        
+        cardToToggle.isPinned = newPinState
+        selectedCharacter = cardToToggle
+        
+        await FirebaseUpdateCardService.shared.setIsPinned(card: cardToToggle, isPinned: newPinState)
     }
 }
 
 #Preview {
     DreamCardCharacterInformationView(
         selectedCharacter: .constant(nil),
-        character: CardModel(userID: "1", id: "1", name: "Morpheus", description: "Builds the very landscapes of your dreams, weaving reality from thought.", image: "square.stack.3d.up.fill", cardColor: .blue), isOnHomeScreen: .constant(true)
+        character: CardModel(userID: "1", id: "1", name: "Big Red", description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit.", image: "https://www.flaticon.com/svg/v2/svg/6666/6666245.svg", cardColor: .blue),
     )
 }
+

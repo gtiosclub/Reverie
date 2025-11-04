@@ -17,11 +17,11 @@ class FirebaseDreamService {
     
     let fb = FirebaseLoginService()
     
-    let dcfms = DCFoundationModelService()
-    
-    let igs = ImageGenerationService.shared
-    
-    let fdcs = FirebaseDCService()
+//    let dcfms = DCFoundationModelService()
+//    
+//    let igs = ImageGenerationService.shared
+//    
+//    let fdcs = FirebaseDCService()
     
     func getDreams() async throws -> [DreamModel] {
         guard let user = FirebaseLoginService.shared.currUser else {
@@ -30,6 +30,8 @@ class FirebaseDreamService {
         }
         let dreamKeys = user.dreams.map { $0.id }
         var dreams: [DreamModel] = []
+        
+        print("fetching dreams")
         
         for dreamKey in dreamKeys {
             let dreamRef = fb.db.collection("DREAMS").document(dreamKey)

@@ -16,10 +16,12 @@ struct FloatingStickersView: View {
         GeometryReader { geometry in
             ZStack {
                 ForEach(characters) { character in
-                    FloatingStickerIndividualView(
-                        character: character,
-                        screenSize: geometry.size
-                    )
+                    if character.isShown {
+                        FloatingStickerIndividualView(
+                            character: character,
+                            screenSize: geometry.size
+                        )
+                    }
                 }
             }
         }
