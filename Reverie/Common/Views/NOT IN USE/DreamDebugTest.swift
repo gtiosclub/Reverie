@@ -4,10 +4,10 @@
 //
 //  Created by Brayden Huguenard on 10/27/25.
 //
-
-import SwiftUI
-
-struct DreamDebugView: View {
+//
+//import SwiftUI
+//
+//struct DreamDebugView: View {
 //    private let mockDream = DreamModel(
 //            userID: "mockUser",
 //            id: "dream1",
@@ -65,11 +65,11 @@ struct DreamDebugView: View {
 //        }
 //        .padding()
 //    }
-    var body: some View {
-        Text("Hello")
-    }
-}
-
-#Preview {
-    DreamDebugView()
-}
+//    var body: some View {
+//        Text("Hello")
+//    }
+//}
+//
+//#Preview {
+//    DreamDebugView()
+//}
