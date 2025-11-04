@@ -1,8 +1,8 @@
 //
-//  SaveDreamView.swift
-//  Reverie
+//  SaveDreamView.swift
+//  Reverie
 //
-//  Created by Anoushka Gudla on 9/23/25.
+//  Created by Anoushka Gudla on 9/23/25.
 //
 
 import SwiftUI
@@ -92,34 +92,40 @@ struct SaveDreamView: View {
                         .shadow(color: .black.opacity(0.3), radius: 5, x: 0, y: 3)
 
                         
+
                         if showTagDropdown {
-                            VStack(alignment: .leading, spacing: 0) {
-                                ForEach(DreamModel.Tags.allCases.filter { !newDream.tags.contains($0) }, id: \.self) { tag in
-                                    Button(action: {
-                                        newDream.tags.append(tag)
-                                        withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
-                                            showTagDropdown = false
-                                            showTagDropdown = true
+                            ScrollView(.vertical, showsIndicators: true) {
+                                VStack(alignment: .leading, spacing: 0) {
+                                    ForEach(DreamModel.Tags.allCases.filter { !newDream.tags.contains($0) }, id: \.self) { tag in
+                                        Button(action: {
+                                            newDream.tags.append(tag)
+                                            withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
+                                                showTagDropdown = false
+                                                showTagDropdown = true
+                                            }
+                                        }) {
+                                            Text(tag.rawValue.capitalized)
+                                                .foregroundColor(.white)
+                                                .padding(.vertical, 12)
+                                                .padding(.horizontal, 15)
+                                                .frame(maxWidth: .infinity, alignment: .leading)
                                         }
-                                    }) {
-                                        Text(tag.rawValue.capitalized)
-                                            .foregroundColor(.white)
-                                            .padding(.vertical, 12)
-                                            .padding(.horizontal, 15)
-                                            .frame(maxWidth: .infinity, alignment: .leading)
-                                    }
-                                    .buttonStyle(.plain)
-                                    .contentShape(Rectangle())
-                                    .background(Material.regular)
-                                    
-                                    if tag != DreamModel.Tags.allCases.last {
-                                        Divider()
-                                            .frame(height: 0.5)
-                                            .background(Color.white.opacity(0.15))
-                                            .padding(.horizontal, 10)
+                                        .buttonStyle(.plain)
+                                        .contentShape(Rectangle())
+                                        .background(Material.regular)
+                                        
+                                        if tag != DreamModel.Tags.allCases.last {
+                                            Divider()
+                                                .frame(height: 0.5)
+                                                .background(Color.white.opacity(0.15))
+                                                .padding(.horizontal, 10)
+                                        }
                                     }
                                 }
+                                .padding(.vertical, 5)
                             }
+                            .frame(maxHeight: 250)
+                            .clipShape(RoundedRectangle(cornerRadius: 15, style: .continuous))
                             .background(
                                 RoundedRectangle(cornerRadius: 15)
                                     .fill(Material.regular)
@@ -137,13 +143,14 @@ struct SaveDreamView: View {
                     Spacer()
                 }
                 .padding()
+                
                 NavigationLink(
-                                destination: DreamEntryView(dream: createdDream ?? newDream),
-                                isActive: $navigateToDreamEntry
-                            ) {
-                                EmptyView()
-                            }
-                            .hidden()
+                    destination: DreamEntryView(dream: createdDream ?? newDream),
+                    isActive: $navigateToDreamEntry
+                ) {
+                    EmptyView()
+                }
+                .hidden()
             }
             .navigationBarBackButtonHidden(true)
             .toolbar {
