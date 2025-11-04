@@ -107,8 +107,11 @@ struct LoggingView: View {
                         Image(systemName: "checkmark")
                             .font(.system(size: 24, weight: .bold))
                             .foregroundColor(.white)
-                            .padding(6)
-                            .background(Circle().fill(Color(red: 0.15, green: 0.15, blue: 0.15).opacity(0.9)))
+                            .padding(8)
+                            .background(Circle()
+                                .fill(Color(red: 0.38, green: 0.33, blue: 0.96))
+                                .glassEffect()
+                            )
                             .padding(.vertical, 4)
                             .opacity(title.isEmpty || dream.isEmpty ? 0 : 1)
                     }
