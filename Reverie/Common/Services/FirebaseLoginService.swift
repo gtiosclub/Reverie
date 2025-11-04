@@ -72,11 +72,13 @@ class FirebaseLoginService {
                                 }
                                 return Date()
                             }()
+                            let finishedDream = snapshot.get("finishedDream") as? String ?? "None"
                             let tagF: [DreamModel.Tags] = tags.compactMap { DreamModel.Tags(rawValue: $0.lowercased()) }
                             let emotionF: DreamModel.Emotions = DreamModel.Emotions(rawValue: emotion.lowercased()) ?? .neutral
 
                             let dreamModel = DreamModel(userID: userID, id: id, title: title, date: dateF, loggedContent: loggedContent, generatedContent: generatedContent, tags: tagF, image: image, emotion: emotionF, finishedDream: finishedDream)
                             dreamModels.append(dreamModel)
+                            print(dreamModel)
                             
                         }
                     }
