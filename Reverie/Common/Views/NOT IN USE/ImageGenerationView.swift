@@ -12,7 +12,7 @@ import Vision
 
 struct ImageGenerationView: View {
     
-    @State private var prompt = "one goldendoodle cute dog sticker"
+    @State private var prompt = "Make a pizza in an astronaut helmet"
     @State private var generatedImage: UIImage?
     
     @State private var isLoading = false
@@ -30,13 +30,12 @@ struct ImageGenerationView: View {
                 .lineLimit(3)
             
             Button("Generate Sticker") {
-                Task { await generateImage() }
+                Task { try await generatedImage = ImageGenerationService.shared.generateSticker(prompt: prompt, isSticker: true) }
             }
             .buttonStyle(.borderedProminent)
-            .disabled(isLoading || pipeline == nil)
+//            .disabled(isLoading || pipeline == nil)
         }
         .padding()
-        .onAppear(perform: loadModel)
     }
     
     private var imageArea: some View {
@@ -44,7 +43,7 @@ struct ImageGenerationView: View {
             if let image = generatedImage {
                 Image(uiImage: image)
                     .resizable()
-                    .scaledToFit()
+                    .aspectRatio(contentMode: .fit)
                     .frame(width: 300, height: 300)
             } else {
                 RoundedRectangle(cornerRadius: 12)
@@ -53,88 +52,89 @@ struct ImageGenerationView: View {
             }
         }
     }
-    
-    func loadModel() {
-        if pipeline != nil { return }
-        
-        isLoading = true
-        loadingStateText = "Loading model..."
-        
-        Task(priority: .userInitiated) {
-            do {
-                guard let resourceURL = Bundle.main.url(forResource: "StableDiffusionResources", withExtension: nil) else {
-                    throw NSError(domain: "ContentView", code: 1, userInfo: [NSLocalizedDescriptionKey: "Could not find model resources."])
-                }
-                
-                let loadedPipeline = try await StableDiffusionPipeline(
-                    resourcesAt: resourceURL,
-                    controlNet: [],
-                    reduceMemory: true
-                )
-                
-                await MainActor.run {
-                    self.pipeline = loadedPipeline
-                    self.isLoading = false
-                    self.loadingStateText = ""
-                }
-                
-            } catch {
-                print("Error loading Stable Diffusion pipeline: \(error)")
-                await MainActor.run {
-                    self.loadingStateText = "Error loading model."
-                }
-            }
-        }
-    }
-    
-    @MainActor
-    private func generateImage() async {
-        guard let pipeline = pipeline else { return }
-        
-        isLoading = true
-        loadingStateText = "Generating..."
-        generatedImage = nil
-        progress = nil
-        
-        do {
-            var configuration = StableDiffusionPipeline.Configuration(prompt: prompt)
-            configuration.stepCount = 20
-            configuration.seed = UInt32.random(in: 0...UInt32.max)
-            configuration.guidanceScale = 7.5
-            
-            let images = try pipeline.generateImages(
-                configuration: configuration,
-                progressHandler: { progress in
-                    Task { @MainActor in self.progress = progress }
-                    return !Task.isCancelled
-                }
-            )
-            
-            if let finalCG = images.compactMap({ $0 }).first {
-                let finalUIImage = UIImage(cgImage: finalCG)
-                
-//                print("Starting background removal...")
-                
-//                stickerGeneration(from: finalUIImage) { stickerImage in
-//                    if let finalUIImage = stickerImage {
-//                        print("Successfully created sticker!")
-//                        self.generatedImage = finalUIImage
-//                    } else {
-//                        print("Could not remove background.")
-//                    }
-//                }
-            }
-            
-        } catch {
-            print("Error generating image: \(error.localizedDescription)")
-        }
-        
-        isLoading = false
-        loadingStateText = ""
-        progress = nil
-    }
 }
-
+    
+//    func loadModel() {
+//        if pipeline != nil { return }
+//        
+//        isLoading = true
+//        loadingStateText = "Loading model..."
+//        
+//        Task(priority: .userInitiated) {
+//            do {
+//                guard let resourceURL = Bundle.main.url(forResource: "StableDiffusionResources", withExtension: nil) else {
+//                    throw NSError(domain: "ContentView", code: 1, userInfo: [NSLocalizedDescriptionKey: "Could not find model resources."])
+//                }
+//                
+//                let loadedPipeline = try await StableDiffusionPipeline(
+//                    resourcesAt: resourceURL,
+//                    controlNet: [],
+//                    reduceMemory: true
+//                )
+//                
+//                await MainActor.run {
+//                    self.pipeline = loadedPipeline
+//                    self.isLoading = false
+//                    self.loadingStateText = ""
+//                }
+//                
+//            } catch {
+//                print("Error loading Stable Diffusion pipeline: \(error)")
+//                await MainActor.run {
+//                    self.loadingStateText = "Error loading model."
+//                }
+//            }
+//        }
+//    }
+//    
+//    @MainActor
+//    private func generateImage() async {
+//        guard let pipeline = pipeline else { return }
+//        
+//        isLoading = true
+//        loadingStateText = "Generating..."
+//        generatedImage = nil
+//        progress = nil
+//        
+//        do {
+//            var configuration = StableDiffusionPipeline.Configuration(prompt: prompt)
+//            configuration.stepCount = 20
+//            configuration.seed = UInt32.random(in: 0...UInt32.max)
+//            configuration.guidanceScale = 7.5
+//            
+//            let images = try pipeline.generateImages(
+//                configuration: configuration,
+//                progressHandler: { progress in
+//                    Task { @MainActor in self.progress = progress }
+//                    return !Task.isCancelled
+//                }
+//            )
+//            
+//            if let finalCG = images.compactMap({ $0 }).first {
+//                let finalUIImage = UIImage(cgImage: finalCG)
+//                
+////                print("Starting background removal...")
+//                
+////                stickerGeneration(from: finalUIImage) { stickerImage in
+////                    if let finalUIImage = stickerImage {
+////                        print("Successfully created sticker!")
+////                        self.generatedImage = finalUIImage
+////                    } else {
+////                        print("Could not remove background.")
+////                    }
+////                }
+//            }
+//            
+//        } catch {
+//            print("Error generating image: \(error.localizedDescription)")
+//        }
+//        
+//        isLoading = false
+//        loadingStateText = ""
+//        progress = nil
+//    }
+//}
+//
 #Preview {
     ImageGenerationView()
 }

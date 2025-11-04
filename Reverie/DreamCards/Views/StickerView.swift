@@ -18,12 +18,14 @@ struct StickerView: View {
             // Sort characters so pinned ones appear first, then by name
             LazyHGrid(rows: rows, spacing: 25) {
                 ForEach(
-                    $characters.sorted { lhs, rhs in
-                        let a = lhs.wrappedValue
-                        let b = rhs.wrappedValue
-                        if a.isPinned != b.isPinned { return a.isPinned && !b.isPinned } // pinned first
-                        return a.name.localizedCaseInsensitiveCompare(b.name) == .orderedAscending
-                    }
+                    $characters
+                        // only pinned characters
+                        .filter { $0.wrappedValue.isPinned }
+                        .sorted { lhs, rhs in
+                            let a = lhs.wrappedValue
+                            let b = rhs.wrappedValue
+                            return a.name.localizedCaseInsensitiveCompare(b.name) == .orderedAscending
+                        }
                 ) { $character in
                     CharacterView(character: $character)
                         .contentShape(Rectangle())
@@ -43,10 +45,16 @@ struct CharacterView: View {
     @Binding var character: CardModel // Binding to allow toggling of isPinned
     let size: CGFloat
     
-    init(character: CardModel, size: CGFloat = 90) {
-            self.character = character
-            self.size = size
+    init(character: Binding<CardModel>, size: CGFloat = 110) {
+        self._character = character
+        self.size = size
     }
+//    
+//    /// Convenience init for non-editable CardModel
+//    init(character: CardModel, size: CGFloat = 90) {
+//        self._character = .constant(character)
+//        self.size = size
+//    }
 
     var body: some View {
         ZStack(alignment: .topLeading) {
@@ -78,17 +86,17 @@ struct CharacterView: View {
             .foregroundColor(.white)
 
             // Small top-left filled pin indicator (only visible when pinned)
-            if character.isPinned {
-                Image(systemName: "pin.fill")
-                    .font(.system(size: 14, weight: .bold))
-                    .foregroundStyle(Color.purple)              // purple-filled as requested
-                    .rotationEffect(.degrees(-45))              // tilt 45° NW
-                    .padding(6)
-                    .background(Circle().fill(.ultraThinMaterial)) // readability over varied wallpapers
-                    .padding(6)                                     // inset from edges
-            }
+//            if character.isPinned {
+//                Image(systemName: "pin.fill")
+//                    .font(.system(size: 14, weight: .bold))
+//                    .foregroundStyle(Color.purple)              // purple-filled as requested
+//                    .rotationEffect(.degrees(-45))              // tilt 45° NW
+//                    .padding(6)
+//                    .background(Circle().fill(.ultraThinMaterial)) // readability over varied wallpapers
+//                    .padding(6)                                     // inset from edges
+//            }
         }
-        .frame(width: size*1.17, height: size*1.17)
+        .frame(width: size, height: size)
     }
 }
 
@@ -136,3 +144,4 @@ private struct StickerViewPreviewHost: View {
             .padding()
     }
 }
+

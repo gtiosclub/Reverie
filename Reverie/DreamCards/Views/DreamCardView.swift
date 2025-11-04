@@ -31,6 +31,8 @@ struct DreamCardView: View {
     
     @State private var unlockCards: Bool = false
     
+    @State private var showArchive = false
+    
 //    @State private var degrees: Double = 8.0
     var progress: Float {
         return Float((dreamCount - 1) % 4 + 1) / 4.0
@@ -44,19 +46,24 @@ struct DreamCardView: View {
                     Text("My Characters")
                         .font(.title2.bold())
                         .foregroundColor(.white)
-                    Image(systemName: "chevron.down")
-                        .foregroundColor(.white.opacity(0.8))
                     Spacer()
+                    Button(action: {
+                        showArchive = true
+                    }) {
+                        Text("View All")
+                            .font(.body.bold())
+                            .foregroundColor(.indigo)
+                    }
                 }
                 .padding(.horizontal, 30)
                 .padding(.top, 100)
                 
-                StickerView(characters: characters, selectedCharacter: $selectedCharacter)
-                    .padding(.top, 50)
+                StickerView(characters: $characters, selectedCharacter: $selectedCharacter)
+                    .padding(.top, 10)
                 
                 Spacer()
                 
-                Text("Unlock in 3 days")
+                Text("Log \(Int(max(0, 4 - progress))) more dreams to unlock")
                     .font(.headline.bold())
                     .foregroundColor(.white.opacity(0.9))
                 
@@ -86,15 +93,17 @@ struct DreamCardView: View {
                         }
                     }
             }
-            .padding(.top, 20)
+            .sheet(isPresented: $showArchive) {
+                CharacterArchiveView(characters: $characters, selectedCharacter: $selectedCharacter)
+            }
             .padding(.bottom, 120)
             .task {
                 do {
                     self.characters = try await FirebaseDCService.shared.fetchDCCards()
-                    let pinnedIDs = PinStore.load()
-                    for i in self.characters.indices {
-                        self.characters[i].isPinned = pinnedIDs.contains(self.characters[i].id)
-                    }
+//                    let pinnedIDs = PinStore.load()
+//                    for i in self.characters.indices {
+//                        self.characters[i].isPinned = pinnedIDs.contains(self.characters[i].id)
+//                    }
                     self.lockedCharacters = characters.filter { !$0.isUnlocked }
                 } catch {
                     print("Error fetching cards: \(error.localizedDescription)")
@@ -111,19 +120,9 @@ struct DreamCardView: View {
             
             if let character = selectedCharacter {
                 DreamCardCharacterInformationView(
-                    selectedCharacter: $selectedCharacter,
-                    onTogglePin: { updatedCharacter in
-                        //  Persist toggle to PinStore
-                        PinStore.toggle(id: updatedCharacter.id)
-                        
-                        // Update local array to reflect change immediately
-                        if let index = characters.firstIndex(where: { $0.id == updatedCharacter.id }) {
-                            characters[index].isPinned = updatedCharacter.isPinned
-                        }
-                    },
-                    character: character
+                    selectedCharacter: $selectedCharacter, character: character
                 )
-                .transition(.asymmetric(insertion: .opacity.combined(with: .scale(scale: 0.8)), removal: .opacity))
+                .transition(.asymmetric(insertion: .opacity.combined(with: .scale(scale: 0.9)), removal: .opacity))
                 .id(character.id)
             }
             

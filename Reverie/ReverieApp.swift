@@ -23,10 +23,11 @@ struct ReverieApp: App {
     
     var body: some Scene {
         WindowGroup {
+            //            ImageGenerationView()
             AuthRoutingView()
-                .environment(FirebaseLoginService.shared)
-                .environment(FirebaseDreamService.shared)
-//                .environment(FirebaseDCService.shared)
+//                .environment(FirebaseLoginService.shared)
+//                .environment(FirebaseDreamService.shared)
+            //                .environment(FirebaseDCService.shared)
                 .environmentObject(tabState)
         }
     }
