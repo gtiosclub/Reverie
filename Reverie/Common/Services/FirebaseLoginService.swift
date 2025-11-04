@@ -56,7 +56,7 @@ class FirebaseLoginService {
                            let loggedContent = snapshot.get("loggedContent") as? String,
                            let generatedContent = snapshot.get("generatedContent") as? String,
                            let tags = snapshot.get("tags") as? [String],
-                           let image = snapshot.get("image") as? String,
+                           let image = snapshot.get("image") as? [String],
                            let emotion = snapshot.get("emotion") as? String,
                            let finishedDream = snapshot.get("finishedDream") as? String
                            
