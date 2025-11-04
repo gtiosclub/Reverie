@@ -11,7 +11,9 @@ import UIKit
 struct DreamBookView: View {
     @State private var coverFlipped = false
     @State private var revealPages = false
-
+    
+    @State var dream: DreamModel
+    
     let bookWidth: CGFloat = 350
     let bookHeight: CGFloat = 460
 
@@ -19,11 +21,7 @@ struct DreamBookView: View {
         ZStack {
             ZStack {
                 if revealPages {
-                    PageCurlBookView(imageNames: [
-                        "moon.stars.fill",
-                        "cloud.fill",
-                        "sparkles"
-                    ])
+                    PageCurlBookView(imageURLs: dream.image ?? [])
                     .frame(width: bookWidth, height: bookHeight)
                     .cornerRadius(12)
                     .shadow(radius: 12)
@@ -70,11 +68,21 @@ struct DreamBookView: View {
                 .opacity(coverFlipped && revealPages ? 0 : 1)
             }
         }
+        .task {
+            do {
+                if let updatedDream = try await FirebaseDreamService.shared.fetchDream(dreamID: dream.id) {
+                    self.dream = updatedDream
+                    print("Successfully fetched updated dream with image URLs.")
+                }
+            } catch {
+                print("Error fetching updated dream: \(error.localizedDescription)")
+            }
+        }
     }
 }
 
 struct PageCurlBookView: UIViewControllerRepresentable {
-    let imageNames: [String]
+    let imageURLs: [String?]
 
     func makeUIViewController(context: Context) -> UIPageViewController {
         let controller = UIPageViewController(
@@ -106,23 +114,32 @@ struct PageCurlBookView: UIViewControllerRepresentable {
 
         init(_ parent: PageCurlBookView) {
             self.parent = parent
-
-            self.controllers = parent.imageNames.map { imageName in
-                let vc = UIViewController()
+            
+            self.controllers = parent.imageURLs.map { urlString in
+                
+                let pageView = ZStack {
+                    Color.white
+                    AsyncImage(url: URL(string: urlString ?? "")) { phase in
+                        switch phase {
+                        case .success(let image):
+                            image
+                                .resizable()
+                                .scaledToFit()
+                        case .failure:
+                            Image(systemName: "photo.fill")
+                                .font(.largeTitle)
+                                .foregroundColor(.gray.opacity(0.5))
+                        case .empty:
+                            ProgressView()
+                        @unknown default:
+                            EmptyView()
+                        }
+                    }
+                    .padding(20)
+                }
+                
+                let vc = UIHostingController(rootView: pageView)
                 vc.view.backgroundColor = .white
-
-                let imageView = UIImageView(image: UIImage(named: imageName))
-                imageView.contentMode = .scaleAspectFit
-                imageView.clipsToBounds = true
-                imageView.translatesAutoresizingMaskIntoConstraints = false
-
-                vc.view.addSubview(imageView)
-                NSLayoutConstraint.activate([
-                    imageView.centerXAnchor.constraint(equalTo: vc.view.centerXAnchor),
-                    imageView.centerYAnchor.constraint(equalTo: vc.view.centerYAnchor),
-                    imageView.widthAnchor.constraint(lessThanOrEqualTo: vc.view.widthAnchor, multiplier: 0.9),
-                    imageView.heightAnchor.constraint(lessThanOrEqualTo: vc.view.heightAnchor, multiplier: 0.9)
-                ])
                 return vc
             }
         }
@@ -144,5 +161,5 @@ struct PageCurlBookView: UIViewControllerRepresentable {
 }
 
 #Preview {
-    DreamBookView()
+    DreamBookView(dream: DreamModel(userID: "hi", id: "hi", title: "Dream 1", date: Date(), loggedContent: "hi", generatedContent: "hi", tags: [DreamModel.Tags.animals, DreamModel.Tags.forests], image: ["hi"], emotion: DreamModel.Emotions.sadness, finishedDream: "None"))
 }

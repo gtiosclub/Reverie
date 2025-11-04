@@ -78,7 +78,7 @@ struct LoggingView: View {
                         loggedContent: dream,
                         generatedContent: analysis,
                         tags: tags,
-                        image: "",
+                        image: [""],
                         emotion: emotion,
                         finishedDream: finishedContent
                     )), isActive: $canNavigate) {
