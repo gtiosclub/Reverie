@@ -22,6 +22,8 @@ struct LoggingView: View {
     
     @State private var isLoading = false
     
+    private let audioManager = AudioService()
+    
     var body: some View {
         ZStack {
             BackgroundView()
@@ -113,16 +115,82 @@ struct LoggingView: View {
                 }
                 
                 ZStack(alignment: .topLeading) {
-                    if dream.isEmpty {
+                    if (dream.isEmpty && audioManager.audioCapturerState == .stopped) {
                         Text("Start new dream entry...")
                             .foregroundColor(.white.opacity(0.6))
                             .padding(.vertical, 8)
                     }
-                    TextField("", text: $dream, axis: .vertical)
+                    TextField("", text: Binding(
+                      get: {
+                            if audioManager.audioCapturerState == .started {
+                                dream + audioManager.finalizedTranscript.characters + audioManager.volatileTranscript.characters
+                            } else {
+                                dream
+                            }
+                        },
+                        set: { newValue in
+                            dream = newValue
+                        }
+                    ), axis: .vertical)
                         .foregroundColor(.white)
                         .textFieldStyle(.plain)
                         .tint(.white)
                         .padding(.vertical, 8)
+                }
+              
+              HStack {
+                    Spacer()
+                    switch audioManager.audioCapturerState {
+                    case .started:
+                        Button(action: {
+                            Task {
+                                do {
+                                    // finalize transcript
+                                    let transcription = audioManager.finalizedTranscript.characters + audioManager.volatileTranscript.characters
+                                    audioManager.resetTranscripts()
+                                    if !transcription.isEmpty {
+                                        if !dream.isEmpty { dream += " " }
+                                        dream += transcription + " "
+                                    }
+                                    try await audioManager.stopTranscription()
+                                    audioManager.audioCapturerState = .stopped
+                                } catch {
+                                    audioManager.error = error
+                                }
+                            }
+                        }, label: {
+                            Image(systemName: "square")
+                                .font(.headline)
+                                .foregroundStyle(.white)
+                                .background(Circle()
+                                    .fill(Color.clear)
+                                    .frame(width: 60, height: 60)
+                                    .glassEffect())
+                        })
+                        .padding(.bottom, 60)
+                    case .stopped:
+                        Button(action: {
+                            Task {
+                                do {
+                                    audioManager.resetTranscripts()
+                                    try await audioManager.startRealTimeTranscription()
+                                    audioManager.audioCapturerState = .started
+                                } catch {
+                                    audioManager.error = error
+                                }
+                            }
+                        }, label: {
+                            Image(systemName: "microphone")
+                                .font(.headline)
+                                .foregroundStyle(.white)
+                                .background(Circle()
+                                    .fill(Color.clear)
+                                    .frame(width: 60, height: 60)
+                                    .glassEffect())
+                        })
+                        .padding(.bottom, 60)
+                    }
+                    Spacer()
                 }
                 
                 Spacer()
