@@ -8,8 +8,6 @@
 import SwiftUI
 
 struct DreamEntryView: View {
-    @StateObject private var tabState = TabState()
-    
     let dream: DreamModel
     @State private var goBack = false
     @State private var selectedTab = 0
@@ -46,11 +44,7 @@ struct DreamEntryView: View {
                                                 .fill(Color.white.opacity(0.15))
                                         )
                                 }
-<<<<<<< HEAD
-                                .padding(.vertical, 4) //
-=======
                                 .padding(.vertical, 4)
->>>>>>> dreamlogging-main
                             }
                         }
                     }
@@ -60,11 +54,7 @@ struct DreamEntryView: View {
                 
                 Picker("Dream Tabs", selection: $selectedTab) {
                     Text("Logged Dream").tag(0)
-<<<<<<< HEAD
-                    if dream.finishedDream != "None" && !dream.finishedDream.isEmpty {
-=======
                     if (dream.finishedDream != "None") {
->>>>>>> dreamlogging-main
                         Text("Finished Dream").tag(1)
                     }
                     Text("Dream Analysis").tag(2)
@@ -72,36 +62,12 @@ struct DreamEntryView: View {
                 .pickerStyle(.segmented)
                 .glassEffect(.regular)
                 
-<<<<<<< HEAD
-                
-=======
->>>>>>> dreamlogging-main
                 TabView(selection: $selectedTab) {
                     ScrollView {
                         Text(dream.loggedContent)
                             .foregroundColor(.white)
                             .padding()
                             .multilineTextAlignment(.leading)
-<<<<<<< HEAD
-                    }
-                    .tag(0)
-                    ScrollView {
-                        Text(dream.finishedDream)
-                            .foregroundColor(.white)
-                            .padding()
-                            .multilineTextAlignment(.leading)
-                    }
-                    .tag(1)
-                    
-                    ScrollView {
-                        Text(.init(dream.generatedContent))
-                            .foregroundColor(.white)
-                            .padding()
-                            .multilineTextAlignment(.leading)
-                    }
-                    .tag(2)
-                    
-=======
                     }
                     .tag(0)
                     
@@ -150,29 +116,8 @@ struct DreamEntryView: View {
                         .scaledToFit()
                         .frame(width: 28, height: 28)
                         .foregroundColor(.white)
->>>>>>> dreamlogging-main
                 }
-                .tabViewStyle(.page(indexDisplayMode: .never))
-                .animation(.easeInOut, value: selectedTab)
-                
-                Spacer()
             }
-<<<<<<< HEAD
-        }
-        .navigationBarBackButtonHidden(true)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button(action: {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                        goBack = true
-                    }
-                }) {
-                    HStack {
-                        Image(systemName: "chevron.left")
-                        Text("Archive")
-                    }
-                    .foregroundColor(.white)
-=======
             .onAppear {
                 glowPulse = true
             }
@@ -194,15 +139,10 @@ struct DreamEntryView: View {
                     DreamBookView()
                         .frame(width: 350, height: 460)
                         .transition(.scale.combined(with: .opacity))
->>>>>>> dreamlogging-main
                 }
                 .zIndex(10)
             }
         }
-<<<<<<< HEAD
-        .navigationDestination(isPresented: $goBack) {
-            DreamArchiveView()
-=======
         .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
@@ -214,7 +154,6 @@ struct DreamEntryView: View {
                     .foregroundColor(.white)
                 }
             }
->>>>>>> dreamlogging-main
         }
         .navigationDestination(isPresented: $goBack) {
             DreamArchiveView()

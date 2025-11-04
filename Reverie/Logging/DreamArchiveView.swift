@@ -241,17 +241,12 @@ struct DreamArchiveView: View {
                     }
                     .padding()
                 }
-<<<<<<< HEAD
             }
             .ignoresSafeArea(edges: .bottom)
             VStack {
                 Spacer()
                 TabbarView()
-=======
->>>>>>> dreamlogging-main
             }
-            .ignoresSafeArea(edges: .bottom)
-            TabbarView()
         }
         .onAppear {
             ts.activeTab = .archive
