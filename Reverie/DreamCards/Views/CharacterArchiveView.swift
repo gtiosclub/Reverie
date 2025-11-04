@@ -52,6 +52,29 @@ struct CharacterArchiveView: View {
                     }
                 }
                 
+//                TabView {
+//                    LazyVGrid(columns: cols, spacing: 15) {
+//                        ForEach($characters) { $character in
+//                            CharacterView(character: $character, size: geo.size.width / 5 * 0.7)
+//                                .contentShape(Rectangle())
+//                                .onTapGesture {
+//                                    self.selectedCharacter = character
+//                                }
+//                        }
+////                        { character in
+////                            CharacterView(character: character, size: geo.size.width / 5 * 0.7)
+//                        
+//                    }
+//                }
+//                .padding(10)
+//                .toolbar {
+//                    ToolbarItem(placement: .navigationBarLeading) {
+//                        Button("Close") {
+//                            dismiss()
+//                        }
+//                    }
+//                }
+//                
                 if let character = selectedCharacter {
                     DreamCardCharacterInformationView(
                         selectedCharacter: $selectedCharacter, character: character
