@@ -23,7 +23,8 @@ func generateRandomDreamsAndMatrix(count: Int, strongConnections: Int = 3) -> ([
             generatedContent: "Generated content for dream \(i + 1)",
             tags: Array(randomTags),
             image: "placeholder",
-            emotion: allEmotions.randomElement()!
+            emotion: allEmotions.randomElement()!,
+            finishedDream: "None"
         )
         dreams.append(dream)
     }

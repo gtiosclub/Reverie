@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct CardUnlockView: View {
-    @Environment(FirebaseDCService.self) private var fbdcs
+//    @Environment(FirebaseDCService.self) private var fbdcs
     @Binding var unlockCards: Bool
     
     // how many cards have been revealed?
@@ -34,6 +34,7 @@ struct CardUnlockView: View {
                 ForEach(cards.indices, id: \.self) { index in
                     // what is the ith card?
                     let card = cards[index]
+                    
                     // card is revealed once its index has been past
                     let isRevealed = index < revealedCount
 
@@ -58,13 +59,16 @@ struct CardUnlockView: View {
                     .onTapGesture {
                         guard !isRevealed else { return }
                         revealedCount += 1
+                        Task {
+                            await FirebaseUpdateCardService.shared.toggleIsUnlocked(card: card)
+                        }
                     }
                     // card size based on if it has been clicked
                     .scaleEffect(isRevealed ? 0.80 : 1.0)
                     // get position (see private func below)
                     .position(position(for: index, isRevealed: isRevealed, in: geometry.size))
                     // properly stack
-                    .zIndex(isRevealed ? Double(index) : Double(-index))
+                    .zIndex(isRevealed ? Double(index) : Double(cards.count - index))
                     // animate the card being launched once clicked
                     .animation(.spring(response: 0.65, dampingFraction: 0.75), value: revealedCount)
                 }
