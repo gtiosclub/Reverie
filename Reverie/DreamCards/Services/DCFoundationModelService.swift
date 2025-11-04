@@ -9,6 +9,8 @@ import Foundation
 import FoundationModels
 
 class DCFoundationModelService {
+    static let shared = DCFoundationModelService()
+    
     func getCharacterPrompt(dreamText: String) async throws -> [String] {
         let instructions: String = """
         You are a world-class prompt engineer for an AI image generator that creates fun, cute stickers.
@@ -32,7 +34,7 @@ class DCFoundationModelService {
         ---
 
         **3. The Third String: The Description**
-        Write a brief, story arc of the character, under 400 characters, but at least 150 characters. Give it a bit of personality or a mini-story.
+        Write a brief, story arc of the character, under 300 characters, but at least 100 characters. Give it a bit of personality or a mini-story.
         """
         let ModelSession = LanguageModelSession(instructions: instructions)
         
