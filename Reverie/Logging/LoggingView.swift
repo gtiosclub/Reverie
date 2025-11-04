@@ -155,10 +155,8 @@ struct LoggingView: View {
                 }
                 .transition(.opacity)
             }
-            VStack {
-                Spacer()
-                TabbarView()
-            }
+            
+            TabbarView()
         }
         .onAppear {
             ts.activeTab = .none

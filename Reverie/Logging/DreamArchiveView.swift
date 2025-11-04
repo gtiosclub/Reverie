@@ -13,6 +13,7 @@ struct DreamArchiveView: View {
     @State private var search = ""
     @State private var selectedTag: DreamFilterTag = .allTags
     @State private var selectedDateFilter: DateFilter = .allDates
+    @State private var showingLogDream = false
     
     private var currentUser: UserModel? {
         FirebaseLoginService.shared.currUser
@@ -32,7 +33,7 @@ struct DreamArchiveView: View {
         
         var id: Self { self }
     }
-
+    
     enum DateFilter: String, CaseIterable, Identifiable {
         case allDates = "Dates - All"
         case lastSevenDays = "Last 7 Days"
@@ -65,7 +66,7 @@ struct DreamArchiveView: View {
                 return dream.tags.map { $0.rawValue }.contains(selectedRawTag)
             }
         }
-
+        
         return dreams
     }
     
@@ -103,7 +104,7 @@ struct DreamArchiveView: View {
         
         return result
     }
-
+    
     
     var body: some View {
         ZStack {
@@ -131,6 +132,17 @@ struct DreamArchiveView: View {
                                     .font(.system(size: 24, weight: .bold))
                                     .foregroundColor(.white)
                                     .frame(width: 32, height: 32)
+                            }
+                            Button (action: {
+                                showingLogDream = true;
+                            }) {
+                                Image(systemName: "plus")
+                                    .foregroundColor(.black)
+                                    .padding(6)
+                                    .background(Circle().fill(Color.white))
+                            }
+                            .sheet(isPresented: $showingLogDream) {
+                                LoggingView()
                             }
                         }
                     }
@@ -229,12 +241,17 @@ struct DreamArchiveView: View {
                     }
                     .padding()
                 }
+<<<<<<< HEAD
             }
             .ignoresSafeArea(edges: .bottom)
             VStack {
                 Spacer()
                 TabbarView()
+=======
+>>>>>>> dreamlogging-main
             }
+            .ignoresSafeArea(edges: .bottom)
+            TabbarView()
         }
         .onAppear {
             ts.activeTab = .archive
@@ -272,7 +289,9 @@ struct DreamArchiveView: View {
             return nil
         }
     }
+    
 }
+
 
 #Preview {
     DreamArchiveView()

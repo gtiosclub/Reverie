@@ -63,6 +63,19 @@ class DreamModel: Decodable {
         self.tags = tags
         self.image = image
         self.emotion = emotion
+        self.finishedDream = "None"
+    }
+    init(userID: String, id: String, title: String, date: Date, loggedContent: String, generatedContent:String, tags: [Tags], image: String, emotion: Emotions, finishedDream: String) {
+        self.userID = userID
+        self.id = id
+        self.title = title
+        self.date = date
+        self.title = title
+        self.loggedContent = loggedContent
+        self.generatedContent = generatedContent
+        self.tags = tags
+        self.image = image
+        self.emotion = emotion
         self.finishedDream = finishedDream
     }
 }
