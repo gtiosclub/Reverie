@@ -136,7 +136,7 @@ struct DreamEntryView: View {
                             }
                         }
                     
-                    DreamBookView()
+                    DreamBookView(dream: dream)
                         .frame(width: 350, height: 460)
                         .transition(.scale.combined(with: .opacity))
                 }
@@ -176,7 +176,7 @@ struct DreamEntryView: View {
         The cow represents your connection to...
         """,
         tags: [.mountains, .rivers],
-        image: "Test",
+        image: ["Test"],
         emotion: .happiness,
         finishedDream: "I woke up"
     ))

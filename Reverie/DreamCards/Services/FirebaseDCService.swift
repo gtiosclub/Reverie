@@ -15,7 +15,7 @@ class FirebaseDCService {
     static let shared = FirebaseDCService()
     let fb = FirebaseLoginService()
 
-    func generateImage(for dream: DreamModel, isSticker: Bool) {
+    func generateImageForDC(for dream: DreamModel) {
         let dreamID = dream.id
         let dreamText = dream.loggedContent
         let userID = dream.userID
@@ -28,21 +28,48 @@ class FirebaseDCService {
                     return
                 }
                 print("generating image")
-                guard let sticker = try await ImageGenerationService.shared.generateSticker(prompt: character[0], isSticker: isSticker) else { return }
+                guard let sticker = try await ImageGenerationService.shared.generateSticker(prompt: character[0], isSticker: true) else { return }
                 print("storing in fb")
                 let url = try await FirebaseStorageService.shared.uploadSticker(sticker, forUserID: userID, dreamID: dreamID)
-                if isSticker {
-                    await FirebaseDCService.shared.createDC(
-                        card: CardModel(
-                            userID: userID,
-                            id: dreamID,
-                            name: character[1],
-                            description: character[2],
-                            image: url.absoluteString,
-                            cardColor: .purple
-                        )
+                await FirebaseDCService.shared.createDC(
+                    card: CardModel(
+                        userID: userID,
+                        id: dreamID,
+                        name: character[1],
+                        description: character[2],
+                        image: url.absoluteString,
+                        cardColor: .purple
                     )
+                )
+                print("finished")
+            }
+        } catch {
+            print("Failed to fetch prompt for dream \(dreamID): \(error)")
+            return
+        }
+    }
+    
+    func generateImage(for dream: DreamModel) {
+        let dreamID = dream.id
+        let dreamText = dream.loggedContent
+        let userID = dream.userID
+        do {
+            Task.detached(priority: .utility) {
+                print("getting prompt")
+                let image = try await StoryBookFoundationModelService.shared.getPrompts(dreamText: dreamText)
+                guard image.count == 3 else {
+                    print("Invalid character count for dream \(dreamID)")
+                    return
                 }
+                print("generating image")
+                var urls: [String] = []
+                for num in 0...2 {
+                    guard let image = try await ImageGenerationService.shared.generateSticker(prompt: image[num], isSticker: false) else { return }
+                    print("storing in fb")
+                    let url = try await FirebaseStorageService.shared.uploadImage(image, forUserID: userID, dreamID: dreamID, index: num)
+                    urls.append(url.absoluteString)
+                }
+                await FirebaseDreamService.shared.storeImages(dream: dream, urls: urls)
                 print("finished")
             }
         } catch {
