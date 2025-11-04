@@ -21,15 +21,24 @@ struct DreamArchiveView: View {
         currentUser?.dreams ?? []
     }
     
-    enum DreamFilterTag: String, CaseIterable, Identifiable {
-        case allTags = "Tags - All"
-        case mountains = "mountains"
-        case rivers = "rivers"
-        case forests = "forests"
-        case animals = "animals"
-        case school = "school"
-        
-        var id: Self { self }
+    enum DreamFilterTag: Identifiable, CaseIterable, Hashable {
+        case allTags
+        case tag(DreamModel.Tags)
+
+        var id: String { rawValue }
+
+        var rawValue: String {
+            switch self {
+            case .allTags:
+                return "Tags - All"
+            case .tag(let tag):
+                return tag.rawValue
+            }
+        }
+
+        static var allCases: [DreamFilterTag] {
+            return [.allTags] + DreamModel.Tags.allCases.map { .tag($0) }
+        }
     }
     
     enum DateFilter: String, CaseIterable, Identifiable {
@@ -58,12 +67,12 @@ struct DreamArchiveView: View {
             }
         }
         
-        if selectedTag != .allTags {
-            let selectedRawTag = selectedTag.rawValue
+        if case .tag(let selectedTagValue) = selectedTag {
             dreams = dreams.filter { dream in
-                return dream.tags.map { $0.rawValue }.contains(selectedRawTag)
+                dream.tags.contains(selectedTagValue)
             }
         }
+
         
         return dreams
     }
@@ -158,9 +167,9 @@ struct DreamArchiveView: View {
                         .glassEffect(.regular, in: .rect)
                         
                         Picker("Tags", selection: $selectedTag) {
-                            ForEach(DreamFilterTag.allCases, id: \.self) { tag in
-                                Text(tag.rawValue)
-                                    .foregroundColor(.white)
+                            ForEach(DreamFilterTag.allCases) { tag in
+                                Text(tag.rawValue.capitalized)
+                                    .tag(tag)
                             }
                         }
                         .background(RoundedRectangle(cornerRadius: 8))
