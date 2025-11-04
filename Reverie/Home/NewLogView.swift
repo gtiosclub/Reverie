@@ -33,11 +33,6 @@ struct NewLogView: View {
             .cornerRadius(20)
             .padding(.horizontal, 50)
         }
-        .padding()
-        .frame(maxWidth: 300, minHeight: 50)
-        .glassEffect(.regular, in: .rect)
-        .cornerRadius(20)
-        .padding(.horizontal, 50)
     }
 }
 

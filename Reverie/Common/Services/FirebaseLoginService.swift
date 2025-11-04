@@ -78,7 +78,7 @@ class FirebaseLoginService {
 
                             let dreamModel = DreamModel(userID: userID, id: id, title: title, date: dateF, loggedContent: loggedContent, generatedContent: generatedContent, tags: tagF, image: image, emotion: emotionF, finishedDream: finishedDream)
                             dreamModels.append(dreamModel)
-                            print(dreamModel)
+//                            print(dreamModel)
                             
                         }
                     }
