@@ -28,25 +28,29 @@ struct Moon: View {
 
     var body: some View {
         GeometryReader { geometry in
-            ZStack {
-                Circle()
-                    .fill(Color.white)
-                    .frame(width: 140, height: 140)
-                    .blur(radius: 30)
-                    .opacity(0.35)
-
-                Circle()
-                    .fill(
-                        LinearGradient(
-                            gradient: Gradient(colors: [Color(white: 0.95), Color(white: 0.8)]),
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
-                    )
-                    .frame(width: 120, height: 120)
-                
-                MoonFaceView(isThrown: isThrown)
-            }
+//            ZStack {
+//                Circle()
+//                    .fill(Color.white)
+//                    .frame(width: 140, height: 140)
+//                    .blur(radius: 30)
+//                    .opacity(0.35)
+//
+//                Circle()
+//                    .fill(
+//                        LinearGradient(
+//                            gradient: Gradient(colors: [Color(white: 0.95), Color(white: 0.8)]),
+//                            startPoint: .topLeading,
+//                            endPoint: .bottomTrailing
+//                        )
+//                    )
+//                    .frame(width: 120, height: 120)
+//                
+//                MoonFaceView(isThrown: isThrown)
+//            }
+            Image("Moon")
+            .resizable()
+            .scaledToFit()
+            .frame(width: 150, height: 150)
             .rotationEffect(rotation)
             .scaleEffect(scale)
             .position(x: position.x + dragOffset.width, y: position.y + dragOffset.height)
@@ -155,64 +159,64 @@ struct Moon: View {
     }
 }
 
-struct MoonFaceView: View {
-    var isThrown: Bool
-    // Shared pupil movement to keep both eyes synced and prevent cross-eyed motion
-    @State private var sharedPupilOffset: CGSize = .zero
-
-    var body: some View {
-        VStack(spacing: 8) {
-            // Eyes
-            HStack(spacing: 20) {
-                // Both eyes use the same pupil offset for synchronized movement
-                GooglyEyeView(pupilOffset: sharedPupilOffset).frame(width: 25, height: 25)
-                // Both eyes use the same pupil offset for synchronized movement
-                GooglyEyeView(pupilOffset: sharedPupilOffset).frame(width: 25, height: 25)
-            }
-
-            // Mouth
-            Path { path in
-                path.move(to: CGPoint(x: 0, y: 2))
-                path.addQuadCurve(to: CGPoint(x: 45, y: 5), control: CGPoint(x: 25, y: 25))
-            }
-            .stroke(Color.black.opacity(0.7), style: StrokeStyle(lineWidth: 3, lineCap: .round))
-            .frame(width: 40, height: 15)
-        }
-        .offset(y: 8)
-        .onAppear {
-            // Periodically animate both pupils unless moon is being thrown
-            Timer.scheduledTimer(withTimeInterval: 1.5, repeats: true) { _ in
-                if !isThrown {
-                    withAnimation(.easeInOut(duration: 1)) {
-                        sharedPupilOffset = CGSize(width: Double.random(in: -4...4), height: Double.random(in: -4...4))
-                    }
-                }
-            }
-        }
-    }
-}
-
-struct GooglyEyeView: View {
-    var pupilOffset: CGSize
-    
-    var body: some View {
-        ZStack {
-            Circle()
-                .fill(Color.white)
-                .shadow(radius: 1)
-            
-            Circle()
-                .fill(Color.black)
-                .scaleEffect(0.5)
-                .offset(pupilOffset)
-            
-            Circle()
-                .fill(Color.white)
-                .scaleEffect(0.2)
-                .offset(x: -1.5 + pupilOffset.width, y: -1 + pupilOffset.height)
-        }
-    }
-}
+//struct MoonFaceView: View {
+//    var isThrown: Bool
+//    // Shared pupil movement to keep both eyes synced and prevent cross-eyed motion
+//    @State private var sharedPupilOffset: CGSize = .zero
+//
+//    var body: some View {
+//        VStack(spacing: 8) {
+//            // Eyes
+//            HStack(spacing: 20) {
+//                // Both eyes use the same pupil offset for synchronized movement
+//                GooglyEyeView(pupilOffset: sharedPupilOffset).frame(width: 25, height: 25)
+//                // Both eyes use the same pupil offset for synchronized movement
+//                GooglyEyeView(pupilOffset: sharedPupilOffset).frame(width: 25, height: 25)
+//            }
+//
+//            // Mouth
+//            Path { path in
+//                path.move(to: CGPoint(x: 0, y: 2))
+//                path.addQuadCurve(to: CGPoint(x: 45, y: 5), control: CGPoint(x: 25, y: 25))
+//            }
+//            .stroke(Color.black.opacity(0.7), style: StrokeStyle(lineWidth: 3, lineCap: .round))
+//            .frame(width: 40, height: 15)
+//        }
+//        .offset(y: 8)
+//        .onAppear {
+//            // Periodically animate both pupils unless moon is being thrown
+//            Timer.scheduledTimer(withTimeInterval: 1.5, repeats: true) { _ in
+//                if !isThrown {
+//                    withAnimation(.easeInOut(duration: 1)) {
+//                        sharedPupilOffset = CGSize(width: Double.random(in: -4...4), height: Double.random(in: -4...4))
+//                    }
+//                }
+//            }
+//        }
+//    }
+//}
+//
+//struct GooglyEyeView: View {
+//    var pupilOffset: CGSize
+//    
+//    var body: some View {
+//        ZStack {
+//            Circle()
+//                .fill(Color.white)
+//                .shadow(radius: 1)
+//            
+//            Circle()
+//                .fill(Color.black)
+//                .scaleEffect(0.5)
+//                .offset(pupilOffset)
+//            
+//            Circle()
+//                .fill(Color.white)
+//                .scaleEffect(0.2)
+//                .offset(x: -1.5 + pupilOffset.width, y: -1 + pupilOffset.height)
+//        }
+//    }
+//}
 
 #Preview {
     MoonView()

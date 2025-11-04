@@ -62,6 +62,7 @@ class FirebaseDCService {
     }
 
     func fetchDCCards() async throws -> [CardModel] {
+        print("fetching dc cards")
         guard let userID = fb.currUser?.userID else { return [] }
 
         let userDocRef = fb.db.collection("USERS").document(userID)

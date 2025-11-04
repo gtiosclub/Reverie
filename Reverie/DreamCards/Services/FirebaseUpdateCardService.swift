@@ -21,11 +21,19 @@ class FirebaseUpdateCardService {
         }
     }
     
-    func toggleIsPinned(card: CardModel) async {
+    func setIsPinned(card: CardModel, isPinned: Bool) async {
         do {
-            try await self.fb.db.collection("DREAMCARDS").document(card.id).updateData(["isPinned": !card.isPinned])
+            try await self.fb.db.collection("DREAMCARDS").document(card.id).updateData(["isPinned": isPinned])
         } catch {
             print("Firebase failed to toggle isPinned with error: \(error)")
+        }
+    }
+    
+    func setIsShown(card: CardModel, isShown: Bool) async {
+        do {
+            try await self.fb.db.collection("DREAMCARDS").document(card.id).updateData(["isShown": isShown])
+        } catch {
+            print("Firebase failed to toggle isUnlocked with error: \(error)")
         }
     }
 }
