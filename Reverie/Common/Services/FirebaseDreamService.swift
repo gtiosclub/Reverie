@@ -106,17 +106,18 @@ class FirebaseDreamService {
           print("USER ID: \(dream.userID)")
 
           do {
-              let ref = fb.db.collection("DREAMS").addDocument(data: [
-                "date": dateFormatter.string(from: dream.date),
-                  "emotion": String(describing: dream.emotion),
-                  "generatedContent": dream.generatedContent,
-                "title": dream.title,
-                   "id": dream.id,
-                "image": "",//stickerURL.absoluteString,
-                  "loggedContent": dream.loggedContent,
-                  "tags": tagArray,
-                  "userID": dream.userID,
-                "finishedDream": dream.finishedDream
+              let ref = try await fb.db.collection("DREAMS").addDocument(
+                data: [
+                 "date": dateFormatter.string(from: dream.date),
+                 "emotion": dream.emotion.rawValue,
+                 "generatedContent": dream.generatedContent,
+                 "title": dream.title,
+                 "id": dream.id,
+                 "image": dream.image,
+                 "loggedContent": dream.loggedContent,
+                 "tags": tagArray,
+                 "userID": dream.userID,
+                 "finishedDream": dream.finishedDream
               ])
               let dreamRef = ref.documentID
               dream.id = dreamRef
