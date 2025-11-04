@@ -13,7 +13,7 @@ struct DreamFetchTest: View {
     @Environment(FirebaseDreamService.self) private var fds
     @State private var dreams: [DreamModel] = []
     
-    let sampleDream: DreamModel = .init(userID: "6gOZw9yW4DYIeM2rnWe5AEGgoJm2", id: "6gOZw9yW4DYIeM2rnWe5AEGgoJm3", title: "A Haunted Building", date: Date(), loggedContent: "I was standing outside and I looked at the house I was staying in. Of all the rooms mine was the only one that had these lantern looking lights on outside. I was so confused. I tried sleeping that night but the lights were so bright.", generatedContent: "gen content", tags: [.animals, .forests], image: "image", emotion: .fear)
+    let sampleDream: DreamModel = .init(userID: "6gOZw9yW4DYIeM2rnWe5AEGgoJm2", id: "6gOZw9yW4DYIeM2rnWe5AEGgoJm3", title: "A Haunted Building", date: Date(), loggedContent: "I was standing outside and I looked at the house I was staying in. Of all the rooms mine was the only one that had these lantern looking lights on outside. I was so confused. I tried sleeping that night but the lights were so bright.", generatedContent: "gen content", tags: [.animals, .forests], image: "image", emotion: .fear, finishedDream: "None")
     
     var body: some View {
         Button(action: {

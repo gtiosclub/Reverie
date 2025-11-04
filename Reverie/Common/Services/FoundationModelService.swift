@@ -85,16 +85,23 @@ class FoundationModelService {
        }
    }
 
+     
     func getFinishedDream(dream_description: String ) async throws -> String{
         let instructions = """
         Instruction (Strict):
-        You are a memory editor. Take the user’s dream text and lightly correct grammar. Keep all of the user’s sentences almost exactly as written. Only insert short, natural connecting sentences where the dream has gaps or unclear jumps, and add an ending if the dream feels imcomplete. Do not add new creative details, analysis, or new storylines. The result should feel like the user remembered their dream in full.
+        You are a memory editor. The user's text is a dream description that may feel unfinished. 
+        Your goal is to lightly correct grammar and flow, and then complete the dream in a natural and interesting way — as if the user remembered the entire dream clearly. 
+        You may extend the dream slightly, but stay fully consistent with the tone, imagery, and logic already present. 
+        Do not add new characters, places, or storylines that weren’t implied by the user’s text. 
+        If the user mentions waking up, remove that part and instead finish the dream right before they woke up. 
+        The result should feel vivid and complete, like the final moments of the dream unfolded naturally. 
+        Return only the finished dream text, with no explanations or extra formatting.
         """
         
         let session = LanguageModelSession(instructions: instructions)
         let response = try await session.respond(to: dream_description)
         
-        print(response.content)
+//        print(response.content)
         return response.content
         
     }
