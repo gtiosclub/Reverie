@@ -22,6 +22,16 @@ struct HomeView: View {
                     .bold()
                     .padding(.bottom, 20)
                 NewLogView()
+                // UPLOADS ACHIEVEMENTS TO FIRESTORE
+//                Button("Upload Achievements") {
+//                    Task {
+//                        await AchievementsService.shared.uploadAllAchievements()
+//                    }
+//                }
+//                .padding()
+//                .background(Color.blue)
+//                .foregroundColor(.white)
+//                .cornerRadius(8)
             }
             .padding(.bottom, 30)
         }
