@@ -94,8 +94,11 @@ struct ProfileView: View {
                 TabbarView()
             }
         }
-        .task { await loadDreamsAndStats() }
-        .onAppear {                    
+        .task {
+            await loadDreamsAndStats()
+            await AchievementsService.shared.checkAndUnlockAchievements(dreamCount: dreamCount, dreamStreak: dreamStreak)
+        }
+        .onAppear {
             ts.activeTab = .analytics
         }
 
