@@ -13,12 +13,12 @@ struct TabbarView: View {
 
     var body: some View {
 //        VStack {
-            HStack {
-                TabButton(title: Image(systemName: "house"), tab: .home, destination: StartView())
-                TabButton(title: Image(systemName: "chart.bar"), tab: .analytics, destination: ProfileView())
-                TabButton(title: Image(systemName: "doc.text"), tab: .archive, destination: DreamArchiveView())
+        HStack (spacing: 0){
+            TabButton(title: Image(systemName: "house"), text: "Home", tab: .home, destination: StartView())
+            TabButton(title: Image(systemName: "chart.bar"), text: "Analysis", tab: .analytics, destination: ProfileView())
+            TabButton(title: Image(systemName: "doc.text"), text: "Archive", tab: .archive, destination: DreamArchiveView())
             }
-            .padding()
+//            .padding()
             .frame(maxWidth: 300, maxHeight: 50)
             .glassEffect(.regular)
 //            .glassEffect(.regular, in: .rect)
@@ -32,6 +32,7 @@ struct TabbarView: View {
 // Tab Buttons
 struct TabButton<Destination: View>: View {
     let title: Image
+    let text: String
     let tab: TabType
     let destination: Destination
     
@@ -39,7 +40,11 @@ struct TabButton<Destination: View>: View {
     
     var body: some View {
         NavigationLink(destination: destination) {
-            title
+            VStack {
+                title
+                Text(text)
+                    .font(.footnote).textScale(.secondary)
+            }
                 .frame(maxWidth: .infinity)
                 .padding()
                 .font(.system(size: 18))
@@ -49,6 +54,15 @@ struct TabButton<Destination: View>: View {
             ts.activeTab = tab
         })
         .navigationBarBackButtonHidden(true)
+        .background(ts.activeTab == tab ?
+                    Capsule()
+                        .glassEffect(.regular)
+                        .frame(maxWidth: .infinity)
+                        .padding(.horizontal, 2.5)
+                        .padding(.vertical, 12)
+                        .opacity(0.3)
+                        .cornerRadius(20)
+                    : nil)
     }
 }
 
