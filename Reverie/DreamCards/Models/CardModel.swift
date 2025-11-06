@@ -20,6 +20,7 @@ struct CardModel: Identifiable, Codable {  // Conforms to Identifiable to unique
     var isShown: Bool = false // shown on screen?
     var isUnlocked: Bool = false // character unlocked?
     var isPinned: Bool = false // is the character pinned?
+    var isAchievementUnlocked: Bool = false  // is the achievement unlocked
     
     enum DreamColor: String, Codable, CaseIterable, ShapeStyle {
         case purple
