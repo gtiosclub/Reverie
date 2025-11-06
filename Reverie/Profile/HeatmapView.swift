@@ -83,6 +83,7 @@ struct HeatmapView: View {
                 }
                 .padding(.vertical, 10)
                 .padding(.horizontal, 15)
+                FrequencyView()
             }
             .refreshable {
                 viewModel.fetchDreams()
