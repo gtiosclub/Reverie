@@ -202,7 +202,7 @@ struct DreamArchiveView: View {
                                                 SectionView(
                                                     title: dream.title,
                                                     date: formatDate(dream.date),
-                                                    tags: dream.tags.map { $0.rawValue.capitalized },
+                                                    tags: dream.tags,
                                                     description: dream.loggedContent
                                                 )
                                             }
@@ -210,48 +210,76 @@ struct DreamArchiveView: View {
                                         }
                                     }
                                 }
-                            } else if search.isEmpty && selectedTag == .allTags && selectedDateFilter == .allDates {
-                                VStack(spacing: 16) {
-                                    Image(systemName: "moon.zzz")
-                                        .font(.system(size: 64))
-                                        .foregroundColor(.gray)
-                                    Text("No dreams yet")
-                                        .font(.title2)
-                                        .foregroundColor(.white)
-                                    Text("Start logging your dreams to see them here!")
-                                        .font(.body)
-                                        .foregroundColor(.gray)
-                                        .multilineTextAlignment(.center)
-                                }
-                                .frame(maxWidth: .infinity)
-                                .padding(.top, 100)
-                            } else {
-                                VStack(spacing: 16) {
-                                    Image(systemName: "tray.fill")
-                                        .font(.system(size: 64))
-                                        .foregroundColor(.gray)
-                                    Text("No Matching Dreams")
-                                        .font(.title2)
-                                        .foregroundColor(.white)
-                                    Text("Try adjusting your filters or search terms.")
-                                        .font(.body)
-                                        .foregroundColor(.gray)
-                                        .multilineTextAlignment(.center)
-                                }
-                                .frame(maxWidth: .infinity)
-                                .padding(.top, 100)
                             }
-                            Spacer(minLength: 60)
                         }
-                        .padding()
                     }
+
                 }
-                .ignoresSafeArea(edges: .bottom)
-                TabbarView()
+                .padding()
+                .shadow(color: Color.black.opacity(0.1), radius: 4, y: 2)
+                
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 24) {
+                        if !groupedDreams.isEmpty {
+                            ForEach(groupedDreams, id: \.title) { group in
+                                VStack(alignment: .leading, spacing: 12) {
+                                    Text(group.title)
+                                        .font(.headline)
+                                        .foregroundColor(.white)
+                                    ForEach(group.dreams, id: \.id) { dream in
+                                        NavigationLink(destination: DreamEntryView(dream: dream)) {
+                                            SectionView(
+                                                title: dream.title,
+                                                date: formatDate(dream.date),
+                                                tags: dream.tags,
+                                                description: dream.loggedContent
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                        } else if search.isEmpty && selectedTag == .allTags && selectedDateFilter == .allDates {
+                            VStack(spacing: 16) {
+                                Image(systemName: "moon.zzz")
+                                    .font(.system(size: 64))
+                                    .foregroundColor(.gray)
+                                Text("No dreams yet")
+                                    .font(.title2)
+                                    .foregroundColor(.white)
+                                Text("Start logging your dreams to see them here!")
+                                    .font(.body)
+                                    .foregroundColor(.gray)
+                                    .multilineTextAlignment(.center)
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding(.top, 100)
+                        } else {
+                            VStack(spacing: 16) {
+                                Image(systemName: "tray.fill")
+                                    .font(.system(size: 64))
+                                    .foregroundColor(.gray)
+                                Text("No Matching Dreams")
+                                    .font(.title2)
+                                    .foregroundColor(.white)
+                                Text("Try adjusting your filters or search terms.")
+                                    .font(.body)
+                                    .foregroundColor(.gray)
+                                    .multilineTextAlignment(.center)
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding(.top, 100)
+                        }
+                        Spacer(minLength: 60)
+                    }
+                    .padding()
+                }
             }
-            .preferredColorScheme(.dark)
+            .ignoresSafeArea(edges: .bottom)
+            TabbarView()
         }
+        .preferredColorScheme(.dark)
     }
+
     
     private func formatDate(_ date: Date) -> String {
         let formatter = DateFormatter()
@@ -283,6 +311,7 @@ struct DreamArchiveView: View {
             return nil
         }
     }
+
     
 }
 
