@@ -50,7 +50,7 @@ struct HeatmapView: View {
 
     var body: some View {
         ZStack {
-            BackgroundView()
+            //BackgroundView()
             ScrollView {
                 VStack(alignment: .leading, spacing: 24) {
                     Picker("Timeframe", selection: $selectedTimeframe) {
