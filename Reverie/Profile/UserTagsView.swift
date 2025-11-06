@@ -23,17 +23,18 @@ let allTags: [DreamModel.Tags] = findMostCommonTags(dreams: allDreams)
 
 struct UserTagsView: View {
     var body: some View {
-        ZStack() {
-            BackgroundView()
-            ScrollView {
-                VStack (alignment: .leading, spacing: 20) {
-                    TagViewBlock(title: "This Week", tags: thisWeekTags, isExpandable: true)
-                    TagViewBlock(title: "Archive", tags: allTags, isExpandable: false)
+        NavigationStack {
+            ZStack() {
+                BackgroundView()
+                ScrollView {
+                    VStack (alignment: .leading, spacing: 20) {
+                        TagViewBlock(title: "This Week", tags: thisWeekTags, isExpandable: true)
+                        TagViewBlock(title: "Archive", tags: allTags, isExpandable: false)
+                    }
                 }
+                .padding(.bottom, 80)
             }
-            .padding(.bottom, 80)
         }
-
     }
 }
 
@@ -56,7 +57,9 @@ struct TagViewBlock : View {
         
         LazyVGrid(columns: columns, spacing: 25) {
             ForEach(displayedTags, id: \.self) { tag in
-                TagView(tagGiven: tag)
+                NavigationLink(destination: TagInfoView(tagGiven: tag)) {
+                    TagView(tagGiven: tag)
+                }
             }
         }
         
