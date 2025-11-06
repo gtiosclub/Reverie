@@ -18,17 +18,30 @@ struct SaveDreamView: View {
     var newDream: DreamModel
     
     struct InnerTagView: View {
-        var title: String
+        var tag: DreamModel.Tags
+        var imageName: String
+        var color: Color
+        var added: Bool
+        
         var body: some View {
+            
+            
             HStack(spacing: 5) {
-                Text(title)
+                Image(systemName: imageName)
+                    .foregroundColor(color)
+                Text(tag.rawValue.capitalized)
                     .foregroundStyle(Color.white)
                     .font(.caption)
-                
-                Image(systemName: "xmark.circle.fill")
-                    .foregroundColor(.white.opacity(0.8))
+                if (added) {
+                    Image(systemName: "xmark")
+                        .foregroundColor(.white)
+                } else {
+                    Image(systemName: "plus")
+                        .foregroundColor(.white)
+                }
             }
             .padding(.horizontal, 10)
+            .frame(height: 20)
             .padding(.vertical, 6)
             .background(
                 Capsule()
@@ -45,7 +58,7 @@ struct SaveDreamView: View {
                 VStack(alignment: .leading, spacing: 20) {
                     
                     VStack(alignment: .leading, spacing: 10) {
-                        Text("Edit Entry Tags")
+                        Text("Add Themes")
                             .foregroundColor(.white)
                             .font(.subheadline)
                         
@@ -55,12 +68,15 @@ struct SaveDreamView: View {
                                     showTagDropdown.toggle()
                                 }
                             }) {
-                                Image(systemName: "plus")
+                                Image(systemName: "magnifyingglass")
                                     .foregroundColor(.black)
                                     .padding(6)
                                     .background(Circle().fill(Color.white))
+                                    .padding(6)
                             }
                             .padding(.leading, 10)
+                            
+                            Text("")
 
                             ScrollView(.horizontal, showsIndicators: false) {
                                 HStack(spacing: 8) {
@@ -72,7 +88,12 @@ struct SaveDreamView: View {
                                                 showTagDropdown.toggle()
                                             }
                                         }) {
-                                            InnerTagView(title: tag.rawValue.capitalized)
+                                            InnerTagView(
+                                                tag: tag,
+                                                imageName: DreamModel.tagImages(tag: tag),
+                                                color: DreamModel.tagColors(tag: tag),
+                                                added: true
+                                            )
                                         }
                                         .buttonStyle(.plain)
                                     }
@@ -104,22 +125,23 @@ struct SaveDreamView: View {
                                                 showTagDropdown = true
                                             }
                                         }) {
-                                            Text(tag.rawValue.capitalized)
-                                                .foregroundColor(.white)
-                                                .padding(.vertical, 12)
-                                                .padding(.horizontal, 15)
-                                                .frame(maxWidth: .infinity, alignment: .leading)
+                                            InnerTagView(
+                                                tag: tag,
+                                                imageName: DreamModel.tagImages(tag: tag),
+                                                color: DreamModel.tagColors(tag: tag),
+                                                added: false
+                                            )
                                         }
                                         .buttonStyle(.plain)
                                         .contentShape(Rectangle())
                                         .background(Material.regular)
                                         
-                                        if tag != DreamModel.Tags.allCases.last {
-                                            Divider()
-                                                .frame(height: 0.5)
-                                                .background(Color.white.opacity(0.15))
-                                                .padding(.horizontal, 10)
-                                        }
+//                                        if tag != DreamModel.Tags.allCases.last {
+//                                            Divider()
+//                                                .frame(height: 0.5)
+//                                                .background(Color.white.opacity(0.15))
+//                                                .padding(.horizontal, 10)
+//                                        }
                                     }
                                 }
                                 .padding(.vertical, 5)
@@ -209,3 +231,4 @@ struct SaveDreamView: View {
         )
     )
 }
+
