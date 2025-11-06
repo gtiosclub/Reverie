@@ -34,23 +34,30 @@ struct DreamEntryView: View {
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack(spacing: 8) {
                                 ForEach(dream.tags, id: \.self) { tag in
-                                    Text(tag.rawValue.capitalized)
-                                        .font(.caption)
-                                        .foregroundColor(.white)
-                                        .padding(.vertical, 4)
-                                        .padding(.horizontal, 8)
-                                        .background(
-                                            Capsule()
-                                                .fill(Color.white.opacity(0.15))
-                                        )
+                                    HStack {
+                                        Image(systemName: DreamModel.tagImages(tag: tag))
+                                            .foregroundStyle(DreamModel.tagColors(tag: tag))
+                                        Text(tag.rawValue.capitalized)
+                                            .font(.caption)
+                                            .foregroundColor(.white)
+                                            .padding(.vertical, 4)
+                                    }
+                                    .padding(.vertical, 3)
+                                    .padding(.horizontal, 10)
+                                    .background(
+                                        Capsule()
+                                            .fill(Color.white.opacity(0.15))
+                                    )
                                 }
+                                
                                 .padding(.vertical, 4)
                             }
                         }
                     }
                 }
-                .padding(.horizontal)
+//                .padding(.horizontal)
                 .padding(.top, 8)
+                .padding(.bottom, 4)
                 
                 Picker("Dream Tabs", selection: $selectedTab) {
                     Text("Logged Dream").tag(0)
@@ -90,7 +97,7 @@ struct DreamEntryView: View {
                 
                 Spacer()
             }
-            
+            .padding(5)
             Button(action: {
                 withAnimation(.easeInOut) {
                     showBook.toggle()
@@ -142,6 +149,7 @@ struct DreamEntryView: View {
                 }
                 .zIndex(10)
             }
+               
         }
         .navigationBarBackButtonHidden(true)
         .toolbar {
