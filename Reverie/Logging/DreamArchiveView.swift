@@ -166,27 +166,42 @@ struct DreamArchiveView: View {
                         .cornerRadius(10)
                         .glassEffect(.regular, in: .rect)
                         
-                        Picker("Tags", selection: $selectedTag) {
-                            ForEach(DreamFilterTag.allCases) { tag in
-                                Text(tag.rawValue.capitalized)
-                                    .tag(tag)
+                        Menu {
+                            Button("Sort Newest to Oldest") {
+                                // TODO: SORT
                             }
-                        }
-                        .background(RoundedRectangle(cornerRadius: 8))
-                        .accentColor(.white)
-                        .colorMultiply(.white)
-                        .glassEffect(.regular, in: .rect)
-                        
-                        Picker("Dates", selection: $selectedDateFilter) {
-                            ForEach(DateFilter.allCases, id: \.self) { date in
-                                Text(date.rawValue)
-                                    .foregroundColor(.white)
+                            Button("Sort Oldest to Newest") {
+                                // TODO: SORT
                             }
+                            Divider()
+                            Section("Filters") {
+                                Picker(selection: $selectedTag, content: {
+                                    ForEach(DreamFilterTag.allCases) { tag in
+                                        Text(tag.rawValue.capitalized)
+                                            .tag(tag)
+                                    }
+                                }, label: {
+                                    Text("Themes")
+                                })
+                                .pickerStyle(.menu)
+                                Picker(selection: $selectedDateFilter, content: {
+                                    ForEach(DateFilter.allCases, id: \.self) { date in
+                                        Text(date.rawValue)
+                                            .foregroundColor(.white)
+                                    }
+                                }, label: {
+                                    Text("Dates")
+                                })
+                                .pickerStyle(.menu)
+                            }
+                        } label: {
+                            Image(systemName: "line.3.horizontal.decrease")
+                                .font(.headline)
+                                .padding(12)
+                                .foregroundStyle(.white)
+                                .background(Circle()
+                                    .fill(Color(red: 0.38, green: 0.33, blue: 0.96))             .glassEffect())
                         }
-                        .background(RoundedRectangle(cornerRadius: 8))
-                        .accentColor(.white)
-                        .colorMultiply(.white)
-                        .glassEffect(.regular, in: .rect)
                     }
                 }
                 .padding()
