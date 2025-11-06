@@ -3,56 +3,64 @@ import SwiftUI
 struct SectionView: View {
     let title: String
     let date: String
-    let tags: [String]
+    let tags: [DreamModel.Tags]
     let description: String
     var body: some View {
-
-            HStack {
-                VStack (alignment: .leading) {
-                    HStack {
-                        Text(title)
-                            .font(.title)
-                            .fontWeight(.bold)
-                            .textFieldStyle(PlainTextFieldStyle())
-                            .padding(.horizontal, 15)
-                            .padding(.top,12)
-                            .cornerRadius(6)
-                            .foregroundColor(.white)
-
-                    }
-                    Text(date)
-                        .foregroundColor(.white)
-                        .font(.subheadline)
-                        .padding(.leading, 20)
-                    ScrollView(.horizontal, showsIndicators: false) {
+        
+            ZStack{
+                HStack {
+                    VStack (alignment: .leading) {
                         HStack {
-                            ForEach(tags, id: \.self) { tag in
-                                Text(tag)
-                                    .foregroundColor(.white)
-                                    .font(.subheadline)
-                                    .padding(.horizontal,10)
-                                    .background(Color(white: 0.7))
-                                    .cornerRadius(15)
+                            Text(title)
+                                .font(.title)
+                                .fontWeight(.bold)
+                                .textFieldStyle(PlainTextFieldStyle())
+                                .padding(.horizontal, 15)
+                                .cornerRadius(6)
+                                .foregroundColor(.white)
+                            ScrollView(.horizontal) {
+                                HStack {
+                                    ForEach(tags, id: \.self) { tag in
+                                        Image(systemName: DreamModel.tagImages(tag: tag))
+                                            .foregroundColor(DreamModel.tagColors(tag: tag))
+                                            .font(.headline)
+                                            .padding(.horizontal,5)
+                                            .cornerRadius(15)
+                                            .shadow(radius: 3)
+                                    }
+                                }
+                                
                             }
+                            .frame(maxWidth: 150)
                         }
-                        .padding(.horizontal, 18)
-                    }
-                    HStack {
-                        Text(description)
+                        .padding(.top, 10)
+                        
+                        Text(date)
                             .foregroundColor(.white)
                             .font(.subheadline)
-                            .lineLimit(1)
-                            .padding(.horizontal, 18)
-                            .padding(.vertical,10)
+                            .padding(.leading, 20)
+                        
+                        HStack {
+                            Text(description)
+                                .foregroundColor(.white)
+                                .font(.subheadline)
+                                .lineLimit(1)
+                                .padding(.horizontal, 18)
+                                .padding(.vertical,10)
+                        }
                     }
+                    
                 }
-                Spacer()
-                Image(systemName: "chevron.right")
-                    .foregroundColor(.white)
-                    .font(.title)
-                    .padding(.horizontal,10)
+                
+                HStack{
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .foregroundColor(.white)
+                        .font(.title)
+                        .padding(.horizontal,10)
+                }
             }
-            .background(Color(white: 0.4))
+            .background(Color(white: 0.5))
             .cornerRadius(10)
             .padding(.horizontal, 10)
             .padding(.vertical)
@@ -63,7 +71,7 @@ struct SectionView: View {
     SectionView(
         title: "Cave Diving",
         date: "September 14th, 2024",
-        tags: ["Love", "Falling", "Being Chased", "Scared"],
+        tags: [.love, .falling],
         description: "Dream description preview Dream description preview Dream description preview Dream description preview"
     )
 }
