@@ -66,6 +66,7 @@ struct ProfileView: View {
                                 .background(Color(red: 35/255, green: 31/255, blue: 49/255))
                                 .cornerRadius(12)
                         }
+                        
                         NavigationLink(destination: UserTagsView()) {
                             HStack { Image(systemName: "tag"); Text("Browse Tags") }
                                 .font(.headline)
@@ -75,13 +76,17 @@ struct ProfileView: View {
                                 .background(Color(red: 35/255, green: 31/255, blue: 49/255))
                                 .cornerRadius(12)
                         }
+                        
+                        
                         NavigationLink(destination: TestView()) {
                             HStack { Image(systemName: "hammer"); Text("Test Page") }
                                 .font(.subheadline)
                                 .foregroundColor(.white)
                                 .padding(.vertical, 8)
                         }
+                        
                     }
+                    renderEmotionCircles(from: .init(dreams))
                 }
                 .padding(.horizontal, 16)
                 .padding(.bottom, 96)
