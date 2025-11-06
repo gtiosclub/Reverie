@@ -49,25 +49,69 @@ struct DreamEntryView: View {
                                             .fill(Color.white.opacity(0.15))
                                     )
                                 }
-                                
                                 .padding(.vertical, 4)
                             }
                         }
                     }
                 }
-//                .padding(.horizontal)
                 .padding(.top, 8)
                 .padding(.bottom, 4)
                 
-                Picker("Dream Tabs", selection: $selectedTab) {
-                    Text("Logged Dream").tag(0)
-                    if (dream.finishedDream != "None") {
-                        Text("Finished Dream").tag(1)
+                
+                HStack(spacing: 0) {
+                    Button {
+                        withAnimation(.easeInOut(duration: 0.25)) {
+                            selectedTab = 0
+                        }
+                    } label: {
+                        Text("Dream")
+                            .fontWeight(.semibold)
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .frame(maxHeight: 15)
+                            .padding(.vertical, 10)                            .background(
+                                Capsule()
+                                    .fill(selectedTab == 0 ?
+                                          Color(red: 0.22, green: 0.18, blue: 0.55) : // dark purple
+                                          Color.black.opacity(0.4))
+                            )
                     }
-                    Text("Dream Analysis").tag(2)
+
+                    Button {
+                        withAnimation(.easeInOut(duration: 0.25)) {
+                            selectedTab = 1
+                        }
+                    } label: {
+                        Label("Analysis", systemImage: "sparkles")
+                            .fontWeight(.semibold)
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .frame(maxHeight: 15)
+                            .padding(.vertical, 10)
+                            .background(
+                                Capsule()
+                                    .fill(selectedTab == 1 ?
+                                          Color(red: 0.22, green: 0.18, blue: 0.55) :
+                                          Color.black.opacity(0.4))
+                            )
+                    }
                 }
-                .pickerStyle(.segmented)
-                .glassEffect(.regular)
+                
+                .padding(4)
+                .glassEffect()
+                .frame(maxHeight: 40)
+                .background(
+                    Capsule()
+                        .fill(Color.black.opacity(0.7))
+                )
+                .overlay(
+                    Capsule()
+                        .stroke(Color.white.opacity(0.1), lineWidth: 1)
+                )
+                .padding(.horizontal, 16)
+                .padding(.top, 8)
+
+                
                 
                 TabView(selection: $selectedTab) {
                     ScrollView {
@@ -79,18 +123,10 @@ struct DreamEntryView: View {
                     .tag(0)
                     
                     ScrollView {
-                        Text(dream.finishedDream)
-                            .foregroundColor(.white)
-                            .padding()
-                            .multilineTextAlignment(.leading)
-                    }
-                    .tag(1)
-                    
-                    ScrollView {
                         AnalysisCardView(analysis: dream.generatedContent)
                             .padding(.top, 70)
                     }
-                    .tag(2)
+                    .tag(1)
                 }
                 .tabViewStyle(.page(indexDisplayMode: .never))
                 .animation(.easeInOut, value: selectedTab)
@@ -98,6 +134,8 @@ struct DreamEntryView: View {
                 Spacer()
             }
             .padding(5)
+            
+            
             Button(action: {
                 withAnimation(.easeInOut) {
                     showBook.toggle()
@@ -133,6 +171,7 @@ struct DreamEntryView: View {
             .buttonStyle(.plain)
             .opacity(showBook ? 0 : 1)
             
+            
             if showBook {
                 ZStack {
                     Color.black.opacity(0.6)
@@ -149,7 +188,6 @@ struct DreamEntryView: View {
                 }
                 .zIndex(10)
             }
-               
         }
         .navigationBarBackButtonHidden(true)
         .toolbar {
@@ -168,7 +206,6 @@ struct DreamEntryView: View {
         }
     }
 }
-
 
 #Preview {
     DreamEntryView(dream: DreamModel(
@@ -189,4 +226,3 @@ struct DreamEntryView: View {
         finishedDream: "I woke up"
     ))
 }
-
