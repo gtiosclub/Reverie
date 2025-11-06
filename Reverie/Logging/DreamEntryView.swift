@@ -12,6 +12,9 @@ struct DreamEntryView: View {
     @State private var goBack = false
     @State private var selectedTab = 0
     
+    var backButtonLabel: String = "Archive"
+    @Environment(\.dismiss) private var dismiss
+    
     var body: some View {
         NavigationStack {
             ZStack {
@@ -85,17 +88,14 @@ struct DreamEntryView: View {
             .navigationBarBackButtonHidden(true)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button(action: { goBack = true }) {
+                    Button(action: { dismiss() }) {
                         HStack {
                             Image(systemName: "chevron.left")
-                            Text("Archive")
+                            Text(backButtonLabel)
                         }
                         .foregroundColor(.white)
                     }
                 }
-            }
-            .navigationDestination(isPresented: $goBack) {
-                DreamArchiveView()
             }
         }
         .preferredColorScheme(.dark)
