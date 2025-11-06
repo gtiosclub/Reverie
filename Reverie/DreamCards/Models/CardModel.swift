@@ -17,7 +17,10 @@ struct CardModel: Identifiable, Codable {  // Conforms to Identifiable to unique
     var description: String  // Description or story related to the card's character or them
     var image: String?  // Optional URL to an image associated with the card
     var cardColor: DreamColor  // Color used for the card's background or theme
-    var isShown: Bool = false  
+    var isShown: Bool = false // shown on screen?
+    var isUnlocked: Bool = false // character unlocked?
+    var isPinned: Bool = false // is the character pinned?
+    var isAchievementUnlocked: Bool = false  // is the achievement unlocked
     
     enum DreamColor: String, Codable, CaseIterable, ShapeStyle {
         case purple

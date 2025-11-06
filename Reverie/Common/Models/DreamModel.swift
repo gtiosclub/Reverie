@@ -16,8 +16,9 @@ class DreamModel: Decodable {
     var loggedContent: String
     var generatedContent: String
     var tags: [Tags]
-    var image: String
+    var image: [String?]
     var emotion: Emotions
+    var finishedDream: String = "None"
     
     @Generable
     enum Tags: String, Codable, CaseIterable {
@@ -98,12 +99,13 @@ class DreamModel: Decodable {
     ) {
         self.userID = userID
         self.id = id
-        self.title = title
+        self.title = title  
         self.date = date
         self.loggedContent = loggedContent
         self.generatedContent = generatedContent
         self.tags = tags
         self.image = image
         self.emotion = emotion
+        self.finishedDream = finishedDream
     }
 }
