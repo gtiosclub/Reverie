@@ -21,6 +21,8 @@ struct FloatingStickerIndividualView: View {
     @State private var velocity: CGSize = .zero
     // Temporary drag offset to show movement during drag
     @State private var dragOffset: CGSize = .zero
+    @State private var isPaused: Bool = false
+    @State private var hasAlignedToTouch = false
     
     
     var body: some View {
@@ -39,14 +41,22 @@ struct FloatingStickerIndividualView: View {
         .rotationEffect(rotation)
         .position(x: position.x + dragOffset.width, y: position.y + dragOffset.height)
         .gesture(
-            LongPressGesture(minimumDuration: 0.1)
+            LongPressGesture(minimumDuration: 0.25)
                 .onEnded { _ in
+                    withAnimation(.none) { isPaused = true }
                     isBeingDragged = true
+                    hasAlignedToTouch = false
                 }
                 .sequenced(before: DragGesture())
                 .onChanged { value in
                     switch value {
                     case .second(true, let drag?):
+                        if !hasAlignedToTouch {
+                            withAnimation(.none){
+                                position = drag.startLocation
+                            }
+                            hasAlignedToTouch = true
+                        }
                         dragOffset = drag.translation
                     default:
                         dragOffset = .zero
@@ -87,7 +97,7 @@ struct FloatingStickerIndividualView: View {
         
         let newRotation = Angle.degrees(Double.random(in: -90...90))
         let newScale = CGFloat.random(in: 0.8...1.2)
-        let duration = Double.random(in: 10...20)
+        let duration = Double.random(in: 7...12)
         
         withAnimation(.easeInOut(duration: duration)) {
             self.position = newPosition
