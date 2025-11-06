@@ -255,28 +255,6 @@ func averageDreamWordCount(dreams: [DreamModel]) -> Int {
     return total / dreams.count
 }
 
-func generateModelDreamContextByTag(dreams: [DreamModel], category: DreamModel.Tags) -> String{
-    let filteredDreams : [DreamModel] = getDreamsOfCategory(dreams: dreams, category: category)
-    
-    let sortedDreams = filteredDreams.sorted { $0.date > $1.date }
-
-    let dateFormatter = DateFormatter()
-    dateFormatter.dateFormat = "yyyy-MM-dd"
-    
-    let dreamContexts: [String] = sortedDreams.map { dream in
-        let tagList = dream.tags.map { $0.rawValue }.joined(separator: ", ")
-        return """
-        Dream Entry:
-        Date: \(dateFormatter.string(from: dream.date))
-        Title: \(dream.title)
-        Emotion: \(dream.emotion.rawValue)
-        Tags: \(tagList)
-        Content: \(dream.loggedContent)
-        """
-    }
-    return dreamContexts.joined(separator: "\n\n---\n\n")
-}
-
 /// Current streak of consecutive calendar days with at least one dream, ending at the most recent dream's day.
 func currentDreamStreak(dreams: [DreamModel]) -> Int {
     guard !dreams.isEmpty else { return 0 }
