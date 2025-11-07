@@ -23,6 +23,8 @@ struct DreamCardView: View {
     
     @State private var characters: [CardModel] = []
     
+    @State private var achievements: [CardModel] = []
+    
     @State private var lockedCharacters: [CardModel] = []
     
     @State private var selectedCharacter: CardModel?
@@ -104,7 +106,9 @@ struct DreamCardView: View {
 //                    for i in self.characters.indices {
 //                        self.characters[i].isPinned = pinnedIDs.contains(self.characters[i].id)
 //                    }
+                    self.achievements = try await AchievementsService.shared.fetchUnlockedAchievements()
                     self.lockedCharacters = characters.filter { !$0.isUnlocked }
+                    self.lockedCharacters.append(contentsOf: achievements.filter { !$0.isUnlocked })
                 } catch {
                     print("Error fetching cards: \(error.localizedDescription)")
                 }
@@ -113,7 +117,9 @@ struct DreamCardView: View {
                 if unlockCards == false {
                     Task {
                         self.characters = try await FirebaseDCService.shared.fetchDCCards()
+                        self.achievements = try await AchievementsService.shared.fetchUnlockedAchievements()
                         self.lockedCharacters = characters.filter { !$0.isUnlocked }
+                        self.lockedCharacters.append(contentsOf: achievements.filter { !$0.isUnlocked })
                     }
                 }
             }
