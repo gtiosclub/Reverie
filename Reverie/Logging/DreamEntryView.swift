@@ -14,6 +14,24 @@ struct DreamEntryView: View {
     @State private var showBook = false
     @State private var glowPulse = false
     
+    init(dream: DreamModel) {
+        self.dream = dream
+        let appearance = UISegmentedControl.appearance()
+        appearance.backgroundColor = UIColor(Color.black.opacity(0.9))
+        appearance.selectedSegmentTintColor = UIColor(Color(red: 0.27, green: 0.22, blue: 0.55))
+        
+        let normalAttrs: [NSAttributedString.Key: Any] = [
+            .foregroundColor: UIColor.white.withAlphaComponent(0.6),
+            .font: UIFont.systemFont(ofSize: 16, weight: .semibold)
+        ]
+        let selectedAttrs: [NSAttributedString.Key: Any] = [
+            .foregroundColor: UIColor.white,
+            .font: UIFont.systemFont(ofSize: 16, weight: .semibold)
+        ]
+        appearance.setTitleTextAttributes(normalAttrs, for: .normal)
+        appearance.setTitleTextAttributes(selectedAttrs, for: .selected)
+    }
+    
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
             BackgroundView()
@@ -58,60 +76,60 @@ struct DreamEntryView: View {
                 .padding(.bottom, 4)
                 
                 
-                HStack(spacing: 0) {
-                    Button {
-                        withAnimation(.easeInOut(duration: 0.25)) {
-                            selectedTab = 0
-                        }
-                    } label: {
-                        Text("Dream")
-                            .fontWeight(.semibold)
-                            .foregroundColor(.white)
-                            .frame(maxWidth: .infinity)
-                            .frame(maxHeight: 15)
-                            .padding(.vertical, 10)                            .background(
-                                Capsule()
-                                    .fill(selectedTab == 0 ?
-                                          Color(red: 0.22, green: 0.18, blue: 0.55) : // dark purple
-                                          Color.black.opacity(0.4))
-                            )
-                    }
+                ZStack {
+                    Capsule()
+                        .fill(Color.black)
+                        .overlay(
+                            Capsule()
+                                .stroke(
+                                    LinearGradient(
+                                        colors: [
+                                            Color.white.opacity(0.9),
+                                            Color.white.opacity(0.15),
+                                            Color.white.opacity(0.25),
+                                            Color.white.opacity(0.7)
+                                        ],
+                                        startPoint: .topLeading,
+                                        endPoint: .bottomTrailing
+                                    ),
+                                    lineWidth: 1.5
+                                )
+                                .shadow(color: .white.opacity(0.2), radius: 1)
+                                .blendMode(.screen)
+                        )
+                        .overlay(
+                            HStack {
+                                Spacer()
+                                Rectangle()
+                                    .fill(
+                                        LinearGradient(
+                                            colors: [
+                                                Color.white.opacity(0.35),
+                                                Color.white.opacity(0.1)
+                                            ],
+                                            startPoint: .top,
+                                            endPoint: .bottom
+                                        )
+                                    )
+                                    .frame(width: 1)
+                                Spacer()
+                            }
+                        )
+                        .frame(height: 30.5)
+                        .padding(.horizontal)
 
-                    Button {
-                        withAnimation(.easeInOut(duration: 0.25)) {
-                            selectedTab = 1
-                        }
-                    } label: {
-                        Label("Analysis", systemImage: "sparkles")
-                            .fontWeight(.semibold)
-                            .foregroundColor(.white)
-                            .frame(maxWidth: .infinity)
-                            .frame(maxHeight: 15)
-                            .padding(.vertical, 10)
-                            .background(
-                                Capsule()
-                                    .fill(selectedTab == 1 ?
-                                          Color(red: 0.22, green: 0.18, blue: 0.55) :
-                                          Color.black.opacity(0.4))
-                            )
+                    Picker("Dream Tabs", selection: $selectedTab) {
+                        Text("Dream").tag(0)
+                        Text("Analysis").tag(1)
                     }
+                    .pickerStyle(.segmented)
+                    .glassEffect(.regular)
+                    .padding(.horizontal)
                 }
-                
-                .padding(4)
-                .glassEffect()
-                .frame(maxHeight: 40)
-                .background(
-                    Capsule()
-                        .fill(Color.black.opacity(0.7))
-                )
-                .overlay(
-                    Capsule()
-                        .stroke(Color.white.opacity(0.1), lineWidth: 1)
-                )
-                .padding(.horizontal, 16)
-                .padding(.top, 8)
 
-                
+
+
+                  
                 
                 TabView(selection: $selectedTab) {
                     ScrollView {
