@@ -83,8 +83,8 @@ struct DreamEntryView: View {
                     .tag(1)
                     
                     ScrollView {
-//                        AnalysisCardView(analysis: dream.generatedContent)
-//                            .padding(.top, 70)
+                        AnalysisCardView(analysis: dream.generatedContent)
+                            .padding(.top, 70)
                     }
                     .tag(2)
                 }
@@ -139,9 +139,9 @@ struct DreamEntryView: View {
                             }
                         }
                     
-//                    DreamBookView(dream: dream)
-//                        .frame(width: 350, height: 460)
-//                        .transition(.scale.combined(with: .opacity))
+                    DreamBookView(dream: dream)
+                        .frame(width: 350, height: 460)
+                        .transition(.scale.combined(with: .opacity))
                 }
                 .zIndex(10)
             }
@@ -185,7 +185,7 @@ struct DreamEntryView: View {
         The cow represents your connection to...
         """,
         tags: [.mountains, .rivers],
-        image: "Test",
+        image: ["Test"],
         emotion: .happiness,
         finishedDream: "I woke up"
     ))
