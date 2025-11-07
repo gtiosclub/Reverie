@@ -186,6 +186,8 @@ struct SaveDreamView: View {
         FirebaseDCService.shared.generateImage(for: newDream)
         createdDream = newDream
         navigateToDreamEntry = true
+        
+        updateTagDescriptions(tags: newDream.tags)
     }
 }
 
