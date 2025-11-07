@@ -8,6 +8,16 @@
 import SwiftUI
 import Foundation
 import FoundationModels
+import FirebaseFirestore
+
+struct TagDescription: Codable, Identifiable {
+    @DocumentID var id: String?
+
+    var description: String
+    
+    var tag: String
+    var userID: String
+}
 
 struct TagInfoView: View {
     let tagGiven: DreamModel.Tags
@@ -15,7 +25,7 @@ struct TagInfoView: View {
     @State private var modelResponse: String = ""
     @State private var isLoading: Bool = true
     @State private var filteredDreams: [DreamModel] = []
-    
+
     var body: some View {
         ZStack {
             BackgroundView()
@@ -38,11 +48,11 @@ struct TagInfoView: View {
                             .frame(width: 150, height: 150)
                             .glassEffect(.regular.interactive())
                             .overlay(
-                                Image(systemName: DreamModel.getTagImage(tag: tagGiven))
+                                Image(systemName: DreamModel.tagImages(tag: tagGiven))
                                     .resizable()
                                     .scaledToFit()
                                     .frame(width: 80, height: 80)
-                                    .foregroundColor(getTagColor(tag: tagGiven))
+                                    .foregroundColor(DreamModel.tagColors(tag: tagGiven))
                                 
                             )
                         
@@ -121,9 +131,9 @@ struct TagInfoView: View {
                                                 
                                                 HStack(spacing: 4) {
                                                     ForEach(dream.tags.prefix(3), id: \.self) { tag in
-                                                        Image(systemName: DreamModel.getTagImage(tag: tag))
+                                                        Image(systemName: DreamModel.tagImages(tag: tag))
                                                             .font(.caption)
-                                                            .foregroundColor(getTagColor(tag: tag))
+                                                            .foregroundColor(DreamModel.tagColors(tag: tagGiven))
                                                     }
                                                 }
                                             }
@@ -156,12 +166,10 @@ struct TagInfoView: View {
                 self.filteredDreams = getDreamsOfCategory(dreams: dreams, category: tagGiven)
                                         .sorted { $0.date > $1.date }
             
-                if(modelResponse == ""){
+                if(modelResponse.isEmpty){
                     do {
-                        let response = try await getModelTagResponse(context: context, tagGiven: tagGiven)
-                        
-                        modelResponse = response
-                        
+                        let response = try await fetchOrGenerateTagDescription(context: context, tagGiven: tagGiven)
+                        self.modelResponse = response
                     } catch {
                         modelResponse = "Error: Could not analyze your dream. Please check your connection."
                         print("Error loading model response: \(error)")
@@ -178,16 +186,7 @@ struct TagInfoView: View {
         formatter.dateFormat = "MMMM d"
         return formatter.string(from: date)
     }
-
-    private func getTagColor(tag: DreamModel.Tags) -> Color {
-        switch tag {
-        case .rivers: return .blue.opacity(0.8)
-        case .forests: return .green.opacity(0.8)
-        case .animals: return .orange.opacity(0.8)
-        case .mountains: return .gray.opacity(0.8)
-        case .school: return .yellow.opacity(0.8)
-        }
-    }
+    
 }
 
 
@@ -235,7 +234,7 @@ func getModelTagResponse(context: String, tagGiven: DreamModel.Tags) async throw
 
     **Your Pattern Analysis:**
 
-     Reply with a single, powerful insight based on this pattern. What might the user's subconscious be emphasizing by revisiting this theme across multiple dreams?
+     Reply with a single, powerful insight based on this pattern. What might the user's subconscious be emphasizing by revisiting this theme across multiple dreams? Reference specific dream names and content in your analysis. 
     
     Reply with only the Unifying Insight. DO NOT include any headers or ** symbols. Always refer directly to the user in second person, using words such as 'you', 'yours. ALWAYS write 2 to 3 sentences. No more. No less.
     """
@@ -244,4 +243,90 @@ func getModelTagResponse(context: String, tagGiven: DreamModel.Tags) async throw
     
     let response = try await session.respond(to: context)
     return response.content
+}
+
+func saveTagDescription(_ tagDescription: TagDescription) async throws {
+    let db = Firestore.firestore()
+    let collectionRef = db.collection("TAGDESCRIPTIONS")
+    
+    // This will create a new document in the collection
+    try collectionRef.addDocument(from: tagDescription)
+    print("Successfully saved new tag description to Firebase.")
+}
+
+func fetchOrGenerateTagDescription(context: String, tagGiven: DreamModel.Tags) async throws -> String {
+    let db = Firestore.firestore()
+
+    guard let userID = FirebaseLoginService.shared.currUser?.userID else {
+        throw NSError(domain: "TagInfoView", code: 401, userInfo: [NSLocalizedDescriptionKey: "User not logged in."])
+    }
+
+    let collectionRef = db.collection("TAGDESCRIPTIONS")
+    let query = collectionRef
+        .whereField("tag", isEqualTo: tagGiven.rawValue)
+        .whereField("userID", isEqualTo: userID)
+
+    let querySnapshot = try await query.getDocuments()
+
+    if let document = querySnapshot.documents.first {
+        print("Found existing tag description in Firebase.")
+        let tagDescription = try document.data(as: TagDescription.self)
+        return tagDescription.description
+    } else {
+        print("Not found in Firebase. Generating new description...")
+     
+        let newDescription = try await getModelTagResponse(context: context, tagGiven: tagGiven)
+     
+        let newTagDoc = TagDescription(
+        description: newDescription,
+        tag: tagGiven.rawValue,
+        userID: userID
+        )
+     
+        try await saveTagDescription(newTagDoc)
+     
+        return newDescription
+    }
+}
+
+import FirebaseFirestore
+
+func updateTagDescriptions(tags: [DreamModel.Tags]) {
+    Task.detached(priority: .utility) {
+        do {
+            guard let userID = await FirebaseLoginService.shared.currUser?.userID else {
+                 print("Error: User not logged in")
+                 return
+            }
+
+            let allDreams = await fetchDreams()
+            let db = Firestore.firestore()
+
+            for tag in tags {
+                let contextForTag = await generateModelDreamContextByTag(dreams: allDreams, category: tag)
+                let newDescription = try await getModelTagResponse(context: contextForTag, tagGiven: tag)
+                let newTagDoc = TagDescription(
+                                    description: newDescription,
+                                    tag: tag.rawValue,
+                                    userID: userID
+                                )
+                
+                let querySnapshot = try await db.collection("TAGDESCRIPTIONS")
+                    .whereField("userID", isEqualTo: userID)
+                    .whereField("tag", isEqualTo: tag.rawValue)
+                    .getDocuments()
+                
+                print(querySnapshot.documents.first?.documentID)
+                print(tag)
+
+                if let existingDoc = querySnapshot.documents.first {
+                    try await existingDoc.reference.updateData(["description": newDescription])
+                } else {
+                    try await db.collection("TAGDESCRIPTIONS").addDocument(from: newTagDoc)
+                }
+            }
+        } catch {
+            print("Error updating tag descriptions: \(error)")
+        }
+    }
 }
