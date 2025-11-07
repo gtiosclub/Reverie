@@ -190,3 +190,4 @@ struct DreamEntryView: View {
         finishedDream: "I woke up"
     ))
 }
+
