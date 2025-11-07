@@ -7,20 +7,20 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		666C10A22E9E9AD900DB023A /* StableDiffusionResources in Resources */ = {isa = PBXBuildFile; fileRef = 666C10A12E9E9AD900DB023A /* StableDiffusionResources */; };
 		66A534352E9B42B30074D9B2 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 669E5C1C2E980D4B00848E94 /* FirebaseStorage */; };
 		66EEDBE32E679D220011493C /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 66EEDBE22E679D1B0011493C /* .gitignore */; };
 		BD9435C72E84F664009CE7D0 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BD9435C62E84F664009CE7D0 /* GoogleService-Info.plist */; };
 		BDE7571A2E83618900D3C183 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = BDE757192E83618900D3C183 /* FirebaseAuth */; };
 		BDE7571C2E83618900D3C183 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = BDE7571B2E83618900D3C183 /* FirebaseFirestore */; };
 		EC888D4A2E8DA4BA00B26CC0 /* StableDiffusion in Frameworks */ = {isa = PBXBuildFile; productRef = EC888D492E8DA4BA00B26CC0 /* StableDiffusion */; };
+		ECEE5C4A2EB172B4008EDED8 /* StableDiffusionResources in Resources */ = {isa = PBXBuildFile; fileRef = ECEE5C492EB172B4008EDED8 /* StableDiffusionResources */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		666C10A12E9E9AD900DB023A /* StableDiffusionResources */ = {isa = PBXFileReference; lastKnownFileType = folder; name = StableDiffusionResources; path = ../StableDiffusionResources; sourceTree = "<group>"; };
 		66EEDBB22E6798000011493C /* Reverie.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Reverie.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		66EEDBE22E679D1B0011493C /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		BD9435C62E84F664009CE7D0 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		ECEE5C492EB172B4008EDED8 /* StableDiffusionResources */ = {isa = PBXFileReference; lastKnownFileType = folder; name = StableDiffusionResources; path = ../../StableDiffusionResources; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -56,7 +56,7 @@
 		66EEDBA92E6798000011493C = {
 			isa = PBXGroup;
 			children = (
-				666C10A12E9E9AD900DB023A /* StableDiffusionResources */,
+				ECEE5C492EB172B4008EDED8 /* StableDiffusionResources */,
 				66EEDBE22E679D1B0011493C /* .gitignore */,
 				66EEDBB42E6798000011493C /* Reverie */,
 				66EEDBB32E6798000011493C /* Products */,
@@ -145,8 +145,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				666C10A22E9E9AD900DB023A /* StableDiffusionResources in Resources */,
 				66EEDBE32E679D220011493C /* .gitignore in Resources */,
+				ECEE5C4A2EB172B4008EDED8 /* StableDiffusionResources in Resources */,
 				BD9435C72E84F664009CE7D0 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -303,7 +303,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = Reverie.Reverie;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dreams.Reverie;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -335,7 +335,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = Reverie.Reverie;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dreams.Reverie;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
