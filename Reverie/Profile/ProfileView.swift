@@ -78,12 +78,12 @@ struct ProfileView: View {
                                 .cornerRadius(12)
                         }                        
                         
-                        NavigationLink(destination: TestView()) {
+                       /* NavigationLink(destination: TestView()) {
                             HStack { Image(systemName: "hammer"); Text("Test Page") }
                                 .font(.subheadline)
                                 .foregroundColor(.white)
                                 .padding(.vertical, 8)
-                        }
+                        }*/
                         
 //                        NavigationLink(destination: TestView()) {
 //                            HStack { Image(systemName: "hammer"); Text("Test Page") }
@@ -383,3 +383,5 @@ func currentDreamStreak(dreams: [DreamModel]) -> Int {
 }
 
 #Preview { ProfileView() }
+
+
