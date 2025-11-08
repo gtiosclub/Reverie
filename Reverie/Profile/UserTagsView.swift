@@ -27,7 +27,17 @@ struct UserTagsView: View {
             BackgroundView()
             ScrollView {
                 VStack (alignment: .leading, spacing: 20) {
+                    Text("This Week")
+                        .foregroundStyle(.white)
+                        .font(.largeTitle.bold())
+                        .padding(.horizontal)
+
                     TagViewBlock(title: "This Week", tags: thisWeekTags, isExpandable: true)
+                    Text("Archive")
+                        .foregroundStyle(.white)
+                        .font(.largeTitle.bold())
+                        .padding(.horizontal)
+
                     TagViewBlock(title: "Archive", tags: allTags, isExpandable: false)
                 }
             }
@@ -49,10 +59,6 @@ struct TagViewBlock : View {
     }
     
     var body: some View {
-        Text(title)
-            .foregroundStyle(.white)
-            .font(.largeTitle.bold())
-            .padding(.horizontal)
         
         LazyVGrid(columns: columns, spacing: 25) {
             ForEach(displayedTags, id: \.self) { tag in

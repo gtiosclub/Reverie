@@ -15,7 +15,7 @@ struct TabbarView: View {
 //        VStack {
         HStack (spacing: 0){
             TabButton(title: Image(systemName: "house"), text: "Home", tab: .home, destination: StartView())
-            TabButton(title: Image(systemName: "chart.bar"), text: "Analysis", tab: .analytics, destination: ProfileView())
+            TabButton(title: Image(systemName: "chart.bar"), text: "Analysis", tab: .analytics, destination: AnalysisView())
             TabButton(title: Image(systemName: "doc.text"), text: "Archive", tab: .archive, destination: DreamArchiveView())
             }
 //            .padding()
