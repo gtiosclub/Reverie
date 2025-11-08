@@ -13,6 +13,8 @@ struct DreamEntryView: View {
     @State private var selectedTab = 0
     @State private var showBook = false
     @State private var glowPulse = false
+    @State private var expanded = false
+    @State private var showInfo = false
     
     init(dream: DreamModel) {
         self.dream = dream
@@ -137,6 +139,53 @@ struct DreamEntryView: View {
                             .foregroundColor(.white)
                             .padding()
                             .multilineTextAlignment(.leading)
+                        Button {
+                            withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
+                                expanded.toggle()
+                            }
+                        } label: {
+                            VStack {
+                                HStack {
+                                    Image(systemName: "sparkles")
+                                        .font(.title3)
+                                    Text("Finish my dream")
+                                        .bold()
+                                    Spacer()
+                                    if expanded {
+                                        Button {
+                                            showInfo = !showInfo
+                                        } label: {
+                                            Image(systemName: "info.circle")
+                                                .font(.title3)
+                                        }
+                                    } else {
+                                        Image(systemName: "chevron.right")
+                                            .font(.title3)
+                                    }
+                                }
+                                VStack {
+                                    if showInfo {
+                                        Text("Using your description of your dream, we created a potential ending to the story.")
+                                            .font(.caption)
+                                            .multilineTextAlignment(.leading)
+                                    }
+                                    if expanded {
+                                        Text(dream.finishedDream)
+                                            .font(.caption)
+                                            .multilineTextAlignment(.leading)
+                                            .padding(.top, 10)
+                                    }
+                                }
+                            }
+                        }
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 20)
+                        .padding(.vertical, expanded ? 20 : 10)
+                        .background(
+                            RoundedRectangle(cornerRadius: 30)
+                                .fill(Color(red: 0.38, green: 0.33, blue: 0.96))
+                        )
+                        .padding()
                     }
                     .tag(0)
                     
@@ -241,6 +290,6 @@ struct DreamEntryView: View {
         tags: [.mountains, .rivers],
         image: "Test",
         emotion: .happiness,
-        finishedDream: "I woke up"
+        finishedDream: "I woke usdkfpdisjfj-isdfj-idsfp-jdsfj-ids-jfds-jfids-jfds-ifjds-0ifjnds0ifnjds-ifnds-ifnds0ifndsp0fdsn0ifdsnif-nidsfni-dsn-fidsp"
     ))
 }
