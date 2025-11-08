@@ -5,9 +5,7 @@ struct StatisticsView: View {
     let weeklyAverage: Int
     let averageLength: Int
 
-    // Base inner glow (your original color)
     private let glowInner = Color(red: 31/255, green: 16/255, blue: 72/255)
-    // Outer glow accent to make it stand out
     private let glowOuter = Color(red: 140/255, green: 90/255, blue: 255/255)
 
     var body: some View {
@@ -88,7 +86,6 @@ struct StatBlock: View {
                 Text(value)
                     .font(.system(size: 34, weight: .bold))
                     .foregroundColor(.white)
-                    // Brighter, dual-layer glow
                     .shadow(color: glowInner.opacity(0.9), radius: 20, x: 0, y: 0)
                     .shadow(color: glowOuter.opacity(0.9), radius: 40, x: 0, y: 0)
                     .shadow(color: glowOuter.opacity(0.7), radius: 60, x: 0, y: 0)
@@ -104,6 +101,5 @@ struct StatBlock: View {
 
 #Preview {
     StatisticsView(streak: 2, weeklyAverage: 5, averageLength: 80)
-        //.preferredColorScheme(.dark)
         .background(BackgroundView())
 }

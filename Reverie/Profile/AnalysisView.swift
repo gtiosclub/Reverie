@@ -7,8 +7,6 @@
 
 import SwiftUI
 
-
-
 struct AnalysisView: View {
     var body: some View {
         NavigationView {
@@ -52,16 +50,14 @@ struct AnalysisView: View {
                         previewContent: {ThisWeekThemesView(thisWeekTags: thisWeekTags)},
                         destination: {UserTagsView()},
                         trailingView: {EmptyView()}
-                        //fix the background to me sligned with the dream frequency and heat map
                     )
                     
                     AnalysisSection (
                         title: "Moods",
                         icon: "face.smiling.fill",
                         previewContent: {HeatmapView()},
-                        destination: {HeatmapView()},
+                        destination: {CombinedHeatmapEmotionView(dreams: dreamAll)},
                         trailingView: {EmptyView()}
-                        //link to that + emotions
                     )
                     
                     AnalysisSection (
@@ -156,7 +152,7 @@ struct AnalysisSection<Preview: View, Destination: View, Trailing: View>: View {
                 }
 
                 Spacer()
-                trailingView() // << new trailing view slot (like streak badge)
+                trailingView()
             }
             .padding(.horizontal)
 
@@ -186,16 +182,13 @@ func activitySummaryText() -> String {
     let now = Date()
     let thirtyDaysAgo = cal.date(byAdding: .day, value: -30, to: now)!
 
-    // Filter dreams from last 30 days
     let last30DaysDreams = dreams.filter { $0.date >= thirtyDaysAgo }
     let count30 = last30DaysDreams.count
 
-    // Average: total dreams / total days since first dream
     guard let firstDate = dreams.map({ $0.date }).min() else { return "" }
     let totalDays = max(1, cal.dateComponents([.day], from: firstDate, to: now).day ?? 1)
     let overallAvgPer30Days = Double(dreams.count) / Double(totalDays) * 30.0
 
-    // Compare actual vs expected frequency
     if Double(count30) > overallAvgPer30Days * 1.1 {
         return "Over the last 30 days, you’ve dreamt more on average."
     } else if Double(count30) < overallAvgPer30Days * 0.9 {
@@ -226,6 +219,8 @@ var currentAverageDreamLength: Int {
     }
     return total / dreams.count
 }
+
+let dreamAll = FirebaseLoginService.shared.currUser?.dreams ?? []
 
 
 
