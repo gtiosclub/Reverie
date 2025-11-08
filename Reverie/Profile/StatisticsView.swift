@@ -26,7 +26,7 @@ struct StatisticsView: View {
                         iconName: "flame.fill",
                         label: "STREAK",
                         value: "\(streak)",
-                        sublabel: "logs",
+                        sublabel: "days",
                         labelColor: .orange,
                         glowInner: glowInner,
                         glowOuter: glowOuter
