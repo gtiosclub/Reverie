@@ -14,15 +14,18 @@ struct TagView: View {
         VStack(spacing: 8) {
             ZStack {
                 Circle()
-                    .fill(Color.white.opacity(0.1))
+                    .fill(Color(red: 11/255, green: 11/255, blue: 22/255))
                     .frame(width: 70, height: 70)
                     .shadow(color: .black.opacity(0.3), radius: 6, x: 0, y: 3)
-
-                Image(systemName: DreamModel.tagImages(tag: tagGiven))
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 30, height: 30)
-                    .foregroundStyle(.white)
+                    .glassEffect(.regular.interactive())
+                    .overlay(
+                        Image(systemName: DreamModel.tagImages(tag: tagGiven))
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 30, height: 30)
+                            .foregroundColor(DreamModel.tagColors(tag: tagGiven))
+                        
+                    )
             }
 
             Text(tagGiven.rawValue.capitalized)
