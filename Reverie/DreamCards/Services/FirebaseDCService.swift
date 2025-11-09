@@ -112,4 +112,28 @@ class FirebaseDCService {
         }
         return dreamCards
     }
+    
+    func fetchDCCards(userID: String) async throws -> [CardModel] {
+        print("fetching dc cards")
+
+        let userDocRef = fb.db.collection("USERS").document(userID)
+        let userDocument = try await userDocRef.getDocument()
+
+        guard let data = userDocument.data(),
+              let cardIDs = data["dreamcards"] as? [String] else { return [] }
+
+        if cardIDs.isEmpty { return [] }
+
+        var dreamCards: [CardModel] = []
+        for cardID in cardIDs {
+            let cardRef = fb.db.collection("DREAMCARDS").document(cardID)
+            do {
+                let card = try await cardRef.getDocument(as: CardModel.self)
+                dreamCards.append(card)
+            } catch {
+                print("Failed to fetch or decode card with ID \(cardID): \(error)")
+            }
+        }
+        return dreamCards
+    }
 }
