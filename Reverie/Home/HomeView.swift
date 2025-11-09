@@ -15,31 +15,35 @@ struct HomeView: View {
         ZStack {
             MoonView()
             FloatingStickersView()
-            VStack {
-                Text("Good Morning, \(FirebaseLoginService.shared.currUser?.name ?? "Dreamer")")
-                    .foregroundColor(.white)
-                    .font(.largeTitle)
-                    .bold()
-                    .padding(.bottom, 20)
-                NewLogView()
-                // UPLOADS ACHIEVEMENTS TO FIRESTORE
-//                Button("Upload Achievements") {
-//                    Task {
-//                        await AchievementsService.shared.uploadAllAchievements()
-//                    }
-//                }
-//                .padding()
-//                .background(Color.blue)
-//                .foregroundColor(.white)
-//                .cornerRadius(8)
-            }
+//            VStack {
+//                Text("Good Morning, \(FirebaseLoginService.shared.currUser?.name ?? "Dreamer")")
+//                    .foregroundColor(.white)
+//                    .font(.largeTitle)
+//                    .bold()
+//                    .padding(.bottom, 4)
+//                NewLogView()
+//                // UPLOADS ACHIEVEMENTS TO FIRESTORE
+////                Button("Upload Achievements") {
+////                    Task {
+////                        await AchievementsService.shared.uploadAllAchievements()
+////                    }
+////                }
+////                .padding()
+////                .background(Color.blue)
+////                .foregroundColor(.white)
+////                .cornerRadius(8)
+//            }
                 
                 VStack {
-                    Text("Good Morning, \(fls.currUser?.name ?? "Dreamer")")
+                    Text("Good Morning, \(FirebaseLoginService.shared.currUser?.name ?? "Dreamer")")
                         .foregroundColor(.white)
                         .font(.largeTitle)
                         .bold()
-                        .padding(.bottom, 20)
+                        .padding(.bottom, 4)
+                    Text("How did you dream last night?")
+                                        .foregroundColor(.white)
+                                        .font(.body)
+                                        .padding(.bottom, 19)
                     NewLogView()
                 }
                 .padding(.bottom, 30)
@@ -47,11 +51,12 @@ struct HomeView: View {
                 .background(.clear)
         }
     }
-}
+
     
 #Preview {
     HomeView()
         .environment(FirebaseLoginService.shared)
+        .background(BackgroundView())
 }
     
     
