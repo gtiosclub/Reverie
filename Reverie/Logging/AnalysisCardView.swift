@@ -23,12 +23,10 @@ struct AnalysisCardView: View {
         ScrollView(.vertical, showsIndicators: false) {
             VStack(alignment: .leading, spacing: 30) {
 
-                // MARK: - Overview
                 if let overview = cards.first(where: { $0.title.lowercased().contains("overview") || $0.title.lowercased().contains("general") }) {
-                    AnalysisSectionCard(title: overview.title, content: overview.content)
+                    AnalysisSectionCard(title: "Overview", content: overview.content)
                 }
 
-                // MARK: - Themes
                 VStack(alignment: .leading, spacing: 16) {
                     Text("Themes")
                         .font(.headline.weight(.semibold))
@@ -58,27 +56,23 @@ struct AnalysisCardView: View {
                     }
 
                     if let themeCard = cards.first(where: { $0.title.lowercased().contains("theme") || $0.title.lowercased().contains("motif") }) {
-                        AnalysisSectionCard(title: themeCard.title, content: themeCard.content)
+                        AnalysisSectionCard(title: "Symbols", content: themeCard.content)
                     }
                 }
 
-                // MARK: - Connection to Life
                 if let connection = cards.first(where: { $0.title.lowercased().contains("connection") }) {
-                    AnalysisSectionCard(title: connection.title, content: connection.content)
+                    AnalysisSectionCard(title: "Connection to Life", content: connection.content)
                 }
 
-                // MARK: - Takeaways
                 if let takeaway = cards.first(where: { $0.title.lowercased().contains("takeaway") || $0.title.lowercased().contains("lesson") }) {
-                    AnalysisSectionCard(title: takeaway.title, content: takeaway.content)
+                    AnalysisSectionCard(title: "Takeaways", content: takeaway.content)
                 }
             }
             .padding(.vertical, 25)
         }
-        .background(BackgroundColor().ignoresSafeArea())
     }
 }
 
-// MARK: - Card Component
 struct AnalysisSectionCard: View {
     let title: String
     let content: String
@@ -103,18 +97,45 @@ struct AnalysisSectionCard: View {
         .padding(20)
         .background(
             RoundedRectangle(cornerRadius: 25)
-                .fill(Color.black)
+                .fill(
+                    LinearGradient(
+                        colors: [
+                            Color.black.opacity(0.7),
+                            Color.white.opacity(0.01)
+                        ],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
                 .overlay(
                     RoundedRectangle(cornerRadius: 25)
-                        .stroke(Color.white.opacity(0.12), lineWidth: 1)
+                        .strokeBorder(
+                            AngularGradient(
+                                gradient: Gradient(stops: [
+                                    .init(color: Color.white.opacity(0.9), location: 0.15),
+                                    .init(color: Color.white.opacity(0.1), location: 0.35),
+                                    .init(color: Color.white.opacity(0.9), location: 0.65),
+                                    .init(color: Color.white.opacity(0.05), location: 0.85),
+                                    .init(color: Color.white.opacity(0.7), location: 1.00)
+                                ]),
+                                center: .center,
+                                startAngle: .degrees(0),
+                                endAngle: .degrees(360)
+                            ),
+                            lineWidth: 0.3
+                        )
+                        .blendMode(.screen)
                 )
-                .shadow(color: .black.opacity(0.6), radius: 8, x: 0, y: 4)
+                .shadow(color: Color.white.opacity(0.1), radius: 12, x: 0, y: 0)
+
+                .shadow(color: Color.black.opacity(0.6), radius: 10, x: 0, y: 6)
+
         )
         .padding(.horizontal)
     }
 }
 
-// MARK: - Parser
+
 func parseDreamText(text: String) -> [Card] {
     var cards: [Card] = []
     let pattern = "\\*\\*(.*?)\\*\\*"
@@ -138,7 +159,6 @@ func parseDreamText(text: String) -> [Card] {
     return cards
 }
 
-// MARK: - Preview
 #Preview {
     AnalysisCardView(
         analysis: """
