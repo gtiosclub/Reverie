@@ -13,6 +13,8 @@ struct DreamEntryView: View {
     @State private var selectedTab = 0
     @State private var showBook = false
     @State private var glowPulse = false
+    @State private var selectedTag: DreamModel.Tags? = nil
+
     
     init(dream: DreamModel) {
         self.dream = dream
@@ -206,7 +208,12 @@ struct DreamEntryView: View {
                     .tag(0)
                     
                     ScrollView {
-                        AnalysisCardView(analysis: dream.generatedContent)
+                        AnalysisCardView(
+                            dream: dream,
+                            onTagTap: { tag in
+                                withAnimation(.easeInOut) { selectedTag = tag }
+                            }
+                        )
                     }
                     .tag(1)
                 }
@@ -237,6 +244,38 @@ struct DreamEntryView: View {
                 }
                 .zIndex(10)
             }
+            if let tag = selectedTag {
+                ZStack {
+                    Color.black.opacity(0.6)
+                        .ignoresSafeArea()
+                        .onTapGesture {
+                            withAnimation(.easeInOut) { selectedTag = nil }
+                        }
+
+                    VStack(spacing: 16) {
+                        Text(tag.rawValue.capitalized)
+                            .font(.title2.bold())
+                            .foregroundColor(.white)
+
+                        Text("Information about this tag could go here.")
+                            .multilineTextAlignment(.center)
+                            .foregroundColor(.white.opacity(0.8))
+                            .padding(.horizontal)
+                    }
+                    .frame(width: 300, height: 250)
+                    .background(
+                        RoundedRectangle(cornerRadius: 20)
+                            .fill(Color.black.opacity(0.85))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 20)
+                                    .stroke(DreamModel.tagColors(tag: tag).opacity(0.6), lineWidth: 1)
+                            )
+                            .shadow(color: DreamModel.tagColors(tag: tag).opacity(0.4), radius: 15)
+                    )
+                    .transition(.scale.combined(with: .opacity))
+                }
+                .zIndex(10)
+            }
         }
         .navigationBarBackButtonHidden(true)
         .toolbar {
@@ -244,15 +283,52 @@ struct DreamEntryView: View {
                 Button(action: { goBack = true }) {
                     HStack {
                         Image(systemName: "chevron.left")
-                        Text("Archive")
                     }
                     .foregroundColor(.white)
                 }
             }
+            
         }
         .navigationDestination(isPresented: $goBack) {
             DreamArchiveView()
+            
         }
+        .overlay {
+            if let tag = selectedTag {
+                ZStack {
+                    Color.black.opacity(0.6)
+                        .ignoresSafeArea()
+                        .onTapGesture {
+                            withAnimation(.easeInOut) { selectedTag = nil }
+                        }
+
+                    VStack(spacing: 16) {
+                        Text(tag.rawValue.capitalized)
+                            .font(.title2.bold())
+                            .foregroundColor(.white)
+
+                        Text("Information about this tag could go here.")
+                            .multilineTextAlignment(.center)
+                            .foregroundColor(.white.opacity(0.8))
+                            .padding(.horizontal)
+                    }
+                    .frame(width: 300, height: 250)
+                    .background(
+                        RoundedRectangle(cornerRadius: 20)
+                            .fill(Color.black.opacity(0.85))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 20)
+                                    .stroke(DreamModel.tagColors(tag: tag).opacity(0.6), lineWidth: 1)
+                            )
+                            .shadow(color: DreamModel.tagColors(tag: tag).opacity(0.4), radius: 15)
+                    )
+                    .transition(.scale.combined(with: .opacity))
+                }
+                .transition(.opacity)
+                .zIndex(1000)
+            }
+        }
+
     }
 }
 
@@ -264,10 +340,17 @@ struct DreamEntryView: View {
         date: Date(),
         loggedContent: "This is a logged dream example. You can scroll through it here.",
         generatedContent: """
-        **General Review**
-        You saw a cow in your dream, which evoked strong emotions...
-        **Motifs & Symbols**
-        The cow represents your connection to...
+        **General Review**  
+        In your dream, you encountered a cow, which evoked a strong emotional response of fear. The simplicity of the scene, with just a cow present, suggests that the dream might be tapping into underlying feelings or anxieties. The overall tone of the dream seems to be one of unease or surprise, as fear is a prominent emotion you experienced.
+
+        **Motifs & Symbols**  
+        Cows in dreams often symbolize fertility, abundance, or a connection to the earth. However, seeing a cow in a dream can also indicate feelings of vulnerability or being overwhelmed by responsibilities. The presence of fear suggests that this cow might represent something in your life that feels threatening or out of control, prompting you to confront or seek understanding about these aspects.
+
+        **Connection to Current Life**  
+        This dream might reflect current situations where you feel burdened or uncertain about responsibilities or changes in your life. It could be a manifestation of worries about nurturing your growth or relationships, or facing challenges that require careful management. Being scared in this context suggests that there might be areas in your waking life where you feel unprepared or need more clarity.
+
+        **Lessons & Takeaways**  
+        Reflecting on this dream, consider the areas of your life where you feel most vulnerable or overwhelmed. It might be beneficial to engage in activities that help ground you, such as mindfulness or connecting with nature, which can symbolize the nurturing aspects of a cow. Learning to approach these situations with a calm and open mind can help transform fear into understanding and empowerment.
         """,
         tags: [.mountains, .rivers],
         image: "Test",
