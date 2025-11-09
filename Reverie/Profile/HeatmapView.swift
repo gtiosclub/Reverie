@@ -50,7 +50,7 @@ struct HeatmapView: View {
 
     var body: some View {
         ZStack {
-            BackgroundView()
+            //BackgroundView()
             ScrollView {
                 VStack(alignment: .leading, spacing: 24) {
                     Picker("Timeframe", selection: $selectedTimeframe) {
@@ -83,7 +83,7 @@ struct HeatmapView: View {
                 }
                 .padding(.vertical, 10)
                 .padding(.horizontal, 15)
-                FrequencyView()
+                //FrequencyView()
             }
             .refreshable {
                 viewModel.fetchDreams()
