@@ -66,6 +66,38 @@ struct CharacterView: View {
                 .fill(.ultraThinMaterial)
                 .shadow(color: .black.opacity(0.2), radius: 10)
 
+            Circle()
+                .fill(
+                    LinearGradient(
+                        gradient: Gradient(stops: [
+                            .init(color: .white.opacity(0.35), location: 0),
+                            .init(color: .clear, location: 0.4)
+                        ]),
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                )
+                .blendMode(.overlay)
+
+            Circle()
+                .stroke(Color.white.opacity(0.3), lineWidth: 1)
+            
+            Circle()
+                .stroke(
+                    LinearGradient(
+                        colors: [
+                            Color.white.opacity(0.8),
+                            Color.white.opacity(0.4),
+                            Color.clear
+                        ],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    ),
+                    lineWidth: 2
+                )
+                .blur(radius: 1)
+                .scaleEffect(0.98)
+
             AsyncImage(url: URL(string: character.image ?? "")) { phase in
                 switch phase {
                 case .empty:
