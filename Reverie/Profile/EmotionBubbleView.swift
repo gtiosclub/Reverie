@@ -66,3 +66,8 @@ struct EmotionBubbleView: View {
         }
     }
 }
+
+#Preview {
+    EmotionBubbleView(size:(100), color:Color.red, start:CGPoint(x:200,y:300), jitter:10)
+        
+}
