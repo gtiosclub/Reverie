@@ -188,6 +188,8 @@ struct SaveDreamView: View {
             FirebaseDCService.shared.generateImageForDC(for: newDream)
             createdDream = newDream
             navigateToDreamEntry = true
+          
+            updateTagDescriptions(tags: newDream.tags)
         } catch {
             print("Failed to save dream: \(error)")
         }

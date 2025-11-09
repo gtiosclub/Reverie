@@ -14,6 +14,9 @@ struct DreamEntryView: View {
     @State private var showBook = false
     @State private var glowPulse = false
     
+    var backButtonLabel: String = "Archive"
+    @Environment(\.dismiss) private var dismiss
+    
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
             BackgroundView()
@@ -146,10 +149,16 @@ struct DreamEntryView: View {
         .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
-                Button(action: { goBack = true }) {
+                Button(action: {
+                    if backButtonLabel == "Archive" {
+                        goBack = true
+                    } else {
+                        dismiss()
+                    }
+                }) {
                     HStack {
                         Image(systemName: "chevron.left")
-                        Text("Archive")
+                        Text(backButtonLabel)
                     }
                     .foregroundColor(.white)
                 }
