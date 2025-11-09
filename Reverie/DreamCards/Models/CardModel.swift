@@ -9,7 +9,7 @@ import SwiftUI
 import Foundation
 
 // Model representing a dream card with various attributes and visual elements
-struct CardModel: Identifiable, Codable {  // Conforms to Identifiable to uniquely identify each card in SwiftUI lists and views
+struct CardModel: Identifiable, Codable, Equatable {  // Conforms to Identifiable to uniquely identify each card in SwiftUI lists and views
     var userID: String
     var id: String  // Unique identifier for each card instance, used for identification and diffing
     var name: String  // Name of the character featured on the card

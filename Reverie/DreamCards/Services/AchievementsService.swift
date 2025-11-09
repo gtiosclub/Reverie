@@ -122,7 +122,7 @@ class AchievementsService {
         if existing?.exists == true { return }
 
         guard let card = try? await getAchievement(id: id) else {
-            print("⚠️ Failed to fetch global achievement \(id)")
+            print("failed to fetch global achievement \(id)")
             return
         }
 
@@ -139,7 +139,7 @@ class AchievementsService {
             "isAchievementUnlocked": true
         ])
 
-        print("✅ User \(uid) unlocked achievement \(id) with full card")
+        print("user \(uid) unlocked achievement \(id)")
     }
     
     func getAchievement(id: String) async throws -> CardModel? {
@@ -148,7 +148,7 @@ class AchievementsService {
         let doc = try await db.collection("achievements").document(id).getDocument()
     
         guard let data = doc.data() else {
-            print("❌ No data found for achievement ID:", id)
+            print("no data found for achievement ID:", id)
             return nil
         }
         
@@ -173,6 +173,26 @@ class AchievementsService {
     func fetchUnlockedAchievements() async throws -> [CardModel] {
         print("Fetching unlocked achievements")
         guard let userID = fb.currUser?.userID else { return [] }
+
+        let userDocRef = fb.db.collection("USERS").document(userID)
+        let achievementsCollection = userDocRef.collection("UNLOCKED_ACHIEVEMENTS")
+        let snapshot = try await achievementsCollection.getDocuments()
+
+        var unlockedAchievements: [CardModel] = []
+
+        for doc in snapshot.documents {
+            do {
+                let achievement = try doc.data(as: CardModel.self)
+                unlockedAchievements.append(achievement)
+            } catch {
+                print("Failed to decode achievement \(doc.documentID): \(error)")
+            }
+        }
+        return unlockedAchievements
+    }
+    
+    func fetchUnlockedAchievements(userID: String) async throws -> [CardModel] {
+        print("Fetching unlocked achievements")
 
         let userDocRef = fb.db.collection("USERS").document(userID)
         let achievementsCollection = userDocRef.collection("UNLOCKED_ACHIEVEMENTS")
