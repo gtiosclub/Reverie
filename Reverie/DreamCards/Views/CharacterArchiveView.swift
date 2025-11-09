@@ -11,10 +11,12 @@ struct CharacterArchiveView: View {
     @Binding var characters: [CardModel] // Binding to allow updates to characters' pinned state
     @Environment(\.dismiss) private var dismiss
     @Binding var selectedCharacter: CardModel?
+    @Binding var showArchive: Bool
     
-    init(characters: Binding<[CardModel]>, selectedCharacter: Binding<CardModel?> = .constant(nil)) {
+    init(characters: Binding<[CardModel]>, selectedCharacter: Binding<CardModel?>, showArchive: Binding<Bool>) {
         self._characters = characters
         self._selectedCharacter = selectedCharacter
+        self._showArchive = showArchive
     }
     
     
@@ -51,6 +53,9 @@ struct CharacterArchiveView: View {
                                         cols: cols
                                     ) { selected in
                                         self.selectedCharacter = selected
+                                        withAnimation {
+                                            self.showArchive = false
+                                        }
                                     }
                                     .padding(.top, 20)
                                     Spacer()
