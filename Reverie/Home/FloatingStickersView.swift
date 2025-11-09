@@ -14,6 +14,7 @@ struct FloatingStickersView: View {
     var user = FirebaseLoginService.shared.currUser!
 
 
+
     var body: some View {
         GeometryReader { geometry in
             ZStack {
