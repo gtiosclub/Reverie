@@ -25,6 +25,7 @@ struct FloatingStickerIndividualView: View {
     @State private var hasAlignedToTouch = false
     
     
+    
     var body: some View {
         AsyncImage(url: URL(string: character.image ?? "")) { phase in
             switch phase {
