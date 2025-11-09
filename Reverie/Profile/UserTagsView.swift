@@ -77,7 +77,9 @@ struct TagViewBlock: View {
         VStack {
             LazyVGrid(columns: columns, spacing: 25) {
                 ForEach(displayedTags, id: \.self) { tag in
-                    TagView(tagGiven: tag)
+                    NavigationLink(destination: TagInfoView(tagGiven: tag)) {
+                        TagView(tagGiven: tag)
+                    }
                 }
             }
             
@@ -93,11 +95,6 @@ struct TagViewBlock: View {
                         .padding(.top, 8)
                         .frame(maxWidth: .infinity, alignment: .center)
                 }
-            }) { Text(expanded ? "see less" : "see more")
-                    .foregroundStyle(.gray)
-                    .font(.subheadline)
-                    .padding(.leading, 16)
-                    .frame(maxWidth: .infinity, alignment: .center)
             }
         }
     }
