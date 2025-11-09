@@ -38,14 +38,80 @@ struct DreamEntryView: View {
             
             VStack(alignment: .leading, spacing: 1) {
                 VStack(alignment: .leading, spacing: 4) {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text(dream.title)
-                            .font(.title)
-                            .bold()
-                            .foregroundColor(.white)
-                        Text(dream.date.formatted())
-                            .font(.subheadline)
-                            .foregroundColor(.gray)
+                    HStack(){
+                        Spacer()
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(dream.title)
+                                .font(.title)
+                                .bold()
+                                .foregroundColor(.white)
+                            Text(dream.date.formatted())
+                                .font(.subheadline)
+                                .foregroundColor(.gray)
+                        }
+                        Spacer()
+                        Button(action: {
+                            withAnimation(.easeInOut) {
+                                showBook.toggle()
+                            }
+                        }) {
+                            ZStack {
+                                Circle()
+                                    .fill(
+                                        LinearGradient(
+                                            colors: [
+                                                Color(red: 46/255, green: 39/255, blue: 137/255),
+                                                Color(red: 64/255, green: 57/255, blue: 155/255)
+                                            ],
+                                            startPoint: .topLeading,
+                                            endPoint: .bottomTrailing
+                                        )
+                                    )
+                                    .frame(width: 45, height: 45)
+                                    .shadow(
+                                        color: Color(red: 60/255, green: 53/255, blue: 151/255)
+                                            .opacity(glowPulse ? 0.9 : 0.4),
+                                        radius: glowPulse ? 10 : 5
+                                    )
+                                    .overlay(
+                                        Circle()
+                                            .strokeBorder(
+                                                AngularGradient(
+                                                    gradient: Gradient(colors: [
+                                                        Color.white.opacity(0.8),
+                                                        Color.white.opacity(0.1),
+                                                        Color.white.opacity(0.6),
+                                                        Color.white.opacity(0.1),
+                                                        Color.white.opacity(0.8)
+                                                    ]),
+                                                    center: .center,
+                                                    startAngle: .degrees(0),
+                                                    endAngle: .degrees(360)
+                                                ),
+                                                lineWidth: 0.5
+                                            )
+                                            .blendMode(.screen)
+                                            .shadow(color: .white.opacity(0.25), radius: 1)
+                                    )
+
+
+                                Image(systemName: "book.closed.fill")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 20, height: 20)
+                                    .foregroundColor(.white)
+                            }
+
+
+                        }
+                        .onAppear {
+                            glowPulse = true
+                        }
+                        .padding(.trailing, 16)
+                        .padding(.bottom, -6)
+                        .buttonStyle(.plain)
+                        .opacity(showBook ? 0 : 1)
+
                     }
                     
                     if !dream.tags.isEmpty {
@@ -154,40 +220,7 @@ struct DreamEntryView: View {
             .padding(5)
             
             
-            Button(action: {
-                withAnimation(.easeInOut) {
-                    showBook.toggle()
-                }
-            }) {
-                ZStack {
-                    Circle()
-                        .fill(
-                            LinearGradient(
-                                colors: [Color.purple, Color.blue.opacity(0.7)],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            )
-                        )
-                        .frame(width: 65, height: 65)
-                        .shadow(color: .purple.opacity(glowPulse ? 0.9 : 0.4),
-                                radius: glowPulse ? 20 : 10)
-                        .scaleEffect(glowPulse ? 1.05 : 1.0)
-                        .animation(.easeInOut(duration: 1.8).repeatForever(autoreverses: true), value: glowPulse)
-                    
-                    Image(systemName: "book.closed.fill")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 28, height: 28)
-                        .foregroundColor(.white)
-                }
-            }
-            .onAppear {
-                glowPulse = true
-            }
-            .padding(.trailing, 24)
-            .padding(.bottom, -10)
-            .buttonStyle(.plain)
-            .opacity(showBook ? 0 : 1)
+
             
             
             if showBook {
