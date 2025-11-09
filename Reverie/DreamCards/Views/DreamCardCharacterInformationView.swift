@@ -11,16 +11,17 @@ struct DreamCardCharacterInformationView: View {
     @Binding var selectedCharacter: CardModel?
     let character: CardModel
     @State private var isUnlocked = false
-    @State private var isShownOnHome: Bool
-    @State private var isPinned: Bool
+//    var user = FirebaseLoginService.shared.currUser!
+//    @State private var isShownOnHome: Bool
+//    @State private var isPinned: Bool
     
     init(selectedCharacter: Binding<CardModel?>,
          character: CardModel) {
         
         self._selectedCharacter = selectedCharacter
         self.character = character
-        self._isPinned = State(initialValue: character.isPinned)
-        self._isShownOnHome = State(initialValue: character.isShown)
+//        self._isPinned = State(initialValue: character.isPinned)
+//        self._isShownOnHome = State(initialValue: character.isShown)
     }
 
     var body: some View {
@@ -35,7 +36,6 @@ struct DreamCardCharacterInformationView: View {
 //                    }
 //                }
             
-            // Layer 2: The Dark Tint
             Color.black.opacity(0.8)
                 .ignoresSafeArea()
                 .onTapGesture {
@@ -63,7 +63,7 @@ struct DreamCardCharacterInformationView: View {
                             EmptyView()
                         }
                     }
-                    .padding(.top, 40)
+                    .padding(.top, 60)
                     .frame(width: 150, height: 150)
                     .foregroundColor(.white)
                     
@@ -78,19 +78,19 @@ struct DreamCardCharacterInformationView: View {
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, 40)
                     
-                    Spacer() // Pushes content up
+                    Spacer() // pushes content up
                     
-                    Toggle(isOn: $isShownOnHome) {
-                        EmptyView()
-                    }
-                    .onChange(of: isShownOnHome) { _, newValue in
-                        Task {
-                            await FirebaseUpdateCardService.shared.setIsShown(card: character, isShown: newValue)
-                        }
-                    }
-                    .padding(.horizontal, 160)
-                    .tint(.purple)
-                    .padding(.bottom, 20)
+//                    Toggle(isOn: $isShownOnHome) {
+//                        EmptyView()
+//                    }
+//                    .onChange(of: isShownOnHome) { _, newValue in
+//                        Task {
+//                            await FirebaseUpdateCardService.shared.setIsShown(card: character, isShown: newValue)
+//                        }
+//                    }
+//                    .padding(.horizontal, 160)
+//                    .tint(.purple)
+//                    .padding(.bottom, 20)
                 }
                 .frame(maxHeight: .infinity, alignment: .center)
             }
@@ -99,6 +99,8 @@ struct DreamCardCharacterInformationView: View {
                 RoundedRectangle(cornerRadius: 20)
                     .stroke(character.cardColor.swiftUIColor.opacity(0.6), lineWidth: 3)
             )
+//            .background(.ultraThinMaterial)
+//                .glassEffect(in: .rect(cornerRadius: 20.0))
             .background(
                 ZStack {
                     RoundedRectangle(cornerRadius: 20).fill(.ultraThinMaterial)
@@ -131,6 +133,24 @@ struct DreamCardCharacterInformationView: View {
             .overlay(
                 Button(action: {
                     Task {
+                        await toggleHome()
+                    }
+                }) {
+                    let shown = (selectedCharacter?.isShown ?? character.isShown)
+                    Image(systemName: shown ? "house.fill" : "house")
+                        .font(.system(size: 20, weight: .bold))
+                        .foregroundColor(shown ? .pink : .white.opacity(0.85))
+                        .padding(11)
+//                        .background(.ultraThinMaterial, in: Circle())
+                }
+                .glassEffect(.regular, in: .circle)
+                .padding(15)
+                .padding(.trailing, 55),
+                alignment: .topTrailing
+            )
+            .overlay(
+                Button(action: {
+                    Task {
                         await togglePin()
                     }
                 }) {
@@ -142,12 +162,12 @@ struct DreamCardCharacterInformationView: View {
 //                        .background(.ultraThinMaterial, in: Circle())
                 }
                 .glassEffect(.regular, in: .circle)
-                .padding(20),
+                .padding(15),
                 alignment: .topTrailing
             )
             .rotation3DEffect(.degrees(isUnlocked ? 0 : 120), axis: (x: 0, y: 1, z: 0))
             .scaleEffect(isUnlocked ? 1.0 : 0.5)
-            .opacity(0.7)
+//            .opacity(0.7)
             .onAppear {
                 withAnimation(.spring(response: 0.8, dampingFraction: 0.7)) {
                     isUnlocked = true
@@ -165,6 +185,18 @@ struct DreamCardCharacterInformationView: View {
         selectedCharacter = cardToToggle
         
         await FirebaseUpdateCardService.shared.setIsPinned(card: cardToToggle, isPinned: newPinState)
+//        await FirebaseDCService.shared.fetchDCCard(card: cardToToggle)
+    }
+    
+    private func toggleHome() async {
+        var cardToToggle = character
+        
+        let newHomeState = !cardToToggle.isShown
+        
+        cardToToggle.isShown = newHomeState
+        selectedCharacter = cardToToggle
+        
+        await FirebaseUpdateCardService.shared.setIsShown(card: cardToToggle, isShown: newHomeState)
     }
 }
 
