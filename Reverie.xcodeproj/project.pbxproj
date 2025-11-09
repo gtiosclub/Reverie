@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		47D198BC2EA840CE0010F7BC /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 47D198BB2EA840CE0010F7BC /* WidgetKit.framework */; };
+		47D198BE2EA840CE0010F7BC /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 47D198BD2EA840CE0010F7BC /* SwiftUI.framework */; };
+		47D198CD2EA840D00010F7BC /* LoggingWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 47D198B92EA840CE0010F7BC /* LoggingWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		660298BC2EB7EEE900D74BD0 /* StableDiffusionResources in Resources */ = {isa = PBXBuildFile; fileRef = 660298BB2EB7EEE900D74BD0 /* StableDiffusionResources */; };
 		66A534352E9B42B30074D9B2 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 669E5C1C2E980D4B00848E94 /* FirebaseStorage */; };
 		66EEDBE32E679D220011493C /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 66EEDBE22E679D1B0011493C /* .gitignore */; };
 		BD9435C72E84F664009CE7D0 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BD9435C62E84F664009CE7D0 /* GoogleService-Info.plist */; };
@@ -16,22 +20,87 @@
 		ECEE5C4A2EB172B4008EDED8 /* StableDiffusionResources in Resources */ = {isa = PBXBuildFile; fileRef = ECEE5C492EB172B4008EDED8 /* StableDiffusionResources */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		47D198CB2EA840D00010F7BC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 66EEDBAA2E6798000011493C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 47D198B82EA840CE0010F7BC;
+			remoteInfo = LoggingWidgetExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		47D198D22EA840D00010F7BC /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				47D198CD2EA840D00010F7BC /* LoggingWidgetExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		47D198B92EA840CE0010F7BC /* LoggingWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = LoggingWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		47D198BB2EA840CE0010F7BC /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		47D198BD2EA840CE0010F7BC /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		660298BB2EB7EEE900D74BD0 /* StableDiffusionResources */ = {isa = PBXFileReference; lastKnownFileType = folder; name = StableDiffusionResources; path = ../StableDiffusionResources; sourceTree = "<group>"; };
 		66EEDBB22E6798000011493C /* Reverie.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Reverie.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		66EEDBE22E679D1B0011493C /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		BD9435C62E84F664009CE7D0 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		ECEE5C492EB172B4008EDED8 /* StableDiffusionResources */ = {isa = PBXFileReference; lastKnownFileType = folder; name = StableDiffusionResources; path = ../../StableDiffusionResources; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		47094D492EAA95370060150A /* Exceptions for "Reverie" folder in "Reverie" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 66EEDBB12E6798000011493C /* Reverie */;
+		};
+		47D198CE2EA840D00010F7BC /* Exceptions for "LoggingWidget" folder in "LoggingWidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 47D198B82EA840CE0010F7BC /* LoggingWidgetExtension */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		47D198BF2EA840CE0010F7BC /* LoggingWidget */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				47D198CE2EA840D00010F7BC /* Exceptions for "LoggingWidget" folder in "LoggingWidgetExtension" target */,
+			);
+			path = LoggingWidget;
+			sourceTree = "<group>";
+		};
 		66EEDBB42E6798000011493C /* Reverie */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				47094D492EAA95370060150A /* Exceptions for "Reverie" folder in "Reverie" target */,
+			);
 			path = Reverie;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		47D198B62EA840CE0010F7BC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				47D198BE2EA840CE0010F7BC /* SwiftUI.framework in Frameworks */,
+				47D198BC2EA840CE0010F7BC /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		66EEDBAF2E6798000011493C /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -46,9 +115,11 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		669E5C1B2E980D4B00848E94 /* Frameworks */ = {
+		47D198BA2EA840CE0010F7BC /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				47D198BB2EA840CE0010F7BC /* WidgetKit.framework */,
+				47D198BD2EA840CE0010F7BC /* SwiftUI.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -56,12 +127,13 @@
 		66EEDBA92E6798000011493C = {
 			isa = PBXGroup;
 			children = (
-				ECEE5C492EB172B4008EDED8 /* StableDiffusionResources */,
+				660298BB2EB7EEE900D74BD0 /* StableDiffusionResources */,
 				66EEDBE22E679D1B0011493C /* .gitignore */,
 				66EEDBB42E6798000011493C /* Reverie */,
+				47D198BF2EA840CE0010F7BC /* LoggingWidget */,
+				47D198BA2EA840CE0010F7BC /* Frameworks */,
 				66EEDBB32E6798000011493C /* Products */,
 				BD9435C62E84F664009CE7D0 /* GoogleService-Info.plist */,
-				669E5C1B2E980D4B00848E94 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -69,6 +141,7 @@
 			isa = PBXGroup;
 			children = (
 				66EEDBB22E6798000011493C /* Reverie.app */,
+				47D198B92EA840CE0010F7BC /* LoggingWidgetExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -76,6 +149,28 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		47D198B82EA840CE0010F7BC /* LoggingWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 47D198CF2EA840D00010F7BC /* Build configuration list for PBXNativeTarget "LoggingWidgetExtension" */;
+			buildPhases = (
+				47D198B52EA840CE0010F7BC /* Sources */,
+				47D198B62EA840CE0010F7BC /* Frameworks */,
+				47D198B72EA840CE0010F7BC /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				47D198BF2EA840CE0010F7BC /* LoggingWidget */,
+			);
+			name = LoggingWidgetExtension;
+			packageProductDependencies = (
+			);
+			productName = LoggingWidgetExtension;
+			productReference = 47D198B92EA840CE0010F7BC /* LoggingWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		66EEDBB12E6798000011493C /* Reverie */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 66EEDBBD2E6798000011493C /* Build configuration list for PBXNativeTarget "Reverie" */;
@@ -83,10 +178,12 @@
 				66EEDBAE2E6798000011493C /* Sources */,
 				66EEDBAF2E6798000011493C /* Frameworks */,
 				66EEDBB02E6798000011493C /* Resources */,
+				47D198D22EA840D00010F7BC /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				47D198CC2EA840D00010F7BC /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				66EEDBB42E6798000011493C /* Reverie */,
@@ -112,6 +209,9 @@
 				LastSwiftUpdateCheck = 2600;
 				LastUpgradeCheck = 2600;
 				TargetAttributes = {
+					47D198B82EA840CE0010F7BC = {
+						CreatedOnToolsVersion = 26.0;
+					};
 					66EEDBB12E6798000011493C = {
 						CreatedOnToolsVersion = 26.0;
 					};
@@ -136,15 +236,24 @@
 			projectRoot = "";
 			targets = (
 				66EEDBB12E6798000011493C /* Reverie */,
+				47D198B82EA840CE0010F7BC /* LoggingWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		47D198B72EA840CE0010F7BC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		66EEDBB02E6798000011493C /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				660298BC2EB7EEE900D74BD0 /* StableDiffusionResources in Resources */,
 				66EEDBE32E679D220011493C /* .gitignore in Resources */,
 				ECEE5C4A2EB172B4008EDED8 /* StableDiffusionResources in Resources */,
 				BD9435C72E84F664009CE7D0 /* GoogleService-Info.plist in Resources */,
@@ -154,6 +263,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		47D198B52EA840CE0010F7BC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		66EEDBAE2E6798000011493C /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -163,7 +279,75 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		47D198CC2EA840D00010F7BC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 47D198B82EA840CE0010F7BC /* LoggingWidgetExtension */;
+			targetProxy = 47D198CB2EA840D00010F7BC /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		47D198D02EA840D00010F7BC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 726XXR46H7;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = LoggingWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = LoggingWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.BraydenHuguenard.Reverie.LoggingWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		47D198D12EA840D00010F7BC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 726XXR46H7;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = LoggingWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = LoggingWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.BraydenHuguenard.Reverie.LoggingWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		66EEDBBB2E6798000011493C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -288,11 +472,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = GQT46YJHKR;
+				DEVELOPMENT_TEAM = 726XXR46H7;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Reverie/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -303,8 +489,9 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.dreams.Reverie;
+				PRODUCT_BUNDLE_IDENTIFIER = com.BraydenHuguenard.Reverie;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
@@ -320,11 +507,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = GQT46YJHKR;
+				DEVELOPMENT_TEAM = 726XXR46H7;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Reverie/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -335,8 +524,9 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.dreams.Reverie;
+				PRODUCT_BUNDLE_IDENTIFIER = com.BraydenHuguenard.Reverie;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
@@ -350,6 +540,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		47D198CF2EA840D00010F7BC /* Build configuration list for PBXNativeTarget "LoggingWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				47D198D02EA840D00010F7BC /* Debug */,
+				47D198D12EA840D00010F7BC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		66EEDBAD2E6798000011493C /* Build configuration list for PBXProject "Reverie" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

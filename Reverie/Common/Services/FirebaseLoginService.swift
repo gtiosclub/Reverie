@@ -36,6 +36,7 @@ class FirebaseLoginService {
     func fetchUser() async {
         guard let uid = auth.currentUser?.uid else {return}
         var dreamModels: [DreamModel] = []
+        var dreamCards: [CardModel] = []
 
         guard let snapshot = try? await Firestore.firestore().collection("USERS").document(uid).getDocument() else { return }
         if snapshot.exists {
@@ -56,7 +57,7 @@ class FirebaseLoginService {
                            let loggedContent = snapshot.get("loggedContent") as? String,
                            let generatedContent = snapshot.get("generatedContent") as? String,
                            let tags = snapshot.get("tags") as? [String],
-                           let image = snapshot.get("image") as? String,
+                           let image = snapshot.get("image") as? [String],
                            let emotion = snapshot.get("emotion") as? String,
                            let finishedDream = snapshot.get("finishedDream") as? String
                            
@@ -72,18 +73,27 @@ class FirebaseLoginService {
                                 }
                                 return Date()
                             }()
+                            let finishedDream = snapshot.get("finishedDream") as? String ?? "None"
                             let tagF: [DreamModel.Tags] = tags.compactMap { DreamModel.Tags(rawValue: $0.lowercased()) }
                             let emotionF: DreamModel.Emotions = DreamModel.Emotions(rawValue: emotion.lowercased()) ?? .neutral
 
                             let dreamModel = DreamModel(userID: userID, id: id, title: title, date: dateF, loggedContent: loggedContent, generatedContent: generatedContent, tags: tagF, image: image, emotion: emotionF, finishedDream: finishedDream)
                             dreamModels.append(dreamModel)
+//                            print(dreamModel)
                             
                         }
                     }
                     
                 }
+                
+                do {
+                    dreamCards = try await FirebaseDCService.shared.fetchDCCards(userID: userID)
+                    dreamCards.append(contentsOf: try await AchievementsService.shared.fetchUnlockedAchievements(userID: userID))
+                } catch {
+                    print("Failed to get DC Cards: \(error.localizedDescription)")
+                }
 
-                let user = UserModel(name: name, userID: userID, username: username, overallAnalysis: overallAnalysis, dreams: dreamModels)
+                let user = UserModel(name: name, userID: userID, username: username, overallAnalysis: overallAnalysis, dreams: dreamModels, dreamCards: dreamCards)
 
                 self.currUser = user
 
@@ -96,7 +106,7 @@ class FirebaseLoginService {
         do {
             let result = try await auth.createUser(withEmail: email, password: password)
             self.userSession = result.user
-            let user = UserModel( name: name, userID: result.user.uid, username: email, overallAnalysis: "Not enough dreams for an overall analysis", dreams: [])
+            let user = UserModel( name: name, userID: result.user.uid, username: email, overallAnalysis: "Not enough dreams for an overall analysis", dreams: [], dreamCards: [])
             let userData: [String: Any] = [
                 "userID": user.userID,
                 "name": user.name,

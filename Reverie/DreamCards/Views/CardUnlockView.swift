@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct CardUnlockView: View {
+    @Namespace private var cardNamespace // Added namespace for matchedGeometryEffect
 //    @Environment(FirebaseDCService.self) private var fbdcs
     @Binding var unlockCards: Bool
     
@@ -15,6 +16,20 @@ struct CardUnlockView: View {
 //        .init(userID: "4", id: "4", name: "ATLAS", description: "Carries your goals across the finish line", image: "fish.fill", cardColor: .yellow)
 //    ]
     let cards: [CardModel]
+    private let cardWidth: CGFloat = 190
+    private let cardHeight: CGFloat = 190 * (475.0/300.0)
+    
+    private var allRevealed: Bool { revealedCount >= cards.count && !cards.isEmpty }
+    @State private var showHorizontal = false
+    
+    // New state property controlling whether the revealed cards deck is expanded horizontally
+    @State private var expandedDeck = false
+    
+    init(unlockCards: Binding<Bool>, cards: [CardModel], initialRevealedCount: Int = 0) {
+        self._unlockCards = unlockCards
+        self.cards = cards
+        self._revealedCount = State(initialValue: max(0, min(initialRevealedCount, cards.count)))
+    }
     
     var body: some View {
         GeometryReader { geometry in
@@ -24,53 +39,108 @@ struct CardUnlockView: View {
                    .onTapGesture {
                        // tap the background to dismiss
                        withAnimation {
-                           if revealedCount == cards.count {
+                           if showHorizontal {
                                unlockCards = false
                            }
                        }
                    }
                    .zIndex(-5)
                 
-                ForEach(cards.indices, id: \.self) { index in
-                    // what is the ith card?
-                    let card = cards[index]
-                    
-                    // card is revealed once its index has been past
-                    let isRevealed = index < revealedCount
-
-                    FlippingCardView(
-                        isFlipped: isRevealed,
-                        // front
-                        front: {
-                            CharacterUnlockedView(
-                                card: CardModel(
-                                    userID: card.userID,
-                                    id: card.id,
-                                    name: card.name,
-                                    description: card.description,
-                                    image: card.image ?? "questionmark",
-                                    cardColor: card.cardColor
-                            ))
-                        },
-                        // back of card -> see BackCardView()
-                        back: { BackCardView() }
-                    )
-                    // reveal ontap
-                    .onTapGesture {
-                        guard !isRevealed else { return }
-                        revealedCount += 1
-                        Task {
-                            await FirebaseUpdateCardService.shared.toggleIsUnlocked(card: card)
+                if showHorizontal {
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 24) {
+                            ForEach(cards, id: \.id) { card in
+                                let scale = cardWidth / 300.0 // CharacterUnlockedView uses 300x475 internally
+                                ZStack {
+                                    CharacterUnlockedView(
+                                        card: CardModel(
+                                            userID: card.userID,
+                                            id: card.id,
+                                            name: card.name,
+                                            description: card.description,
+                                            image: card.image ?? "questionmark",
+                                            cardColor: card.cardColor
+                                        )
+                                    )
+                                    .scaleEffect(scale, anchor: .center) // scale down uniformly to fit
+                                    .matchedGeometryEffect(id: card.id, in: cardNamespace) // Added matchedGeometryEffect for smooth transition
+                                }
+                                .frame(width: cardWidth, height: cardHeight)
+                                .clipShape(RoundedRectangle(cornerRadius: 15, style: .continuous)) // keep rounded edges
+                                .shadow(color: .black.opacity(0.25), radius: 12, y: 8)
+                            }
                         }
+                        .padding(.horizontal, 24)
+                        .padding(.vertical, 32)
                     }
-                    // card size based on if it has been clicked
-                    .scaleEffect(isRevealed ? 0.80 : 1.0)
-                    // get position (see private func below)
-                    .position(position(for: index, isRevealed: isRevealed, in: geometry.size))
-                    // properly stack
-                    .zIndex(isRevealed ? Double(index) : Double(cards.count - index))
-                    // animate the card being launched once clicked
-                    .animation(.spring(response: 0.65, dampingFraction: 0.75), value: revealedCount)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                    //.transition(.move(edge: .bottom).combined(with: .opacity)) // Removed transition to rely on matchedGeometryEffect
+                    .animation(.spring(response: 0.6, dampingFraction: 0.85), value: showHorizontal) // Linked animation to showHorizontal for consistency
+                } else {
+                    ForEach(cards.indices, id: \.self) { index in
+                        // what is the ith card?
+                        let card = cards[index]
+                        // card is revealed once its index has been past
+                        let isRevealed = index < revealedCount
+
+                        FlippingCardView(
+                            isFlipped: isRevealed,
+                            // front
+                            front: {
+                                CharacterUnlockedView(
+                                    card: CardModel(
+                                        userID: card.userID,
+                                        id: card.id,
+                                        name: card.name,
+                                        description: card.description,
+                                        image: card.image ?? "questionmark",
+                                        cardColor: card.cardColor
+                                ))
+                            },
+                            // back of card -> see BackCardView()
+                            back: { BackCardView() }
+                        )
+                        // reveal ontap
+                        .onTapGesture {
+                            guard !isRevealed else { return }
+                            withAnimation(.spring(response: 0.65, dampingFraction: 0.75)) {
+                                revealedCount += 1
+                            }
+                            if revealedCount == cards.count {
+                                // Delay switching layouts until the final flip animation visually completes
+                                // This longer delay ensures the final card finishes its animation before the transition starts
+                                let delay = 1.85 // increased to 1.85 to allow settling
+                                DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+                                    withAnimation(.spring(response: 1.5, dampingFraction: 1.5)) {
+                                        showHorizontal = true
+                                    }
+                                }
+                                // Additional delay to trigger the expandedDeck animation slightly after the last flip finishes
+                                // This ensures the expansion animation is synchronized with the flip completion for smooth UX
+                                DispatchQueue.main.asyncAfter(deadline: .now() + delay + 2) {
+                                    withAnimation(.easeInOut(duration: 1.0)) {
+                                        expandedDeck = true
+                                    }
+                                }
+                            }
+                            Task {
+                                await FirebaseUpdateCardService.shared.toggleIsUnlocked(card: card)
+                            }
+                        }
+                        // card size based on if it has been clicked
+                        .scaleEffect(isRevealed ? 0.80 : 1.0)
+                        // get position (see private func below)
+                        .position(position(for: index, isRevealed: isRevealed, in: geometry.size))
+                        // When all cards are revealed and expandedDeck is true, spread the cards horizontally with animated offset
+                        .offset(x: isRevealed && expandedDeck ? horizontalOffset(for: index) : 0)
+                        // properly stack
+                        .zIndex(isRevealed ? Double(index) : Double(cards.count - index))
+                        .matchedGeometryEffect(id: card.id, in: cardNamespace) // Added matchedGeometryEffect for smooth transition
+                        // animate the card being launched once clicked and the offset when expandedDeck changes
+                        .animation(.spring(response: 0.65, dampingFraction: 0.75), value: revealedCount)
+                        // Duration increased to 4 seconds for a smoother, cinematic expansion transition
+                        .animation(.easeInOut(duration: 4.0), value: expandedDeck)
+                    }
                 }
             }
         }
@@ -95,6 +165,16 @@ struct CardUnlockView: View {
             // get point on screen
             return CGPoint(x: x, y: y)
         }
+    }
+    
+    // New helper function to calculate horizontal offset for spreading cards when expandedDeck is true
+    private func horizontalOffset(for index: Int) -> CGFloat {
+        // Calculate the center index of the revealed cards
+        let centerIndex = CGFloat(revealedCount - 1) / 2.0
+        // Spread cards horizontally with spacing of 40 points between them
+        let spacing: CGFloat = 40
+        // Offset relative to center to spread cards evenly
+        return (CGFloat(index) - centerIndex) * spacing
     }
 }
 
@@ -175,6 +255,29 @@ struct BackCardView: View {
     }
 }
 
-#Preview {
-    CardUnlockView(unlockCards: .constant(true), cards: [CardModel.init(userID: "1", id: "1", name: "LIZZY", description: "Builds the landscape of your dreams", image: "lizard.fill", cardColor: .pink)])
+#Preview("1 unlocked") {
+    let demoCards: [CardModel] = [
+        .init(userID: "1", id: "1", name: "LIZZY", description: "Builds the landscape of your dreams", image: "lizard.fill", cardColor: .pink),
+        .init(userID: "2", id: "2", name: "BOLT", description: "Ignites new ideas when you need them", image: "tortoise.fill", cardColor: .purple),
+        .init(userID: "3", id: "3", name: "AURORA", description: "Guides your imagination into focus", image: "bird.fill", cardColor: .blue)
+    ]
+    return CardUnlockView(unlockCards: .constant(true), cards: demoCards, initialRevealedCount: 1)
+}
+
+#Preview("2 unlocked") {
+    let demoCards: [CardModel] = [
+        .init(userID: "1", id: "1", name: "LIZZY", description: "Builds the landscape of your dreams", image: "lizard.fill", cardColor: .pink),
+        .init(userID: "2", id: "2", name: "BOLT", description: "Ignites new ideas when you need them", image: "tortoise.fill", cardColor: .purple),
+        .init(userID: "3", id: "3", name: "AURORA", description: "Guides your imagination into focus", image: "bird.fill", cardColor: .blue)
+    ]
+    return CardUnlockView(unlockCards: .constant(true), cards: demoCards, initialRevealedCount: 2)
+}
+
+#Preview("All unlocked") {
+    let demoCards: [CardModel] = [
+        .init(userID: "1", id: "1", name: "LIZZY", description: "Builds the landscape of your dreams", image: "lizard.fill", cardColor: .pink),
+        .init(userID: "2", id: "2", name: "BOLT", description: "Ignites new ideas when you need them", image: "tortoise.fill", cardColor: .purple),
+        .init(userID: "3", id: "3", name: "AURORA", description: "Guides your imagination into focus", image: "bird.fill", cardColor: .blue)
+    ]
+    return CardUnlockView(unlockCards: .constant(true), cards: demoCards, initialRevealedCount: demoCards.count)
 }
