@@ -14,17 +14,17 @@ struct Card: Identifiable {
 }
 
 struct AnalysisCardView: View {
-    let analysis: String
-    var cards: [Card] { parseDreamText(text: analysis) }
+    let dream: DreamModel
+    var cards: [Card] { parseDreamText(text: dream.generatedContent) }
 
-    var tags: [DreamModel.Tags] = [.fire, .disasters, .water, .nature]
+    var onTagTap: (DreamModel.Tags) -> Void = { _ in }
+
 
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) {
             VStack(alignment: .leading, spacing: 30) {
-
                 if let overview = cards.first(where: { $0.title.lowercased().contains("overview") || $0.title.lowercased().contains("general") }) {
-                    AnalysisSectionCard(title: "Overview", content: overview.content)
+                    AnalysisSectionCard(title: "Overview", content: Text(overview.content))
                 }
 
                 VStack(alignment: .leading, spacing: 16) {
@@ -35,47 +35,65 @@ struct AnalysisCardView: View {
 
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 24) {
-                            ForEach(tags, id: \.self) { tag in
-                                VStack(spacing: 8) {
-                                    ZStack {
-                                        Circle()
-                                            .fill(DreamModel.tagColors(tag: tag).opacity(0.25))
-                                            .frame(width: 65, height: 65)
-                                        Image(DreamModel.tagImages(tag: tag))
-                                            .resizable()
-                                            .scaledToFit()
-                                            .frame(width: 32, height: 32)
+                            ForEach(dream.tags, id: \.self) { tag in
+                                Button(action: {
+                                    withAnimation(.easeInOut) { onTagTap(tag) }
+                                }) {
+                                    VStack(spacing: 8) {
+                                        ZStack {
+                                            Circle()
+                                                .fill(Color.black.opacity(0.25))
+                                                .frame(width: 65, height: 65)
+
+                                            Image(systemName: DreamModel.tagImages(tag: tag))
+                                                .resizable()
+                                                .scaledToFit()
+                                                .frame(width: 32, height: 32)
+                                                .foregroundStyle(DreamModel.tagColors(tag: tag))
+                                        }
+
+                                        Text(tag.rawValue.capitalized)
+                                            .font(.subheadline)
+                                            .foregroundColor(.white.opacity(0.9))
                                     }
-                                    Text(tag.rawValue.capitalized)
-                                        .font(.subheadline)
-                                        .foregroundColor(.white.opacity(0.9))
                                 }
+                                .buttonStyle(.plain)
                             }
                         }
                         .padding(.horizontal)
                     }
 
                     if let themeCard = cards.first(where: { $0.title.lowercased().contains("theme") || $0.title.lowercased().contains("motif") }) {
-                        AnalysisSectionCard(title: "Symbols", content: themeCard.content)
+                        AnalysisSectionCard(title: "Symbols", content: Text(themeCard.content))
                     }
                 }
 
+                let string = Text("This dream's overall mood is ")
+                    .foregroundColor(.white)
+                + Text(dream.emotion.rawValue.capitalized)
+                    .foregroundColor(DreamModel.emotionColors(emotion: dream.emotion).opacity(0.9))
+                    .fontWeight(.semibold)
+                AnalysisSectionCard(title: "Mood", content: string)
+
                 if let connection = cards.first(where: { $0.title.lowercased().contains("connection") }) {
-                    AnalysisSectionCard(title: "Connection to Life", content: connection.content)
+                    AnalysisSectionCard(title: "Connection to Life", content: Text(connection.content))
                 }
 
                 if let takeaway = cards.first(where: { $0.title.lowercased().contains("takeaway") || $0.title.lowercased().contains("lesson") }) {
-                    AnalysisSectionCard(title: "Takeaways", content: takeaway.content)
+                    AnalysisSectionCard(title: "Takeaways", content: Text(takeaway.content))
                 }
             }
             .padding(.vertical, 25)
         }
     }
+
+
+    
 }
 
 struct AnalysisSectionCard: View {
     let title: String
-    let content: String
+    let content: Text
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -88,13 +106,14 @@ struct AnalysisSectionCard: View {
                     .foregroundColor(.white)
             }
 
-            Text(content)
+            content
                 .font(.body)
                 .foregroundColor(.white.opacity(0.95))
                 .lineSpacing(6)
                 .multilineTextAlignment(.leading)
         }
         .padding(20)
+        .frame(maxWidth: .infinity, minHeight: 100, alignment: .leading)
         .background(
             RoundedRectangle(cornerRadius: 25)
                 .fill(
@@ -131,7 +150,7 @@ struct AnalysisSectionCard: View {
                 .shadow(color: Color.black.opacity(0.6), radius: 10, x: 0, y: 6)
 
         )
-        .padding(.horizontal)
+        .padding(.horizontal, 20)
     }
 }
 
@@ -161,19 +180,30 @@ func parseDreamText(text: String) -> [Card] {
 
 #Preview {
     AnalysisCardView(
-        analysis: """
-        **Overview**
-        Last night I dreamt about blah blah blah. Last night I dreamt about blah blah blah.
+        dream: DreamModel(
+            userID: "1",
+            id: "1",
+            title: "Test Dream Entry",
+            date: Date(),
+            loggedContent: "This is a logged dream example. You can scroll through it here.",
+            generatedContent: """
+            **General Review**  
+            In your dream, you encountered a cow, which evoked a strong emotional response of fear. The simplicity of the scene, with just a cow present, suggests that the dream might be tapping into underlying feelings or anxieties. The overall tone of the dream seems to be one of unease or surprise, as fear is a prominent emotion you experienced.
 
-        **Themes**
-        Description of analysis for themes & motifs. Last night I dreamt about blah blah blah.
+            **Motifs & Symbols**  
+            Cows in dreams often symbolize fertility, abundance, or a connection to the earth. However, seeing a cow in a dream can also indicate feelings of vulnerability or being overwhelmed by responsibilities. The presence of fear suggests that this cow might represent something in your life that feels threatening or out of control, prompting you to confront or seek understanding about these aspects.
 
-        **Connection to Life**
-        Last night I dreamt about blah blah blah. Last night I dreamt about blah blah blah.
+            **Connection to Current Life**  
+            This dream might reflect current situations where you feel burdened or uncertain about responsibilities or changes in your life. It could be a manifestation of worries about nurturing your growth or relationships, or facing challenges that require careful management. Being scared in this context suggests that there might be areas in your waking life where you feel unprepared or need more clarity.
 
-        **Takeaways**
-        Last night I dreamt about blah blah blah. Last night I dreamt about blah blah blah.
-        """
+            **Lessons & Takeaways**  
+            Reflecting on this dream, consider the areas of your life where you feel most vulnerable or overwhelmed. It might be beneficial to engage in activities that help ground you, such as mindfulness or connecting with nature, which can symbolize the nurturing aspects of a cow. Learning to approach these situations with a calm and open mind can help transform fear into understanding and empowerment.
+            """,
+            tags: [.mountains, .rivers],
+            image: "Test",
+            emotion: .happiness,
+            finishedDream: "I woke up"
+        )
     )
 }
 
