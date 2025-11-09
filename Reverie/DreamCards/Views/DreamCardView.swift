@@ -23,6 +23,8 @@ struct DreamCardView: View {
     
     @State private var characters: [CardModel] = []
     
+    @State private var achievements: [CardModel] = []
+    
     @State private var lockedCharacters: [CardModel] = []
     
     @State private var selectedCharacter: CardModel?
@@ -30,6 +32,10 @@ struct DreamCardView: View {
     @State private var dreamCount: Int = 0
     
     @State private var unlockCards: Bool = false
+    
+    @State private var showArchive = false
+    
+    var user = FirebaseLoginService.shared.currUser!
     
 //    @State private var degrees: Double = 8.0
     var progress: Float {
@@ -44,19 +50,24 @@ struct DreamCardView: View {
                     Text("My Characters")
                         .font(.title2.bold())
                         .foregroundColor(.white)
-                    Image(systemName: "chevron.down")
-                        .foregroundColor(.white.opacity(0.8))
                     Spacer()
+                    Button(action: {
+                        showArchive = true
+                    }) {
+                        Text("View All")
+                            .font(.body.bold())
+                            .foregroundColor(.indigo)
+                    }
                 }
                 .padding(.horizontal, 30)
                 .padding(.top, 100)
                 
-                StickerView(characters: characters, selectedCharacter: $selectedCharacter)
-                    .padding(.top, 50)
+                StickerView(characters: $characters, selectedCharacter: $selectedCharacter)
+                    .padding(.top, 10)
                 
                 Spacer()
                 
-                Text("Unlock in 3 days")
+                Text("Log \(Int(max(0, 4 - progress))) more dreams to unlock")
                     .font(.headline.bold())
                     .foregroundColor(.white.opacity(0.9))
                 
@@ -78,42 +89,75 @@ struct DreamCardView: View {
                         }
                     }
                     .task {
-                        do {
-                            let dreams = try await FirebaseDreamService.shared.getDreams()
-                            self.dreamCount = dreams.count
-                        } catch {
-                            print("Error fetching dreams: \(error)")
-                        }
+//                        do {
+//                            let dreams = try await FirebaseDreamService.shared.getDreams()
+                            self.dreamCount = user.dreams.count
+//                        } catch {
+//                            print("Error fetching dreams: \(error)")
+//                        }
                     }
             }
-            .padding(.top, 20)
+//            .sheet(isPresented: $showArchive) {
+//                CharacterArchiveView(characters: $characters, selectedCharacter: $selectedCharacter)
+//            }
             .padding(.bottom, 120)
             .task {
-                do {
-                    self.characters = try await FirebaseDCService.shared.fetchDCCards()
-                    self.lockedCharacters = characters.filter { !$0.isUnlocked }
-                } catch {
-                    print("Error fetching cards: \(error.localizedDescription)")
-                }
+//                do {
+                self.characters = user.dreamCards
+//                    self.characters = try await FirebaseDCService.shared.fetchDCCards()
+//                    let pinnedIDs = PinStore.load()
+//                    for i in self.characters.indices {
+//                        self.characters[i].isPinned = pinnedIDs.contains(self.characters[i].id)
+//                    }
+//                    self.achievements = try await AchievementsService.shared.fetchUnlockedAchievements()
+                self.lockedCharacters = characters.filter { !$0.isUnlocked }
+//                    self.lockedCharacters.append(contentsOf: achievements.filter { !$0.isUnlocked })
+//                } catch {
+//                    print("Error fetching cards: \(error.localizedDescription)")
+//                }
             }
             .onChange(of: unlockCards) {
                 if unlockCards == false {
                     Task {
-                        self.characters = try await FirebaseDCService.shared.fetchDCCards()
+                        user.dreamCards = try await FirebaseDCService.shared.fetchDCCards(userID: user.userID)
+                        self.characters = user.dreamCards
+//                        self.characters = try await FirebaseDCService.shared.fetchDCCards()
+//                        self.achievements = try await AchievementsService.shared.fetchUnlockedAchievements()
                         self.lockedCharacters = characters.filter { !$0.isUnlocked }
+//                        self.lockedCharacters.append(contentsOf: achievements.filter { !$0.isUnlocked })
                     }
                 }
             }
             
             if let character = selectedCharacter {
-                DreamCardCharacterInformationView(selectedCharacter: $selectedCharacter, character: character, isOnHomeScreen: $isOnHomeScreen)
-                    .transition(.asymmetric(insertion: .opacity.combined(with: .scale(scale: 0.8)), removal: .opacity))
-                    .id(character.id)
+                DreamCardCharacterInformationView(
+                    selectedCharacter: $selectedCharacter, character: character
+                )
+                .transition(.asymmetric(insertion: .opacity.combined(with: .scale(scale: 0.9)), removal: .opacity))
+                .id(character.id)
             }
             
             if unlockCards {
                 CardUnlockView(unlockCards: $unlockCards, cards: lockedCharacters)
                     .transition(.opacity.combined(with: .scale(scale: 0.9)))
+            }
+            
+            if showArchive {
+                Color.black.opacity(0.8)
+                    .ignoresSafeArea()
+                    .transition(.opacity)
+                    .onTapGesture {
+                        withAnimation {
+                            showArchive = false
+                        }
+                    }
+                
+                CharacterArchiveView(
+                    characters: $characters,
+                    selectedCharacter: $selectedCharacter,
+                    showArchive: $showArchive
+                )
+                .transition(.move(edge: .bottom).combined(with: .opacity))
             }
         }
         .background(.clear)

@@ -103,6 +103,7 @@ actor ImageGenerationService {
         guard let output = filter.outputImage else { return image }
         let context = CIContext()
         guard let outputCG = context.createCGImage(output, from: output.extent) else { return image }
+        print("background removed")
         return UIImage(cgImage: outputCG)
     }
 }
