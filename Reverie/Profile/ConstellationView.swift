@@ -109,6 +109,13 @@ struct DreamSimilarityGraph: UIViewRepresentable {
         view.scene = makeScene()
         view.backgroundColor = .clear
         view.allowsCameraControl = true
+        
+        if let camera = view.scene?.rootNode.childNodes.first(where: { $0.camera != nil })?.camera {
+            camera.wantsHDR = true
+            camera.bloomIntensity = 2.0
+            camera.bloomThreshold = 0.5
+        }
+        
         let tapGesture = UITapGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.handleTap(_:)))
         view.addGestureRecognizer(tapGesture)
         return view
@@ -274,21 +281,26 @@ struct DreamSimilarityGraph: UIViewRepresentable {
         // Dream nodes
         for (_, dream) in dreams.enumerated() {
             let sphere = SCNSphere(radius: 0.1)
+
+
             let ui = dream.emotion.swatchColor.uiColor
 
             let material = SCNMaterial()
             material.diffuse.contents = ui
             material.emission.contents = ui
-            material.emission.intensity = 0.25
+//            material.emission.intensity = 0.25
+            material.emission.intensity = 1.5
+
             material.lightingModel = .blinn
             material.isDoubleSided = false
             sphere.materials = [material]
 
             let node = SCNNode(geometry: sphere)
+
             node.name = dream.loggedContent
-            node.position = SCNVector3(Float.random(in: -2...2),
-                                       Float.random(in: -2...2),
-                                       Float.random(in: -2...2))
+            node.position = SCNVector3(Float.random(in: -3...3),
+                                       Float.random(in: -3...3),
+                                       Float.random(in: -3...3))
 
             let up = SCNAction.moveBy(x: 0, y: 0.05, z: 0, duration: 1)
             up.timingMode = .easeInEaseOut
@@ -313,7 +325,7 @@ struct DreamSimilarityGraph: UIViewRepresentable {
         // Camera + lights
         let cameraNode = SCNNode()
         cameraNode.camera = SCNCamera()
-        cameraNode.position = SCNVector3(x: 0, y: 0, z: 8)
+        cameraNode.position = SCNVector3(x: 0, y: 0, z: 6.5)
         scene.rootNode.addChildNode(cameraNode)
 
         let ambient = SCNNode()
@@ -340,8 +352,9 @@ struct DreamSimilarityGraph: UIViewRepresentable {
 
         let cylinder = SCNCylinder(radius: CGFloat(0.01 + 0.015 * strength), height: d)
         let material = SCNMaterial()
-        material.diffuse.contents = UIColor(red: 0.5, green: 0.6, blue: 1.0, alpha: CGFloat(0.1 + 0.3 * strength))
+        material.diffuse.contents = UIColor(red: 0.5, green: 0.6, blue: 1.0, alpha: CGFloat(0.05 + 0.15 * strength))
         material.lightingModel = .constant
+        material.emission.contents = UIColor.clear
         cylinder.materials = [material]
 
         let line = SCNNode(geometry: cylinder)
@@ -473,6 +486,8 @@ struct ConstellationView: View {
                 .ignoresSafeArea(edges:.bottom)
             }
         }
+        .background(BackgroundView())
+
     }
 }
 
@@ -482,3 +497,5 @@ struct ConstellationView: View {
     ConstellationView(dreams: testDreams, similarityMatrix: testSimMatrix, threshold: 0.4)
         .background(BackgroundView())
 }
+
+
