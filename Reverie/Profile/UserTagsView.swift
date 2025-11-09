@@ -56,8 +56,8 @@ struct UserTagsView: View {
 
                     TagViewBlock(title: "Archive", tags: allTags, isExpandable: false)
                 }
+                .padding(.bottom, 80)
             }
-            .padding(.bottom, 80)
         }
     }
 }
@@ -77,7 +77,9 @@ struct TagViewBlock: View {
         VStack {
             LazyVGrid(columns: columns, spacing: 25) {
                 ForEach(displayedTags, id: \.self) { tag in
-                    TagView(tagGiven: tag)
+                    NavigationLink(destination: TagInfoView(tagGiven: tag)) {
+                        TagView(tagGiven: tag)
+                    }
                 }
             }
             
