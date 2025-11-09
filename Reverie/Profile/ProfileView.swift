@@ -78,12 +78,12 @@ struct ProfileView: View {
                                 .cornerRadius(12)
                         }                        
                         
-                        NavigationLink(destination: TestView()) {
+                       /* NavigationLink(destination: TestView()) {
                             HStack { Image(systemName: "hammer"); Text("Test Page") }
                                 .font(.subheadline)
                                 .foregroundColor(.white)
                                 .padding(.vertical, 8)
-                        }
+                        }*/
                         
 //                        NavigationLink(destination: TestView()) {
 //                            HStack { Image(systemName: "hammer"); Text("Test Page") }
@@ -326,6 +326,7 @@ func renderEmotionCircles(from dreams: [DreamModel]) -> some View {
     for dream in dreams {
         emotionsDict[dream.emotion, default: 0] += 1
     }
+
     let colorFor: (DreamModel.Emotions) -> Color = { e in
         switch e {
         case .sadness:       return .blue
@@ -337,23 +338,24 @@ func renderEmotionCircles(from dreams: [DreamModel]) -> some View {
         case .neutral:       return .gray
         }
     }
-    // Predefined positions that are spaced apart
+
     let positions: [CGPoint] = [
-        CGPoint(x: 160, y: 220),
-        CGPoint(x: 280, y: 280),
-        CGPoint(x: 100, y: 350),
-        CGPoint(x: 250, y: 420),
-        CGPoint(x: 200, y: 500),
-        CGPoint(x: 320, y: 380),
-        CGPoint(x: 140, y: 460)
+        CGPoint(x: 160, y: 80),
+        CGPoint(x: 280, y: 140),
+        CGPoint(x: 100, y: 180),
+        CGPoint(x: 250, y: 220),
+        CGPoint(x: 200, y: 260),
+        CGPoint(x: 320, y: 200),
+        CGPoint(x: 140, y: 240)
     ]
+
     return ZStack {
         ForEach(Array(emotionsDict.keys.enumerated()), id: \.offset) { index, emotion in
             if let count = emotionsDict[emotion] {
-                let size = CGFloat(80 + (count * 25)) // ✅ size = frequency-based
+                let size = CGFloat(80 + (count * 25)) // ✅ frequency-based size
                 let pos = index < positions.count
                     ? positions[index]
-                    : CGPoint(x: 150 + CGFloat(index * 40), y: 300)
+                    : CGPoint(x: 150 + CGFloat(index * 40), y: 180) 
                 EmotionBubbleView(
                     size: size,
                     color: colorFor(emotion),
@@ -364,7 +366,9 @@ func renderEmotionCircles(from dreams: [DreamModel]) -> some View {
             }
         }
     }
+    .padding(.top, -40) // small upward adjustment for the entire group
 }
+
 /// Current streak of consecutive calendar days with at least one dream, ending at the most recent dream's day.
 func currentDreamStreak(dreams: [DreamModel]) -> Int {
     guard !dreams.isEmpty else { return 0 }
@@ -383,3 +387,5 @@ func currentDreamStreak(dreams: [DreamModel]) -> Int {
 }
 
 #Preview { ProfileView() }
+
+
