@@ -184,7 +184,11 @@ struct DreamCardCharacterInformationView: View {
         cardToToggle.isPinned = newPinState
         selectedCharacter = cardToToggle
         
-        await FirebaseUpdateCardService.shared.setIsPinned(card: cardToToggle, isPinned: newPinState)
+        if cardToToggle.isAchievementUnlocked {
+            await FirebaseUpdateCardService.shared.setIsPinnedAchievement(card: cardToToggle, isPinned: newPinState)
+        } else {
+            await FirebaseUpdateCardService.shared.setIsPinned(card: cardToToggle, isPinned: newPinState)
+        }
 //        await FirebaseDCService.shared.fetchDCCard(card: cardToToggle)
     }
     
@@ -196,7 +200,11 @@ struct DreamCardCharacterInformationView: View {
         cardToToggle.isShown = newHomeState
         selectedCharacter = cardToToggle
         
-        await FirebaseUpdateCardService.shared.setIsShown(card: cardToToggle, isShown: newHomeState)
+        if cardToToggle.isAchievementUnlocked {
+            await FirebaseUpdateCardService.shared.setIsShownAchievement(card: cardToToggle, isShown: newHomeState)
+        } else {
+            await FirebaseUpdateCardService.shared.setIsShown(card: cardToToggle, isShown: newHomeState)
+        }
     }
 }
 

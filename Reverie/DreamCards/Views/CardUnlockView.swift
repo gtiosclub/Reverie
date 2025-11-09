@@ -98,7 +98,17 @@ struct CardUnlockView: View {
                                 ))
                             },
                             // back of card -> see BackCardView()
-                            back: { BackCardView() }
+                            back: {
+                                BackCardView(
+                                    card: CardModel(
+                                        userID: card.userID,
+                                        id: card.id,
+                                        name: card.name,
+                                        description: card.description,
+                                        image: card.image ?? "questionmark",
+                                        cardColor: card.cardColor
+                                    ))
+                            }
                         )
                         // reveal ontap
                         .onTapGesture {
@@ -124,7 +134,11 @@ struct CardUnlockView: View {
                                 }
                             }
                             Task {
-                                await FirebaseUpdateCardService.shared.toggleIsUnlocked(card: card)
+                                if card.isAchievementUnlocked {
+                                    await FirebaseUpdateCardService.shared.toggleIsUnlockedAchievement(card: card)
+                                } else {
+                                    await FirebaseUpdateCardService.shared.toggleIsUnlocked(card: card)
+                                }
                             }
                         }
                         // card size based on if it has been clicked
@@ -242,14 +256,16 @@ struct FlippingCardView<Front: View, Back: View>: View {
 }
 
 struct BackCardView: View {
+    @State var card: CardModel
+    
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 15).fill(.ultraThinMaterial)
-            RoundedRectangle(cornerRadius: 15).strokeBorder(style: StrokeStyle(lineWidth: 2, dash: [8, 6])).foregroundStyle(.secondary)
-            VStack(spacing: 6) {
-                Image(systemName: "questionmark").font(.system(size: 40, weight: .semibold))
-                Text("Tap to reveal").font(.footnote).foregroundStyle(.secondary)
-            }
+            RoundedRectangle(cornerRadius: 15).stroke(card.cardColor, lineWidth: 3)
+//            VStack(spacing: 6) {
+//                Image(systemName: "questionmark").font(.system(size: 40, weight: .semibold))
+            Text("Tap to reveal").font(.footnote).foregroundStyle(card.cardColor)
+//            }
         }
         .frame(width: 190, height: 190 * (475.0/300.0))
     }

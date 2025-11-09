@@ -8,19 +8,19 @@
 import SwiftUI
 
 struct CharacterArchiveView: View {
-    @Binding var characters: [CardModel] // Binding to allow updates to characters' pinned state
-    @Environment(\.dismiss) private var dismiss
+    @Binding var characters: [CardModel]
     @Binding var selectedCharacter: CardModel?
     @Binding var showArchive: Bool
+    
+    @Environment(\.dismiss) private var dismiss
+
+    private let cols: [GridItem] = Array(repeating: .init(.flexible()), count: 4)
     
     init(characters: Binding<[CardModel]>, selectedCharacter: Binding<CardModel?>, showArchive: Binding<Bool>) {
         self._characters = characters
         self._selectedCharacter = selectedCharacter
         self._showArchive = showArchive
     }
-    
-    
-    private let cols: [GridItem] = Array(repeating: .init(.flexible()), count: 3)
     
     func createPages(elements: Binding<[CardModel]>, itemsPerPage: Int) -> [[Binding<CardModel>]] {
         var pages: [[Binding<CardModel>]] = []
@@ -34,64 +34,77 @@ struct CharacterArchiveView: View {
         return pages
     }
     
-    
     var body: some View {
-        
         GeometryReader { geo in
-            let pages = createPages(elements: $characters, itemsPerPage: 15)
-            VStack {
-                Spacer()
-                HStack {
-                    Spacer()
-                    ZStack {
+            ZStack {
+                ZStack {
+                    VStack {
+                        Text("Character Archive")
+                            .font(.title2.bold())
+                            .foregroundColor(.white)
+                            .padding(.top, 30)
                         TabView {
+                            let pages = createPages(elements: $characters, itemsPerPage: 20)
                             ForEach(pages.indices, id: \.self) { pageIndex in
                                 VStack {
                                     CharacterGridView(
                                         page: pages[pageIndex],
-                                        geoWidth: geo.size.width,
+                                        geoWidth: 400,
                                         cols: cols
                                     ) { selected in
                                         self.selectedCharacter = selected
-                                        withAnimation {
-                                            self.showArchive = false
-                                        }
                                     }
-                                    .padding(.top, 20)
+                                    .padding(.top, 8)
                                     Spacer()
                                 }
                             }
                         }
-                        .background(.ultraThinMaterial)
-                        .clipShape(RoundedRectangle(cornerRadius: 20))
-                        .tabViewStyle(.page)
-                        .toolbar {
-                            ToolbarItem(placement: .navigationBarLeading) {
-                                Button("Close") {
-                                    dismiss()
-                                }
-                            }
-                        }
-
-                        if let character = selectedCharacter {
-                            DreamCardCharacterInformationView(
-                                selectedCharacter: $selectedCharacter,
-                                character: character
-                            )
-                            .transition(
-                                .asymmetric(
-                                    insertion: .opacity.combined(with: .scale(scale: 0.8)),
-                                    removal: .opacity
-                                )
-                            )
-                            .id(character.id)
-                        }
+                        .tabViewStyle(.page(indexDisplayMode: .automatic))
                     }
-                    .frame(width: geo.size.width * 0.75, height: geo.size.height * 0.75)
-                    Spacer()
                 }
-                Spacer()
+                .frame(width: 400, height: 650)
+                .background(
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 20).fill(.ultraThinMaterial)
+                        RoundedRectangle(cornerRadius: 20).fill(Color.black.opacity(0.85))
+                    }
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: 20)
+                        .stroke(Color.white.opacity(0.1), lineWidth: 1)
+                )
+                .clipShape(RoundedRectangle(cornerRadius: 20))
+                .overlay(
+                    // Back Button
+                    Button(action: {
+                        withAnimation(.spring()) {
+                            self.showArchive = false
+                        }
+                    }) {
+                        Image(systemName: "chevron.backward")
+                            .font(.system(size: 20, weight: .bold))
+                            .foregroundColor(.white.opacity(0.85))
+                            .padding(13)
+    //                        .background(.ultraThinMaterial, in: Circle())
+                    }
+                    .glassEffect(.regular, in: .circle)
+                    .padding(20),
+                    alignment: .topLeading
+                )
+                
+                if let character = selectedCharacter {
+                    DreamCardCharacterInformationView(
+                        selectedCharacter: $selectedCharacter,
+                        character: character
+                    )
+                    .transition(.asymmetric(
+                        insertion: .opacity.combined(with: .scale(scale: 0.8)),
+                        removal: .opacity
+                    ))
+                    .id(character.id)
+                }
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
     }
 }
@@ -103,11 +116,11 @@ struct CharacterGridView: View {
     let onSelect: (CardModel) -> Void
 
     var body: some View {
-        LazyVGrid(columns: cols, spacing: 40) {
+        LazyVGrid(columns: cols, spacing: 25) {
             ForEach(page.indices, id: \.self) { itemIndex in
                 CharacterView(
                     character: page[itemIndex],
-                    size: geoWidth / 3 * 0.5
+                    size: geoWidth / 3 * 0.6
                 )
                 .contentShape(Rectangle())
                 .onTapGesture {
@@ -119,7 +132,6 @@ struct CharacterGridView: View {
         .frame(alignment: .top)
     }
 }
-
 
 //#Preview {
 //    @Previewable @State var characters: [CardModel]  = [

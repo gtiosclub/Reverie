@@ -9,11 +9,11 @@ import SwiftUI
 
 struct FloatingStickersView: View {
 //    @Environment(FirebaseDCService.self) private var fbdcs
-    @State private var characters: [CardModel] = []
+//    @State private var characters: [CardModel] = []
     
-    var user = FirebaseLoginService.shared.currUser!
-
-
+    let characters: [CardModel]
+    
+//    var user = FirebaseLoginService.shared.currUser!
 
     var body: some View {
         GeometryReader { geometry in
@@ -28,12 +28,12 @@ struct FloatingStickersView: View {
                 }
             }
         }
-        .task {
-//            do {
-            self.characters = user.dreamCards
-//            } catch {
-//                print("Error fetching characters: \(error.localizedDescription)")
-//            }
-        }
+//        .task {
+////            do {
+//            self.characters = user.dreamCards
+////            } catch {
+////                print("Error fetching characters: \(error.localizedDescription)")
+////            }
+//        }
     }
 }
