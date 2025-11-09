@@ -20,6 +20,9 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 struct ReverieApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     @State private var linkActive = false
+    
+    @AppStorage("pendingRoute", store: UserDefaults(suiteName: "group.reverie"))
+    private var pendingRoute: String = ""
 
     var body: some Scene {
         WindowGroup {
