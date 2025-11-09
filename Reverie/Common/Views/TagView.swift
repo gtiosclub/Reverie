@@ -18,7 +18,7 @@ struct TagView: View {
                     .frame(width: 70, height: 70)
                     .shadow(color: .black.opacity(0.3), radius: 6, x: 0, y: 3)
 
-                Image(systemName: DreamModel.getTagImage(tag: tagGiven))
+                Image(systemName: DreamModel.tagImages(tag: tagGiven))
                     .resizable()
                     .scaledToFit()
                     .frame(width: 30, height: 30)
