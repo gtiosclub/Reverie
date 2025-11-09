@@ -33,9 +33,19 @@ struct HomeView: View {
 //                .foregroundColor(.white)
 //                .cornerRadius(8)
             }
-            .padding(.bottom, 30)
+                
+                VStack {
+                    Text("Good Morning, \(fls.currUser?.name ?? "Dreamer")")
+                        .foregroundColor(.white)
+                        .font(.largeTitle)
+                        .bold()
+                        .padding(.bottom, 20)
+                    NewLogView()
+                }
+                .padding(.bottom, 30)
+            }
+                .background(.clear)
         }
-        .background(.clear)
     }
 }
     
