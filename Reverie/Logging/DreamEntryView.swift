@@ -39,7 +39,6 @@ struct DreamEntryView: View {
             VStack(alignment: .leading, spacing: 1) {
                 VStack(alignment: .leading, spacing: 4) {
                     HStack(){
-                        Spacer()
                         VStack(alignment: .leading, spacing: 4) {
                             Text(dream.title)
                                 .font(.title)
@@ -208,7 +207,6 @@ struct DreamEntryView: View {
                     
                     ScrollView {
                         AnalysisCardView(analysis: dream.generatedContent)
-                            .padding(.top, 70)
                     }
                     .tag(1)
                 }
