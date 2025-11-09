@@ -31,6 +31,18 @@ class DreamModel: Decodable {
     enum Emotions: String, Codable, CaseIterable {
         case happiness, sadness, anger, fear, embarrassment, anxiety, neutral
     }
+    
+    static func emotionColors(emotion: Emotions) -> Color {
+        switch emotion {
+        case .happiness: return Color(hex: "#E0C341")
+        case .sadness: return Color(hex: "#3089D3")
+        case .anger: return Color(hex: "#CD3838")
+        case .fear: return Color(hex: "#9B32EC")
+        case .embarrassment: return Color(hex: "#77A437")
+        case .anxiety: return Color(hex: "#B96531")
+        case .neutral: return Color(hex: "#D9D9D9")
+        }
+    }
 
     static func tagImages(tag: Tags) -> String {
         switch(tag) {
