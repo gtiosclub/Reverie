@@ -292,7 +292,7 @@
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 726XXR46H7;
+				DEVELOPMENT_TEAM = WZ9FT7UW4M;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = LoggingWidget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = LoggingWidget;
@@ -303,7 +303,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.BraydenHuguenard.Reverie.LoggingWidget;
+				PRODUCT_BUNDLE_IDENTIFIER = Ross.Klaiber.Reverie.LoggingWidget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -322,7 +322,7 @@
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 726XXR46H7;
+				DEVELOPMENT_TEAM = WZ9FT7UW4M;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = LoggingWidget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = LoggingWidget;
@@ -333,7 +333,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.BraydenHuguenard.Reverie.LoggingWidget;
+				PRODUCT_BUNDLE_IDENTIFIER = Ross.Klaiber.Reverie.LoggingWidget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -472,7 +472,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 726XXR46H7;
+				DEVELOPMENT_TEAM = WZ9FT7UW4M;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Reverie/Info.plist;
@@ -486,7 +486,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.BraydenHuguenard.Reverie;
+				PRODUCT_BUNDLE_IDENTIFIER = Ross.Klaiber.Reverie;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -507,7 +507,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 726XXR46H7;
+				DEVELOPMENT_TEAM = WZ9FT7UW4M;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Reverie/Info.plist;
@@ -521,7 +521,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.BraydenHuguenard.Reverie;
+				PRODUCT_BUNDLE_IDENTIFIER = Ross.Klaiber.Reverie;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
