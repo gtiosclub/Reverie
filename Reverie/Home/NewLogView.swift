@@ -28,7 +28,8 @@ struct NewLogView: View {
             .foregroundColor(.white)
             .padding(.vertical, 16)
             .frame(maxWidth: 300)
-            .glassEffect(.regular, in: .rect)
+            .glassEffect(.regular)
+//            .glassEffect(.regular, in: .rect)
             .cornerRadius(20)
             .padding(.horizontal, 50)
         }

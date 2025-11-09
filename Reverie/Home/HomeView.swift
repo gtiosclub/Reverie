@@ -9,16 +9,29 @@ import SwiftUI
 import FirebaseAuth
 
 struct HomeView: View {
-    @Environment(FirebaseLoginService.self) private var fls
-    @Binding var isOnHomeScreen: Bool
+    //    @Environment(FirebaseLoginService.self) private var fls
     
     var body: some View {
         ZStack {
             MoonView()
-            
-            if isOnHomeScreen {
-                FloatingStickersView()
-                    .transition(.scale)
+            FloatingStickersView()
+            VStack {
+                Text("Good Morning, \(FirebaseLoginService.shared.currUser?.name ?? "Dreamer")")
+                    .foregroundColor(.white)
+                    .font(.largeTitle)
+                    .bold()
+                    .padding(.bottom, 20)
+                NewLogView()
+                // UPLOADS ACHIEVEMENTS TO FIRESTORE
+//                Button("Upload Achievements") {
+//                    Task {
+//                        await AchievementsService.shared.uploadAllAchievements()
+//                    }
+//                }
+//                .padding()
+//                .background(Color.blue)
+//                .foregroundColor(.white)
+//                .cornerRadius(8)
             }
                 
                 VStack {
@@ -34,11 +47,12 @@ struct HomeView: View {
                 .background(.clear)
         }
     }
+}
     
 #Preview {
-        HomeView(isOnHomeScreen: .constant(false))
-            .environment(FirebaseLoginService.shared)
-    }
+    HomeView()
+        .environment(FirebaseLoginService.shared)
+}
     
     
     
