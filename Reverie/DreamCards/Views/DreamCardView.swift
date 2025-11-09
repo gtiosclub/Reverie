@@ -19,19 +19,27 @@ struct DreamCardView: View {
 //        CardModel(userID: "5", id: "5", name: "Oneiros", description: "Carries prophetic messages and symbols through the dream world.", image: "envelope.badge.fill", cardColor: .blue),
 //        CardModel(userID: "6", id: "6", name: "Kairos", description: "Bends the rules of time and logic within the dream state.", image: "hourglass", cardColor: .green)
 //    ]
+//    @Binding var isOnHomeScreen: Bool
+//    
+//    @State private var characters: [CardModel] = []
+//    
+//    @State private var achievements: [CardModel] = []
+//    
+//    @State private var lockedCharacters: [CardModel] = []
+//    
+//    @State private var selectedCharacter: CardModel?
+    
     @Binding var isOnHomeScreen: Bool
     
-    @State private var characters: [CardModel] = []
+    @Binding var characters: [CardModel]
     
-    @State private var achievements: [CardModel] = []
+    @Binding var lockedCharacters: [CardModel]
     
-    @State private var lockedCharacters: [CardModel] = []
+    @Binding var selectedCharacter: CardModel?
     
-    @State private var selectedCharacter: CardModel?
+    @Binding var unlockCards: Bool
     
     @State private var dreamCount: Int = 0
-    
-    @State private var unlockCards: Bool = false
     
     @State private var showArchive = false
     
@@ -101,46 +109,6 @@ struct DreamCardView: View {
 //                CharacterArchiveView(characters: $characters, selectedCharacter: $selectedCharacter)
 //            }
             .padding(.bottom, 120)
-            .task {
-//                do {
-                self.characters = user.dreamCards
-//                    self.characters = try await FirebaseDCService.shared.fetchDCCards()
-//                    let pinnedIDs = PinStore.load()
-//                    for i in self.characters.indices {
-//                        self.characters[i].isPinned = pinnedIDs.contains(self.characters[i].id)
-//                    }
-//                    self.achievements = try await AchievementsService.shared.fetchUnlockedAchievements()
-                self.lockedCharacters = characters.filter { !$0.isUnlocked }
-//                    self.lockedCharacters.append(contentsOf: achievements.filter { !$0.isUnlocked })
-//                } catch {
-//                    print("Error fetching cards: \(error.localizedDescription)")
-//                }
-            }
-            .onChange(of: unlockCards) {
-                if unlockCards == false {
-                    Task {
-                        user.dreamCards = try await FirebaseDCService.shared.fetchDCCards(userID: user.userID)
-                        self.characters = user.dreamCards
-//                        self.characters = try await FirebaseDCService.shared.fetchDCCards()
-//                        self.achievements = try await AchievementsService.shared.fetchUnlockedAchievements()
-                        self.lockedCharacters = characters.filter { !$0.isUnlocked }
-//                        self.lockedCharacters.append(contentsOf: achievements.filter { !$0.isUnlocked })
-                    }
-                }
-            }
-            
-            if let character = selectedCharacter {
-                DreamCardCharacterInformationView(
-                    selectedCharacter: $selectedCharacter, character: character
-                )
-                .transition(.asymmetric(insertion: .opacity.combined(with: .scale(scale: 0.9)), removal: .opacity))
-                .id(character.id)
-            }
-            
-            if unlockCards {
-                CardUnlockView(unlockCards: $unlockCards, cards: lockedCharacters)
-                    .transition(.opacity.combined(with: .scale(scale: 0.9)))
-            }
             
             if showArchive {
                 Color.black.opacity(0.8)
@@ -164,6 +132,6 @@ struct DreamCardView: View {
     }
 }
 
-#Preview {
-    DreamCardView(isOnHomeScreen: .constant(false))
-}
+//#Preview {
+//    DreamCardView(isOnHomeScreen: .constant(false))
+//}
