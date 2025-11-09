@@ -11,6 +11,10 @@ import FirebaseStorage
 import FirebaseFirestore
 import FirebaseAuth
 
+//extension Notification.Name {
+//    static let dreamCardsDidUpdate = Notification.Name("dreamCardsDidUpdate")
+//}
+
 class FirebaseDCService {
     static let shared = FirebaseDCService()
     let fb = FirebaseLoginService()

@@ -5,21 +5,21 @@
 //  Created by Divya Mathew on 9/30/25.
 //
 import SwiftUI
+
 struct CharacterUnlockedView: View {
     var card: CardModel
     
     var body: some View {
         RoundedRectangle(cornerRadius: 15)
             .stroke(card.cardColor.swiftUIColor, lineWidth: 6)
-            .stroke(card.cardColor.swiftUIColor, lineWidth: 8)
             .fill(LinearGradient(gradient: Gradient(colors: [card.cardColor.swiftUIColor, .white]),
                                  startPoint: .topLeading,
                                  endPoint: .bottomTrailing))
-            .frame(width: 300, height: 475)
+            .frame(width: 320, height: 520)
             .shadow(color: card.cardColor.swiftUIColor.opacity(0.7), radius: 20, x: 0, y: 0)
             .overlay(
                 VStack {
-                    Text("CHARACTER UNLOCKED")
+                    Text("NEW CHARCTER")
                         .padding(4)
                     
                     // gets image url from card.image
@@ -39,7 +39,7 @@ struct CharacterUnlockedView: View {
                             EmptyView()
                         }
                     }
-                    .frame(width: 200, height: 200)
+                    .frame(width: 150, height: 150)
                     .padding(4)
                     .shadow(color: card.cardColor.swiftUIColor.opacity(0.8), radius: 30, x: 0, y: 0)
                     
