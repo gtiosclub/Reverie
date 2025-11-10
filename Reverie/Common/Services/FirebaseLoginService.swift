@@ -98,7 +98,8 @@ class FirebaseLoginService {
                 let user = UserModel(name: name, userID: userID, username: username, overallAnalysis: overallAnalysis, dreams: dreamModels, dreamCards: dreamCards)
 
                 self.currUser = user
-
+                
+                FirebaseDCService.shared.generateDummyImage()
             }
         }
     }

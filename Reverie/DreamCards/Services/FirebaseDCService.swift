@@ -83,6 +83,14 @@ class FirebaseDCService {
         }
     }
     
+    func generateDummyImage() {
+        Task.detached(priority: .utility) {
+            print("dummy image generating")
+            guard let image = try await ImageGenerationService.shared.generateSticker(prompt: "dog", isSticker: false) else { return }
+            print("finished")
+        }
+    }
+    
     func createDC(card: CardModel) async {
         do {
             try await fb.db.collection("DREAMCARDS").document(card.id).setData(from: card)
