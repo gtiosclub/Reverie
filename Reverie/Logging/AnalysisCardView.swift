@@ -164,13 +164,17 @@ func parseDreamText(text: String) -> [Card] {
 
     for (i, match) in matches.enumerated() {
         guard let titleRange = Range(match.range(at: 1), in: text) else { continue }
-        let title = String(text[titleRange]).trimmingCharacters(in: .whitespacesAndNewlines)
+        var title = String(text[titleRange]).trimmingCharacters(in: .whitespacesAndNewlines)
+        
 
         let start = match.range.location + match.range.length
         let end = (i + 1 < matches.count) ? matches[i + 1].range.location : nsText.length
         let contentRange = NSRange(location: start, length: end - start)
-        let content = nsText.substring(with: contentRange)
+        var content = nsText.substring(with: contentRange)
             .trimmingCharacters(in: .whitespacesAndNewlines)
+        if content.hasPrefix(":") {
+            content = String(content.dropFirst()).trimmingCharacters(in: .whitespacesAndNewlines)
+        }
 
         cards.append(Card(title: title, content: content))
     }
