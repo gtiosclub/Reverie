@@ -8,14 +8,14 @@
 import SwiftUI
 
 struct DreamGlow: ViewModifier {
-    private let glowColor = Color(red: 45/255, green: 32/255, blue: 86/255)
-    
-    func body (content: Content) -> some View {
+    private let glowColor = Color(red: 150/255, green: 70/255, blue: 255/255)
+
+    func body(content: Content) -> some View {
         content
-            .shadow(color: glowColor.opacity(1.0), radius: 8)
-            .shadow(color: glowColor.opacity(0.9), radius: 16)
-            .shadow(color: glowColor.opacity(0.8), radius: 32)
-            .shadow(color: glowColor.opacity(0.6), radius: 48)
+            .shadow(color: glowColor.opacity(0.6), radius: 3)
+            .shadow(color: glowColor.opacity(0.45), radius: 8)
+            .shadow(color: glowColor.opacity(0.3), radius: 16)
+            .shadow(color: glowColor.opacity(0.15), radius: 28)
     }
 }
 
