@@ -52,6 +52,7 @@ struct DreamShowView: View {
                     .contentShape(Rectangle())
                     .onTapGesture {
                         withAnimation(.spring(response: 0.5, dampingFraction: 0.8)) {
+                            showInfo = false
                             expanded.toggle()
                         }
                     }
