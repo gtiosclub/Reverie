@@ -35,6 +35,7 @@ class FirebaseDCService {
                 guard let sticker = try await ImageGenerationService.shared.generateSticker(prompt: character[0], isSticker: true) else { return }
                 print("storing in fb")
                 let url = try await FirebaseStorageService.shared.uploadSticker(sticker, forUserID: userID, dreamID: dreamID)
+                print("saved in fb")
                 await FirebaseDCService.shared.createDC(
                     card: CardModel(
                         userID: userID,
@@ -42,7 +43,7 @@ class FirebaseDCService {
                         name: character[1],
                         description: character[2],
                         image: url.absoluteString,
-                        cardColor: .purple
+                        cardColor: CardModel.DreamColor.allCases.randomElement() ?? .purple
                     )
                 )
                 print("finished")
@@ -65,9 +66,9 @@ class FirebaseDCService {
                     print("Invalid character count for dream \(dreamID)")
                     return
                 }
-                print("generating image")
                 var urls: [String] = []
                 for num in 0...2 {
+                    print("generating image")
                     guard let image = try await ImageGenerationService.shared.generateSticker(prompt: image[num], isSticker: false) else { return }
                     print("storing in fb")
                     let url = try await FirebaseStorageService.shared.uploadImage(image, forUserID: userID, dreamID: dreamID, index: num)
@@ -84,7 +85,7 @@ class FirebaseDCService {
     
     func createDC(card: CardModel) async {
         do {
-            try fb.db.collection("DREAMCARDS").document(card.id).setData(from: card)
+            try await fb.db.collection("DREAMCARDS").document(card.id).setData(from: card)
             let userRef = fb.db.collection("USERS").document(card.userID)
             try await userRef.updateData(["dreamcards": FieldValue.arrayUnion([card.id])])
         } catch {

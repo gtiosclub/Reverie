@@ -88,7 +88,9 @@ class FirebaseLoginService {
                 
                 do {
                     dreamCards = try await FirebaseDCService.shared.fetchDCCards(userID: userID)
-                    dreamCards.append(contentsOf: try await AchievementsService.shared.fetchUnlockedAchievements(userID: userID))
+                    let achievements = try await AchievementsService.shared.fetchUnlockedAchievements(userID: userID)
+                    let unlockedAchievements = achievements.filter { $0.isAchievementUnlocked }
+                    dreamCards.append(contentsOf: unlockedAchievements)
                 } catch {
                     print("Failed to get DC Cards: \(error.localizedDescription)")
                 }
