@@ -201,7 +201,7 @@ struct DreamArchiveView: View {
                                         Rectangle()
                                             .fill(Color.white.opacity(0.5))
                                             .frame(height: 1)
-                                            .padding(.leading, 20)
+                                            .padding(.leading, 5)
                                         
                                         ForEach(group.dreams, id: \.id) { dream in
                                             NavigationLink(destination: DreamEntryView(dream: dream, backToArchive: false)) {
