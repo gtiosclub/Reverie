@@ -24,6 +24,7 @@ class FirebaseStorageService {
         }
         
         let imagePath = "dream_stickers/\(userID)/\(dreamID).png"
+        print("imagePath -> \(imagePath)")
         let imageRef = storage.child(imagePath)
         
         _ = try await imageRef.putDataAsync(imageData)
@@ -58,6 +59,7 @@ class FirebaseStorageService {
         }
         
         let imagePath = "dream_images/\(userID)/\(dreamID)/\(index).png"
+        print("imagePath -> \(imagePath)")
         let imageRef = storage.child(imagePath)
         
         _ = try await imageRef.putDataAsync(imageData)
