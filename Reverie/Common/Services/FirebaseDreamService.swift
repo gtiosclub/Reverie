@@ -66,7 +66,7 @@ class FirebaseDreamService {
         return allDreams.sorted(by: { $0.date > $1.date })
     }
     
-    func createDream(dream: DreamModel) async throws {
+    func createDream(dream: DreamModel) async throws -> DreamModel {
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .short
         dateFormatter.locale = Locale(identifier: "en_US_POSIX")
@@ -107,6 +107,8 @@ class FirebaseDreamService {
         }
         
         FirebaseLoginService.shared.currUser?.dreams.append(dream)
+        
+        return dream
     }
     
     func storeImages(dream: DreamModel, urls: [String]) async {
