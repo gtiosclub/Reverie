@@ -47,7 +47,7 @@ struct SectionView: View {
             Rectangle()
                 .fill(Color.white.opacity(0.12))
                 .frame(height: 1)
-                .padding(.leading, 20)
+                .padding(.leading, -1)
         }
         .background(Color.clear)
     }
