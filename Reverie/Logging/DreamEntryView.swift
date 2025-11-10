@@ -303,16 +303,21 @@ struct DreamEntryView: View {
                         }
 
                     VStack(spacing: 16) {
+                        Image(systemName: DreamModel.tagImages(tag: tag))
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 32, height: 32)
+                            .foregroundStyle(DreamModel.tagColors(tag: tag))
                         Text(tag.rawValue.capitalized)
                             .font(.title2.bold())
                             .foregroundColor(.white)
 
-                        Text("Information about this tag could go here.")
+                        Text(DreamModel.tagDescription(tag: tag))
                             .multilineTextAlignment(.center)
                             .foregroundColor(.white.opacity(0.8))
                             .padding(.horizontal)
                     }
-                    .frame(width: 300, height: 250)
+                    .frame(width: 320, height: 500)
                     .background(
                         RoundedRectangle(cornerRadius: 20)
                             .fill(Color.black.opacity(0.85))
