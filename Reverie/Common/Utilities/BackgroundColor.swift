@@ -13,16 +13,8 @@ struct BackgroundColor: View {
             let time = context.date.timeIntervalSinceReferenceDate
 
             ZStack {
-                Color(red: 0.04, green: 0.04, blue: 0.08)
-//                LinearGradient(
-//                    gradient: Gradient(colors: [
-//                        Color(red: 0.1, green: 0.1, blue: 0.2),
-//                        Color(red: 0.05, green: 0.05, blue: 0.1)
-//                    ]),
-//                    startPoint: .top,
-//                    endPoint: .bottom
-//                )
-                .ignoresSafeArea()
+                Color(hex: "#010023")
+                    .ignoresSafeArea()
 
                 ZStack {
                     // green
@@ -69,7 +61,7 @@ struct BackgroundColor: View {
                         .blur(radius: 80)
                         .offset(x: sin(time * 0.1) * 100, y: cos(time * 0.15) * 120)
                 }
-                .blendMode(.plusLighter) //blends when colors overlap
+                .blendMode(.plusLighter)
             }
             .ignoresSafeArea()
         }
