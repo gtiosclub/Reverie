@@ -10,7 +10,7 @@ struct SectionView: View {
         VStack(spacing: 0) {
             HStack(alignment: .center) {
                 VStack(alignment: .leading, spacing: 10) {
-                    HStack(spacing: 10) {
+                    HStack(spacing: 20) {
                         Text(title)
                             .font(.system(size: 20, weight: .semibold))
                             .foregroundColor(.white)
@@ -45,9 +45,9 @@ struct SectionView: View {
             .padding(.horizontal, 20)
 
             Rectangle()
-                .fill(Color.white.opacity(0.12))
+                .fill(Color.white.opacity(0.5))
                 .frame(height: 1)
-                .padding(.leading, -1)
+                .padding(.leading, 5)
         }
         .background(Color.clear)
     }
