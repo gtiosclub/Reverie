@@ -167,7 +167,7 @@ struct SaveDreamView: View {
                 .padding()
                 
                 NavigationLink(
-                    destination: DreamEntryView(dream: createdDream ?? newDream),
+                    destination: DreamEntryView(dream: createdDream ?? newDream, backToArchive: true),
                     isActive: $navigateToDreamEntry
                 ) {
                     EmptyView()
