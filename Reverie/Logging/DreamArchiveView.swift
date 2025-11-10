@@ -114,7 +114,6 @@ struct DreamArchiveView: View {
     
     
     var body: some View {
-        NavigationView {
             ZStack {
                 BackgroundView()
                 VStack(spacing: 0) {
@@ -198,7 +197,7 @@ struct DreamArchiveView: View {
                                             .font(.headline)
                                             .foregroundColor(.white)
                                         ForEach(group.dreams, id: \.id) { dream in
-                                            NavigationLink(destination: DreamEntryView(dream: dream)) {
+                                            NavigationLink(destination: DreamEntryView(dream: dream, backToArchive: false)) {
                                                 SectionView(
                                                     title: dream.title,
                                                     date: formatDate(dream.date),
@@ -253,7 +252,7 @@ struct DreamArchiveView: View {
             }
             .ignoresSafeArea(edges: .bottom)
             .preferredColorScheme(.dark)
-        }
+
     }
 
 
