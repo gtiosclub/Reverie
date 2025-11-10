@@ -13,13 +13,13 @@ struct DreamCardProgressView: View {
 
     private var imageName: String {
         switch progress {
-        case 0:
+        case 0..<0.25:
             return "pack1"
-        case 0.25:
+        case 0.25..<0.5:
             return "pack2"
-        case 0.5:
+        case 0.5..<0.75:
             return "pack3"
-        case 0.75:
+        case 0.75..<1:
             return "pack4"
         default:
             return "pack5"
