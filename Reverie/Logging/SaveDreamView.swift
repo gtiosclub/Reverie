@@ -15,8 +15,9 @@ struct SaveDreamView: View {
 
     @Environment(\.presentationMode) var presentationMode
     
-    var newDream: DreamModel
+    @State var newDream: DreamModel
     
+    // MARK: - Tag Chip View
     struct InnerTagView: View {
         var tag: DreamModel.Tags
         var imageName: String
@@ -24,21 +25,14 @@ struct SaveDreamView: View {
         var added: Bool
         
         var body: some View {
-            
-            
             HStack(spacing: 5) {
                 Image(systemName: imageName)
                     .foregroundColor(color)
                 Text(tag.rawValue.capitalized)
                     .foregroundStyle(Color.white)
                     .font(.caption)
-                if (added) {
-                    Image(systemName: "xmark")
-                        .foregroundColor(.white)
-                } else {
-                    Image(systemName: "plus")
-                        .foregroundColor(.white)
-                }
+                Image(systemName: added ? "xmark" : "plus")
+                    .foregroundColor(.white)
             }
             .padding(.horizontal, 10)
             .frame(height: 20)
@@ -54,7 +48,7 @@ struct SaveDreamView: View {
         NavigationView {
             ZStack {
                 BackgroundView()
-
+                
                 VStack(alignment: .leading, spacing: 20) {
                     
                     VStack(alignment: .leading, spacing: 10) {
@@ -76,32 +70,11 @@ struct SaveDreamView: View {
                             }
                             .padding(.leading, 10)
                             
-                            Text("")
-
-                            ScrollView(.horizontal, showsIndicators: false) {
-                                HStack(spacing: 8) {
-                                    ForEach(newDream.tags, id: \.self) { tag in
-                                        Button(action: {
-                                            if let index = newDream.tags.firstIndex(of: tag) {
-                                                newDream.tags.remove(at: index)
-                                                showTagDropdown.toggle()
-                                                showTagDropdown.toggle()
-                                            }
-                                        }) {
-                                            InnerTagView(
-                                                tag: tag,
-                                                imageName: DreamModel.tagImages(tag: tag),
-                                                color: DreamModel.tagColors(tag: tag),
-                                                added: true
-                                            )
-                                        }
-                                        .buttonStyle(.plain)
-                                    }
-                                    
-                                    Spacer()
-                                }
-                                .padding(.horizontal, 10)
-                            }
+                            Text("Search or add tags")
+                                .foregroundColor(.white.opacity(0.7))
+                                .font(.caption)
+                            
+                            Spacer()
                         }
                         .padding(.vertical, 5)
                         .background(
@@ -111,12 +84,34 @@ struct SaveDreamView: View {
                         )
                         .frame(height: 50)
                         .shadow(color: .black.opacity(0.3), radius: 5, x: 0, y: 3)
-
                         
+                        if !newDream.tags.isEmpty {
+                            WrappingTagsView(tags: newDream.tags) { tag in
+                                Button(action: {
+                                    if let index = newDream.tags.firstIndex(of: tag) {
+                                        newDream.tags.remove(at: index)
+                                        showTagDropdown.toggle()
+                                        showTagDropdown.toggle()
+                                    }
+                                }) {
+                                    InnerTagView(
+                                        tag: tag,
+                                        imageName: DreamModel.tagImages(tag: tag),
+                                        color: DreamModel.tagColors(tag: tag),
+                                        added: true
+                                        
+                                    )
+                                }
+                                .buttonStyle(.plain)
+                            }
+                            .padding(.horizontal, 10)
+                            .transition(.opacity)
+                        }
 
+                        // MARK: - Dropdown
                         if showTagDropdown {
                             ScrollView(.vertical, showsIndicators: true) {
-                                VStack(alignment: .leading, spacing: 0) {
+                                VStack(alignment: .leading, spacing: 10) {
                                     ForEach(DreamModel.Tags.allCases.filter { !newDream.tags.contains($0) }, id: \.self) { tag in
                                         Button(action: {
                                             newDream.tags.append(tag)
@@ -134,16 +129,14 @@ struct SaveDreamView: View {
                                         }
                                         .buttonStyle(.plain)
                                         .contentShape(Rectangle())
-                                        .background(Material.regular)
                                         
-//                                        if tag != DreamModel.Tags.allCases.last {
-//                                            Divider()
-//                                                .frame(height: 0.5)
-//                                                .background(Color.white.opacity(0.15))
-//                                                .padding(.horizontal, 10)
-//                                        }
+                                        .padding(.leading, 10)
+                                        .padding(.trailing, 250)
+                                        
                                     }
                                 }
+                                .contentShape(Rectangle())
+
                                 .padding(.vertical, 5)
                             }
                             .frame(maxHeight: 250)
@@ -166,6 +159,7 @@ struct SaveDreamView: View {
                 }
                 .padding()
                 
+                // MARK: - Navigation Link
                 NavigationLink(
                     destination: DreamEntryView(dream: createdDream ?? newDream, backToArchive: true),
                     isActive: $navigateToDreamEntry
@@ -208,7 +202,7 @@ struct SaveDreamView: View {
         .preferredColorScheme(.dark)
     }
     
-    
+    // MARK: - Save Dream
     func saveDream() async {
         await FirebaseDreamService.shared.createDream(dream: newDream)
         createdDream = newDream
@@ -232,3 +226,55 @@ struct SaveDreamView: View {
     )
 }
 
+// MARK: - WrappingTagsView Helper
+/// A lightweight, self-contained layout that wraps items across lines naturally.
+struct WrappingTagsView<Data: RandomAccessCollection, Content: View>: View where Data.Element: Hashable {
+    let tags: Data
+    let spacing: CGFloat
+    let content: (Data.Element) -> Content
+
+    init(tags: Data, spacing: CGFloat = 8, @ViewBuilder content: @escaping (Data.Element) -> Content) {
+        self.tags = tags
+        self.spacing = spacing
+        self.content = content
+    }
+
+    var body: some View {
+        GeometryReader { geometry in
+            self.generateContent(in: geometry)
+        }
+        .frame(minHeight: 0)
+    }
+
+    private func generateContent(in geometry: GeometryProxy) -> some View {
+        var width: CGFloat = 0
+        var height: CGFloat = 0
+
+        return ZStack(alignment: .topLeading) {
+            ForEach(Array(tags), id: \.self) { tag in
+                content(tag)
+                    .padding(.trailing, spacing)
+                    .alignmentGuide(.leading) { d in
+                        if (abs(width - d.width) > geometry.size.width) {
+                            width = 0
+                            height -= d.height + spacing
+                        }
+                        let result = width
+                        if tag == tags.last {
+                            width = 0
+                        } else {
+                            width -= d.width + spacing
+                        }
+                        return result
+                    }
+                    .alignmentGuide(.top) { _ in
+                        let result = height
+                        if tag == tags.last {
+                            height = 0
+                        }
+                        return result
+                    }
+            }
+        }
+    }
+}
