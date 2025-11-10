@@ -119,10 +119,11 @@ struct DreamArchiveView: View {
                 VStack(spacing: 0) {
                     VStack(alignment: .leading, spacing: 16) {
                         HStack {
-                            Text("My Dreams")
+                            Text("Archive")
                                 .bold()
                                 .font(.title)
                                 .foregroundColor(.white)
+                                .dreamGlow()
                             Spacer()
                             HStack(spacing: 8) {
                                 Button {
@@ -196,6 +197,12 @@ struct DreamArchiveView: View {
                                         Text(group.title)
                                             .font(.headline)
                                             .foregroundColor(.white)
+                                       
+                                        Rectangle()
+                                            .fill(Color.white.opacity(0.5))
+                                            .frame(height: 1)
+                                            .padding(.leading, 20)
+                                        
                                         ForEach(group.dreams, id: \.id) { dream in
                                             NavigationLink(destination: DreamEntryView(dream: dream, backToArchive: false)) {
                                                 SectionView(
@@ -206,6 +213,10 @@ struct DreamArchiveView: View {
                                                 )
                                             }
                                             .buttonStyle(PlainButtonStyle())
+                                            
+                                            Divider()
+                                                .background(Color.white.opacity(0.15))
+                                                .padding(.horizontal, 20)
                                         }
                                     }
                                 }
