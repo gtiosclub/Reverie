@@ -86,6 +86,9 @@ struct StartView: View {
     func refreshLockedCharacters() async {
         do {
             self.characters = try await FirebaseDCService.shared.fetchDCCards()
+            let achievements = try await AchievementsService.shared.fetchUnlockedAchievements()
+            let unlockedAchievements = achievements.filter { $0.isAchievementUnlocked }
+            characters.append(contentsOf: unlockedAchievements)
             self.lockedCharacters = characters.filter { !$0.isUnlocked }
         } catch {
             print("Error refreshing locked characters: \(error)")
