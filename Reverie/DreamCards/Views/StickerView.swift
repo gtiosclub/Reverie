@@ -45,6 +45,9 @@ struct CharacterView: View {
     @Binding var character: CardModel // Binding to allow toggling of isPinned
     let size: CGFloat
     
+    @State private var pulseRadius: CGFloat = 20
+    @State private var pulseOpacity: Double = 1.2
+    
     init(character: Binding<CardModel>, size: CGFloat = 110) {
         self._character = character
         self.size = size
@@ -66,6 +69,38 @@ struct CharacterView: View {
                 .fill(.ultraThinMaterial)
                 .shadow(color: .black.opacity(0.2), radius: 10)
 
+            Circle()
+                .fill(
+                    LinearGradient(
+                        gradient: Gradient(stops: [
+                            .init(color: .white.opacity(0.35), location: 0),
+                            .init(color: .clear, location: 0.4)
+                        ]),
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                )
+                .blendMode(.overlay)
+
+            Circle()
+                .stroke(Color.white.opacity(0.3), lineWidth: 1)
+            
+            Circle()
+                .stroke(
+                    LinearGradient(
+                        colors: [
+                            Color.white.opacity(0.8),
+                            Color.white.opacity(0.4),
+                            Color.clear
+                        ],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    ),
+                    lineWidth: 2
+                )
+                .blur(radius: 1)
+                .scaleEffect(0.98)
+
             AsyncImage(url: URL(string: character.image ?? "")) { phase in
                 switch phase {
                 case .empty:
@@ -83,6 +118,22 @@ struct CharacterView: View {
                 }
             }
             .frame(width: size, height: size)
+            .shadow(
+                color: !character.isUnlocked ? character.cardColor.swiftUIColor.opacity(pulseOpacity) : Color.clear,
+                radius: pulseRadius
+            )
+            .shadow(
+                color: !character.isUnlocked ? character.cardColor.swiftUIColor.opacity(pulseOpacity / 2) : Color.clear,
+                radius: pulseRadius * 1.5
+            )
+            .onAppear {
+                guard !character.isUnlocked else { return }
+                
+                withAnimation(.easeInOut(duration: 1.5).repeatForever(autoreverses: true)) {
+                    self.pulseRadius = 20
+                    self.pulseOpacity = 0.5
+                }
+            }
             .foregroundColor(.white)
 
             // Small top-left filled pin indicator (only visible when pinned)
