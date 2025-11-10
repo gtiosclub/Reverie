@@ -9,27 +9,30 @@ import SwiftUI
 
 struct TagView: View {
     let tagGiven: DreamModel.Tags
-    
+
     var body: some View {
-        VStack (spacing: 20) {
-            Text(String(describing: tagGiven).capitalized)
-                .font(.headline)
-                .lineLimit(1)
+        VStack(spacing: 8) {
+            ZStack {
+                Circle()
+                    .fill(Color(red: 11/255, green: 11/255, blue: 22/255))
+                    .frame(width: 70, height: 70)
+                    .shadow(color: .black.opacity(0.3), radius: 6, x: 0, y: 3)
+                    .glassEffect(.regular.interactive())
+                    .overlay(
+                        Image(systemName: DreamModel.tagImages(tag: tagGiven))
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 30, height: 30)
+                            .foregroundColor(DreamModel.tagColors(tag: tagGiven))
+                        
+                    )
+            }
+
+            Text(tagGiven.rawValue.capitalized)
                 .foregroundStyle(.white)
-                .minimumScaleFactor(0.5)
-                .frame(maxWidth: .infinity)
-           
-            Image(systemName: DreamModel.getTagImage(tag: tagGiven))
-                .resizable()
-                .scaledToFit()
-                .frame(width: 40, height: 40)
-                .foregroundColor(.white)
+                .font(.subheadline)
         }
-        .padding()
-        //change hardcoded values
-        .frame(width: 100, height: 170)
-        .background(Color(.darkGray))
-        .cornerRadius(25)
+        .frame(width: 90)
     }
 }
 
