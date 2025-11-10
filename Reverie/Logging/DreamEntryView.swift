@@ -254,12 +254,7 @@ struct DreamEntryView: View {
                     }
 
                     TabView(selection: $selectedTab) {
-                        ScrollView {
-                            Text(dream.loggedContent)
-                                .foregroundColor(.white)
-                                .padding()
-                                .multilineTextAlignment(.leading)
-                        }
+                        DreamShowView(dream: dream)
                         .tag(0)
 
                         ScrollView {
