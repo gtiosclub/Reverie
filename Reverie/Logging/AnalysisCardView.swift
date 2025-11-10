@@ -42,8 +42,36 @@ struct AnalysisCardView: View {
                                     VStack(spacing: 8) {
                                         ZStack {
                                             Circle()
-                                                .fill(Color.black.opacity(0.25))
+                                                .fill(
+                                                    LinearGradient(
+                                                        colors: [
+                                                            Color.black.opacity(0.7),
+                                                            Color.white.opacity(0.01)
+                                                        ],
+                                                        startPoint: .topLeading,
+                                                        endPoint: .bottomTrailing
+                                                    ))
                                                 .frame(width: 65, height: 65)
+                                                .overlay(
+                                                    Circle()
+                                                        .strokeBorder(
+                                                            AngularGradient(
+                                                                gradient: Gradient(stops: [
+                                                                    .init(color: Color.white.opacity(0.9), location: 0.15),
+                                                                    .init(color: Color.white.opacity(0.1), location: 0.35),
+                                                                    .init(color: Color.white.opacity(0.9), location: 0.65),
+                                                                    .init(color: Color.white.opacity(0.05), location: 0.85),
+                                                                    .init(color: Color.white.opacity(0.7), location: 1.00)
+                                                                ]),
+                                                                center: .center,
+                                                                startAngle: .degrees(0),
+                                                                endAngle: .degrees(360)
+                                                            ),
+                                                            lineWidth: 0.3
+                                                        )
+                                                        .blendMode(.screen)
+                                                )
+                                            
 
                                             Image(systemName: DreamModel.tagImages(tag: tag))
                                                 .resizable()
@@ -52,8 +80,7 @@ struct AnalysisCardView: View {
                                                 .foregroundStyle(DreamModel.tagColors(tag: tag))
                                         }
 
-                                        Text(tag.rawValue.capitalized)
-                                            .font(.subheadline)
+                                        Text(tag.rawValue.capitalized)        .font(.system(size: 10))
                                             .foregroundColor(.white.opacity(0.9))
                                     }
                                 }
@@ -82,8 +109,21 @@ struct AnalysisCardView: View {
                 if let takeaway = cards.first(where: { $0.title.lowercased().contains("takeaway") || $0.title.lowercased().contains("lesson") }) {
                     AnalysisSectionCard(title: "Takeaways", content: Text(takeaway.content))
                 }
+                
+                HStack() {
+                    Image(systemName: "info.circle")
+                        .foregroundColor(.gray)
+                        .opacity(0.7)
+                    Text("This analysis was generated using your description of the dream")
+                        .font(.system(size: 10))
+                        .foregroundColor(.gray)
+                        .opacity(0.7)
+                }
+                .padding(.leading, 30)
             }
             .padding(.vertical, 25)
+            
+            
         }
     }
 
