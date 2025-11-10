@@ -213,10 +213,6 @@ struct DreamArchiveView: View {
                                                 )
                                             }
                                             .buttonStyle(PlainButtonStyle())
-                                            
-                                            Divider()
-                                                .background(Color.white.opacity(0.15))
-                                                .padding(.horizontal, 20)
                                         }
                                     }
                                 }
