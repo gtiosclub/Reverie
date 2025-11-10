@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-
 struct TabbarView: View {
     @EnvironmentObject var ts: TabState
 
@@ -48,7 +47,7 @@ struct TabButton<Destination: View>: View {
                 .frame(maxWidth: .infinity)
                 .padding()
                 .font(.system(size: 18))
-                .foregroundColor(ts.activeTab == tab ? Color.purple.opacity(0.6) : .gray)
+                .foregroundColor(ts.activeTab == tab ? Color.indigo.opacity(0.6) : .gray)
         }
         .simultaneousGesture(TapGesture().onEnded{
             ts.activeTab = tab

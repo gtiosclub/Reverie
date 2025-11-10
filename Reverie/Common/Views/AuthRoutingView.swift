@@ -18,6 +18,7 @@ struct AuthRoutingView: View {
         NavigationStack {
             if FirebaseLoginService.shared.currUser != nil {
                 StartView()
+//                    .environment(FirebaseLoginService.shared)
             } else {
                 LoginView()
             }
