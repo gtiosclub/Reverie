@@ -37,7 +37,7 @@ struct HomeView: View {
             //            }
             
             VStack {
-                Text("Good Morning, \(FirebaseLoginService.shared.currUser?.name ?? "Dreamer")")
+                Text("\(greeting), \(FirebaseLoginService.shared.currUser?.name ?? "Dreamer")")
                     .foregroundColor(.white)
                     .font(.largeTitle)
                     .bold()
@@ -55,6 +55,20 @@ struct HomeView: View {
 //            print("HomeView received dreamCardsDidUpdate notification. Refreshing.")
 //            self.characters = FirebaseLoginService.shared.currUser?.dreamCards ?? []
 //        }
+    }
+    private var greeting: String {
+        let hour = Calendar.current.component(.hour, from: Date())
+        
+        switch hour {
+        case 5..<12:
+            return "Good Morning" // 5:00 AM - 11:59 AM
+        case 12..<17:
+            return "Good Afternoon" // 12:00 PM - 4:59 PM
+        case 17..<21:
+            return "Good Evening" // 5:00 PM - 8:59 PM
+        default:
+            return "Good Night" // 9:00 PM - 4:59 AM
+        }
     }
 }
 

@@ -83,7 +83,7 @@ struct Moon: View {
                         case .second(true, let drag?):
                             // Calculate flick velocity based on drag speed to simulate realistic throw physics
                             let dragVelocity = drag.velocity
-                            velocity = CGSize(width: dragVelocity.width / 40, height: dragVelocity.height / 40)
+                            velocity = CGSize(width: dragVelocity.width / 50, height: dragVelocity.height / 50)
                             position.x += drag.translation.width
                             position.y += drag.translation.height
                             dragOffset = .zero

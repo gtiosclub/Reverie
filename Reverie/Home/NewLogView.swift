@@ -22,9 +22,6 @@ struct NewLogView: View {
                     .font(.system(size: 18))
                     .bold()
                     .padding(.leading, 5)
-
-                
-               
             }
             .foregroundColor(.white)
             .padding(.vertical, 16)
@@ -32,7 +29,10 @@ struct NewLogView: View {
             .glassEffect(.regular, in: .rect)
             .cornerRadius(100)
             .shadow(color: .white.opacity(0.3), radius: 15, x: 0, y: 0)
-                     
+            .overlay(
+                RoundedRectangle(cornerRadius: 100)
+                    .stroke(Color.white.opacity(0.2), lineWidth: 1)
+            )
             .padding(.horizontal, 50)
         }
     }

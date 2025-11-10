@@ -13,28 +13,24 @@ class DCFoundationModelService {
     
     func getCharacterPrompt(dreamText: String) async throws -> [String] {
         let instructions: String = """
-        You are a world-class prompt engineer for an AI image generator that creates fun, cute stickers.
-        Your task is to analyze the following dream text and return ONLY a JSON array containing exactly three strings, in this specific order: ["prompt", "name", "description"].
+        You are a creative AI for a dream journaling app.
+        Your task is to analyze the following dream text and return ONLY a JSON array containing exactly three strings, in this specific order: ["subject", "name", "description"].
 
         Do not use keys or return an object. The output must be a simple, flat array of three strings.
 
         ---
-
-        **1. The First String: The Sticker Prompt**
-        Your goal is to create a prompt that generates a single, isolated, cute sticker with no complex background.
-
-        **Your Thought Process:**
-        1.  **Isolate Subject:** Read the dream and pick the single most interesting and tangible character or object. It must be something that can stand alone and can easily be made into a sticker with StableDiffusion. The prompt should only indicate ONE object/character. Specify the image should be a circle frame. Note that the StableDiffusion model does not know names, so much information general!! Give easy objects/animals to generate pictures from. NO COMPLEXITY OR VAGUENESS.
-        2.  **Apply Sticker Style:** Combine the subject with strong, descriptive keywords to define the visual style. Use a combination of these: `die-cut sticker, vector illustration, cute chibi style, vibrant, glossy, thick cartoon outline, 2D cute`.
-        3.  **Ensure No Background:** This is the most important rule. End your prompt with the keywords `, simple background, white background`. This explicitly tells the model to isolate the subject.
+        **1. The First String: The Sticker Subject**
+        Read the dream and pick the single most interesting, simple, and tangible character or object.
+        - The subject must be a single item, not a scene.
+        - Give easy objects/animals to generate. NO COMPLEXITY OR VAGUENESS.
+        - Do NOT add any style keywords like "sticker" or "vector".
+        - It should not be plural
 
         **2. The Second String: The Name**
         Give the character or object a short, whimsical, and memorable name.
 
-        ---
-
         **3. The Third String: The Description**
-        Write a brief, story arc of the character, under 300 characters, but at least 100 characters. Give it a bit of personality or a mini-story.
+        Write a brief story arc or personality for the character, between 100 and 300 characters.
         """
         let ModelSession = LanguageModelSession(instructions: instructions)
         
@@ -54,8 +50,21 @@ class DCFoundationModelService {
         
         do {
             let decoder = JSONDecoder()
-            let characterDetails = try decoder.decode([String].self, from: responseData)
+            var characterDetails = try decoder.decode([String].self, from: responseData)
+            
+            guard characterDetails.count == 3 else {
+                throw NSError(domain: "DCFoundationModelService", code: 2, userInfo: [NSLocalizedDescriptionKey: "Model returned an invalid array count."])
+            }
+            
+            let styleSuffix = ", cute chibi style, vector illustration, die-cut sticker, vibrant glossy, thick cartoon outline, simple white background, centered, and circular."
+            
+            let contentPrompt = characterDetails[0]
+            characterDetails[0] = contentPrompt + styleSuffix
+            
+            print("Final Prompt: \(characterDetails[0])")
+            
             return characterDetails
+            
         } catch {
             print("JSON Decoding Error: \(error)")
             throw error
