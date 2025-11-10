@@ -115,7 +115,7 @@ struct DreamArchiveView: View {
     
     var body: some View {
             ZStack {
-                BackgroundView()
+                BackgroundColor()
                 VStack(spacing: 0) {
                     VStack(alignment: .leading, spacing: 16) {
                         HStack {
