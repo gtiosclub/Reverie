@@ -9,14 +9,17 @@ import SwiftUI
 
 struct DreamEntryView: View {
     let dream: DreamModel
+    let backToArchive: Bool
     @State private var goBack = false
     @State private var selectedTab = 0
     @State private var showBook = false
     @State private var glowPulse = false
     @State private var selectedTag: DreamModel.Tags? = nil
+    @Environment(\.dismiss) private var dismiss
 
-    init(dream: DreamModel) {
+    init(dream: DreamModel, backToArchive: Bool) {
         self.dream = dream
+        self.backToArchive = backToArchive
         let appearance = UISegmentedControl.appearance()
         appearance.backgroundColor = UIColor(Color.black.opacity(0.9))
         appearance.selectedSegmentTintColor = UIColor(Color(red: 0.27, green: 0.22, blue: 0.55))
@@ -40,7 +43,13 @@ struct DreamEntryView: View {
             VStack(spacing: 0) {
 
                 HStack {
-                    Button(action: { goBack = true }) {
+                    Button(action: {
+//                        if backToArchive {
+                        goBack = true
+//                        } else {
+//                            dismiss()
+//                        }
+                    }) {
                         ZStack {
                             Circle()
                                 .fill(
@@ -336,5 +345,6 @@ struct DreamEntryView: View {
         image: "Test",
         emotion: .happiness,
         finishedDream: "I woke up"
-    ))
+    ),
+    backToArchive: false)
 }
