@@ -97,6 +97,9 @@ class FoundationModelService {
         If the user mentions waking up, remove that part and instead finish the dream right before they woke up. 
         The result should feel vivid and complete, like the final moments of the dream unfolded naturally. 
         Return only the finished dream text, with no explanations or extra formatting.
+        Do not include any preface, explanation, or introductory phrases. Output only the finished dream text.
+
+        
         """
         
         let session = LanguageModelSession(instructions: instructions)
