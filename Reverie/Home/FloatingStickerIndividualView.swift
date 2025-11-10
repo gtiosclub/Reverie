@@ -70,7 +70,7 @@ struct FloatingStickerIndividualView: View {
                         position.y += drag.translation.height
                         // Calculate flick velocity based on drag gesture to simulate throw speed
                         let dragVelocity = drag.predictedEndLocation - drag.location
-                        velocity = CGSize(width: dragVelocity.width / 40, height: dragVelocity.height / 40)
+                        velocity = CGSize(width: dragVelocity.width / 30, height: dragVelocity.height / 30)
                     default:
                         break
                     }
