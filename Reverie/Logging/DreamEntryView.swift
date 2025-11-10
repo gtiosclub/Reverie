@@ -244,38 +244,6 @@ struct DreamEntryView: View {
                 }
                 .zIndex(10)
             }
-            if let tag = selectedTag {
-                ZStack {
-                    Color.black.opacity(0.6)
-                        .ignoresSafeArea()
-                        .onTapGesture {
-                            withAnimation(.easeInOut) { selectedTag = nil }
-                        }
-
-                    VStack(spacing: 16) {
-                        Text(tag.rawValue.capitalized)
-                            .font(.title2.bold())
-                            .foregroundColor(.white)
-
-                        Text("Information about this tag could go here.")
-                            .multilineTextAlignment(.center)
-                            .foregroundColor(.white.opacity(0.8))
-                            .padding(.horizontal)
-                    }
-                    .frame(width: 300, height: 250)
-                    .background(
-                        RoundedRectangle(cornerRadius: 20)
-                            .fill(Color.black.opacity(0.85))
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 20)
-                                    .stroke(DreamModel.tagColors(tag: tag).opacity(0.6), lineWidth: 1)
-                            )
-                            .shadow(color: DreamModel.tagColors(tag: tag).opacity(0.4), radius: 15)
-                    )
-                    .transition(.scale.combined(with: .opacity))
-                }
-                .zIndex(10)
-            }
         }
         .navigationBarBackButtonHidden(true)
         .toolbar {
@@ -317,7 +285,7 @@ struct DreamEntryView: View {
                             .foregroundColor(.white.opacity(0.8))
                             .padding(.horizontal)
                     }
-                    .frame(width: 320, height: 500)
+                    .frame(width: 320, height: 520)
                     .background(
                         RoundedRectangle(cornerRadius: 20)
                             .fill(Color.black.opacity(0.85))
