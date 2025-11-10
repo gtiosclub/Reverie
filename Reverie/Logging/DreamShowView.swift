@@ -16,114 +16,119 @@ struct DreamShowView: View {
                     .multilineTextAlignment(.leading)
             }
             
-            Spacer()
             
-            VStack(spacing: 0) {
-                HStack {
-                    Image(systemName: "sparkles")
-                        .font(.system(size: 22))
-                        .padding(.trailing, -3)
-                        .padding(.leading, 5)
+            
+            
+            if dream.finishedDream != "None"{
+                Spacer()
 
-                    Text("Finish my dream")
-                        .font(.headline)
-                        .foregroundColor(.white)
-                    Spacer()
-                    if expanded {
-                        Button(action: {
-                            withAnimation {
-                                showInfo.toggle()
-                            }
-                                }) {
-                                    Image(systemName: "info.circle")
-                                        .font(.system(size: 20))
-                                        .opacity(showInfo ? 1: 0.7)
-                                }
-                                .buttonStyle(.plain)
-                    }
-                    Image(systemName: expanded ? "chevron.down" : "chevron.right")
-                        .foregroundColor(.white)
-                }
-                .padding(11)
-                .contentShape(Rectangle())
-                .onTapGesture {
-                    withAnimation(.spring(response: 0.5, dampingFraction: 0.8)) {
-                        expanded.toggle()
-                    }
-                }
-                
-                if showInfo {
-                    
-                    HStack(alignment: .top, spacing: 0) {
-                        Spacer().frame(width: 10)
-                        Text("Using your description of your dream, we created a potential ending to the story.")
-                            .font(.system(size: 13))
-                            .foregroundColor(.white.opacity(0.7))
-                            .multilineTextAlignment(.leading)
-                            .transition(.opacity.combined(with: .move(edge: .top)))
-                        Spacer().frame(width: 20)
-                    }
-                    .padding(.bottom, 17)
-
+                VStack(spacing: 0) {
+                    HStack {
+                        Image(systemName: "sparkles")
+                            .font(.system(size: 22))
+                            .padding(.trailing, -3)
+                            .padding(.leading, 5)
                         
-                }
-                if expanded {
-                    Divider().background(Color.white.opacity(0.4))
-                    
-                    ScrollView {
-                        Text(dream.finishedDream)
+                        Text("Finish my dream")
+                            .font(.headline)
                             .foregroundColor(.white)
-                            .padding()
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .multilineTextAlignment(.leading)
+                        Spacer()
+                        if expanded {
+                            Button(action: {
+                                withAnimation {
+                                    showInfo.toggle()
+                                }
+                            }) {
+                                Image(systemName: "info.circle")
+                                    .font(.system(size: 20))
+                                    .opacity(showInfo ? 1: 0.7)
+                            }
+                            .buttonStyle(.plain)
+                        }
+                        Image(systemName: expanded ? "chevron.down" : "chevron.right")
+                            .foregroundColor(.white)
                     }
-                    .frame(maxHeight: 400)
-                    .transition(.move(edge: .bottom).combined(with: .opacity))
+                    .padding(11)
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        withAnimation(.spring(response: 0.5, dampingFraction: 0.8)) {
+                            expanded.toggle()
+                        }
+                    }
+                    
+                    if showInfo {
+                        
+                        HStack(alignment: .top, spacing: 0) {
+                            Spacer().frame(width: 10)
+                            Text("Using your description of your dream, we created a potential ending to the story.")
+                                .font(.system(size: 13))
+                                .foregroundColor(.white.opacity(0.7))
+                                .multilineTextAlignment(.leading)
+                                .transition(.opacity.combined(with: .move(edge: .top)))
+                            Spacer().frame(width: 20)
+                        }
+                        .padding(.bottom, 17)
+                        
+                        
+                    }
+                    if expanded {
+                        Divider().background(Color.white.opacity(0.4))
+                        
+                        ScrollView {
+                            Text(dream.finishedDream)
+                                .foregroundColor(.white)
+                                .padding()
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .multilineTextAlignment(.leading)
+                        }
+                        .frame(maxHeight: 400)
+                        .transition(.move(edge: .bottom).combined(with: .opacity))
+                    }
                 }
-            }
-            .background(
-                LinearGradient(
-                    colors: [
-                        Color(red: 46/255, green: 39/255, blue: 137/255),
-                        Color(red: 64/255, green: 57/255, blue: 155/255)
-                    ],
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                )
-            )
-            .cornerRadius(30)
-            .shadow(
-                color: Color(red: 60/255, green: 53/255, blue: 151/255)
-                    .opacity(glowPulse ? 0.9 : 0.4),
-                radius: glowPulse ? 12 : 6
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: 30)
-                    .strokeBorder(
-                        AngularGradient(
-                            gradient: Gradient(colors: [
-                                Color.white.opacity(0.8),
-                                Color.white.opacity(0.1),
-                                Color.white.opacity(0.6),
-                                Color.white.opacity(0.1),
-                                Color.white.opacity(0.8)
-                            ]),
-                            center: .center,
-                            startAngle: .degrees(0),
-                            endAngle: .degrees(360)
-                        ),
-                        lineWidth: 0.5
+                .background(
+                    LinearGradient(
+                        colors: [
+                            Color(red: 46/255, green: 39/255, blue: 137/255),
+                            Color(red: 64/255, green: 57/255, blue: 155/255)
+                        ],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
                     )
-                    .blendMode(.screen)
-                    .shadow(color: .white.opacity(0.25), radius: 1)
-            )
-            .padding()
-            .onAppear {
-                withAnimation(.easeInOut(duration: 1.5).repeatForever(autoreverses: true)) {
-                    glowPulse.toggle()
+                )
+                .cornerRadius(30)
+                .shadow(
+                    color: Color(red: 60/255, green: 53/255, blue: 151/255)
+                        .opacity(glowPulse ? 0.9 : 0.4),
+                    radius: glowPulse ? 12 : 6
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: 30)
+                        .strokeBorder(
+                            AngularGradient(
+                                gradient: Gradient(colors: [
+                                    Color.white.opacity(0.8),
+                                    Color.white.opacity(0.1),
+                                    Color.white.opacity(0.6),
+                                    Color.white.opacity(0.1),
+                                    Color.white.opacity(0.8)
+                                ]),
+                                center: .center,
+                                startAngle: .degrees(0),
+                                endAngle: .degrees(360)
+                            ),
+                            lineWidth: 0.5
+                        )
+                        .blendMode(.screen)
+                        .shadow(color: .white.opacity(0.25), radius: 1)
+                )
+                .padding()
+                .onAppear {
+                    withAnimation(.easeInOut(duration: 1.5).repeatForever(autoreverses: true)) {
+                        glowPulse.toggle()
+                    }
                 }
-            }
-            .animation(.easeInOut, value: expanded)        }
+                .animation(.easeInOut, value: expanded)
+            }        }
     }
 }
 
