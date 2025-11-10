@@ -13,7 +13,7 @@ struct BackgroundColor: View {
             let time = context.date.timeIntervalSinceReferenceDate
 
             ZStack {
-                Color(red: 0.07, green: 0.07, blue: 0.14)
+                Color(red: 0.04, green: 0.04, blue: 0.08)
 //                LinearGradient(
 //                    gradient: Gradient(colors: [
 //                        Color(red: 0.1, green: 0.1, blue: 0.2),
@@ -29,7 +29,7 @@ struct BackgroundColor: View {
                     Ellipse()
                         .fill(
                             RadialGradient(
-                                colors: [.green.opacity(0.4), .clear],
+                                colors: [.green.opacity(0.25), .clear],
                                 center: .center,
                                 startRadius: 1,
                                 endRadius: 180
@@ -44,7 +44,7 @@ struct BackgroundColor: View {
                     Ellipse()
                         .fill(
                             RadialGradient(
-                                colors: [.teal.opacity(0.3), .clear],
+                                colors: [.teal.opacity(0.25), .clear],
                                 center: .center,
                                 startRadius: 1,
                                 endRadius: 150

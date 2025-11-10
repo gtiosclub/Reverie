@@ -25,7 +25,9 @@ struct Moon: View {
     @State private var velocity: CGSize = .zero
     // Tracks whether the moon is currently being thrown to pause eye animation
     @State private var isThrown: Bool = false
-
+    @State private var isPaused: Bool = false
+    @State private var hasAlignedToTouch = false
+    
     var body: some View {
         GeometryReader { geometry in
 //            ZStack {
@@ -55,14 +57,22 @@ struct Moon: View {
             .scaleEffect(scale)
             .position(x: position.x + dragOffset.width, y: position.y + dragOffset.height)
             .gesture(
-                LongPressGesture(minimumDuration: 0.05)
+                LongPressGesture(minimumDuration: 0.25)
                     .onEnded { _ in
+                        withAnimation(.none) { isPaused = true }
                         isBeingDragged = true
+                        hasAlignedToTouch = false
                     }
                     .sequenced(before: DragGesture())
                     .onChanged { value in
                         switch value {
                         case .second(true, let drag?):
+                            if !hasAlignedToTouch {
+                                withAnimation(.none){
+                                    position = drag.startLocation
+                                }
+                                hasAlignedToTouch = true
+                            }
                             dragOffset = drag.translation
                         default:
                             break
@@ -73,7 +83,7 @@ struct Moon: View {
                         case .second(true, let drag?):
                             // Calculate flick velocity based on drag speed to simulate realistic throw physics
                             let dragVelocity = drag.velocity
-                            velocity = CGSize(width: dragVelocity.width / 40, height: dragVelocity.height / 40)
+                            velocity = CGSize(width: dragVelocity.width / 50, height: dragVelocity.height / 50)
                             position.x += drag.translation.width
                             position.y += drag.translation.height
                             dragOffset = .zero
@@ -110,7 +120,7 @@ struct Moon: View {
         
         let newRotation = Angle.degrees(Double.random(in: -30...30))
         let newScale = CGFloat.random(in: 0.9...1.1)
-        let duration = Double.random(in: 15...25)
+        let duration = Double.random(in: 7...12)
         
         withAnimation(.easeInOut(duration: duration)) {
             self.position = newPosition
@@ -144,8 +154,8 @@ struct Moon: View {
             }
 
             // Apply gradual friction to slow the moon over time
-            velocity.width *= 0.95
-            velocity.height *= 0.95
+            velocity.width *= 0.92
+            velocity.height *= 0.92
 
             // Stop motion once velocity is low enough and resume gentle floating motion
             if abs(velocity.width) < 0.1 && abs(velocity.height) < 0.1 {
