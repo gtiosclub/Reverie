@@ -89,7 +89,7 @@ struct DreamEntryView: View {
                                 .scaledToFit()
                                 .frame(width: 20, height: 20)
                                 .foregroundColor(.white)
-                                .padding(.leading, 1)
+                                .padding(.leading, -4)
                                 .bold(true)
                         }
                     }
@@ -100,12 +100,18 @@ struct DreamEntryView: View {
 
                     VStack(spacing: 2) {
                         Text(dream.title)
-                            .font(.system(size: 16, weight: .semibold))
+                            .font(.system(size: 18, weight: .semibold))
                             .foregroundColor(.white)
-                            .lineLimit(1)
-                        Text(dream.date.formatted())
+                            .frame(maxWidth: 180)
+                            .multilineTextAlignment(.center)
+                            .shadow(color: Color(red: 37/255, green: 23/255, blue: 79/255).opacity(0.7), radius: 4)
+                            .shadow(color: Color(red: 37/255, green: 23/255, blue: 79/255).opacity(0.3), radius: 8)
+                        Text(dream.date.formatted(.dateTime.month(.wide).day()))
+                            .padding(.top, 2)
                             .font(.system(size: 12))
                             .foregroundColor(.gray)
+                            .shadow(color: Color(red: 37/255, green: 23/255, blue: 79/255).opacity(0.7), radius: 4)
+                            .shadow(color: Color(red: 37/255, green: 23/255, blue: 79/255).opacity(0.3), radius: 8)
                     }
 
                     Spacer()
@@ -172,27 +178,28 @@ struct DreamEntryView: View {
 
                 VStack(alignment: .leading, spacing: 1) {
                     if !dream.tags.isEmpty {
-                        ScrollView(.horizontal, showsIndicators: false) {
-                            HStack(spacing: 8) {
-                                ForEach(dream.tags, id: \.self) { tag in
-                                    HStack {
-                                        Image(systemName: DreamModel.tagImages(tag: tag))
-                                            .foregroundStyle(DreamModel.tagColors(tag: tag))
-                                        Text(tag.rawValue.capitalized)
-                                            .font(.caption)
-                                            .foregroundColor(.white)
-                                            .padding(.vertical, 4)
-                                    }
+//                        ScrollView(.horizontal, showsIndicators: false) {
+                        HStack() {
+                            Spacer(minLength: 0)
+                            ForEach(dream.tags, id: \.self) { tag in
+                                Image(systemName: DreamModel.tagImages(tag: tag))
+                                    .foregroundStyle(DreamModel.tagColors(tag: tag))
                                     .padding(.vertical, 3)
-                                    .padding(.horizontal, 10)
-                                    .background(
-                                        Capsule()
-                                            .fill(Color.white.opacity(0.15))
-                                    )
-                                }
-                                .padding(.vertical, 4)
+                                    .shadow(color: Color(red: 37/255, green: 23/255, blue: 79/255).opacity(0.7), radius: 4)
+                                    .shadow(color: Color(red: 37/255, green: 23/255, blue: 79/255).opacity(0.3), radius: 8)
+                                
+                                
+                                
                             }
+                            
+                            Spacer(minLength: 0)
                         }
+                        .padding(.bottom, 6)
+                        .padding(.top, -5)
+                        
+//                        }
+//                        .frame(maxWidth: .infinity)
+//                        .padding(.top, 2)
                     }
 
                     ZStack {
@@ -268,7 +275,6 @@ struct DreamEntryView: View {
                     .tabViewStyle(.page(indexDisplayMode: .never))
                     .animation(.easeInOut, value: selectedTab)
                 }
-                .padding(.top, 10)
 
                 Spacer()
             }
@@ -337,7 +343,7 @@ struct DreamEntryView: View {
     DreamEntryView(dream: DreamModel(
         userID: "1",
         id: "1",
-        title: "Test Dream Entry",
+        title: "Cave Diving",
         date: Date(),
         loggedContent: "This is a logged dream example. You can scroll through it here.",
         generatedContent: "Example",
