@@ -27,7 +27,8 @@ class FoundationModelService {
         You are an expert dream analyst.  
         For every dream description provided, write a structured analysis that follows this exact format with four categories.  
         Keep the tone empathetic, thoughtful, and insightful. Avoid repetition.  
-        Use complete sentences and keep each section a short paragraph (3–6 sentences).  
+        Use complete sentences and keep each section a short paragraph (3–6 sentences). 
+        Do now use ":" after each title, just use **Title** Text.
         
         Categories:
         1. **General Review** – Summarize the dream in plain terms and highlight its overall mood or tone.  
@@ -96,6 +97,9 @@ class FoundationModelService {
         If the user mentions waking up, remove that part and instead finish the dream right before they woke up. 
         The result should feel vivid and complete, like the final moments of the dream unfolded naturally. 
         Return only the finished dream text, with no explanations or extra formatting.
+        Do not include any preface, explanation, or introductory phrases. Output only the finished dream text.
+
+        
         """
         
         let session = LanguageModelSession(instructions: instructions)
