@@ -23,15 +23,24 @@ struct DreamArchiveView: View {
         currentUser?.dreams ?? []
     }
     
-    enum DreamFilterTag: String, CaseIterable, Identifiable {
-        case allTags = "Tags - All"
-        case mountains = "mountains"
-        case rivers = "rivers"
-        case forests = "forests"
-        case animals = "animals"
-        case school = "school"
-        
-        var id: Self { self }
+    enum DreamFilterTag: Identifiable, CaseIterable, Hashable {
+        case allTags
+        case tag(DreamModel.Tags)
+
+        var id: String { rawValue }
+
+        var rawValue: String {
+            switch self {
+            case .allTags:
+                return "Tags - All"
+            case .tag(let tag):
+                return tag.rawValue
+            }
+        }
+
+        static var allCases: [DreamFilterTag] {
+            return [.allTags] + DreamModel.Tags.allCases.map { .tag($0) }
+        }
     }
     
     enum DateFilter: String, CaseIterable, Identifiable {
@@ -60,12 +69,12 @@ struct DreamArchiveView: View {
             }
         }
         
-        if selectedTag != .allTags {
-            let selectedRawTag = selectedTag.rawValue
+        if case .tag(let selectedTagValue) = selectedTag {
             dreams = dreams.filter { dream in
-                return dream.tags.map { $0.rawValue }.contains(selectedRawTag)
+                dream.tags.contains(selectedTagValue)
             }
         }
+
         
         return dreams
     }
@@ -107,140 +116,148 @@ struct DreamArchiveView: View {
     
     
     var body: some View {
-        ZStack {
-            BackgroundView()
-            VStack(spacing: 0) {
-                VStack(alignment: .leading, spacing: 16) {
-                    HStack {
-                        Text("My Dreams")
-                            .bold()
-                            .font(.title)
-                            .foregroundColor(.white)
-                        Spacer()
-                        HStack(spacing: 8) {
-                            Button {
-                            } label: {
-                                Image(systemName: "line.3.horizontal")
-                                    .font(.system(size: 24, weight: .bold))
-                                    .foregroundColor(.white)
-                                    .frame(width: 32, height: 32)
-                            }
-                            
-                            Button {
-                            } label: {
-                                Image(systemName: "calendar")
-                                    .font(.system(size: 24, weight: .bold))
-                                    .foregroundColor(.white)
-                                    .frame(width: 32, height: 32)
-                            }
-                            Button (action: {
-                                showingLogDream = true;
-                            }) {
-                                Image(systemName: "plus")
-                                    .foregroundColor(.black)
-                                    .padding(6)
-                                    .background(Circle().fill(Color.white))
-                            }
-                            .sheet(isPresented: $showingLogDream) {
-                                LoggingView()
-                            }
-                        }
-                    }
-                    
-                    HStack {
+            ZStack {
+                BackgroundColor()
+                VStack(spacing: 0) {
+                    VStack(alignment: .leading, spacing: 16) {
                         HStack {
-                            Image(systemName: "magnifyingglass")
+                            Text("Archive")
+                                .bold()
+                                .font(.title)
                                 .foregroundColor(.white)
-                            TextField("Search", text: $search)
-                                .foregroundColor(.white)
-                                .accentColor(.white)
-                        }
-                        .padding(8)
-                        .cornerRadius(10)
-                        .glassEffect(.regular, in: .rect)
-                        
-                        Picker("Tags", selection: $selectedTag) {
-                            ForEach(DreamFilterTag.allCases, id: \.self) { tag in
-                                Text(tag.rawValue)
-                                    .foregroundColor(.white)
-                            }
-                        }
-                        .background(RoundedRectangle(cornerRadius: 8))
-                        .accentColor(.white)
-                        .colorMultiply(.white)
-                        .glassEffect(.regular, in: .rect)
-                        
-                        Picker("Dates", selection: $selectedDateFilter) {
-                            ForEach(DateFilter.allCases, id: \.self) { date in
-                                Text(date.rawValue)
-                                    .foregroundColor(.white)
-                            }
-                        }
-                        .background(RoundedRectangle(cornerRadius: 8))
-                        .accentColor(.white)
-                        .colorMultiply(.white)
-                        .glassEffect(.regular, in: .rect)
-                    }
-                }
-                .padding()
-                .shadow(color: Color.black.opacity(0.1), radius: 4, y: 2)
-                
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 24) {
-                        if !groupedDreams.isEmpty {
-                            ForEach(groupedDreams, id: \.title) { group in
-                                VStack(alignment: .leading, spacing: 12) {
-                                    Text(group.title)
-                                        .font(.headline)
+                                .dreamGlow()
+                            Spacer()
+                            HStack(spacing: 8) {
+                                Button {
+                                } label: {
+                                    Image(systemName: "line.3.horizontal")
+                                        .font(.system(size: 24, weight: .bold))
                                         .foregroundColor(.white)
-                                    ForEach(group.dreams, id: \.id) { dream in
-                                        NavigationLink(destination: DreamEntryView(dream: dream)) {
-                                            SectionView(
-                                                title: dream.title,
-                                                date: formatDate(dream.date),
-                                                tags: dream.tags.map { $0.rawValue.capitalized },
-                                                description: dream.loggedContent
-                                            )
-                                        }
-                                        .buttonStyle(PlainButtonStyle())
-                                    }
+                                        .frame(width: 32, height: 32)
+                                }
+                                
+                                Button {
+                                } label: {
+                                    Image(systemName: "calendar")
+                                        .font(.system(size: 24, weight: .bold))
+                                        .foregroundColor(.white)
+                                        .frame(width: 32, height: 32)
+                                }
+                                
+                                NavigationLink(destination: LoggingView()) {
+                                    Image(systemName: "plus")
+                                        .foregroundColor(.black)
+                                        .padding(6)
+                                        .background(Circle().fill(Color.white))
                                 }
                             }
-                        } else if search.isEmpty && selectedTag == .allTags && selectedDateFilter == .allDates {
-                            VStack(spacing: 16) {
-                                Image(systemName: "moon.zzz")
-                                    .font(.system(size: 64))
-                                    .foregroundColor(.gray)
-                                Text("No dreams yet")
-                                    .font(.title2)
-                                    .foregroundColor(.white)
-                                Text("Start logging your dreams to see them here!")
-                                    .font(.body)
-                                    .foregroundColor(.gray)
-                                    .multilineTextAlignment(.center)
-                            }
-                            .frame(maxWidth: .infinity)
-                            .padding(.top, 100)
-                        } else {
-                            VStack(spacing: 16) {
-                                Image(systemName: "tray.fill")
-                                    .font(.system(size: 64))
-                                    .foregroundColor(.gray)
-                                Text("No Matching Dreams")
-                                    .font(.title2)
-                                    .foregroundColor(.white)
-                                Text("Try adjusting your filters or search terms.")
-                                    .font(.body)
-                                    .foregroundColor(.gray)
-                                    .multilineTextAlignment(.center)
-                            }
-                            .frame(maxWidth: .infinity)
-                            .padding(.top, 100)
                         }
-                        Spacer(minLength: 60)
+                        
+                        HStack {
+                            HStack {
+                                Image(systemName: "magnifyingglass")
+                                    .foregroundColor(.white)
+                                TextField("Search", text: $search)
+                                    .foregroundColor(.white)
+                                    .accentColor(.white)
+                            }
+                            .padding(8)
+                            .cornerRadius(10)
+                            .glassEffect(.regular, in: .rect)
+                            
+                            Picker("Tags", selection: $selectedTag) {
+                                ForEach(DreamFilterTag.allCases) { tag in
+                                    Text(tag.rawValue.capitalized)
+                                        .tag(tag)
+                                }
+                            }
+                            .background(RoundedRectangle(cornerRadius: 8))
+                            .accentColor(.white)
+                            .colorMultiply(.white)
+                            .glassEffect(.regular, in: .rect)
+                            
+                            Picker("Dates", selection: $selectedDateFilter) {
+                                ForEach(DateFilter.allCases, id: \.self) { date in
+                                    Text(date.rawValue)
+                                        .foregroundColor(.white)
+                                }
+                            }
+                            .background(RoundedRectangle(cornerRadius: 8))
+                            .accentColor(.white)
+                            .colorMultiply(.white)
+                            .glassEffect(.regular, in: .rect)
+                        }
                     }
                     .padding()
+                    .shadow(color: Color.black.opacity(0.1), radius: 4, y: 2)
+                    
+                    ScrollView {
+                        VStack(alignment: .leading, spacing: 24) {
+                            if !groupedDreams.isEmpty {
+                                ForEach(groupedDreams, id: \.title) { group in
+                                    VStack(alignment: .leading, spacing: 12) {
+                                        Text(group.title)
+                                            .font(.headline)
+                                            .foregroundColor(.white)
+                                       
+                                        Rectangle()
+                                            .fill(Color.white.opacity(0.5))
+                                            .frame(height: 1)
+                                            .padding(.leading, 5)
+                                        
+                                        ForEach(group.dreams, id: \.id) { dream in
+                                            NavigationLink(destination: DreamEntryView(dream: dream, backToArchive: false)) {
+                                                SectionView(
+                                                    title: dream.title,
+                                                    date: formatDate(dream.date),
+                                                    tags: dream.tags,
+                                                    description: dream.loggedContent
+                                                )
+                                            }
+                                            .buttonStyle(PlainButtonStyle())
+                                        }
+                                    }
+                                }
+                            } else if search.isEmpty && selectedTag == .allTags && selectedDateFilter == .allDates {
+                                VStack(spacing: 16) {
+                                    Image(systemName: "moon.zzz")
+                                        .font(.system(size: 64))
+                                        .foregroundColor(.gray)
+                                    Text("No dreams yet")
+                                        .font(.title2)
+                                        .foregroundColor(.white)
+                                    Text("Start logging your dreams to see them here!")
+                                        .font(.body)
+                                        .foregroundColor(.gray)
+                                        .multilineTextAlignment(.center)
+                                }
+                                .frame(maxWidth: .infinity)
+                                .padding(.top, 100)
+                            } else {
+                                VStack(spacing: 16) {
+                                    Image(systemName: "tray.fill")
+                                        .font(.system(size: 64))
+                                        .foregroundColor(.gray)
+                                    Text("No Matching Dreams")
+                                        .font(.title2)
+                                        .foregroundColor(.white)
+                                    Text("Try adjusting your filters or search terms.")
+                                        .font(.body)
+                                        .foregroundColor(.gray)
+                                        .multilineTextAlignment(.center)
+                                }
+                                .frame(maxWidth: .infinity)
+                                .padding(.top, 100)
+                            }
+                            
+                            Spacer(minLength: 60)
+                        }
+                        .padding()
+                    }
                 }
+                .shadow(color: Color.black.opacity(0.1), radius: 4, y: 2)
+                
+                TabbarView()
             }
             .ignoresSafeArea(edges: .bottom)
             VStack {
@@ -253,6 +270,8 @@ struct DreamArchiveView: View {
         }
         .preferredColorScheme(.dark)
     }
+
+
     
     private func formatDate(_ date: Date) -> String {
         let formatter = DateFormatter()
@@ -284,6 +303,7 @@ struct DreamArchiveView: View {
             return nil
         }
     }
+
     
 }
 
