@@ -14,9 +14,13 @@ struct TabbarView: View {
 //        VStack {
         HStack (spacing: 0){
             TabButton(title: Image(systemName: "house"), text: "Home", tab: .home, destination: StartView())
+                .transition(.opacity)
             TabButton(title: Image(systemName: "chart.bar"), text: "Analysis", tab: .analytics, destination: AnalysisView())
+                .transition(.opacity)
             TabButton(title: Image(systemName: "doc.text"), text: "Archive", tab: .archive, destination: DreamArchiveView())
+                .transition(.opacity)
             }
+            .animation(.easeInOut(duration: 0.3), value: ts.activeTab)
 //            .padding()
             .frame(maxWidth: 300, maxHeight: 50)
             .glassEffect(.regular)
