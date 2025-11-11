@@ -10,11 +10,10 @@ import SwiftUI
 struct LoginView: View {
 //    @Environment(FirebaseLoginService.self) private var fls
     
-    
     @State private var email = ""
     @State private var password = ""
     @State private var isSigningIn = false
-
+    
     var body: some View {
         VStack {
             Spacer()

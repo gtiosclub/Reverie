@@ -1,59 +1,59 @@
-////
-////  CoreMLTest.swift
-////  Reverie
-////
-////  Created by Brayden Huguenard on 9/25/25.
-////
 //
-//import SwiftUI
-//import CoreML
-//import StableDiffusion
-//import Vision
+//  CoreMLTest.swift
+//  Reverie
 //
-//struct ImageGenerationView: View {
-//    
-//    @State private var prompt = "one goldendoodle cute dog sticker"
-//    @State private var generatedImage: UIImage?
-//    
-//    @State private var isLoading = false
-//    @State private var loadingStateText = "Initializing..."
-//    
-//    @State private var pipeline: StableDiffusionPipeline?
-//    @State private var progress: StableDiffusionPipeline.Progress?
-//    
-//    var body: some View {
-//        VStack(spacing: 20) {
-//            imageArea
-//            
-//            TextField("Enter your prompt", text: $prompt, axis: .vertical)
-//                .textFieldStyle(.roundedBorder)
-//                .lineLimit(3)
-//            
-//            Button("Generate Sticker") {
-//                Task { await generateImage() }
-//            }
-//            .buttonStyle(.borderedProminent)
+//  Created by Brayden Huguenard on 9/25/25.
+//
+
+import SwiftUI
+import CoreML
+import StableDiffusion
+import Vision
+
+struct ImageGenerationView: View {
+    
+    @State private var prompt = "Make a pizza in an astronaut helmet"
+    @State private var generatedImage: UIImage?
+    
+    @State private var isLoading = false
+    @State private var loadingStateText = "Initializing..."
+    
+    @State private var pipeline: StableDiffusionPipeline?
+    @State private var progress: StableDiffusionPipeline.Progress?
+    
+    var body: some View {
+        VStack(spacing: 20) {
+            imageArea
+            
+            TextField("Enter your prompt", text: $prompt, axis: .vertical)
+                .textFieldStyle(.roundedBorder)
+                .lineLimit(3)
+            
+            Button("Generate Sticker") {
+                Task { try await generatedImage = ImageGenerationService.shared.generateSticker(prompt: prompt, isSticker: true) }
+            }
+            .buttonStyle(.borderedProminent)
 //            .disabled(isLoading || pipeline == nil)
-//        }
-//        .padding()
-//        .onAppear(perform: loadModel)
-//    }
-//    
-//    private var imageArea: some View {
-//        Group {
-//            if let image = generatedImage {
-//                Image(uiImage: image)
-//                    .resizable()
-//                    .scaledToFit()
-//                    .frame(width: 300, height: 300)
-//            } else {
-//                RoundedRectangle(cornerRadius: 12)
-//                    .fill(Color.gray.opacity(0.2))
-//                    .frame(width: 300, height: 300)
-//            }
-//        }
-//    }
-//    
+        }
+        .padding()
+    }
+    
+    private var imageArea: some View {
+        Group {
+            if let image = generatedImage {
+                Image(uiImage: image)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 300, height: 300)
+            } else {
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(Color.gray.opacity(0.2))
+                    .frame(width: 300, height: 300)
+            }
+        }
+    }
+}
+    
 //    func loadModel() {
 //        if pipeline != nil { return }
 //        
@@ -112,7 +112,17 @@
 //            
 //            if let finalCG = images.compactMap({ $0 }).first {
 //                let finalUIImage = UIImage(cgImage: finalCG)
-//                self.generatedImage = finalUIImage // In future can make image into sticker here
+//                
+////                print("Starting background removal...")
+//                
+////                stickerGeneration(from: finalUIImage) { stickerImage in
+////                    if let finalUIImage = stickerImage {
+////                        print("Successfully created sticker!")
+////                        self.generatedImage = finalUIImage
+////                    } else {
+////                        print("Could not remove background.")
+////                    }
+////                }
 //            }
 //            
 //        } catch {
@@ -125,6 +135,6 @@
 //    }
 //}
 //
-//#Preview {
-//    ImageGenerationView()
-//}
+#Preview {
+    ImageGenerationView()
+}

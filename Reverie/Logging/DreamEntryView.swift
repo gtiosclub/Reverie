@@ -36,6 +36,9 @@ struct DreamEntryView: View {
         appearance.setTitleTextAttributes(selectedAttrs, for: .selected)
     }
     
+    var backButtonLabel: String = "Archive"
+    @Environment(\.dismiss) private var dismiss
+    
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
             BackgroundView()
@@ -281,8 +284,8 @@ struct DreamEntryView: View {
                         .onTapGesture {
                             withAnimation(.easeInOut) { showBook = false }
                         }
-
-                    DreamBookView()
+                    
+                    DreamBookView(dream: dream)
                         .frame(width: 350, height: 460)
                         .transition(.scale.combined(with: .opacity))
                 }
@@ -343,7 +346,7 @@ struct DreamEntryView: View {
         loggedContent: "This is a logged dream example. You can scroll through it here.",
         generatedContent: "Example",
         tags: [.mountains, .rivers],
-        image: "Test",
+        image: ["Test"],
         emotion: .happiness,
         finishedDream: "I woke up"
     ),
