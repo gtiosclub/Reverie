@@ -100,6 +100,7 @@ struct CardUnlockView: View {
                     print("failed to get dreams")
                 }
                 calculateStatistics()
+                await FirebaseUpdateCardService.shared.toggleIsUnlocked(cards:cards)
             }
         }
         .onReceive(NotificationCenter.default.publisher(for: .didLoginAndLoadUser)) { _ in
