@@ -30,6 +30,18 @@ class DreamModel: Decodable {
     @Generable
     enum Emotions: String, Codable, CaseIterable {
         case happiness, sadness, anger, fear, embarrassment, anxiety, neutral
+        
+        var swiftUIColor: Color {
+            switch self {
+            case .happiness: return .yellow
+            case .sadness: return .blue
+            case .anger: return .red
+            case .fear: return .purple
+            case .embarrassment: return .pink
+            case .anxiety: return .orange
+            default: return .gray
+            }
+        }
     }
 
     static func tagImages(tag: Tags) -> String {

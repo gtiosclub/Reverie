@@ -43,48 +43,55 @@ struct DreamCardView: View {
     
     @State private var showArchive = false
     
+//    @State private var showCardsCarousel: Bool = false
+//    
+//    @State private var currentPage: Int = 0
+    
     var user = FirebaseLoginService.shared.currUser!
+    
+//    @Namespace private var animation
     
 //    @State private var degrees: Double = 8.0
     private let lastUnlockTimeKey = "lastUnlockTime"
 
     var progress: Float {
-        let calendar = Calendar.current
-        let now = Date()
-
-        let lastUnlockTimeInterval = UserDefaults.standard.double(forKey: lastUnlockTimeKey)
-        let lastUnlockTime: Date
-        
-        var components = DateComponents()
-        components.weekday = 1 // Sunday
-        components.hour = 20    // 6 PM
-//        components.minute = 33  // 6:49 PM
-        
-        if lastUnlockTimeInterval == 0 {
-            
-            let mostRecentUnlockTime = calendar.nextDate(after: now,
-                                                         matching: components,
-                                                         matchingPolicy: .nextTime,
-                                                         direction: .backward) ?? (now - 7*24*60*60)
-            
-            lastUnlockTime = calendar.date(byAdding: .day, value: -7, to: mostRecentUnlockTime)!
-            
-            UserDefaults.standard.set(lastUnlockTime.timeIntervalSince1970, forKey: lastUnlockTimeKey)
-            
-        } else {
-            lastUnlockTime = Date(timeIntervalSince1970: lastUnlockTimeInterval)
-        }
-
-        let nextUnlockTime = calendar.date(byAdding: .day, value: 7, to: lastUnlockTime)!
-
-        let totalDuration = nextUnlockTime.timeIntervalSince(lastUnlockTime)
-        
-        let timeElapsed = now.timeIntervalSince(lastUnlockTime)
-        
-        let progressValue = Float(timeElapsed / totalDuration)
-        
-        // never > 1.0
-        return min(1.0, progressValue)
+//        let calendar = Calendar.current
+//        let now = Date()
+//
+//        let lastUnlockTimeInterval = UserDefaults.standard.double(forKey: lastUnlockTimeKey)
+//        let lastUnlockTime: Date
+//        
+//        var components = DateComponents()
+//        components.weekday = 1 // Sunday
+//        components.hour = 20    // 6 PM
+////        components.minute = 33  // 6:49 PM
+//        
+//        if lastUnlockTimeInterval == 0 {
+//            
+//            let mostRecentUnlockTime = calendar.nextDate(after: now,
+//                                                         matching: components,
+//                                                         matchingPolicy: .nextTime,
+//                                                         direction: .backward) ?? (now - 7*24*60*60)
+//            
+//            lastUnlockTime = calendar.date(byAdding: .day, value: -7, to: mostRecentUnlockTime)!
+//            
+//            UserDefaults.standard.set(lastUnlockTime.timeIntervalSince1970, forKey: lastUnlockTimeKey)
+//            
+//        } else {
+//            lastUnlockTime = Date(timeIntervalSince1970: lastUnlockTimeInterval)
+//        }
+//
+//        let nextUnlockTime = calendar.date(byAdding: .day, value: 7, to: lastUnlockTime)!
+//
+//        let totalDuration = nextUnlockTime.timeIntervalSince(lastUnlockTime)
+//        
+//        let timeElapsed = now.timeIntervalSince(lastUnlockTime)
+//        
+//        let progressValue = Float(timeElapsed / totalDuration)
+//        
+//        // never > 1.0
+//        return min(1.0, progressValue)
+        return 1.0
     }
 
     var body: some View {
@@ -114,13 +121,13 @@ struct DreamCardView: View {
                 
                 TimelineView(.periodic(from: .now, by: 60.0)) { context in
                     if progress != 1.0 {
-                        let nextUnlockDate = getNextUnlockDate()
+//                        let nextUnlockDate = getNextUnlockDate()
+//                        
+//                        let timeString = formatTimeRemaining(until: nextUnlockDate)
                         
-                        let timeString = formatTimeRemaining(until: nextUnlockDate)
-                        
-                        Text(timeString)
-                            .font(.headline.bold())
-                            .foregroundColor(.white.opacity(0.9))
+//                        Text(timeString)
+//                            .font(.headline.bold())
+//                            .foregroundColor(.white.opacity(0.9))
                     } else {
                         Text("Unlock Now!")
                             .font(.headline.bold())
@@ -196,53 +203,63 @@ struct DreamCardView: View {
                     selectedCharacter: $selectedCharacter,
                     showArchive: $showArchive
                 )
-                .transition(.move(edge: .bottom).combined(with: .opacity))
+//                .transition(.opacity)
             }
+//            if unlockCards {
+//                CardUnlockView(
+//                    namespace: animation,
+//                    cards: $lockedCharacters,
+//                    showUnlockView: $unlockCards,
+//                    showCardsCarousel: $showCardsCarousel,
+//                    currentPage: $currentPage
+//                )
+//                .transition(.opacity)
+//            }
         }
         .background(.clear)
     }
     
-    private func getNextUnlockDate() -> Date {
-        let calendar = Calendar.current
-        let now = Date()
-        
-        // target time: Sunday at 8 PM
-        var components = DateComponents()
-        components.weekday = 1 // 1 = Sunday
-        components.hour = 20 // 8 PM = 20:00
-//        components.minute = 33 // 42 is 42 minutes
-        
-        // find the next date that matches these components
-        // if it's already past 8 PM on Sunday, this finds next Sunday.
-        return calendar.nextDate(after: now,
-                                matching: components,
-                                matchingPolicy: .nextTime)!
-    }
-
-    private func formatTimeRemaining(until unlockDate: Date) -> String {
-//        print("progress \(progress)")
-        if progress == 1.0 {
-            return "Unlock Now!"
-        }
-        let now = Date()
-        let components = Calendar.current.dateComponents([.day, .hour, .minute],
-                                                        from: now,
-                                                        to: unlockDate)
-        
-        let days = components.day ?? 0
-        let hours = components.hour ?? 0
-        let minutes = components.minute ?? 0
-        
-        if days > 0 {
-            return "Unlocks in \(days)d \(hours)h"
-        } else if hours > 0 {
-            return "Unlocks in \(hours)h \(minutes)m"
-        } else if minutes > 0 {
-            return "Unlocks in \(minutes)m"
-        } else {
-            return "Unlock Now!"
-        }
-    }
+//    private func getNextUnlockDate() -> Date {
+//        let calendar = Calendar.current
+//        let now = Date()
+//        
+//        // target time: Sunday at 8 PM
+//        var components = DateComponents()
+//        components.weekday = 1 // 1 = Sunday
+//        components.hour = 20 // 8 PM = 20:00
+////        components.minute = 33 // 42 is 42 minutes
+//        
+//        // find the next date that matches these components
+//        // if it's already past 8 PM on Sunday, this finds next Sunday.
+//        return calendar.nextDate(after: now,
+//                                matching: components,
+//                                matchingPolicy: .nextTime)!
+//    }
+//
+//    private func formatTimeRemaining(until unlockDate: Date) -> String {
+////        print("progress \(progress)")
+//        if progress == 1.0 {
+//            return "Unlock Now!"
+//        }
+//        let now = Date()
+//        let components = Calendar.current.dateComponents([.day, .hour, .minute],
+//                                                        from: now,
+//                                                        to: unlockDate)
+//        
+//        let days = components.day ?? 0
+//        let hours = components.hour ?? 0
+//        let minutes = components.minute ?? 0
+//        
+//        if days > 0 {
+//            return "Unlocks in \(days)d \(hours)h"
+//        } else if hours > 0 {
+//            return "Unlocks in \(hours)h \(minutes)m"
+//        } else if minutes > 0 {
+//            return "Unlocks in \(minutes)m"
+//        } else {
+//            return "Unlock Now!"
+//        }
+//    }
 }
 
 //#Preview {

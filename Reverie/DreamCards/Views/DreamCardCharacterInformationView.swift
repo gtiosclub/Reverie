@@ -211,7 +211,7 @@ struct DreamCardCharacterInformationView: View {
 #Preview {
     DreamCardCharacterInformationView(
         selectedCharacter: .constant(nil),
-        character: CardModel(userID: "1", id: "1", name: "Big Red", description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit.", image: "https://www.flaticon.com/svg/v2/svg/6666/6666245.svg", cardColor: .blue),
+        character: CardModel(userID: "1", id: "1", name: "Big Red", description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit.", image: "https://www.flaticon.com/svg/v2/svg/6666/6666245.svg", cardColor: .pink),
     )
 }
 
