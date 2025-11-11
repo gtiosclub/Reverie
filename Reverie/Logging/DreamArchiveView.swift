@@ -75,7 +75,6 @@ struct DreamArchiveView: View {
             }
         }
         
-        
         return dreams
     }
     
@@ -114,10 +113,11 @@ struct DreamArchiveView: View {
         return result
     }
     
-    
     var body: some View {
-        ZStack {
+        ZStack(alignment: .bottom) {
             BackgroundColor()
+                .ignoresSafeArea()
+            
             VStack(spacing: 0) {
                 VStack(alignment: .leading, spacing: 16) {
                     HStack {
@@ -250,16 +250,16 @@ struct DreamArchiveView: View {
                             .padding(.top, 100)
                         }
                         
-                        Spacer(minLength: 60)
+                        Spacer(minLength: 80)
                     }
                     .padding()
                 }
             }
-            .shadow(color: Color.black.opacity(0.1), radius: 4, y: 2)
             
             TabbarView()
+                .ignoresSafeArea(edges: .bottom)
         }
-        .ignoresSafeArea(edges: .bottom)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .onAppear {
             ts.activeTab = .archive
         }
