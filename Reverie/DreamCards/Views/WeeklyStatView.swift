@@ -36,7 +36,7 @@ struct WeeklyStatView: View {
                     .fontWeight(.bold)
                     .foregroundColor(.black)
                     .frame(maxWidth: .infinity, alignment: .center)
-                    .padding(.top, 32)
+                    .padding(.top, 24)
 
                 HStack(spacing: 0) {
                     StatNumberView(
