@@ -44,18 +44,29 @@ class DreamModel: Decodable {
         }
     }
     
-    static func emotionColors(emotion: Emotions) -> Color? {
+    static func Color (hex:String) -> Color{
+            let scanner = Scanner(string: hex)
+            _ = scanner.scanString("#")
+            var rgb: UInt64 = 0
+            scanner.scanHexInt64(&rgb)
+            let r = Double((rgb >> 16) & 0xFF) / 255.0
+            let g = Double((rgb >> 8) & 0xFF) / 255.0
+            let b = Double(rgb & 0xFF) / 255.0
+        return SwiftUICore.Color(red: r, green: g, blue: b)
+    }
+    
+    static func emotionColors(emotion: Emotions) -> Color {
         switch emotion {
-        case .happiness: return Color(hex: "#E0C341")
-        case .sadness: return Color(hex: "#3089D3")
-        case .anger: return Color(hex: "#CD3838")
-        case .fear: return Color(hex: "#9B32EC")
-        case .embarrassment: return Color(hex: "#77A437")
-        case .anxiety: return Color(hex: "#B96531")
-        case .neutral: return Color(hex: "#D9D9D9")
+        case .happiness: return self.Color(hex: "#E0C341")
+        case .sadness: return self.Color(hex: "#3089D3")
+        case .anger: return self.Color(hex: "#CD3838")
+        case .fear: return self.Color(hex: "#9B32EC")
+        case .embarrassment: return self.Color(hex: "#77A437")
+        case .anxiety: return self.Color(hex: "#B96531")
+        case .neutral: return self.Color(hex: "#D9D9D9")
         }
     }
-
+    
     static func tagImages(tag: Tags) -> String {
         switch(tag) {
         case .mountains: return "mountain.2.fill"
@@ -94,7 +105,48 @@ class DreamModel: Decodable {
         case .authority: return "crown.fill"
         }
     }
-
+    
+    
+    static func tagColors(tag: Tags) -> Color {
+        switch tag {
+        case .mountains: return Color(hex: "#724227")
+        case .rivers: return Color(hex: "#779ECB")
+        case .forests: return Color(hex: "#45773E")
+        case .school: return Color(hex: "#5B5BE3")
+        case .flying: return Color(hex: "#99D1FF")
+        case .food: return Color(hex: "#DF8852")
+        case .animals: return Color(hex: "#C19A6B")
+        case .health: return Color(hex: "#D15B5B")
+        case .trapped: return Color(hex: "#585DB2")
+        case .money: return Color(hex: "#DDF2D1")
+        case .celebration: return Color(hex: "#E1CB6A")
+        case .teeth: return Color(hex: "#E5F99D")
+        case .rooms: return Color(hex: "#93F3E3")
+        case .disasters: return Color(hex: "#8690FF")
+        case .strangers: return Color(hex: "#DBA5F2")
+        case .travel: return Color(hex: "#C4EDFB")
+        case .chase: return Color(hex: "#E971A7")
+        case .fight: return Color(hex: "#C23B22")
+        case .death: return Color(hex: "#C23B22")
+        case .fantasy: return Color(hex: "#D291BC")
+        case .past: return Color(hex: "#97693C")
+        case .future: return Color(hex: "#E9936E")
+        case .search: return Color(hex: "#F6C8A0")
+        case .falling: return Color(hex: "#9956AF")
+        case .water: return Color(hex: "#7CBAEC")
+        case .nature: return Color(hex: "#A6D58D")
+        case .fire: return Color(hex: "#F2B255")
+        case .city: return Color(hex: "#D4D4D4")
+        case .home: return Color(hex: "#FFB700")
+        case .work: return Color(hex: "#8E8E8E")
+        case .love: return Color(hex: "#FEBDCE")
+        case .family: return Color(hex: "#83ACFF")
+        case .friends: return Color(hex: "#B19ED1")
+        case .authority: return Color(hex: "#F8F288")
+        }
+    }
+    
+    //
     // MARK: - Recent Dreams
     /// Returns the most recent dreams up to the specified count.
     /// - Parameters:
@@ -138,46 +190,6 @@ class DreamModel: Decodable {
         let similarity = (keywordScore * 0.6) + (emotionScore * 0.25) + (tagScore * 0.15)
         return similarity
     }
-
-    static func tagColors(tag: Tags) -> Color? {
-        switch tag {
-        case .mountains: return Color(hex: "#724227")
-        case .rivers: return Color(hex: "#779ECB")
-        case .forests: return Color(hex: "#45773E")
-        case .school: return Color(hex: "#5B5BE3")
-        case .flying: return Color(hex: "#99D1FF")
-        case .food: return Color(hex: "#DF8852")
-        case .animals: return Color(hex: "#C19A6B")
-        case .health: return Color(hex: "#D15B5B")
-        case .trapped: return Color(hex: "#585DB2")
-        case .money: return Color(hex: "#DDF2D1")
-        case .celebration: return Color(hex: "#E1CB6A")
-        case .teeth: return Color(hex: "#E5F99D")
-        case .rooms: return Color(hex: "#93F3E3")
-        case .disasters: return Color(hex: "#8690FF")
-        case .strangers: return Color(hex: "#DBA5F2")
-        case .travel: return Color(hex: "#C4EDFB")
-        case .chase: return Color(hex: "#E971A7")
-        case .fight: return Color(hex: "#C23B22")
-        case .death: return Color(hex: "#C23B22")
-        case .fantasy: return Color(hex: "#D291BC")
-        case .past: return Color(hex: "#97693C")
-        case .future: return Color(hex: "#E9936E")
-        case .search: return Color(hex: "#F6C8A0")
-        case .falling: return Color(hex: "#9956AF")
-        case .water: return Color(hex: "#7CBAEC")
-        case .nature: return Color(hex: "#A6D58D")
-        case .fire: return Color(hex: "#F2B255")
-        case .city: return Color(hex: "#D4D4D4")
-        case .home: return Color(hex: "#FFB700")
-        case .work: return Color(hex: "#8E8E8E")
-        case .love: return Color(hex: "#FEBDCE")
-        case .family: return Color(hex: "#83ACFF")
-        case .friends: return Color(hex: "#B19ED1")
-        case .authority: return Color(hex: "#F8F288")  
-        }
-    }
-    
     
     static func tagDescription(tag: Tags) -> String {
         switch(tag) {
@@ -252,23 +264,11 @@ class DreamModel: Decodable {
             "Disasters in dreams symbolize overwhelming change, emotional turmoil, and the breakdown of old structures. They reflect feelings of chaos, fear, or loss of control in waking life. Dreaming of natural or personal catastrophes often signals deep transformation, where destruction clears the way for renewal. Disasters remind the dreamer that upheaval, though frightening, can reveal hidden strength and the potential for rebuilding with greater clarity and purpose."
         }
     }
-
+    
     init(userID: String, id: String, title: String, date: Date, loggedContent: String, generatedContent:String, tags: [Tags], image: [String], emotion: Emotions) {
         self.userID = userID
         self.id = id
         self.title = title
-        self.date = date
-        self.loggedContent = loggedContent
-        self.generatedContent = generatedContent
-        self.tags = tags
-        self.image = image
-        self.emotion = emotion
-        self.finishedDream = "None"
-    }
-    init(userID: String, id: String, title: String, date: Date, loggedContent: String, generatedContent:String, tags: [Tags], image: [String], emotion: Emotions, finishedDream: String) {
-        self.userID = userID
-        self.id = id
-        self.title = title  
         self.date = date
         self.loggedContent = loggedContent
         self.generatedContent = generatedContent
@@ -286,7 +286,7 @@ class DreamModel: Decodable {
         loggedContent: String,
         generatedContent: String,
         tags: [Tags],
-        image: [String?],
+        image: [String],
         emotion: Emotions,
         finishedDream: String
     ) {
@@ -304,15 +304,12 @@ class DreamModel: Decodable {
 }
 
 
-//extension Color {
-//    init(hex: String) {
-//        let scanner = Scanner(string: hex)
-//        _ = scanner.scanString("#")
-//        var rgb: UInt64 = 0
-//        scanner.scanHexInt64(&rgb)
-//        let r = Double((rgb >> 16) & 0xFF) / 255.0
-//        let g = Double((rgb >> 8) & 0xFF) / 255.0
-//        let b = Double(rgb & 0xFF) / 255.0
-//        self.init(red: r, green: g, blue: b)
-//    }
-//}
+
+
+
+
+
+
+
+
+

@@ -9,17 +9,17 @@ import SwiftUI
 import SceneKit
 
 // MARK: - Hex Color helper
-extension Color {
-    init?(hex: String) {
-        var s = hex.trimmingCharacters(in: .whitespacesAndNewlines)
-        if s.hasPrefix("#") { s.removeFirst() }
-        guard s.count == 6, let v = Int(s, radix: 16) else { return nil }
-        let r = Double((v >> 16) & 0xFF) / 255.0
-        let g = Double((v >> 8) & 0xFF) / 255.0
-        let b = Double(v & 0xFF) / 255.0
-        self = Color(red: r, green: g, blue: b)
-    }
-}
+//extension Color {
+//    init?(hex: String) {
+//        var s = hex.trimmingCharacters(in: .whitespacesAndNewlines)
+//        if s.hasPrefix("#") { s.removeFirst() }
+//        guard s.count == 6, let v = Int(s, radix: 16) else { return nil }
+//        let r = Double((v >> 16) & 0xFF) / 255.0
+//        let g = Double((v >> 8) & 0xFF) / 255.0
+//        let b = Double(v & 0xFF) / 255.0
+//        self = Color(red: r, green: g, blue: b)
+//    }
+//}
 
 // MARK: - SwiftUI Color → UIColor bridge for SceneKit, Emotion Colors
 extension Color {
@@ -28,13 +28,13 @@ extension Color {
 extension DreamModel.Emotions {
     var swatchColor: Color {
         switch self {
-        case .sadness:        return Color(hex: "#3089D3") ?? .blue
-        case .happiness:      return Color(hex: "#E0C341") ?? .yellow
-        case .fear:           return Color(hex: "#9B32EC") ?? .purple
-        case .anger:          return Color(hex: "#CD3838") ?? .red
-        case .embarrassment:  return Color(hex: "#77A437") ?? .green
-        case .anxiety:        return Color(hex: "#B96531") ?? .orange
-        case .neutral:        return Color(hex: "#D9D9D9") ?? .gray
+        case .sadness:        return DreamModel.Color(hex: "#3089D3") ?? .blue
+        case .happiness:      return DreamModel.Color(hex: "#E0C341") ?? .yellow
+        case .fear:           return DreamModel.Color(hex: "#9B32EC") ?? .purple
+        case .anger:          return DreamModel.Color(hex: "#CD3838") ?? .red
+        case .embarrassment:  return DreamModel.Color(hex: "#77A437") ?? .green
+        case .anxiety:        return DreamModel.Color(hex: "#B96531") ?? .orange
+        case .neutral:        return DreamModel.Color(hex: "#D9D9D9") ?? .gray
         }
     }
 }
