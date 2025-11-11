@@ -43,7 +43,13 @@ struct DreamCardView: View {
     
     @State private var showArchive = false
     
+//    @State private var showCardsCarousel: Bool = false
+//    
+//    @State private var currentPage: Int = 0
+    
     var user = FirebaseLoginService.shared.currUser!
+    
+//    @Namespace private var animation
     
 //    @State private var degrees: Double = 8.0
     private let lastUnlockTimeKey = "lastUnlockTime"
@@ -85,6 +91,7 @@ struct DreamCardView: View {
         
         // never > 1.0
         return min(1.0, progressValue)
+//        return 1.0
     }
 
     var body: some View {
@@ -196,8 +203,18 @@ struct DreamCardView: View {
                     selectedCharacter: $selectedCharacter,
                     showArchive: $showArchive
                 )
-                .transition(.move(edge: .bottom).combined(with: .opacity))
+//                .transition(.opacity)
             }
+//            if unlockCards {
+//                CardUnlockView(
+//                    namespace: animation,
+//                    cards: $lockedCharacters,
+//                    showUnlockView: $unlockCards,
+//                    showCardsCarousel: $showCardsCarousel,
+//                    currentPage: $currentPage
+//                )
+//                .transition(.opacity)
+//            }
         }
         .background(.clear)
     }

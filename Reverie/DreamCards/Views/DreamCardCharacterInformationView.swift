@@ -11,31 +11,16 @@ struct DreamCardCharacterInformationView: View {
     @Binding var selectedCharacter: CardModel?
     let character: CardModel
     @State private var isUnlocked = false
-//    var user = FirebaseLoginService.shared.currUser!
-//    @State private var isShownOnHome: Bool
-//    @State private var isPinned: Bool
     
     init(selectedCharacter: Binding<CardModel?>,
          character: CardModel) {
         
         self._selectedCharacter = selectedCharacter
         self.character = character
-//        self._isPinned = State(initialValue: character.isPinned)
-//        self._isShownOnHome = State(initialValue: character.isShown)
     }
 
     var body: some View {
         ZStack {
-//            Rectangle()
-////                .fill(.ultraThinMaterial)
-//                .blur(radius: 3)
-//                .ignoresSafeArea()
-//                .onTapGesture {
-//                    withAnimation(.spring()) {
-//                        selectedCharacter = nil
-//                    }
-//                }
-            
             Color.black.opacity(0.8)
                 .ignoresSafeArea()
                 .onTapGesture {
@@ -64,7 +49,7 @@ struct DreamCardCharacterInformationView: View {
                         }
                     }
                     .padding(.top, 60)
-                    .frame(width: 150, height: 150)
+                    .frame(width: character.isAchievementUnlocked ? 250 : 180, height: character.isAchievementUnlocked ? 250 : 180)
                     .foregroundColor(.white)
                     
                     Text(character.name)
@@ -79,40 +64,20 @@ struct DreamCardCharacterInformationView: View {
                         .padding(.horizontal, 40)
                     
                     Spacer() // pushes content up
-                    
-//                    Toggle(isOn: $isShownOnHome) {
-//                        EmptyView()
-//                    }
-//                    .onChange(of: isShownOnHome) { _, newValue in
-//                        Task {
-//                            await FirebaseUpdateCardService.shared.setIsShown(card: character, isShown: newValue)
-//                        }
-//                    }
-//                    .padding(.horizontal, 160)
-//                    .tint(.purple)
-//                    .padding(.bottom, 20)
                 }
                 .frame(maxHeight: .infinity, alignment: .center)
             }
             .frame(width: 320, height: 520)
-            .overlay(
-                RoundedRectangle(cornerRadius: 20)
-                    .stroke(character.cardColor.swiftUIColor.opacity(0.6), lineWidth: 3)
-            )
-//            .background(.ultraThinMaterial)
-//                .glassEffect(in: .rect(cornerRadius: 20.0))
             .background(
-                ZStack {
-                    RoundedRectangle(cornerRadius: 20).fill(.ultraThinMaterial)
-                    RoundedRectangle(cornerRadius: 20).fill(Color.black.opacity(0.85))
-                }
+                RoundedRectangle(cornerRadius: 20)
+                    .fill(Color.black.opacity(0.85))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 20)
+                            .stroke(character.cardColor.swiftUIColor.opacity(0.6), lineWidth: 1)
+                    )
+                    .shadow(color: character.cardColor.swiftUIColor.opacity(0.4), radius: 15)
             )
-//            .overlay(
-//                RoundedRectangle(cornerRadius: 20)
-//                    .stroke(Color.white.opacity(0.1), lineWidth: 1)
-//            )
-//            .clipShape(RoundedRectangle(cornerRadius: 20))
-//            .shadow(color: character.cardColor.swiftUIColor.opacity(0.6), radius: 12, x: 0, y: 4)
+            .transition(.scale.combined(with: .opacity))
             .overlay(
                 // Back Button
                 Button(action: {
@@ -211,7 +176,7 @@ struct DreamCardCharacterInformationView: View {
 #Preview {
     DreamCardCharacterInformationView(
         selectedCharacter: .constant(nil),
-        character: CardModel(userID: "1", id: "1", name: "Big Red", description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit.", image: "https://www.flaticon.com/svg/v2/svg/6666/6666245.svg", cardColor: .blue),
+        character: CardModel(userID: "1", id: "1", name: "Big Red", description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit.", image: "https://www.flaticon.com/svg/v2/svg/6666/6666245.svg", cardColor: .pink),
     )
 }
 

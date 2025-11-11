@@ -1,299 +1,181 @@
 import SwiftUI
 
 struct CardUnlockView: View {
-    @Namespace private var cardNamespace // Added namespace for matchedGeometryEffect
-//    @Environment(FirebaseDCService.self) private var fbdcs
-    @Binding var unlockCards: Bool
+    @State private var loginService = FirebaseLoginService.shared
     
-    // how many cards have been revealed?
-    @State private var revealedCount = 0
+    var namespace: Namespace.ID
     
-    // card information
-//    @State private var cards: [CardModel] = [
-//        .init(userID: "1", id: "1", name: "LIZZY", description: "Builds the landscape of your dreams", image: "lizard.fill", cardColor: .blue),
-//        .init(userID: "2", id: "2", name: "BOLT", description: "Ignites new ideas when you need them", image: "tortoise.fill", cardColor: .purple),
-//        .init(userID: "3", id: "3", name: "AURORA", description: "Guides your imagination into focus", image: "bird.fill", cardColor: .pink),
-//        .init(userID: "4", id: "4", name: "ATLAS", description: "Carries your goals across the finish line", image: "fish.fill", cardColor: .yellow)
-//    ]
-    let cards: [CardModel]
-    private let cardWidth: CGFloat = 190
-    private let cardHeight: CGFloat = 190 * (475.0/300.0)
+    @State private var dreams: [DreamModel] = []
+    @State private var topThemes: [Tags] = []
+    @State private var topMoods: [Emotions] = []
+    @State private var totalWordCount: Int = 0
+    @State private var averageWordCount: Int = 0
     
-    private var allRevealed: Bool { revealedCount >= cards.count && !cards.isEmpty }
-    @State private var showHorizontal = false
+    @Binding var cards: [CardModel]
+    @Binding var showUnlockView: Bool
+    @Binding var showCardsCarousel: Bool
+    @Binding var currentPage: Int
     
-    // New state property controlling whether the revealed cards deck is expanded horizontally
-    @State private var expandedDeck = false
-    
-    init(unlockCards: Binding<Bool>, cards: [CardModel], initialRevealedCount: Int = 0) {
-        self._unlockCards = unlockCards
-        self.cards = cards
-        self._revealedCount = State(initialValue: max(0, min(initialRevealedCount, cards.count)))
-    }
+    @State var shown = false
     
     var body: some View {
-        GeometryReader { geometry in
-            ZStack {
-                Color.black.opacity(0.9)
-                   .ignoresSafeArea()
-                   .onTapGesture {
-                       // tap the background to dismiss
-                       withAnimation {
-                           if showHorizontal {
-                               unlockCards = false
-                           }
-                       }
-                   }
-                   .zIndex(-5)
-                
-                if showHorizontal {
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 24) {
-                            ForEach(cards, id: \.id) { card in
-                                let scale = cardWidth / 300.0 // CharacterUnlockedView uses 300x475 internally
-                                ZStack {
-                                    CharacterUnlockedView(
-                                        card: CardModel(
-                                            userID: card.userID,
-                                            id: card.id,
-                                            name: card.name,
-                                            description: card.description,
-                                            image: card.image ?? "questionmark",
-                                            cardColor: card.cardColor
-                                        )
-                                    )
-                                    .scaleEffect(scale, anchor: .center) // scale down uniformly to fit
-                                    .matchedGeometryEffect(id: card.id, in: cardNamespace) // Added matchedGeometryEffect for smooth transition
-                                }
-                                .frame(width: cardWidth, height: cardHeight)
-                                .clipShape(RoundedRectangle(cornerRadius: 15, style: .continuous)) // keep rounded edges
-                                .shadow(color: .black.opacity(0.25), radius: 12, y: 8)
-                            }
-                        }
-                        .padding(.horizontal, 24)
-                        .padding(.vertical, 32)
-                    }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-                    //.transition(.move(edge: .bottom).combined(with: .opacity)) // Removed transition to rely on matchedGeometryEffect
-                    .animation(.spring(response: 0.6, dampingFraction: 0.85), value: showHorizontal) // Linked animation to showHorizontal for consistency
-                } else {
-                    ForEach(cards.indices, id: \.self) { index in
-                        // what is the ith card?
-                        let card = cards[index]
-                        // card is revealed once its index has been past
-                        let isRevealed = index < revealedCount
+        ZStack {
+            Rectangle()
+                .fill(.ultraThinMaterial)
+                .ignoresSafeArea()
+                .transition(.opacity)
+                .opacity(1)
 
-                        FlippingCardView(
-                            isFlipped: isRevealed,
-                            // front
-                            front: {
-                                CharacterUnlockedView(
-                                    card: CardModel(
-                                        userID: card.userID,
-                                        id: card.id,
-                                        name: card.name,
-                                        description: card.description,
-                                        image: card.image ?? "questionmark",
-                                        cardColor: card.cardColor
-                                ))
-                            },
-                            // back of card -> see BackCardView()
-                            back: {
-                                BackCardView(
-                                    card: CardModel(
-                                        userID: card.userID,
-                                        id: card.id,
-                                        name: card.name,
-                                        description: card.description,
-                                        image: card.image ?? "questionmark",
-                                        cardColor: card.cardColor
-                                    ))
-                            }
-                        )
-                        // reveal ontap
-                        .onTapGesture {
-                            guard !isRevealed else { return }
-                            withAnimation(.spring(response: 0.65, dampingFraction: 0.75)) {
-                                revealedCount += 1
-                            }
-                            if revealedCount == cards.count {
-                                // Delay switching layouts until the final flip animation visually completes
-                                // This longer delay ensures the final card finishes its animation before the transition starts
-                                let delay = 1.85 // increased to 1.85 to allow settling
-                                DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
-                                    withAnimation(.spring(response: 1.5, dampingFraction: 1.5)) {
-                                        showHorizontal = true
-                                    }
-                                }
-                                // Additional delay to trigger the expandedDeck animation slightly after the last flip finishes
-                                // This ensures the expansion animation is synchronized with the flip completion for smooth UX
-                                DispatchQueue.main.asyncAfter(deadline: .now() + delay + 2) {
-                                    withAnimation(.easeInOut(duration: 1.0)) {
-                                        expandedDeck = true
-                                    }
+            Color.black.opacity(0.6)
+                .ignoresSafeArea()
+                .transition(.opacity)
+            
+            .onTapGesture {
+                withAnimation(.easeInOut(duration: 0.5)) {
+                    showCardsCarousel = false
+                }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    withAnimation(.interactiveSpring(response: 0.7, dampingFraction: 0.75)) {
+                        showUnlockView = false
+                    }
+                }
+            }
+            
+            ZStack {
+                if showUnlockView {
+                    if !shown {
+                        Image("pack5")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 480, height: 480)
+                            .matchedGeometryEffect(id: "packAnimation", in: namespace)
+                            .transition(.scale.combined(with: .opacity))
+                            .onTapGesture {
+                                withAnimation(.interactiveSpring(response: 0.7, dampingFraction: 0.75)) {
+                                    showCardsCarousel = true
+                                    shown = true
                                 }
                             }
-                            Task {
-                                if card.isAchievementUnlocked {
-                                    await FirebaseUpdateCardService.shared.toggleIsUnlockedAchievement(card: card)
-                                } else {
-                                    await FirebaseUpdateCardService.shared.toggleIsUnlocked(card: card)
+                    } else {
+                        VStack {
+                            Text("Weekly Recap")
+                                .font(.title)
+                                .foregroundColor(.white)
+                                .bold()
+                            TabView(selection: $currentPage) {
+                                ForEach(cards.indices, id: \.self) { index in
+                                    CharacterUnlockedView(card: cards[index])
+                                        .padding(.horizontal, 20)
+                                        .tag(index)
+                                }
+                                WeeklyStatView(dreams: $dreams, topThemes: $topThemes, topMoods: $topMoods, totalWordCount: $totalWordCount, averageWordCount: $averageWordCount)
+                                    .padding(.horizontal, 20)
+                                    .tag(cards.count)
+                            }
+                            .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
+                            .frame(height: 520)
+                            .matchedGeometryEffect(id: "packAnimation", in: namespace)
+                            
+                            HStack(spacing: 8) {
+                                ForEach(0..<(cards.count + 1), id: \.self) { index in
+                                    Capsule()
+                                        .fill(index == currentPage ? Color.white : Color.white.opacity(0.4))
+                                        .frame(width: index == currentPage ? 20 : 8, height: 6)
+                                        .animation(.spring(response: 0.4, dampingFraction: 0.8), value: currentPage)
                                 }
                             }
+                            .padding(.bottom, 40)
                         }
-                        // card size based on if it has been clicked
-                        .scaleEffect(isRevealed ? 0.80 : 1.0)
-                        // get position (see private func below)
-                        .position(position(for: index, isRevealed: isRevealed, in: geometry.size))
-                        // When all cards are revealed and expandedDeck is true, spread the cards horizontally with animated offset
-                        .offset(x: isRevealed && expandedDeck ? horizontalOffset(for: index) : 0)
-                        // properly stack
-                        .zIndex(isRevealed ? Double(index) : Double(cards.count - index))
-                        .matchedGeometryEffect(id: card.id, in: cardNamespace) // Added matchedGeometryEffect for smooth transition
-                        // animate the card being launched once clicked and the offset when expandedDeck changes
-                        .animation(.spring(response: 0.65, dampingFraction: 0.75), value: revealedCount)
-                        // Duration increased to 4 seconds for a smoother, cinematic expansion transition
-                        .animation(.easeInOut(duration: 4.0), value: expandedDeck)
                     }
                 }
             }
         }
-//        .background(Color(red: 0.1, green: 0.1, blue: 0.2).ignoresSafeArea())
-        // looks better with background for testing
-    }
-    
-    private func position(for index: Int, isRevealed: Bool, in containerSize: CGSize) -> CGPoint {
-        if isRevealed {
-            // cards will just stack for now
-            let x = containerSize.width / 2
-            let y = containerSize.height / 3
-            return CGPoint(x: x, y: y)
-            
-        } else {
-            // stacked cards at bottom of screen
-            let totalCards = cards.count
-            // offset x a tiny bit
-            let x = (containerSize.width / 1.8) + CGFloat( (totalCards - 1 - index) * -20)
-            // offset y a tiny bit
-            let y = containerSize.height - 40 + CGFloat( (totalCards - 1 - index) * 10)
-            // get point on screen
-            return CGPoint(x: x, y: y)
-        }
-    }
-    
-    // New helper function to calculate horizontal offset for spreading cards when expandedDeck is true
-    private func horizontalOffset(for index: Int) -> CGFloat {
-        // Calculate the center index of the revealed cards
-        let centerIndex = CGFloat(revealedCount - 1) / 2.0
-        // Spread cards horizontally with spacing of 40 points between them
-        let spacing: CGFloat = 40
-        // Offset relative to center to spread cards evenly
-        return (CGFloat(index) - centerIndex) * spacing
-    }
-}
-
-struct FlippingCardView<Front: View, Back: View>: View {
-    let isFlipped: Bool
-    @ViewBuilder let front: () -> Front
-    @ViewBuilder let back: () -> Back
-    
-    // different movements
-    private enum AnimationPhase: CaseIterable {
-        case initial, jump, flip, land, settle, finish
-    }
-    
-    var body: some View {
-        PhaseAnimator(AnimationPhase.allCases, trigger: isFlipped) { phase in
-            // dont go back to initial
-            let isAtRestAndFlipped = isFlipped && phase == .initial
-            // stay upright once flipepd
-            let angle = isAtRestAndFlipped ? 180 : rotationAngle(for: phase)
-            let isPastHalfway = angle >= 90
-            
-            ZStack {
-                // front card
-                front()
-                    // rotation - 180 (get to front)
-                    .rotation3DEffect(.degrees(angle - 180), axis: (x: 0, y: 1, z: 0))
-                    // dont allow card to be see through
-                    .opacity(isPastHalfway ? 1 : 0)
-                // back card
-                back()
-                    // rotation of back card after click
-                    .rotation3DEffect(.degrees(angle), axis: (x: 0, y: 1, z: 0))
-                    // dont allow card to be see through
-                    .opacity(isPastHalfway ? 0 : 1)
+        .task {
+            if loginService.currUser != nil {
+                print("User already loaded, fetching stats.")
+                do {
+                    self.dreams = try await FirebaseStatCardService.shared.fetchPreviousEightDaysDreams()
+                    print(dreams)
+                } catch {
+                    print("failed to get dreams")
+                }
+                calculateStatistics()
+                await FirebaseUpdateCardService.shared.toggleIsUnlocked(cards:cards)
             }
-            // movements on screen
-            .scaleEffect(isAtRestAndFlipped ? 1.0 : (phase == .settle ? 1.15 : 1.0))
-            .offset(y: isAtRestAndFlipped ? 0 : (phase == .jump ? -135 : 0))
-            .shadow(radius: isAtRestAndFlipped ? 10 : (phase == .jump ? 30 : 10),
-                    y: isAtRestAndFlipped ? 10 : (phase == .jump ? 30 : 10))
-            
-        } animation: { phase in
-            // response -> how quick
-            // damping -> how much wobble
-            switch phase {
-            case .initial: .linear(duration: 0)
-            case .jump: .spring(response: 0.4, dampingFraction: 0.8)
-            case .flip: .spring(response: 1.2, dampingFraction: 0.7)
-            case .land: .interpolatingSpring(stiffness: 180, damping: 20)
-            case .settle: .spring(response: 0.3, dampingFraction: 0.8)
-            case .finish: .spring(response: 0.3, dampingFraction: 0.8)
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .didLoginAndLoadUser)) { _ in
+            print("Received didLogin notification, fetching stats.")
+            Task {
+                do {
+                    self.dreams = try await FirebaseStatCardService.shared.fetchPreviousEightDaysDreams()
+                    print(dreams)
+                } catch {
+                    print("failed to get dreams")
+                }
+                calculateStatistics()
             }
         }
     }
-    
-    // rotation amount (can modify for more or less flipping animation)
-    private func rotationAngle(for phase: AnimationPhase) -> Double {
-        switch phase {
-        case .initial: return 0
-        case .jump: return 10
-        case .flip: return 560
-        case .land, .settle, .finish: return 540
+    private func calculateStatistics() {
+        let allTags = dreams.flatMap { $0.tags }
+        if !allTags.isEmpty {
+            let tagCounts = allTags.reduce(into: [:]) { $0[$1, default: 0] += 1 }
+            let sortedTagCounts = tagCounts.sorted { $0.value > $1.value }
+            self.topThemes = sortedTagCounts.map { (tag, count) in
+                return Tags(
+                    name: tag.rawValue.capitalized,
+                    icon: DreamModel.tagImages(tag: tag),
+                    color: DreamModel.tagColors(tag: tag)
+                )
+            }
         }
+        
+        let totalLogs = dreams.count
+        if totalLogs > 0 {
+            let moodCounts = dreams.reduce(into: [:]) { $0[$1.emotion, default: 0] += 1 }
+            let sortedMoodCounts = moodCounts.sorted { $0.value > $1.value }
+            self.topMoods = sortedMoodCounts.map { (emotion, count) in
+                let percentage = Int((Double(count) / Double(totalLogs)) * 100)
+                return Emotions(
+                    name: emotion.rawValue.capitalized,
+                    percentage: percentage,
+                    color: emotion.swiftUIColor
+                )
+            }
+        }
+    
+        let totalWordCount = dreams.reduce(0) { $0 + $1.loggedContent.split { $0.isWhitespace || $0.isNewline }.count }
+        self.totalWordCount = totalWordCount
+        self.averageWordCount = dreams.isEmpty ? 0 : totalWordCount / dreams.count
     }
 }
 
-struct BackCardView: View {
-    @State var card: CardModel
-    
-    var body: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: 15).fill(.ultraThinMaterial)
-            RoundedRectangle(cornerRadius: 15).stroke(card.cardColor, lineWidth: 3)
-//            VStack(spacing: 6) {
-//                Image(systemName: "questionmark").font(.system(size: 40, weight: .semibold))
-            Text("Tap to reveal").font(.footnote).foregroundStyle(card.cardColor)
-//            }
-        }
-        .frame(width: 190, height: 190 * (475.0/300.0))
+struct CardUnlockView_Previews: PreviewProvider {
+    @Namespace static var ns
+
+    static var previews: some View {
+        CardUnlockPreviewWrapper()
     }
-}
 
-#Preview("1 unlocked") {
-    let demoCards: [CardModel] = [
-        .init(userID: "1", id: "1", name: "LIZZY", description: "Builds the landscape of your dreams", image: "lizard.fill", cardColor: .pink),
-        .init(userID: "2", id: "2", name: "BOLT", description: "Ignites new ideas when you need them", image: "tortoise.fill", cardColor: .purple),
-        .init(userID: "3", id: "3", name: "AURORA", description: "Guides your imagination into focus", image: "bird.fill", cardColor: .blue)
-    ]
-    return CardUnlockView(unlockCards: .constant(true), cards: demoCards, initialRevealedCount: 1)
-}
+    struct CardUnlockPreviewWrapper: View {
+        @State var cards = [
+            CardModel(userID: "1", id: "ABCDEFGHIJKLMNOPQRS", name: "LIZZY", description: "Builds the landscape of your dreams", image: "lizard.fill", cardColor: .yellow),
+            CardModel(userID: "1", id: "ABCDEFGHIJKLMNOPQRST", name: "KATIE", description: "Builds the landscape of your dreams", image: "lizard.fill", cardColor: .yellow),
+            CardModel(userID: "1", id: "ABCDEFGHIJKLMNOPQRSTU", name: "KATIE", description: "Builds the landscape of your dreams", image: "lizard.fill", cardColor: .yellow)
+        ]
+        @State var showUnlockView = true
+        @State var showCardsCarousel = false
+        @State var currentPage = 0
+        @Namespace var ns
 
-#Preview("2 unlocked") {
-    let demoCards: [CardModel] = [
-        .init(userID: "1", id: "1", name: "LIZZY", description: "Builds the landscape of your dreams", image: "lizard.fill", cardColor: .pink),
-        .init(userID: "2", id: "2", name: "BOLT", description: "Ignites new ideas when you need them", image: "tortoise.fill", cardColor: .purple),
-        .init(userID: "3", id: "3", name: "AURORA", description: "Guides your imagination into focus", image: "bird.fill", cardColor: .blue)
-    ]
-    return CardUnlockView(unlockCards: .constant(true), cards: demoCards, initialRevealedCount: 2)
-}
-
-#Preview("All unlocked") {
-    let demoCards: [CardModel] = [
-        .init(userID: "1", id: "1", name: "LIZZY", description: "Builds the landscape of your dreams", image: "lizard.fill", cardColor: .pink),
-        .init(userID: "2", id: "2", name: "BOLT", description: "Ignites new ideas when you need them", image: "tortoise.fill", cardColor: .purple),
-        .init(userID: "3", id: "3", name: "AURORA", description: "Guides your imagination into focus", image: "bird.fill", cardColor: .blue)
-    ]
-    return CardUnlockView(unlockCards: .constant(true), cards: demoCards, initialRevealedCount: demoCards.count)
+        var body: some View {
+            CardUnlockView(
+                namespace: ns,
+                cards: $cards,
+                showUnlockView: $showUnlockView,
+                showCardsCarousel: $showCardsCarousel,
+                currentPage: $currentPage
+            )
+        }
+    }
 }

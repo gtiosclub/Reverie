@@ -11,7 +11,7 @@ import UIKit
 
 class FirebaseUpdateCardService {
     static let shared = FirebaseUpdateCardService()
-    let fb = FirebaseLoginService()
+    let fb = FirebaseLoginService.shared
     var user = FirebaseLoginService.shared.currUser!
     
     func toggleIsUnlocked(card: CardModel) async {
@@ -19,6 +19,16 @@ class FirebaseUpdateCardService {
             try await self.fb.db.collection("DREAMCARDS").document(card.id).updateData(["isUnlocked": !card.isUnlocked])
         } catch {
             print("Firebase failed to toggle isUnlocked with error: \(error)")
+        }
+    }
+    
+    func toggleIsUnlocked(cards: [CardModel]) async {
+        for card in cards {
+            do {
+                try await self.fb.db.collection("DREAMCARDS").document(card.id).updateData(["isUnlocked": !card.isUnlocked])
+            } catch {
+                print("Firebase failed to toggle isUnlocked with error: \(error)")
+            }
         }
     }
     

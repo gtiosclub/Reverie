@@ -9,7 +9,7 @@ import SwiftUI
 
 struct DreamArchiveView: View {
     @EnvironmentObject var ts: TabState
-
+    
     @State private var search = ""
     @State private var selectedTag: DreamFilterTag = .allTags
     @State private var selectedDateFilter: DateFilter = .allDates
@@ -23,15 +23,24 @@ struct DreamArchiveView: View {
         currentUser?.dreams ?? []
     }
     
-    enum DreamFilterTag: String, CaseIterable, Identifiable {
-        case allTags = "Tags - All"
-        case mountains = "mountains"
-        case rivers = "rivers"
-        case forests = "forests"
-        case animals = "animals"
-        case school = "school"
+    enum DreamFilterTag: Identifiable, CaseIterable, Hashable {
+        case allTags
+        case tag(DreamModel.Tags)
         
-        var id: Self { self }
+        var id: String { rawValue }
+        
+        var rawValue: String {
+            switch self {
+            case .allTags:
+                return "Tags - All"
+            case .tag(let tag):
+                return tag.rawValue
+            }
+        }
+        
+        static var allCases: [DreamFilterTag] {
+            return [.allTags] + DreamModel.Tags.allCases.map { .tag($0) }
+        }
     }
     
     enum DateFilter: String, CaseIterable, Identifiable {
@@ -60,10 +69,9 @@ struct DreamArchiveView: View {
             }
         }
         
-        if selectedTag != .allTags {
-            let selectedRawTag = selectedTag.rawValue
+        if case .tag(let selectedTagValue) = selectedTag {
             dreams = dreams.filter { dream in
-                return dream.tags.map { $0.rawValue }.contains(selectedRawTag)
+                dream.tags.contains(selectedTagValue)
             }
         }
         
@@ -105,17 +113,19 @@ struct DreamArchiveView: View {
         return result
     }
     
-    
     var body: some View {
-        ZStack {
-            BackgroundView()
+        ZStack(alignment: .bottom) {
+            BackgroundColor()
+                .ignoresSafeArea()
+            
             VStack(spacing: 0) {
                 VStack(alignment: .leading, spacing: 16) {
                     HStack {
-                        Text("My Dreams")
+                        Text("Archive")
                             .bold()
                             .font(.title)
                             .foregroundColor(.white)
+                            .dreamGlow()
                         Spacer()
                         HStack(spacing: 8) {
                             Button {
@@ -133,16 +143,12 @@ struct DreamArchiveView: View {
                                     .foregroundColor(.white)
                                     .frame(width: 32, height: 32)
                             }
-                            Button (action: {
-                                showingLogDream = true;
-                            }) {
+                            
+                            NavigationLink(destination: LoggingView()) {
                                 Image(systemName: "plus")
                                     .foregroundColor(.black)
                                     .padding(6)
                                     .background(Circle().fill(Color.white))
-                            }
-                            .sheet(isPresented: $showingLogDream) {
-                                LoggingView()
                             }
                         }
                     }
@@ -160,9 +166,9 @@ struct DreamArchiveView: View {
                         .glassEffect(.regular, in: .rect)
                         
                         Picker("Tags", selection: $selectedTag) {
-                            ForEach(DreamFilterTag.allCases, id: \.self) { tag in
-                                Text(tag.rawValue)
-                                    .foregroundColor(.white)
+                            ForEach(DreamFilterTag.allCases) { tag in
+                                Text(tag.rawValue.capitalized)
+                                    .tag(tag)
                             }
                         }
                         .background(RoundedRectangle(cornerRadius: 8))
@@ -193,12 +199,18 @@ struct DreamArchiveView: View {
                                     Text(group.title)
                                         .font(.headline)
                                         .foregroundColor(.white)
+                                    
+                                    Rectangle()
+                                        .fill(Color.white.opacity(0.5))
+                                        .frame(height: 1)
+                                        .padding(.leading, 5)
+                                    
                                     ForEach(group.dreams, id: \.id) { dream in
-                                        NavigationLink(destination: DreamEntryView(dream: dream)) {
+                                        NavigationLink(destination: DreamEntryView(dream: dream, backToArchive: false)) {
                                             SectionView(
                                                 title: dream.title,
                                                 date: formatDate(dream.date),
-                                                tags: dream.tags.map { $0.rawValue.capitalized },
+                                                tags: dream.tags,
                                                 description: dream.loggedContent
                                             )
                                         }
@@ -237,22 +249,23 @@ struct DreamArchiveView: View {
                             .frame(maxWidth: .infinity)
                             .padding(.top, 100)
                         }
-                        Spacer(minLength: 60)
+                        
+                        Spacer(minLength: 80)
                     }
                     .padding()
                 }
             }
-            .ignoresSafeArea(edges: .bottom)
-            VStack {
-                Spacer()
-                TabbarView()
-            }
+            
+            TabbarView()
+                .ignoresSafeArea(edges: .bottom)
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .onAppear {
             ts.activeTab = .archive
         }
         .preferredColorScheme(.dark)
     }
+    
     
     private func formatDate(_ date: Date) -> String {
         let formatter = DateFormatter()
@@ -284,9 +297,7 @@ struct DreamArchiveView: View {
             return nil
         }
     }
-    
 }
-
 
 #Preview {
     DreamArchiveView()
