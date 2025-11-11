@@ -174,14 +174,14 @@ struct StatefulPreviewWrapper<Value, Content: View>: View {
 private struct StickerViewPreviewHost: View {
     @State private var mockCharacters: [CardModel] = {
         var c1 = CardModel(userID: "1", id: "1", name: "Morpheus",
-                           description: "Dream shaper", image: nil, cardColor: .blue)
+                           description: "Dream shaper", image: nil, cardColor: .silver)
         c1.isPinned = true                                     // pinned
         var c2 = CardModel(userID: "2", id: "2", name: "Luna",
                            description: "Silent guide", image: nil, cardColor: .purple)
         var c3 = CardModel(userID: "3", id: "3", name: "Kairos",
                            description: "Time bender", image: nil, cardColor: .yellow)
         var c4 = CardModel(userID: "4", id: "4", name: "Atlas",
-                           description: "Carries your goals", image: nil, cardColor: .green)
+                           description: "Carries your goals", image: nil, cardColor: .emerald)
         c4.isPinned = true                                     // another pinned
         var c5 = CardModel(userID: "5", id: "5", name: "Aurora",
                            description: "Focus guide", image: nil, cardColor: .pink)
