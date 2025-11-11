@@ -71,7 +71,7 @@ class DreamModel: Decodable {
         case .celebration: return "party.popper.fill"
         case .teeth: return "mouth.fill"
         case .rooms: return "door.left.hand.open"
-        case .disasters: return "tornado.circle.fill"
+        case .disasters: return "tornado"
         case .strangers: return "person.line.dotted.person.fill"
         case .travel: return "airplane"
         case .chase: return "figure.run"

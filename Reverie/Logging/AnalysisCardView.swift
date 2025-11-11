@@ -115,9 +115,9 @@ struct AnalysisCardView: View {
                         .foregroundColor(.gray)
                         .opacity(0.7)
                     Text("This analysis was generated using your description of the dream")
-                        .font(.system(size: 10))
+                        .font(.system(size: 11))
                         .foregroundColor(.gray)
-                        .opacity(0.7)
+                        .opacity(0.8)
                 }
                 .padding(.leading, 30)
             }
