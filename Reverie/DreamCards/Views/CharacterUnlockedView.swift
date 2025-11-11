@@ -12,22 +12,28 @@ struct CharacterUnlockedView: View {
     
     var body: some View {
         ZStack {
-            LinearGradient(gradient: Gradient(colors: [card.cardColor.swiftUIColor, .white]),
-                           startPoint: .topLeading,
-                           endPoint: .bottomTrailing)
-            
             RoundedRectangle(cornerRadius: 15)
-                .stroke(card.cardColor.swiftUIColor, lineWidth: 6)
+                .fill(LinearGradient(gradient: Gradient(colors: [
+                    card.cardColor.swiftUIColor,
+                    card.cardColor.lighterColor.opacity(0.25)
+                ]),
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing))
+
+//            RoundedRectangle(cornerRadius: 15)
+//                .stroke(card.cardColor.swiftUIColor.opacity(0.7), lineWidth: 0.5)
 
             VStack {
                 if card.id.count > 16 {
                     Text("NEW CHARACTER")
                         .padding(4)
                         .foregroundColor(.black)
+                        .bold()
                 } else {
                     Text("NEW AWARD")
                         .padding(4)
                         .foregroundColor(.black)
+                        .bold()
                 }
                 
                 AsyncImage(url: URL(string: card.image ?? "")) { phase in
@@ -46,7 +52,7 @@ struct CharacterUnlockedView: View {
                         EmptyView()
                     }
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .frame(width: 180, height: 180)
                 .padding(4)
                 .shadow(color: card.cardColor.swiftUIColor.opacity(0.8), radius: 30, x: 0, y: 0)
                 
@@ -55,22 +61,21 @@ struct CharacterUnlockedView: View {
                     .foregroundColor(.black)
                     .padding(.horizontal)
                     .fontDesign(Font.Design.rounded)
+                    .padding(.bottom, 6)
                 
                 Text(card.description)
-                    .font(.caption)
+                    .font(.system(size: 14))
                     .foregroundColor(.black)
+                    .bold()
                 
                 Spacer()
             }
             .padding(10)
             .multilineTextAlignment(.center)
         }
-        .padding()
-        .opacity(1)
         .bold()
         .frame(width: 320, height: 520)
         .clipShape(RoundedRectangle(cornerRadius: 15))
-        .shadow(color: card.cardColor.swiftUIColor.opacity(0.7), radius: 20, x: 0, y: 0)
     }
 }
 
