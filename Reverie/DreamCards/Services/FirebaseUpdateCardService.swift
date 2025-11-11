@@ -11,7 +11,7 @@ import UIKit
 
 class FirebaseUpdateCardService {
     static let shared = FirebaseUpdateCardService()
-    let fb = FirebaseLoginService()
+    let fb = FirebaseLoginService.shared
     var user = FirebaseLoginService.shared.currUser!
     
     func toggleIsUnlocked(card: CardModel) async {

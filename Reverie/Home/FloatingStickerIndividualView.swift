@@ -98,7 +98,7 @@ struct FloatingStickerIndividualView: View {
         
         let newRotation = Angle.degrees(Double.random(in: -90...90))
         let newScale = CGFloat.random(in: 0.8...1.2)
-        let duration = Double.random(in: 7...12)
+        let duration = Double.random(in: 15...25)
         
         withAnimation(.easeInOut(duration: duration)) {
             self.position = newPosition

@@ -40,7 +40,7 @@ class FoundationModelService {
         let session = LanguageModelSession(instructions: instructions)
         let response = try await session.respond(to: dream_description)
         
-        print(response.content)
+//        print(response.content)
         return response.content
         
     }

@@ -205,8 +205,11 @@ struct SaveDreamView: View {
     // MARK: - Save Dream
     func saveDream() async {
         do {
-            createdDream = try await FirebaseDreamService.shared.createDream(dream: newDream)
+            var createdDreamID = try await FirebaseDreamService.shared.createDream(dream: newDream)
+            
+            createdDream = try await FirebaseDreamService.shared.fetchDream(dreamID: createdDreamID)
             // not on main thread, if app closed before image in done generating you lose image. may need to figure out better solution
+            print("DREAM ID FOR CREATED DREAM: \(createdDream!.id)")
             FirebaseDCService.shared.generateImage(for: createdDream!)
             FirebaseDCService.shared.generateImageForDC(for: createdDream!)
 //            createdDream = newDream
