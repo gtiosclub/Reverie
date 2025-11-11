@@ -180,7 +180,7 @@ private struct YearlyDreamGraphView: View {
 
 struct FrequencyView: View {
     @StateObject private var viewModel = HeatmapViewModel()
-    private let yearRange = 1980...2080
+    private let yearRange = 2015...2035
     @State private var selectedPageIndex: Int
 
     init(){

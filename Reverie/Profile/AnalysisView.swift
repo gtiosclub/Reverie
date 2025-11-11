@@ -8,125 +8,131 @@
 import SwiftUI
 
 struct AnalysisView: View {
+    @EnvironmentObject var ts: TabState
+    
     var body: some View {
-        NavigationView {
+//        NavigationView {
             ZStack(alignment:.top) {
                 BackgroundView()
                     .ignoresSafeArea()
-            ScrollView(showsIndicators: false) {
-                VStack(alignment: .leading, spacing: 20) {
-                    AnalysisSection(
-                        title: "Activity",
-                        icon: "cloud.fill",
-                        previewContent: {
-                            VStack(alignment: .leading, spacing: 8) {
-                                Spacer()
-                                Text(activitySummaryText())
-                                    .font(.subheadline)
-                                    .foregroundColor(.white.opacity(0.7))
-                                    .padding(.leading, 18)
-                                FrequencyView()
-                            }
-                        },
-                        destination: { StatisticsView(streak: currentStreak, weeklyAverage: currentWeeklyAverage, averageLength: currentAverageDreamLength) },
-                        trailingView: {
-                            HStack(spacing: 4) {
-                                Image(systemName: "flame.fill")
-                                    .foregroundColor(.orange)
-                                Text("\(currentStreak) day Streak")
-                                    .font(.subheadline.bold())
-                                    .foregroundColor(.orange)
-                            }
-                            .padding(.horizontal, 10)
-                            .padding(.vertical, 4)
-                            .background(Color.orange.opacity(0.15))
-                            .cornerRadius(12)
-                        }
-                    )
-
-                    AnalysisSection (
-                        title: "Themes",
-                        icon: "camera.macro",
-                        previewContent: {ThisWeekThemesView(thisWeekTags: thisWeekTags)},
-                        destination: {UserTagsView()},
-                        trailingView: {EmptyView()}
-                    )
-                    
-                    AnalysisSection (
-                        title: "Moods",
-                        icon: "face.smiling.fill",
-                        previewContent: {HeatmapView()},
-                        destination: {CombinedHeatmapEmotionView(dreams: dreamAll)},
-                        trailingView: {EmptyView()}
-                    )
-                    
-                    AnalysisSection (
-                        title: "Sleep",
-                        icon: "moon.stars.fill",
-                        previewContent: {FrequencyView()},
-                        destination: {FrequencyView()},
-                        trailingView: {EmptyView()}
-                        //sleep view stuff here
-                    )
-                }
-                   .padding(.top, 75)
-                   .padding(.horizontal)
-                   .padding(.bottom)
-            }
-              LinearGradient(
-                  gradient: Gradient(colors: [
-                    Color.black.opacity(0.9),
-                            Color.black.opacity(0.6),
-                            Color.black.opacity(0.3),
-                    Color.black.opacity(0)
-                  ]),
-                  startPoint: .top,
-                  endPoint: .bottom
-              )
-              .frame(height: 90)
-              .ignoresSafeArea(edges: .top)
-              .blendMode(.overlay)
-
-              HStack {
-                  Text("Analysis")
-                      .font(.largeTitle.bold())
-                      .foregroundColor(.white)
-                  Spacer()
-                  NavigationLink(destination: ConstellationView(dreams: testDreams, similarityMatrix: testSimMatrix, threshold: 0.4)) {
-                      ZStack {
-                              Circle()
-                                  .fill(
-                                      LinearGradient(
-                                          gradient: Gradient(colors: [
-                                              Color(red: 47/255, green: 40/255, blue: 138/255),
-                                              Color(red: 80/255, green: 70/255, blue: 200/255)
-                                          ]),
-                                          startPoint: .topLeading,
-                                          endPoint: .bottomTrailing
-                                      )
-                                  )
-                                  .frame(width: 44, height: 44)
-                                  .shadow(color: Color(red: 120/255, green: 100/255, blue: 255/255).opacity(0.6),
-                                          radius: 10, x: 0, y: 0)
-                                  .overlay(
-                                      Circle()
-                                          .stroke(Color.white.opacity(0.15), lineWidth: 1)
-                                  )
-
-                              Image(systemName: "moon.stars.fill")
-                                  .font(.title2)
-                                  .foregroundColor(.white)
-                                  .shadow(color: .white.opacity(0.3), radius: 4, x: 0, y: 0)
-                          }
-                          .padding(.trailing, 24)
-                          .padding(.top, 8)
-                      }
+                ScrollView(showsIndicators: false) {
+                    VStack(alignment: .leading, spacing: 20) {
+                        AnalysisSection(
+                            title: "Activity",
+                            icon: "cloud.fill",
+                            previewContent: {
+                                VStack(alignment: .leading, spacing: 8) {
+                                    Spacer()
+                                    Text(activitySummaryText())
+                                        .font(.subheadline)
+                                        .foregroundColor(.white.opacity(0.7))
+                                        .padding(.leading, 18)
+                                    FrequencyView()
                                 }
-              .padding(.leading, 32)
-              .padding(.top, 12)
-          }
-          .navigationBarTitleDisplayMode(.inline)
-        }
+                            },
+                            destination: { StatisticsView(streak: currentStreak, weeklyAverage: currentWeeklyAverage, averageLength: currentAverageDreamLength) },
+                            trailingView: {
+                                HStack(spacing: 4) {
+                                    Image(systemName: "flame.fill")
+                                        .foregroundColor(.orange)
+                                    Text("\(currentStreak) day Streak")
+                                        .font(.subheadline.bold())
+                                        .foregroundColor(.orange)
+                                }
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 4)
+                                .background(Color.orange.opacity(0.15))
+                                .cornerRadius(12)
+                            }
+                        )
+                        
+                        AnalysisSection (
+                            title: "Themes",
+                            icon: "camera.macro",
+                            previewContent: {ThisWeekThemesView(thisWeekTags: thisWeekTags)},
+                            destination: {UserTagsView()},
+                            trailingView: {EmptyView()}
+                        )
+                        
+                        AnalysisSection (
+                            title: "Moods",
+                            icon: "face.smiling.fill",
+                            previewContent: {HeatmapView()},
+                            destination: {CombinedHeatmapEmotionView(dreams: dreamAll)},
+                            trailingView: {EmptyView()}
+                        )
+                        
+                        AnalysisSection (
+                            title: "Sleep",
+                            icon: "moon.stars.fill",
+                            previewContent: {FrequencyView()},
+                            destination: {FrequencyView()},
+                            trailingView: {EmptyView()}
+                            //sleep view stuff here
+                        )
+                    }
+                    .padding(.top, 75)
+                    .padding(.horizontal)
+                    .padding(.bottom)
+                }
+                LinearGradient(
+                    gradient: Gradient(colors: [
+                        Color.black.opacity(0.9),
+                        Color.black.opacity(0.6),
+                        Color.black.opacity(0.3),
+                        Color.black.opacity(0)
+                    ]),
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+                .frame(height: 90)
+                .ignoresSafeArea(edges: .top)
+                .blendMode(.overlay)
+                
+                HStack {
+                    Text("Analysis")
+                        .font(.largeTitle.bold())
+                        .foregroundColor(.white)
+                    Spacer()
+                    NavigationLink(destination: ConstellationView(dreams: testDreams, similarityMatrix: testSimMatrix, threshold: 0.4)) {
+                        ZStack {
+                            Circle()
+                                .fill(
+                                    LinearGradient(
+                                        gradient: Gradient(colors: [
+                                            Color(red: 47/255, green: 40/255, blue: 138/255),
+                                            Color(red: 80/255, green: 70/255, blue: 200/255)
+                                        ]),
+                                        startPoint: .topLeading,
+                                        endPoint: .bottomTrailing
+                                    )
+                                )
+                                .frame(width: 44, height: 44)
+                                .shadow(color: Color(red: 120/255, green: 100/255, blue: 255/255).opacity(0.6),
+                                        radius: 10, x: 0, y: 0)
+                                .overlay(
+                                    Circle()
+                                        .stroke(Color.white.opacity(0.15), lineWidth: 1)
+                                )
+                            
+                            Image(systemName: "moon.stars.fill")
+                                .font(.title2)
+                                .foregroundColor(.white)
+                                .shadow(color: .white.opacity(0.3), radius: 4, x: 0, y: 0)
+                        }
+                        .padding(.trailing, 24)
+                        .padding(.top, 8)
+                    }
+                }
+                .padding(.leading, 32)
+                .padding(.top, 12)
+                VStack {
+                    Spacer()
+                    TabbarView()
+                }
+            }
+//          .navigationBarTitleDisplayMode(.inline)
+//        }
     }
 }
 
@@ -226,5 +232,5 @@ let dreamAll = FirebaseLoginService.shared.currUser?.dreams ?? []
 
 #Preview {
     AnalysisView()
-        
+        .environmentObject(TabState())
 }
