@@ -70,6 +70,7 @@ struct DreamBookView: View {
         }
         .task {
             do {
+                print("Dream ID for fetched dream \(dream.id)")
                 if let updatedDream = try await FirebaseDreamService.shared.fetchDream(dreamID: dream.id) {
                     self.dream = updatedDream
                     print("Successfully fetched updated dream with image URLs.")
