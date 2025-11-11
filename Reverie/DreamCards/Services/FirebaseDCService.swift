@@ -17,10 +17,14 @@ import FirebaseAuth
 
 class FirebaseDCService {
     static let shared = FirebaseDCService()
-    let fb = FirebaseLoginService()
+    let fb = FirebaseLoginService.shared
 
     func generateImageForDC(for dream: DreamModel) {
         let dreamID = dream.id
+        print("dreamID: \(dreamID)")
+        if dream.id == "blank" {
+            return
+        }
         let dreamText = dream.loggedContent
         let userID = dream.userID
         do {
@@ -36,7 +40,8 @@ class FirebaseDCService {
                 print("storing in fb")
                 let url = try await FirebaseStorageService.shared.uploadSticker(sticker, forUserID: userID, dreamID: dreamID)
                 print("saved in fb")
-                await FirebaseDCService.shared.createDC(
+                print("saving with id \(dreamID)")
+                let newCard = await FirebaseDCService.shared.createDC(
                     card: CardModel(
                         userID: userID,
                         id: dreamID,
@@ -46,6 +51,7 @@ class FirebaseDCService {
                         cardColor: CardModel.DreamColor.allCases.randomElement() ?? .purple
                     )
                 )
+                await FirebaseLoginService.shared.currUser?.dreamCards.append(newCard!)
                 print("finished")
             }
         } catch {
@@ -56,6 +62,10 @@ class FirebaseDCService {
     
     func generateImage(for dream: DreamModel) {
         let dreamID = dream.id
+        print("dreamID: \(dreamID)")
+        if dream.id == "blank" {
+            return
+        }
         let dreamText = dream.loggedContent
         let userID = dream.userID
         do {
@@ -91,12 +101,14 @@ class FirebaseDCService {
         }
     }
     
-    func createDC(card: CardModel) async {
+    func createDC(card: CardModel) async -> CardModel? {
         do {
             try await fb.db.collection("DREAMCARDS").document(card.id).setData(from: card)
             let userRef = fb.db.collection("USERS").document(card.userID)
             try await userRef.updateData(["dreamcards": FieldValue.arrayUnion([card.id])])
+            return try await fb.db.collection("DREAMCARDS").document(card.id).getDocument(as: CardModel.self)
         } catch {
+            return nil
             print("Firebase write error: \(error)")
         }
     }
