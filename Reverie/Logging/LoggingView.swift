@@ -12,7 +12,7 @@ struct LoggingView: View {
     @State private var dream = ""
     @State private var title = ""
     @State private var date = Date()
-    @State private var shouldFinishDream = false // Toggle state
+    @State private var shouldFinishDream = false
     private let fms = FoundationModelService()
     
     @State private var analysis: String = ""
@@ -27,11 +27,11 @@ struct LoggingView: View {
     
     var body: some View {
         NavigationStack {
-            ZStack {
+            ZStack(alignment: .bottom) {
                 BackgroundView()
+                    .ignoresSafeArea()
                 
-                VStack() {
-                    
+                VStack {
                     HStack {
                         Toggle("Finish Dream", isOn: $shouldFinishDream)
                             .toggleStyle(SwitchToggleStyle(tint: .blue))
@@ -51,6 +51,7 @@ struct LoggingView: View {
                                     emotion = try await fms.getEmotion(dreamText: dream)
                                     tags = try await fms.getRecommendedTags(dreamText: dream)
                                     finishedContent = "None"
+                                    
                                     if shouldFinishDream {
                                         finishedContent = try await fms.getFinishedDream(dream_description: dream)
                                     }
@@ -98,11 +99,11 @@ struct LoggingView: View {
                                     .font(.title)
                                     .fontWeight(.bold)
                             }
-                            TextField("", text: $title)  // ← This should just be $title
-                                        .foregroundColor(.white)
-                                        .textFieldStyle(.plain)
-                                        .tint(.white)
-                                        .font(.title)
+                            TextField("", text: $title)
+                                .foregroundColor(.white)
+                                .textFieldStyle(.plain)
+                                .tint(.white)
+                                .font(.title)
                         }
                         
                         Spacer()
@@ -123,32 +124,30 @@ struct LoggingView: View {
                                 .padding(.vertical, 8)
                         }
                         TextField("", text: Binding(
-                                get: {
-                                    // displays trancripts while user is recording
-                                    if (audioManager.audioCapturerState == .started) {
-                                        dream + audioManager.finalizedTranscript.characters + audioManager.volatileTranscript.characters
-                                    } else {
-                                        dream
-                                    }
-                                },
-                                set: { newValue in
-                                    dream = newValue
+                            get: {
+                                if (audioManager.audioCapturerState == .started) {
+                                    dream + audioManager.finalizedTranscript.characters + audioManager.volatileTranscript.characters
+                                } else {
+                                    dream
                                 }
-                            ), axis: .vertical)
-                                .foregroundColor(.white)
-                                .textFieldStyle(.plain)
-                                .tint(.white)
-                                .padding(.vertical, 8)
+                            },
+                            set: { newValue in
+                                dream = newValue
+                            }
+                        ), axis: .vertical)
+                        .foregroundColor(.white)
+                        .textFieldStyle(.plain)
+                        .tint(.white)
+                        .padding(.vertical, 8)
                     }
                     
                     Spacer()
-                    // Button for recording
+                    
                     switch audioManager.audioCapturerState {
                     case .started:
                         Button(action: {
                             Task {
                                 do {
-                                    //appends entire transcript to dream after user has stopped
                                     let transcription = audioManager.finalizedTranscript.characters + audioManager.volatileTranscript.characters
                                     audioManager.resetTranscripts()
                                     if !transcription.isEmpty {
@@ -164,18 +163,19 @@ struct LoggingView: View {
                                     audioManager.error = error
                                 }
                             }
-                            
                         }, label: {
                             Image(systemName: "square")
                                 .font(.headline)
                                 .foregroundStyle(.white)
-                                .background(Circle()
-                                    .fill(Color.clear)
-                                    .frame(width: 60, height: 60)
-                                    .glassEffect())
-                            
+                                .background(
+                                    Circle()
+                                        .fill(Color.clear)
+                                        .frame(width: 60, height: 60)
+                                        .glassEffect()
+                                )
                         })
                         .padding(.bottom, 60)
+                        
                     case .stopped:
                         Button(action: {
                             Task {
@@ -191,15 +191,15 @@ struct LoggingView: View {
                             Image(systemName: "microphone")
                                 .font(.headline)
                                 .foregroundStyle(.white)
-                                .background(Circle()
-                                    .fill(Color.clear)
-                                    .frame(width: 60, height: 60)
-                                    .glassEffect())
-                            
+                                .background(
+                                    Circle()
+                                        .fill(Color.clear)
+                                        .frame(width: 60, height: 60)
+                                        .glassEffect()
+                                )
                         })
                         .padding(.bottom, 60)
                     }
-                    
                 }
                 .padding()
                 .environment(\.colorScheme, .dark)
@@ -230,14 +230,12 @@ struct LoggingView: View {
                 }
                 
                 TabbarView()
+                    .ignoresSafeArea(edges: .bottom)
             }
-            VStack {
-                Spacer()
-                TabbarView()
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .onAppear {
+                ts.activeTab = .none
             }
-        }
-        .onAppear {
-            ts.activeTab = .none
         }
     }
 }
