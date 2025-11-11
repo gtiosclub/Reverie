@@ -36,8 +36,6 @@ struct DreamEntryView: View {
         appearance.setTitleTextAttributes(selectedAttrs, for: .selected)
     }
     
-    var backButtonLabel: String = "Archive"
-    @Environment(\.dismiss) private var dismiss
     
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
@@ -47,11 +45,11 @@ struct DreamEntryView: View {
 
                 HStack {
                     Button(action: {
-//                        if backToArchive {
-                        goBack = true
-//                        } else {
-//                            dismiss()
-//                        }
+                        if backToArchive {
+                            goBack = true
+                        } else {
+                            dismiss()
+                        }
                     }) {
                         ZStack {
                             Circle()

@@ -209,7 +209,7 @@ class DreamModel: Decodable {
         }
     }
 
-    init(userID: String, id: String, title: String, date: Date, loggedContent: String, generatedContent:String, tags: [Tags], image: String, emotion: Emotions) {
+    init(userID: String, id: String, title: String, date: Date, loggedContent: String, generatedContent:String, tags: [Tags], image: [String], emotion: Emotions) {
         self.userID = userID
         self.id = id
         self.title = title
