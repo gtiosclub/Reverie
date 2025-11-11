@@ -142,7 +142,7 @@ struct DreamShowView: View {
         loggedContent: "This is a logged dream example. You can scroll through it here.",
         generatedContent: "Example",
         tags: [.mountains, .rivers],
-        image: "Test",
+        image: ["Test"],
         emotion: .happiness,
         finishedDream: """
         The quiet beauty of early morning often goes unnoticed, yet it holds a kind of magic that no other time of day can match. As the first rays of sunlight spill over the horizon, the world awakens slowly, shaking off the stillness of the night. The air feels crisp and pure, carrying the faint scent of grass, earth, and dew. Birds begin to stir, filling the silence with soft melodies that seem to welcome the dawn itself. Trees stand tall and calm, their leaves glistening like tiny mirrors reflecting the light of a new day. In these precious moments, time feels slower, more forgiving — as if nature is offering a quiet invitation to begin again. Whether it’s the gentle steam rising from a warm cup of tea, the distant hum of a city coming to life, or the golden light touching everything it meets, morning reminds us that renewal is constant, and every sunrise brings with it the hope of something new.
