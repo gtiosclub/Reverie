@@ -63,11 +63,15 @@ struct CharacterArchiveView: View {
                     }
                 }
                 .frame(width: 400, height: 650)
-                .background {
-                    RoundedRectangle(cornerRadius: 20).fill(Color.black.opacity(0.65))
-                        .glassEffect(.regular, in: .rect)
-                        .blur(radius: 4)
-                }
+                .background(
+                    RoundedRectangle(cornerRadius: 20)
+                        .fill(Color.black.opacity(0.85))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 20)
+                                .stroke(.white.opacity(0.65), lineWidth: 1)
+                        )
+                        .shadow(color: .white.opacity(0.4), radius: 15)
+                )
                 .overlay(
                     RoundedRectangle(cornerRadius: 20)
                         .stroke(Color.white.opacity(0.2), lineWidth: 3)
