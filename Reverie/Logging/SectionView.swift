@@ -3,67 +3,73 @@ import SwiftUI
 struct SectionView: View {
     let title: String
     let date: String
-    let tags: [String]
+    let tags: [DreamModel.Tags]
     let description: String
+
     var body: some View {
-
-            HStack {
-                VStack (alignment: .leading) {
-                    HStack {
+        VStack(spacing: 0) {
+            HStack(alignment: .center) {
+                VStack(alignment: .leading, spacing: 10) {
+                    HStack(spacing: 20) {
                         Text(title)
-                            .font(.title)
-                            .fontWeight(.bold)
-                            .textFieldStyle(PlainTextFieldStyle())
-                            .padding(.horizontal, 15)
-                            .padding(.top,12)
-                            .cornerRadius(6)
+                            .font(.system(size: 20, weight: .semibold))
                             .foregroundColor(.white)
+                            .lineLimit(1)
+                            .dreamGlow()
 
-                    }
-                    Text(date)
-                        .foregroundColor(.white)
-                        .font(.subheadline)
-                        .padding(.leading, 20)
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack {
-                            ForEach(tags, id: \.self) { tag in
-                                Text(tag)
-                                    .foregroundColor(.white)
-                                    .font(.subheadline)
-                                    .padding(.horizontal,10)
-                                    .background(Color(white: 0.7))
-                                    .cornerRadius(15)
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack(spacing: 6) {
+                                ForEach(tags, id: \.self) { tag in
+                                    Image(systemName: DreamModel.tagImages(tag: tag))
+                                        .foregroundColor(DreamModel.tagColors(tag: tag))
+                                        .font(.headline)
+                                        .dreamGlow()
+                                }
                             }
                         }
-                        .padding(.horizontal, 18)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                     }
-                    HStack {
-                        Text(description)
-                            .foregroundColor(.white)
-                            .font(.subheadline)
-                            .lineLimit(1)
-                            .padding(.horizontal, 18)
-                            .padding(.vertical,10)
-                    }
+
+                    Text(date)
+                        .font(.subheadline)
+                        .foregroundColor(.white.opacity(0.6))
                 }
+
                 Spacer()
+
                 Image(systemName: "chevron.right")
-                    .foregroundColor(.white)
-                    .font(.title)
-                    .padding(.horizontal,10)
+                    .foregroundColor(.white.opacity(0.8))
+                    .font(.title3)
             }
-            .background(Color(white: 0.4))
-            .cornerRadius(10)
-            .padding(.horizontal, 10)
-            .padding(.vertical)
-            .frame(maxWidth: 384)
+            .padding(.vertical, 16)
+            .padding(.horizontal, 20)
+
+            Rectangle()
+                .fill(Color.white.opacity(0.5))
+                .frame(height: 1)
+                .padding(.leading, 5)
         }
+        .background(Color.clear)
     }
+}
+
 #Preview {
-    SectionView(
-        title: "Cave Diving",
-        date: "September 14th, 2024",
-        tags: ["Love", "Falling", "Being Chased", "Scared"],
-        description: "Dream description preview Dream description preview Dream description preview Dream description preview"
-    )
+    ZStack {
+        Color.black.ignoresSafeArea()
+        VStack(spacing: 0) {
+            SectionView(
+                title: "Cave Diving",
+                date: "September 14th, 2024",
+                tags: [.love, .falling, .animals, .authority, .chase, .disasters, .celebration, .fantasy, .fight, .food, .nature],
+                description: "Dream description preview Dream description preview Dream description preview Dream description preview"
+            )
+            SectionView(
+                title: "Pizza Pizza",
+                date: "October 22",
+                tags: [.friends, .food],
+                description: "Dreaming about pizza with friends."
+            )
+        }
+        .padding(.horizontal)
+    }
 }
