@@ -12,6 +12,7 @@
 		47D198CD2EA840D00010F7BC /* LoggingWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 47D198B92EA840CE0010F7BC /* LoggingWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		66A534352E9B42B30074D9B2 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 669E5C1C2E980D4B00848E94 /* FirebaseStorage */; };
 		66EEDBE32E679D220011493C /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 66EEDBE22E679D1B0011493C /* .gitignore */; };
+		66F27F4A2EC3D14500AE72AE /* StableDiffusionResources in Resources */ = {isa = PBXBuildFile; fileRef = 66F27F492EC3D14500AE72AE /* StableDiffusionResources */; };
 		BD9435C72E84F664009CE7D0 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BD9435C62E84F664009CE7D0 /* GoogleService-Info.plist */; };
 		BDE7571A2E83618900D3C183 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = BDE757192E83618900D3C183 /* FirebaseAuth */; };
 		BDE7571C2E83618900D3C183 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = BDE7571B2E83618900D3C183 /* FirebaseFirestore */; };
@@ -48,6 +49,7 @@
 		47D198BD2EA840CE0010F7BC /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		66EEDBB22E6798000011493C /* Reverie.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Reverie.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		66EEDBE22E679D1B0011493C /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		66F27F492EC3D14500AE72AE /* StableDiffusionResources */ = {isa = PBXFileReference; lastKnownFileType = folder; name = StableDiffusionResources; path = ../StableDiffusionResources; sourceTree = "<group>"; };
 		BD9435C62E84F664009CE7D0 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -123,6 +125,7 @@
 		66EEDBA92E6798000011493C = {
 			isa = PBXGroup;
 			children = (
+				66F27F492EC3D14500AE72AE /* StableDiffusionResources */,
 				66EEDBE22E679D1B0011493C /* .gitignore */,
 				66EEDBB42E6798000011493C /* Reverie */,
 				47D198BF2EA840CE0010F7BC /* LoggingWidget */,
@@ -248,6 +251,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				66F27F4A2EC3D14500AE72AE /* StableDiffusionResources in Resources */,
 				66EEDBE32E679D220011493C /* .gitignore in Resources */,
 				BD9435C72E84F664009CE7D0 /* GoogleService-Info.plist in Resources */,
 			);
