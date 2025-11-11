@@ -14,6 +14,10 @@ struct StartView: View {
     @State private var selectedCharacter: CardModel? = nil
     @State private var unlockCards: Bool = false
     @State private var lockedCharacters: [CardModel] = []
+    @State private var showCardsCarousel: Bool = false
+    @State private var currentPage: Int = 0
+    
+    @Namespace private var animation
     
     var body: some View {
         ZStack {
@@ -56,10 +60,13 @@ struct StartView: View {
                         
             if unlockCards {
                 CardUnlockView(
-                    unlockCards: $unlockCards,
-                    cards: lockedCharacters
+                    namespace: animation,
+                    cards: $lockedCharacters,
+                    showUnlockView: $unlockCards,
+                    showCardsCarousel: $showCardsCarousel,
+                    currentPage: $currentPage
                 )
-                .transition(.opacity.combined(with: .scale(scale: 0.9)))
+//                .transition(.opacity.combined(with: .scale(scale: 0.9)))
             }
         }
         .onAppear {
@@ -101,3 +108,4 @@ struct StartView: View {
         .environment(FirebaseLoginService.shared)
         .environmentObject(TabState())
 }
+

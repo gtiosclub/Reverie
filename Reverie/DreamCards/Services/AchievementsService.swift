@@ -34,7 +34,7 @@ class AchievementsService {
             name: "Dream Chaser",
             description: "You logged 50 dreams!",
             image: "50dreams",
-            cardColor: .blue
+            cardColor: .emerald
         ),
         CardModel(
             userID: "achievements",

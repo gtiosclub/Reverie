@@ -24,9 +24,7 @@ struct CardModel: Identifiable, Codable, Equatable {  // Conforms to Identifiabl
     
     enum DreamColor: String, Codable, CaseIterable, ShapeStyle {
         case purple
-        case green
         case pink
-        case blue
         case yellow
         case teal
         case crimson
@@ -41,12 +39,8 @@ struct CardModel: Identifiable, Codable, Equatable {  // Conforms to Identifiabl
             switch self {
             case .purple:
                 return Color(red: 0.3, green: 0.2, blue: 0.5)
-            case .green:
-                return Color(red: 0.1, green: 0.3, blue: 0.2)
             case .pink:
                 return Color(red: 0.9, green: 0.7, blue: 0.7)
-            case .blue:
-                return Color(red: 0.1, green: 0.1, blue: 0.3)
             case .yellow:
                 return Color(red: 0.9, green: 0.8, blue: 0.5)
             case .teal:
@@ -65,6 +59,33 @@ struct CardModel: Identifiable, Codable, Equatable {  // Conforms to Identifiabl
                 return Color(red: 0.6, green: 0.4, blue: 0.8)
             case .coral:
                 return Color(red: 1.0, green: 0.5, blue: 0.4)
+            }
+        }
+        
+        var lighterColor: Color {
+            switch self {
+            case .purple:
+                return Color(red: 0.5, green: 0.4, blue: 0.7)
+            case .pink:
+                return Color(red: 1.0, green: 0.8, blue: 0.8)
+            case .yellow:
+                return Color(red: 1.0, green: 0.9, blue: 0.7)
+            case .teal:
+                return Color(red: 0.4, green: 0.7, blue: 0.7)
+            case .crimson:
+                return Color(red: 0.8, green: 0.3, blue: 0.4)
+            case .indigo:
+                return Color(red: 0.5, green: 0.2, blue: 0.8)
+            case .silver:
+                return Color(red: 0.9, green: 0.9, blue: 1.0)
+            case .amber:
+                return Color(red: 1.0, green: 0.7, blue: 0.3)
+            case .emerald:
+                return Color(red: 0.3, green: 0.7, blue: 0.5)
+            case .amethyst:
+                return Color(red: 0.7, green: 0.5, blue: 0.9)
+            case .coral:
+                return Color(red: 1.0, green: 0.6, blue: 0.5)
             }
         }
     }
