@@ -17,7 +17,7 @@ class AchievementsService {
     static let shared = AchievementsService()
     private let storage = Storage.storage().reference()
     private let db = Firestore.firestore()
-    let fb = FirebaseLoginService()
+    let fb = FirebaseLoginService.shared
 
     private let achievements: [CardModel] = [
         CardModel(
