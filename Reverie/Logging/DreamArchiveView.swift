@@ -126,27 +126,23 @@ struct DreamArchiveView: View {
                             .dreamGlow()
                         Spacer()
                         HStack(spacing: 8) {
-                            Button {
-                            } label: {
-                                Image(systemName: "line.3.horizontal")
-                                    .font(.system(size: 24, weight: .bold))
-                                    .foregroundColor(.white)
-                                    .frame(width: 32, height: 32)
-                            }
                             
-                            Button {
-                            } label: {
-                                Image(systemName: "calendar")
-                                    .font(.system(size: 24, weight: .bold))
-                                    .foregroundColor(.white)
-                                    .frame(width: 32, height: 32)
-                            }
+                            
+                            
                             
                             NavigationLink(destination: LoggingView()) {
-                                Image(systemName: "plus")
-                                    .foregroundColor(.black)
-                                    .padding(6)
-                                    .background(Circle().fill(Color.white))
+                                HStack {
+                                    Image(systemName: "plus")
+                                        .foregroundColor(Color(red: 95/255, green: 85/255, blue: 236/255 ))
+                                    Text("Dream")
+                                        .foregroundColor(Color(red: 95/255, green: 85/255, blue: 236/255 ))
+                                        .padding(.leading, -5)
+                                }
+                                    .padding(7)
+                                    .padding(.horizontal, 7)
+                                    
+                                    .background(RoundedRectangle(cornerRadius: 20)
+                                        .fill(Color(red: 15/255, green: 14/255, blue: 44/255 )))
                             }
                         }
                     }
