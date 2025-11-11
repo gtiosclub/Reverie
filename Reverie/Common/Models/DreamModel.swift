@@ -18,7 +18,7 @@ class DreamModel: Decodable {
     var loggedContent: String
     var generatedContent: String
     var tags: [Tags]
-    var image: String
+    var image: [String?]
     var emotion: Emotions
     var finishedDream: String = "None"
     
@@ -30,6 +30,18 @@ class DreamModel: Decodable {
     @Generable
     enum Emotions: String, Codable, CaseIterable {
         case happiness, sadness, anger, fear, embarrassment, anxiety, neutral
+        
+        var swiftUIColor: Color {
+            switch self {
+            case .happiness: return .yellow
+            case .sadness: return .blue
+            case .anger: return .red
+            case .fear: return .purple
+            case .embarrassment: return .pink
+            case .anxiety: return .orange
+            default: return .gray
+            }
+        }
     }
     
     static func emotionColors(emotion: Emotions) -> Color {
@@ -209,10 +221,10 @@ class DreamModel: Decodable {
         self.emotion = emotion
         self.finishedDream = "None"
     }
-    init(userID: String, id: String, title: String, date: Date, loggedContent: String, generatedContent:String, tags: [Tags], image: String, emotion: Emotions, finishedDream: String) {
+    init(userID: String, id: String, title: String, date: Date, loggedContent: String, generatedContent:String, tags: [Tags], image: [String], emotion: Emotions, finishedDream: String) {
         self.userID = userID
         self.id = id
-        self.title = title
+        self.title = title  
         self.date = date
         self.loggedContent = loggedContent
         self.generatedContent = generatedContent
