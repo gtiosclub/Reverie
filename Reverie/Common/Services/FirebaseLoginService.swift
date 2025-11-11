@@ -11,6 +11,10 @@ import FirebaseAuth
 import FirebaseFirestore
 import Observation
 
+extension Notification.Name {
+    static let didLoginAndLoadUser = Notification.Name("didLoginAndLoadUser")
+}
+
 @MainActor
 @Observable
 class FirebaseLoginService {
@@ -98,6 +102,8 @@ class FirebaseLoginService {
                 let user = UserModel(name: name, userID: userID, username: username, overallAnalysis: overallAnalysis, dreams: dreamModels, dreamCards: dreamCards)
 
                 self.currUser = user
+                
+                NotificationCenter.default.post(name: .didLoginAndLoadUser, object: nil)
                 
                 FirebaseDCService.shared.generateDummyImage()
             }
