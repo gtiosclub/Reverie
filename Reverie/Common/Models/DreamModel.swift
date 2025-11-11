@@ -44,7 +44,7 @@ class DreamModel: Decodable {
         }
     }
     
-    static func emotionColors(emotion: Emotions) -> Color {
+    static func emotionColors(emotion: Emotions) -> Color? {
         switch emotion {
         case .happiness: return Color(hex: "#E0C341")
         case .sadness: return Color(hex: "#3089D3")
