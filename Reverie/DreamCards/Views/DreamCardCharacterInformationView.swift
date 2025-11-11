@@ -49,7 +49,7 @@ struct DreamCardCharacterInformationView: View {
                         }
                     }
                     .padding(.top, 60)
-                    .frame(width: 150, height: 150)
+                    .frame(width: character.isAchievementUnlocked ? 250 : 180, height: character.isAchievementUnlocked ? 250 : 180)
                     .foregroundColor(.white)
                     
                     Text(character.name)
