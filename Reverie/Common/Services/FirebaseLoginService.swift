@@ -34,79 +34,110 @@ class FirebaseLoginService {
 
         Task {
             await fetchUser()
+            FirebaseDCService.shared.generateDummyImage()
         }
     }
     
     func fetchUser() async {
-        guard let uid = auth.currentUser?.uid else {return}
+        guard let uid = auth.currentUser?.uid else { return }
+
         var dreamModels: [DreamModel] = []
         var dreamCards: [CardModel] = []
 
-        guard let snapshot = try? await Firestore.firestore().collection("USERS").document(uid).getDocument() else { return }
-        if snapshot.exists {
-            if let userID = snapshot.get("userID") as? String,
-               let name = snapshot.get("name") as? String,
-               let username = snapshot.get("username") as? String,
-               let overallAnalysis = snapshot.get("overallAnalysis") as? String,
-               let dreams = snapshot.get("dreams") as? [String]
-                
-            {
-                for dream in dreams {
-                    guard let snapshot = try? await Firestore.firestore().collection("DREAMS").document(dream).getDocument() else { return }
-                    if snapshot.exists {
-                        if let userID = snapshot.get("userID") as? String,
-                           let id = snapshot.get("id") as? String,
-                           let title = snapshot.get("title") as? String,
-                           let date = snapshot.get("date") as? String,
-                           let loggedContent = snapshot.get("loggedContent") as? String,
-                           let generatedContent = snapshot.get("generatedContent") as? String,
-                           let tags = snapshot.get("tags") as? [String],
-                           let image = snapshot.get("image") as? [String],
-                           let emotion = snapshot.get("emotion") as? String,
-                           let finishedDream = snapshot.get("finishedDream") as? String
-                           
-                        {
-                            let dateF: Date = {
-                                if let dateString = snapshot.get("date") as? String {
-                                    let formatter = DateFormatter()
-                                    formatter.dateFormat = "M/d/yy" 
-                                    formatter.locale = Locale(identifier: "en_US_POSIX")
-                                    if let parsedDate = formatter.date(from: dateString) {
-                                        return parsedDate
-                                    }
-                                }
-                                return Date()
-                            }()
-                            let finishedDream = snapshot.get("finishedDream") as? String ?? "None"
-                            let tagF: [DreamModel.Tags] = tags.compactMap { DreamModel.Tags(rawValue: $0.lowercased()) }
-                            let emotionF: DreamModel.Emotions = DreamModel.Emotions(rawValue: emotion.lowercased()) ?? .neutral
+        do {
+            let userDoc = try await Firestore.firestore().collection("USERS").document(uid).getDocument()
+            guard userDoc.exists else { return }
 
-                            let dreamModel = DreamModel(userID: userID, id: id, title: title, date: dateF, loggedContent: loggedContent, generatedContent: generatedContent, tags: tagF, image: image, emotion: emotionF, finishedDream: finishedDream)
-                            dreamModels.append(dreamModel)
-//                            print(dreamModel)
-                            
-                        }
-                    }
-                    
-                }
-                
-                do {
-                    dreamCards = try await FirebaseDCService.shared.fetchDCCards(userID: userID)
-                    let achievements = try await AchievementsService.shared.fetchUnlockedAchievements(userID: userID)
-                    let unlockedAchievements = achievements.filter { $0.isAchievementUnlocked }
-                    dreamCards.append(contentsOf: unlockedAchievements)
-                } catch {
-                    print("Failed to get DC Cards: \(error.localizedDescription)")
-                }
-
-                let user = UserModel(name: name, userID: userID, username: username, overallAnalysis: overallAnalysis, dreams: dreamModels, dreamCards: dreamCards)
-
-                self.currUser = user
-                
-                NotificationCenter.default.post(name: .didLoginAndLoadUser, object: nil)
-                
-                FirebaseDCService.shared.generateDummyImage()
+            guard let userID = userDoc.get("userID") as? String,
+                  let name = userDoc.get("name") as? String,
+                  let username = userDoc.get("username") as? String,
+                  let overallAnalysis = userDoc.get("overallAnalysis") as? String,
+                  let dreams = userDoc.get("dreams") as? [String] else {
+                return
             }
+
+            func parseDate(from value: Any?) -> Date {
+                let formatter = DateFormatter()
+                formatter.dateFormat = "M/d/yy"
+                formatter.locale = Locale(identifier: "en_US_POSIX")
+
+                switch value {
+                case let dateString as String:
+                    if let parsed = formatter.date(from: dateString) {
+                        return parsed
+                    }
+                    return Date()
+
+                case let timestamp as Timestamp:
+                    return timestamp.dateValue()
+
+                case let date as Date:
+                    return date
+
+                default:
+                    return Date()
+                }
+            }
+
+            for dreamID in dreams {
+                let dreamDoc = try await Firestore.firestore().collection("DREAMS").document(dreamID).getDocument()
+                guard dreamDoc.exists else { continue }
+
+                guard let userID = dreamDoc.get("userID") as? String,
+                      let id = dreamDoc.get("id") as? String,
+                      let title = dreamDoc.get("title") as? String,
+                      let loggedContent = dreamDoc.get("loggedContent") as? String,
+                      let generatedContent = dreamDoc.get("generatedContent") as? String,
+                      let tags = dreamDoc.get("tags") as? [String],
+                      let image = dreamDoc.get("image") as? [String],
+                      let emotion = dreamDoc.get("emotion") as? String else {
+                    continue
+                }
+
+                let dateF = parseDate(from: dreamDoc.get("date"))
+                let tagF: [DreamModel.Tags] = tags.compactMap { DreamModel.Tags(rawValue: $0.lowercased()) }
+                let emotionF: DreamModel.Emotions = DreamModel.Emotions(rawValue: emotion.lowercased()) ?? .neutral
+                let finishedDream = dreamDoc.get("finishedDream") as? String ?? "None"
+
+                let dreamModel = DreamModel(
+                    userID: userID,
+                    id: id,
+                    title: title,
+                    date: dateF,
+                    loggedContent: loggedContent,
+                    generatedContent: generatedContent,
+                    tags: tagF,
+                    image: image,
+                    emotion: emotionF,
+                    finishedDream: finishedDream
+                )
+
+                dreamModels.append(dreamModel)
+            }
+
+            do {
+                dreamCards = try await FirebaseDCService.shared.fetchDCCards(userID: userID)
+                let achievements = try await AchievementsService.shared.fetchUnlockedAchievements(userID: userID)
+                let unlockedAchievements = achievements.filter { $0.isAchievementUnlocked }
+                dreamCards.append(contentsOf: unlockedAchievements)
+            } catch {
+                print("Failed to get DC Cards: \(error.localizedDescription)")
+            }
+
+            let user = UserModel(
+                name: name,
+                userID: userID,
+                username: username,
+                overallAnalysis: overallAnalysis,
+                dreams: dreamModels,
+                dreamCards: dreamCards
+            )
+
+            self.currUser = user
+            NotificationCenter.default.post(name: .didLoginAndLoadUser, object: nil)
+
+        } catch {
+            print("Error fetching user: \(error.localizedDescription)")
         }
     }
     
