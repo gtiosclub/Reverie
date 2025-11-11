@@ -204,9 +204,18 @@ struct SaveDreamView: View {
     
     // MARK: - Save Dream
     func saveDream() async {
-        await FirebaseDreamService.shared.createDream(dream: newDream)
-        createdDream = newDream
-        navigateToDreamEntry = true
+        do {
+            createdDream = try await FirebaseDreamService.shared.createDream(dream: newDream)
+            // not on main thread, if app closed before image in done generating you lose image. may need to figure out better solution
+            FirebaseDCService.shared.generateImage(for: createdDream!)
+            FirebaseDCService.shared.generateImageForDC(for: createdDream!)
+//            createdDream = newDream
+            navigateToDreamEntry = true
+          
+            updateTagDescriptions(tags: newDream.tags)
+        } catch {
+            print("Failed to save dream: \(error)")
+        }
     }
 }
 
@@ -220,8 +229,9 @@ struct SaveDreamView: View {
             loggedContent: "",
             generatedContent: "",
             tags: [],
-            image: "",
-            emotion: .happiness
+            image: [""],
+            emotion: .happiness,
+            finishedDream: "None"
         )
     )
 }

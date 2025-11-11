@@ -18,6 +18,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 
 @main
 struct ReverieApp: App {
+    @StateObject private var tabState = TabState()
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     @State private var linkActive = false
     
@@ -26,17 +27,14 @@ struct ReverieApp: App {
 
     var body: some Scene {
         WindowGroup {
-            NavigationStack {
-                AuthRoutingView()
-                    .environment(FirebaseLoginService.shared)
-                    .environment(FirebaseDreamService.shared)
-                    .onOpenURL { url in
-                        linkActive = true
-                    }
-                    .navigationDestination(isPresented: $linkActive) {
-                        LoggingView()
-                    }
-            }
+            AuthRoutingView()
+                .onOpenURL { url in
+                    linkActive = true
+                }
+                .navigationDestination(isPresented: $linkActive) {
+                    LoggingView()
+                }
+                .environmentObject(tabState)
         }
     }
 }
