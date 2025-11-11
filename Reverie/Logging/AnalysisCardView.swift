@@ -244,7 +244,7 @@ func parseDreamText(text: String) -> [Card] {
             Reflecting on this dream, consider the areas of your life where you feel most vulnerable or overwhelmed. It might be beneficial to engage in activities that help ground you, such as mindfulness or connecting with nature, which can symbolize the nurturing aspects of a cow. Learning to approach these situations with a calm and open mind can help transform fear into understanding and empowerment.
             """,
             tags: [.mountains, .rivers],
-            image: "Test",
+            image: ["Test"],
             emotion: .happiness,
             finishedDream: "I woke up"
         )

@@ -120,7 +120,7 @@ struct TagInfoView: View {
                     
                     VStack(spacing: 0) {
                         ForEach(filteredDreams, id: \.id) { dream in
-                            NavigationLink(destination: DreamEntryView(dream: dream, backButtonLabel: "")) {
+                            NavigationLink(destination: DreamEntryView(dream: dream, backToArchive: false)) {
                                 VStack(spacing: 15) {
                                     HStack {
                                         VStack(alignment: .leading, spacing: 5) {
