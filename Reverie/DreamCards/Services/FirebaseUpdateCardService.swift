@@ -22,6 +22,16 @@ class FirebaseUpdateCardService {
         }
     }
     
+    func toggleIsUnlocked(cards: [CardModel]) async {
+        for card in cards {
+            do {
+                try await self.fb.db.collection("DREAMCARDS").document(card.id).updateData(["isUnlocked": !card.isUnlocked])
+            } catch {
+                print("Firebase failed to toggle isUnlocked with error: \(error)")
+            }
+        }
+    }
+    
     func toggleIsUnlockedAchievement(card: CardModel) async {
         do {
             try await self.fb.db.collection("UNLOCKED_ACHIEVEMENTS").document(card.id).updateData(["isUnlocked": !card.isUnlocked])
