@@ -208,6 +208,7 @@ struct SaveDreamView: View {
             var createdDreamID = try await FirebaseDreamService.shared.createDream(dream: newDream)
             
             createdDream = try await FirebaseDreamService.shared.fetchDream(dreamID: createdDreamID)
+            FirebaseLoginService.shared.currUser?.dreams.append(createdDream!)
             // not on main thread, if app closed before image in done generating you lose image. may need to figure out better solution
             print("DREAM ID FOR CREATED DREAM: \(createdDream!.id)")
             FirebaseDCService.shared.generateImage(for: createdDream!)
