@@ -22,12 +22,7 @@ struct AnalysisView: View {
                             icon: "cloud.fill",
                             previewContent: {
                                 VStack(alignment: .leading, spacing: 8) {
-                                    Spacer()
-                                    Text(activitySummaryText())
-                                        .font(.subheadline)
-                                        .foregroundColor(.white.opacity(0.7))
-                                        .padding(.leading, 18)
-                                    FrequencyView()
+                                    FrequencyView(showSummaryText: true)
                                 }
                             },
                             destination: { StatisticsView(streak: currentStreak, weeklyAverage: currentWeeklyAverage, averageLength: currentAverageDreamLength) },
@@ -58,7 +53,7 @@ struct AnalysisView: View {
                         AnalysisSection (
                             title: "Moods",
                             icon: "face.smiling.fill",
-                            previewContent: {HeatmapView()},
+                            previewContent: {HeatmapView(showSummaryText: true)},
                             destination: {CombinedHeatmapEmotionView(dreams: dreamAll)},
                             trailingView: {EmptyView()}
                         )
@@ -205,6 +200,20 @@ func activitySummaryText() -> String {
         return "Your dream frequency has been about the same as usual."
     }
 }
+
+func activitySummaryText1() -> String {
+    guard let dreams = FirebaseLoginService.shared.currUser?.dreams, !dreams.isEmpty else {
+        return "No dream data available."
+    }
+    
+    let emotionCounts = Dictionary(grouping: dreams, by: { $0.emotion }).mapValues { $0.count }
+    guard let dominantEmotion = emotionCounts.max(by: { $0.value < $1.value })?.key else {
+        return "No dominant mood found."
+    }
+    
+    return "Your average dream mood is \(String(describing: dominantEmotion).capitalized)."
+}
+
 
 // MARK: - Weekly Average + Avg Length
 var currentWeeklyAverage: Int {
