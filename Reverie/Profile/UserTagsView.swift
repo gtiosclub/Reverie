@@ -67,12 +67,38 @@ struct TagViewBlock: View {
     let tags: [DreamModel.Tags]
     let isExpandable: Bool
     
-    @State private var expanded = false
+//    @State private var expanded = false
     
     var columns: [GridItem] {
-        [GridItem(.adaptive(minimum: 100))]
+        [GridItem(.adaptive(minimum: 75))]
     }
     
+//    var body: some View {
+//        VStack {
+//            LazyVGrid(columns: columns, spacing: 25) {
+//                ForEach(displayedTags, id: \.self) { tag in
+//                    NavigationLink(destination: TagInfoView(tagGiven: tag)) {
+//                        TagView(tagGiven: tag)
+//                        
+//                    }
+//                }
+//            }
+//            
+//            if isExpandable && tags.count > collapsedTagLimit {
+//                Button(action: {
+//                    withAnimation {
+//                        expanded.toggle()
+//                    }
+//                }) {
+//                    Text(expanded ? "see less" : "see more")
+//                        .foregroundStyle(.gray)
+//                        .font(.subheadline)
+//                        .padding(.top, 8)
+//                        .frame(maxWidth: .infinity, alignment: .center)
+//                }
+//            }
+//        }
+//    }
     var body: some View {
         VStack {
             LazyVGrid(columns: columns, spacing: 25) {
@@ -84,33 +110,31 @@ struct TagViewBlock: View {
             }
             
             if isExpandable && tags.count > collapsedTagLimit {
-                Button(action: {
-                    withAnimation {
-                        expanded.toggle()
-                    }
-                }) {
-                    Text(expanded ? "see less" : "see more")
-                        .foregroundStyle(.gray)
-                        .font(.subheadline)
-                        .padding(.top, 8)
-                        .frame(maxWidth: .infinity, alignment: .center)
+                NavigationLink(destination: UserTagsView()) {
+//                    Text("see more")
+//                        .foregroundStyle(.gray)
+//                        .font(.subheadline)
+//                        .padding(.top, 8)
+//                        .frame(maxWidth: .infinity, alignment: .center)
                 }
             }
         }
-    }
+    }   
+
     
     private var collapsedTagLimit: Int {
         // Number of tags that fit in one row
-        Int(UIScreen.main.bounds.width / 125)
+        Int(UIScreen.main.bounds.width / 100)
     }
     
     private var displayedTags: [DreamModel.Tags] {
-        if expanded || !isExpandable {
-            return tags
-        } else {
+        if isExpandable {
             return Array(tags.prefix(collapsedTagLimit))
+        } else {
+            return tags
         }
     }
+
 }
 
 #Preview {

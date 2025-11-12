@@ -52,6 +52,7 @@ struct AnalysisView: View {
                             previewContent: {ThisWeekThemesView(thisWeekTags: thisWeekTags)},
                             destination: {UserTagsView()},
                             trailingView: {EmptyView()}
+                            
                         )
                         
                         AnalysisSection (
@@ -61,6 +62,7 @@ struct AnalysisView: View {
                             destination: {CombinedHeatmapEmotionView(dreams: dreamAll)},
                             trailingView: {EmptyView()}
                         )
+                        .padding(.bottom, 30) // test
                         
                         AnalysisSection (
                             title: "Sleep",
@@ -145,7 +147,7 @@ struct AnalysisSection<Preview: View, Destination: View, Trailing: View>: View {
     @ViewBuilder var trailingView: () -> Trailing
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: 20) {
             HStack {
                 Label {
                     Text(title)
