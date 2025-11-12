@@ -66,6 +66,8 @@ struct TagViewBlock: View {
     let title: String
     let tags: [DreamModel.Tags]
     let isExpandable: Bool
+    var limitToFirstRow: Bool = false
+
     
 //    @State private var expanded = false
     
@@ -124,18 +126,19 @@ struct TagViewBlock: View {
     
     private var collapsedTagLimit: Int {
         // Number of tags that fit in one row
-        Int(UIScreen.main.bounds.width / 100)
+        Int(UIScreen.main.bounds.width / 120)
     }
     
     private var displayedTags: [DreamModel.Tags] {
-        if isExpandable {
-            return Array(tags.prefix(collapsedTagLimit))
-        } else {
-            return tags
+            if limitToFirstRow {
+                return Array(tags.prefix(collapsedTagLimit))
+            } else if isExpandable {
+                return Array(tags.prefix(collapsedTagLimit))
+            } else {
+                return tags
+            }
         }
     }
-
-}
 
 #Preview {
     UserTagsView().background(ProfileView())
