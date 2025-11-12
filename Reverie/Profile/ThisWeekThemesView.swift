@@ -29,7 +29,7 @@ struct ThisWeekThemesView: View {
                 }
                 .frame(maxWidth: .infinity)
             } else {
-                TagViewBlock(title: "", tags: thisWeekTags, isExpandable: false)
+                TagViewBlock(title: "", tags: thisWeekTags, isExpandable: false, limitToFirstRow: true)
                     .padding(.horizontal)
                     .padding(.bottom, 16)
             }
