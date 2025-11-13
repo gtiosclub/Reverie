@@ -13,11 +13,20 @@ struct ThisWeekThemesView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             
-            Text("Your most common dream themes are: ")
-                .foregroundColor(.white.opacity(0.8))
-                .padding(.horizontal)
-                .padding(.top, 16)
-                .padding(.bottom, 3)
+            HStack {
+                Text("Your most common dream themes are ")
+                    .font(.subheadline)
+                    .foregroundColor(.white.opacity(0.8))
+                
+                Spacer()
+                
+                Image(systemName: "chevron.right")
+                    .foregroundColor(.gray)
+                    .font(Font.system(size: 14))
+            }
+            .padding(.horizontal)
+            .padding(.top, 16)
+            .padding(.bottom, 3)
 
             if thisWeekTags.isEmpty {
                 VStack {
