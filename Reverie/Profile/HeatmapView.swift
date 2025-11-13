@@ -62,12 +62,22 @@ struct HeatmapView: View {
                         VStack(alignment: .leading, spacing: 10) {
                             if showSummaryText {
                                 VStack(alignment: .leading, spacing: 6) {
-                                    activitySummaryText1()
-                                        .font(.subheadline)
-                                        .padding(.horizontal, 20)
-                                        .padding(.top, 12)
-                                        .multilineTextAlignment(.leading)
-                                        .fixedSize(horizontal: false, vertical: true)
+                                    HStack {
+                                        activitySummaryText1()
+                                            .font(.subheadline)
+                                            .foregroundColor(.white.opacity(0.8))
+                                            .multilineTextAlignment(.leading)
+                                        
+                                        Spacer()
+                                        
+                                        Image(systemName: "chevron.right")
+                                            .foregroundColor(.gray)
+                                            .font(Font.system(size: 14))
+                                        
+                                    }
+                                    .padding(.horizontal)
+                                    .padding(.top, 8)
+                                    .padding(.bottom, 3)
                                     
                                     Rectangle()
                                         .fill(Color.white.opacity(0.05))
