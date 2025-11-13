@@ -39,7 +39,7 @@ struct HomeView: View {
             VStack {
                 Text("\(greeting), \(FirebaseLoginService.shared.currUser?.name ?? "Dreamer")")
                     .foregroundColor(.white)
-                    .font(.largeTitle)
+                    .font(.title)
                     .bold()
                     .padding(.bottom, 4)
                 Text("How did you dream last night?")
