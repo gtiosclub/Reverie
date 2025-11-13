@@ -16,25 +16,53 @@ class AppDelegate: NSObject, UIApplicationDelegate {
   }
 }
 
+//@main
+//struct ReverieApp: App {
+//    @StateObject private var tabState = TabState()
+//    @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
+//    @State private var linkActive = false
+//    
+//    @AppStorage("pendingRoute", store: UserDefaults(suiteName: "group.reverie"))
+//    private var pendingRoute: String = ""
+//
+//    var body: some Scene {
+//        WindowGroup {
+//            AuthRoutingView()
+//                .onOpenURL { url in
+//                    print("🔗 OPENED URL:", url.absoluteString )
+//                    linkActive = true
+//                }
+//                .navigationDestination(isPresented: $linkActive) {
+//                    LoggingView()
+//                }
+//                .environmentObject(tabState)
+//        }
+//    }
+//}
 @main
 struct ReverieApp: App {
     @StateObject private var tabState = TabState()
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
-    @State private var linkActive = false
-    
     @AppStorage("pendingRoute", store: UserDefaults(suiteName: "group.reverie"))
     private var pendingRoute: String = ""
+    
+    @State private var openLogging = false   // << controls navigation
 
     var body: some Scene {
         WindowGroup {
-            AuthRoutingView()
-                .onOpenURL { url in
-                    linkActive = true
-                }
-                .navigationDestination(isPresented: $linkActive) {
-                    LoggingView()
-                }
-                .environmentObject(tabState)
+            NavigationStack {
+                AuthRoutingView()
+                    .onOpenURL { url in
+                        print("Received URL:", url)
+
+                        // ALWAYS open logging
+                        openLogging = true
+                    }
+                    .navigationDestination(isPresented: $openLogging) {
+                        LoggingView()
+                    }
+            }
+            .environmentObject(tabState)
         }
     }
 }
