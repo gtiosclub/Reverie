@@ -15,14 +15,13 @@ struct ThisWeekThemesView: View {
             
             HStack {
                 Text("Your most common dream themes are ")
+                    .font(.subheadline)
                     .foregroundColor(.white.opacity(0.8))
                 
                 Spacer()
                 
                 Image(systemName: "chevron.right")
-//                    .font(.callout.weight(.semibold))
                     .foregroundColor(.gray)
-//                    .padding(.top, -8)
                     .font(Font.system(size: 14))
             }
             .padding(.horizontal)

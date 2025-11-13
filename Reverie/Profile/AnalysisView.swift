@@ -19,7 +19,7 @@ struct AnalysisView: View {
                     VStack(alignment: .leading, spacing: 20) {
                         AnalysisSection(
                             title: "Activity",
-                            icon: "blank",
+//                            icon: "blank",
                             previewContent: {
                                 VStack(alignment: .leading, spacing: 8) {
                                     FrequencyView(showSummaryText: true)
@@ -40,11 +40,11 @@ struct AnalysisView: View {
 //                                .cornerRadius(12)
                             }
                         )
-                        .padding(.top, -2)
+//                        .padding(.top, -2)
                         
                         AnalysisSection (
                             title: "Themes",
-                            icon: "camera.macro",
+//                            icon: "camera.macro",
                             previewContent: {ThisWeekThemesView(thisWeekTags: thisWeekTags)},
                             destination: {UserTagsView()},
                             trailingView: {EmptyView()}
@@ -53,7 +53,7 @@ struct AnalysisView: View {
                         
                         AnalysisSection (
                             title: "Moods",
-                            icon: "face.smiling.fill",
+//                            icon: "face.smiling.fill",
                             previewContent: {HeatmapView(showSummaryText: true)},
                             destination: {CombinedHeatmapEmotionView(dreams: dreamAll)},
                             trailingView: {EmptyView()}
@@ -168,7 +168,7 @@ struct AnalysisView: View {
 
 struct AnalysisSection<Preview: View, Destination: View, Trailing: View>: View {
     let title: String
-    let icon: String
+//    let icon: String
     @ViewBuilder let previewContent: () -> Preview
     @ViewBuilder let destination: () -> Destination
     @ViewBuilder var trailingView: () -> Trailing
@@ -176,15 +176,16 @@ struct AnalysisSection<Preview: View, Destination: View, Trailing: View>: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
             HStack {
-                Label {
+//                Label {
                     Text(title)
                         .font(.title2.bold())
                         .foregroundStyle(.white)
-                } icon: {
-                    Image(systemName: icon)
-                        .font(.title2)
-                        .foregroundStyle(.white)
-                }
+//                }
+//                icon: {
+//                    Image(systemName: icon)
+//                        .font(.title2)
+//                        .foregroundStyle(.white)
+//                }
 
                 Spacer()
                 trailingView()
