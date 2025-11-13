@@ -87,15 +87,17 @@ struct HeatmapView: View {
                                 }
                             }
                             
-                            Picker("Timeframe", selection: $selectedTimeframe) {
-                                Text("30 days").tag(0)
-                                Text("1 year").tag(1)
-                                Text("All").tag(2)
+                            if !showSummaryText {
+                                Picker("Timeframe", selection: $selectedTimeframe) {
+                                    Text("30 days").tag(0)
+                                    Text("1 year").tag(1)
+                                    Text("All").tag(2)
+                                }
+                                .pickerStyle(SegmentedPickerStyle())
+                                .padding(.horizontal, 20)
+                                .padding(.top, 8)
+                                .padding(.bottom, 10)
                             }
-                            .pickerStyle(SegmentedPickerStyle())
-                            .padding(.horizontal, 20)
-                            .padding(.top, 8)
-                            .padding(.bottom, 10)
                             
                             VStack(alignment:.leading, spacing: 30) {
     
@@ -105,8 +107,10 @@ struct HeatmapView: View {
                                     dreams: viewModel.dreams
                                 )
                                 
-                                EmotionLegendView()
-                                    .padding(.horizontal)
+                                if !showSummaryText {
+                                    EmotionLegendView()
+                                        .padding(.horizontal)
+                                }
                             }
                             .padding(.bottom, 20)
                         }
