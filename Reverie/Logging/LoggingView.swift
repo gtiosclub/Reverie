@@ -12,7 +12,6 @@ struct LoggingView: View {
     @State private var dream = ""
     @State private var title = ""
     @State private var date = Date()
-    @State private var shouldFinishDream = false
     private let fms = FoundationModelService()
     
     @State private var analysis: String = ""
@@ -32,13 +31,6 @@ struct LoggingView: View {
                     .ignoresSafeArea()
                 
                 VStack {
-                    HStack {
-                        Toggle("Finish Dream", isOn: $shouldFinishDream)
-                            .toggleStyle(SwitchToggleStyle(tint: .blue))
-                            .foregroundColor(.white)
-                        Spacer()
-                    }
-                    .padding(.bottom, 8)
                     
                     HStack {
                         Spacer()
@@ -50,11 +42,8 @@ struct LoggingView: View {
                                     analysis = try await fms.getOverallAnalysis(dream_description: dream)
                                     emotion = try await fms.getEmotion(dreamText: dream)
                                     tags = try await fms.getRecommendedTags(dreamText: dream)
-                                    finishedContent = "None"
                                     
-                                    if shouldFinishDream {
-                                        finishedContent = try await fms.getFinishedDream(dream_description: dream)
-                                    }
+                                    finishedContent = try await fms.getFinishedDream(dream_description: dream)
                                     
                                     print(analysis, emotion, tags)
                                     canNavigate = true
@@ -206,29 +195,22 @@ struct LoggingView: View {
                 
                 if isLoading {
                     ZStack {
-                        Rectangle()
-                            .fill(.black.opacity(0.6))
+                        Color.black.opacity(0.85)
                             .ignoresSafeArea()
-                        
-                        VStack(spacing: 20) {
-                            ProgressView()
-                                .progressViewStyle(CircularProgressViewStyle(tint: .white))
-                                .scaleEffect(1.5)
-                            
-                            Text("Analyzing your dream...")
-                                .foregroundColor(.white)
-                                .font(.headline)
+
+                        VStack(spacing: 28) {
+
+                            BookLoadingView()
+                                .scaleEffect(1.4)
+
+                            Text("Analyzing your dream…")
+                                .font(.system(size: 20, weight: .medium))
+                                .foregroundColor(Color.white.opacity(0.9))
                         }
-                        .padding(40)
-                        .background(
-                            RoundedRectangle(cornerRadius: 15)
-                                .fill(Material.thin)
-                        )
-                        .shadow(radius: 10)
                     }
                     .transition(.opacity)
                 }
-                
+
                 TabbarView()
                     .ignoresSafeArea(edges: .bottom)
             }
