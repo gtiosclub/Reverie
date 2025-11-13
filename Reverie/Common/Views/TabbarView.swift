@@ -46,7 +46,7 @@ struct TabbarView: View {
             .glassEffect(.regular)
             .background(Color.black.opacity(0.5))
             .cornerRadius(100)
-            .padding(.bottom, -10)
+            .padding(.bottom, -20)
         }
     }
 }
