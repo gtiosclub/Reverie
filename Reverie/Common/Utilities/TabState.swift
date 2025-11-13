@@ -12,6 +12,15 @@ enum TabType {
     case analytics
     case archive
     case none
+    
+//    var index: Int {
+//        switch self {
+//        case .home: return 0
+//        case .analytics: return 1
+//        case .archive: return 2
+//        case .none: return 3
+//        }
+//    }
 }
 
 final class TabState: ObservableObject {
