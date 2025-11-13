@@ -17,7 +17,6 @@ struct SaveDreamView: View {
     
     @State var newDream: DreamModel
     
-    // MARK: - Tag Chip View
     struct InnerTagView: View {
         var tag: DreamModel.Tags
         var imageName: String
@@ -108,7 +107,6 @@ struct SaveDreamView: View {
                             .transition(.opacity)
                         }
 
-                        // MARK: - Dropdown
                         if showTagDropdown {
                             ScrollView(.vertical, showsIndicators: true) {
                                 VStack(alignment: .leading, spacing: 10) {
@@ -159,7 +157,6 @@ struct SaveDreamView: View {
                 }
                 .padding()
                 
-                // MARK: - Navigation Link
                 NavigationLink(
                     destination: DreamEntryView(dream: createdDream ?? newDream, backToArchive: true),
                     isActive: $navigateToDreamEntry
@@ -202,7 +199,6 @@ struct SaveDreamView: View {
         .preferredColorScheme(.dark)
     }
     
-    // MARK: - Save Dream
     func saveDream() async {
         do {
             createdDream = try await FirebaseDreamService.shared.createDream(dream: newDream)
@@ -236,8 +232,6 @@ struct SaveDreamView: View {
     )
 }
 
-// MARK: - WrappingTagsView Helper
-/// A lightweight, self-contained layout that wraps items across lines naturally.
 struct WrappingTagsView<Data: RandomAccessCollection, Content: View>: View where Data.Element: Hashable {
     let tags: Data
     let spacing: CGFloat
