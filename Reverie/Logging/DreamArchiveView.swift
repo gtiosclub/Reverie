@@ -243,20 +243,46 @@ struct DreamArchiveView: View {
                     }
                     
                     HStack {
-                        HStack {
-                            Image(systemName: "magnifyingglass")
-                                .foregroundColor(.white)
-                            TextField("Search", text: $search)
-                                .foregroundColor(.white)
-                                .accentColor(.white)
+                        ZStack {
+                            Capsule()
+                                    .strokeBorder(
+                                        AngularGradient(
+                                            gradient: Gradient(colors: [
+                                                Color.white.opacity(0.8),
+                                                Color.white.opacity(0.1),
+                                                Color.white.opacity(0.6),
+                                                Color.white.opacity(0.1),
+                                                Color.white.opacity(0.8)
+                                            ]),
+                                            center: .center,
+                                            startAngle: .degrees(0),
+                                            endAngle: .degrees(360)
+                                        ),
+                                        lineWidth: 1
+                                    )
+
+                                    .frame(
+                                            width: 315,
+                                            height: 52.5
+                                        )
+                                    .blendMode(.screen)
+                                    .shadow(color: .white.opacity(0.25), radius: 1)
+                            
+                            HStack {
+                                Image(systemName: "magnifyingglass")
+                                    .foregroundColor(.white)
+                                TextField("Search", text: $search)
+                                    .foregroundColor(.white)
+                                    .accentColor(.white)
+                            }
+                            .padding(15)
+                            .cornerRadius(10)
+                            .background(
+                                Color.black.opacity(0.25)
+                                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                                    .glassEffect(.regular)
+                            )
                         }
-                        .padding(15)
-                        .cornerRadius(10)
-                        .background(
-                            Color.black.opacity(0.25)
-                                .clipShape(RoundedRectangle(cornerRadius: 10))
-                                .glassEffect(.regular)
-                        )
                         
                         Button(action: {
                             withAnimation(.spring(response: 0.35, dampingFraction: 0.85)) {
@@ -266,7 +292,16 @@ struct DreamArchiveView: View {
                             ZStack {
                                 Circle()
                                     .fill(
+                                        (selectedThemeTags.isEmpty && selectedDateFilter == .allDates) ?
+                                        
                                         LinearGradient(
+                                            colors: [
+                                                Color(red: 4/255, green: 4/255, blue: 20/255),
+                                                Color(red: 18/255, green: 18/255, blue: 35/255)
+                                            ],
+                                            startPoint: .topLeading,
+                                            endPoint: .bottomTrailing
+                                        ) : LinearGradient(
                                             colors: [
                                                 Color(red: 46/255, green: 39/255, blue: 137/255),
                                                 Color(red: 64/255, green: 57/255, blue: 155/255)
@@ -274,6 +309,7 @@ struct DreamArchiveView: View {
                                             startPoint: .topLeading,
                                             endPoint: .bottomTrailing
                                         )
+                                        
                                     )
                                     .frame(width: 52, height: 52)
                                     .shadow(
@@ -512,6 +548,8 @@ struct DreamArchiveView: View {
                 }
             }
         }
+        .ignoresSafeArea(.keyboard, edges: .bottom)
+
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .onAppear {
             ts.activeTab = .archive
