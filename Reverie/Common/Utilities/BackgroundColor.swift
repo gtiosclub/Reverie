@@ -13,7 +13,7 @@ struct BackgroundColor: View {
             let time = context.date.timeIntervalSinceReferenceDate
 
             ZStack {
-                Color(hex: "#010023")
+                DreamModel.Color(hex: "#010023")
                     .ignoresSafeArea()
 
                 ZStack {
