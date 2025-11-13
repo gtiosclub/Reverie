@@ -62,9 +62,8 @@ struct HeatmapView: View {
                         VStack(alignment: .leading, spacing: 10) {
                             if showSummaryText {
                                 VStack(alignment: .leading, spacing: 6) {
-                                    Text(activitySummaryText1())
+                                    activitySummaryText1()
                                         .font(.subheadline)
-                                        .foregroundColor(.white.opacity(0.8))
                                         .padding(.horizontal, 20)
                                         .padding(.top, 12)
                                         .multilineTextAlignment(.leading)

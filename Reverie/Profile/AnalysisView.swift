@@ -201,17 +201,29 @@ func activitySummaryText() -> String {
     }
 }
 
-func activitySummaryText1() -> String {
+func activitySummaryText1() -> Text {
+    let baseColor = Color.white.opacity(0.8)
+    
     guard let dreams = FirebaseLoginService.shared.currUser?.dreams, !dreams.isEmpty else {
-        return "No dream data available."
+        return Text("No dream data available.")
+            .foregroundColor(baseColor)
     }
     
     let emotionCounts = Dictionary(grouping: dreams, by: { $0.emotion }).mapValues { $0.count }
     guard let dominantEmotion = emotionCounts.max(by: { $0.value < $1.value })?.key else {
-        return "No dominant mood found."
+        return Text("No dominant mood found.")
+            .foregroundColor(baseColor)
     }
     
-    return "Your average dream mood is \(String(describing: dominantEmotion).capitalized)."
+    let prefix = Text("Your average dream mood is ")
+        .foregroundColor(baseColor)
+    let suffix = Text(".")
+        .foregroundColor(baseColor)
+    let highlight = Text(dominantEmotion.rawValue.capitalized)
+        .foregroundColor(DreamModel.emotionColors(emotion: dominantEmotion))
+        .fontWeight(.semibold)
+    
+    return prefix + highlight + suffix
 }
 
 
