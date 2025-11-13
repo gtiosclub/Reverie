@@ -22,12 +22,7 @@ struct AnalysisView: View {
                             icon: "cloud.fill",
                             previewContent: {
                                 VStack(alignment: .leading, spacing: 8) {
-                                    Spacer()
-                                    Text(activitySummaryText())
-                                        .font(.subheadline)
-                                        .foregroundColor(.white.opacity(0.7))
-                                        .padding(.leading, 18)
-                                    FrequencyView()
+                                    FrequencyView(showSummaryText: true)
                                 }
                             },
                             destination: { StatisticsView(streak: currentStreak, weeklyAverage: currentWeeklyAverage, averageLength: currentAverageDreamLength) },
@@ -52,15 +47,17 @@ struct AnalysisView: View {
                             previewContent: {ThisWeekThemesView(thisWeekTags: thisWeekTags)},
                             destination: {UserTagsView()},
                             trailingView: {EmptyView()}
+                            
                         )
                         
                         AnalysisSection (
                             title: "Moods",
                             icon: "face.smiling.fill",
-                            previewContent: {HeatmapView()},
+                            previewContent: {HeatmapView(showSummaryText: true)},
                             destination: {CombinedHeatmapEmotionView(dreams: dreamAll)},
                             trailingView: {EmptyView()}
                         )
+                        .padding(.bottom, 30) // test
                         
                         AnalysisSection (
                             title: "Sleep",
@@ -145,7 +142,7 @@ struct AnalysisSection<Preview: View, Destination: View, Trailing: View>: View {
     @ViewBuilder var trailingView: () -> Trailing
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: 20) {
             HStack {
                 Label {
                     Text(title)
@@ -203,6 +200,32 @@ func activitySummaryText() -> String {
         return "Your dream frequency has been about the same as usual."
     }
 }
+
+func activitySummaryText1() -> Text {
+    let baseColor = Color.white.opacity(0.8)
+    
+    guard let dreams = FirebaseLoginService.shared.currUser?.dreams, !dreams.isEmpty else {
+        return Text("No dream data available.")
+            .foregroundColor(baseColor)
+    }
+    
+    let emotionCounts = Dictionary(grouping: dreams, by: { $0.emotion }).mapValues { $0.count }
+    guard let dominantEmotion = emotionCounts.max(by: { $0.value < $1.value })?.key else {
+        return Text("No dominant mood found.")
+            .foregroundColor(baseColor)
+    }
+    
+    let prefix = Text("Your average dream mood is ")
+        .foregroundColor(baseColor)
+    let suffix = Text(".")
+        .foregroundColor(baseColor)
+    let highlight = Text(dominantEmotion.rawValue.capitalized)
+        .foregroundColor(DreamModel.emotionColors(emotion: dominantEmotion))
+        .fontWeight(.semibold)
+    
+    return prefix + highlight + suffix
+}
+
 
 // MARK: - Weekly Average + Avg Length
 var currentWeeklyAverage: Int {
