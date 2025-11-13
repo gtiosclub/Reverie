@@ -19,7 +19,7 @@ struct AnalysisView: View {
                     VStack(alignment: .leading, spacing: 20) {
                         AnalysisSection(
                             title: "Activity",
-                            icon: "cloud.fill",
+                            icon: "blank",
                             previewContent: {
                                 VStack(alignment: .leading, spacing: 8) {
                                     FrequencyView(showSummaryText: true)
@@ -36,10 +36,11 @@ struct AnalysisView: View {
                                 }
                                 .padding(.horizontal, 10)
                                 .padding(.vertical, 4)
-                                .background(Color.orange.opacity(0.15))
-                                .cornerRadius(12)
+//                                .background(Color.orange.opacity(0.15))
+//                                .cornerRadius(12)
                             }
                         )
+                        .padding(.top, -8)
                         
                         AnalysisSection (
                             title: "Themes",
@@ -57,7 +58,7 @@ struct AnalysisView: View {
                             destination: {CombinedHeatmapEmotionView(dreams: dreamAll)},
                             trailingView: {EmptyView()}
                         )
-                        .padding(.bottom, 30) // test
+//                        .padding(.bottom, 30) // test
                         
                         AnalysisSection (
                             title: "Sleep",
@@ -96,20 +97,39 @@ struct AnalysisView: View {
                             Circle()
                                 .fill(
                                     LinearGradient(
-                                        gradient: Gradient(colors: [
-                                            Color(red: 47/255, green: 40/255, blue: 138/255),
-                                            Color(red: 80/255, green: 70/255, blue: 200/255)
-                                        ]),
+                                        colors: [
+                                            Color(red: 46/255, green: 39/255, blue: 137/255),
+                                            Color(red: 64/255, green: 57/255, blue: 155/255)
+                                        ],
                                         startPoint: .topLeading,
                                         endPoint: .bottomTrailing
                                     )
                                 )
-                                .frame(width: 44, height: 44)
-                                .shadow(color: Color(red: 120/255, green: 100/255, blue: 255/255).opacity(0.6),
-                                        radius: 10, x: 0, y: 0)
+                                .frame(width: 55, height: 55)
+//                                .shadow(
+//                                    color: Color(red: 60/255, green: 53/255, blue: 151/255)
+//                                        .opacity(glowPulse ? 0.9 : 0.4),
+//                                    radius: glowPulse ? 10 : 5
+//                                )
                                 .overlay(
                                     Circle()
-                                        .stroke(Color.white.opacity(0.15), lineWidth: 1)
+                                        .strokeBorder(
+                                            AngularGradient(
+                                                gradient: Gradient(colors: [
+                                                    Color.white.opacity(0.8),
+                                                    Color.white.opacity(0.1),
+                                                    Color.white.opacity(0.6),
+                                                    Color.white.opacity(0.1),
+                                                    Color.white.opacity(0.8)
+                                                ]),
+                                                center: .center,
+                                                startAngle: .degrees(0),
+                                                endAngle: .degrees(360)
+                                            ),
+                                            lineWidth: 0.5
+                                        )
+                                        .blendMode(.screen)
+                                        .shadow(color: .white.opacity(0.25), radius: 1)
                                 )
                             
                             Image(systemName: "moon.stars.fill")
@@ -118,11 +138,23 @@ struct AnalysisView: View {
                                 .shadow(color: .white.opacity(0.3), radius: 4, x: 0, y: 0)
                         }
                         .padding(.trailing, 24)
-                        .padding(.top, 8)
+//                        .padding(.top, 8)
                     }
                 }
                 .padding(.leading, 32)
-                .padding(.top, 12)
+//                .padding(.top, 12)
+                .padding(.bottom, 12)
+                .background(
+                    LinearGradient(
+                        gradient: Gradient(stops: [
+                            .init(color: DreamModel.Color(hex: "#010023"), location: 0.0),
+                            .init(color: DreamModel.Color(hex: "#010023"), location: 0.8),
+                            .init(color: Color.clear, location: 1.0)
+                        ]),
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                )
                 VStack {
                     Spacer()
                     TabbarView()
