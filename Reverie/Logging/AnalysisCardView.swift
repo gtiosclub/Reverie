@@ -122,7 +122,7 @@ struct AnalysisCardView: View {
                 }
                 .padding(.leading, 30)
             }
-            .padding(.vertical, 25)
+            .padding(.top, 25)
             
             
         }

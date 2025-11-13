@@ -20,13 +20,16 @@ struct LoggingWidgetEntryView: View {
 
     var body: some View {
         VStack {
-            Text("Log a dream")
-                .font(.headline)
-                .padding()
+            Image("WidgetBackground")
+                .resizable()
+                .scaledToFill()
+                .clipped()
         }
+        .containerBackground(.clear, for: .widget)
         .widgetURL(URL(string: "reverie://logging"))
     }
 }
+
 
 struct LoggingWidget: Widget {
     let kind = "LoggingWidget"
@@ -34,8 +37,9 @@ struct LoggingWidget: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: Provider()) { entry in
             LoggingWidgetEntryView(entry: entry)
-                .containerBackground(.fill.tertiary, for: .widget)
         }
+        .contentMarginsDisabled()
+        .supportedFamilies([.systemSmall])
     }
 }
 
