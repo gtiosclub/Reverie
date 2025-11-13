@@ -242,9 +242,7 @@ struct DreamArchiveView: View {
                         .padding()
                     }
                     
-                    // Search + Filter button row
                     HStack {
-                        // Search
                         HStack {
                             Image(systemName: "magnifyingglass")
                                 .foregroundColor(.white)
@@ -260,7 +258,6 @@ struct DreamArchiveView: View {
                                 .glassEffect(.regular)
                         )
                         
-                        // FILTER BUTTON (purple glossy like book button)
                         Button(action: {
                             withAnimation(.spring(response: 0.35, dampingFraction: 0.85)) {
                                 showFilters.toggle()
@@ -321,7 +318,6 @@ struct DreamArchiveView: View {
             TabbarView()
                 .ignoresSafeArea(edges: .bottom)
             
-            // FILTER CARD
             if showFilters {
                 ZStack(alignment: .topTrailing) {
                     
@@ -344,37 +340,35 @@ struct DreamArchiveView: View {
                             VStack(alignment: .leading, spacing: 18) {
                                 
                                 // Sort section
-                                Button {
-                                    sortOrder = .newestFirst
-                                } label: {
-                                    HStack(spacing: 10) {
-                                        Image(systemName: sortOrder == .newestFirst ? "checkmark" : "")
-                                            .frame(width: 16)
-                                            .foregroundColor(.white)
-                                        Text("Sort Newest to Oldest")
-                                            .foregroundColor(.white)
-                                    }
-                                }
+//                                Button {
+//                                    sortOrder = .newestFirst
+//                                } label: {
+//                                    HStack(spacing: 10) {
+//                                        Image(systemName: sortOrder == .newestFirst ? "checkmark" : "")
+//                                            .frame(width: 16)
+//                                            .foregroundColor(.white)
+//                                        Text("Sort Newest to Oldest")
+//                                            .foregroundColor(.white)
+//                                    }
+//                                }
                                 
-                                Button {
-                                    sortOrder = .oldestFirst
-                                } label: {
-                                    HStack(spacing: 10) {
-                                        Image(systemName: sortOrder == .oldestFirst ? "checkmark" : "")
-                                            .frame(width: 16)
-                                            .foregroundColor(.white)
-                                        Text("Sort Oldest to Newest")
-                                            .foregroundColor(.white)
-                                    }
-                                }
+//                                Button {
+//                                    sortOrder = .oldestFirst
+//                                } label: {
+//                                    HStack(spacing: 10) {
+//                                        Image(systemName: sortOrder == .oldestFirst ? "checkmark" : "")
+//                                            .frame(width: 16)
+//                                            .foregroundColor(.white)
+//                                        Text("Sort Oldest to Newest")
+//                                            .foregroundColor(.white)
+//                                    }
+//                                }
                                 
-                                Divider().background(Color.white.opacity(0.25))
                                 
                                 Text("Filters")
                                     .font(.footnote)
                                     .foregroundColor(Color.white.opacity(0.5))
                                 
-                                // THEMES ROW
                                 Button {
                                     withAnimation(.easeInOut(duration: 0.18)) {
                                         showThemesMenu.toggle()
@@ -403,7 +397,6 @@ struct DreamArchiveView: View {
                                     }
                                 }
                                 
-                                // THEMES EXPANDED (scrollable, fixed height)
                                 if showThemesMenu {
                                     ScrollView {
                                         VStack(alignment: .leading, spacing: 14) {
@@ -434,11 +427,10 @@ struct DreamArchiveView: View {
                                         }
                                         .padding(.vertical, 4)
                                     }
-                                    .frame(height: 260) // ~10 items visible at once
+                                    .frame(height: 260)
                                     .scrollIndicators(.hidden)
                                 }
                                 
-                                // DATES ROW
                                 Button {
                                     withAnimation(.easeInOut(duration: 0.18)) {
                                         showDatesMenu.toggle()
@@ -465,7 +457,6 @@ struct DreamArchiveView: View {
                                     }
                                 }
                                 
-                                // DATES EXPANDED
                                 if showDatesMenu {
                                     VStack(alignment: .leading, spacing: 12) {
                                         ForEach(DateFilter.allCases) { filter in
@@ -484,7 +475,6 @@ struct DreamArchiveView: View {
                                     .padding(.leading, 4)
                                 }
                                 
-                                // REMOVE FILTERS
                                 Button {
                                     search = ""
                                     selectedThemeTags.removeAll()
@@ -504,16 +494,17 @@ struct DreamArchiveView: View {
                             .frame(width: 300)
                             .background(
                                 RoundedRectangle(cornerRadius: 26)
-                                    .fill(.ultraThinMaterial)
-                                    .background(
-                                        RoundedRectangle(cornerRadius: 26)
-                                            .fill(Color.black.opacity(0.6))
-                                    )
+                                    .fill(Color.black.opacity(0.55))
+                                    .background(.regularMaterial)
+                                    .clipShape(RoundedRectangle(cornerRadius: 26))
                                     .overlay(
                                         RoundedRectangle(cornerRadius: 26)
                                             .stroke(Color.white.opacity(0.10), lineWidth: 1)
                                     )
+                                    .shadow(color: Color.black.opacity(0.4), radius: 20, x: 0, y: 8)
                             )
+
+
                             .padding(.trailing, 14)
                         }
                     }
