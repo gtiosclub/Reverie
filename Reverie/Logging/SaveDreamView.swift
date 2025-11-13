@@ -13,6 +13,7 @@ struct SaveDreamView: View {
     @State private var createdDream: DreamModel?
     @State private var showTagDropdown = false
 
+
     @Environment(\.presentationMode) var presentationMode
     
     @State var newDream: DreamModel
@@ -51,6 +52,7 @@ struct SaveDreamView: View {
                 VStack(alignment: .leading, spacing: 20) {
                     
                     VStack(alignment: .leading, spacing: 10) {
+
                         Text("Add Themes")
                             .foregroundColor(.white)
                             .font(.subheadline)
@@ -184,7 +186,10 @@ struct SaveDreamView: View {
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
-                        Task { await saveDream() }
+                        Task {
+
+                            await saveDream()
+                        }
                     }) {
                         Text("Save")
                             .font(.body.bold())

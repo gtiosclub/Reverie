@@ -12,7 +12,6 @@ struct LoggingView: View {
     @State private var dream = ""
     @State private var title = ""
     @State private var date = Date()
-    @State private var shouldFinishDream = false
     private let fms = FoundationModelService()
     
     @State private var analysis: String = ""
@@ -32,13 +31,6 @@ struct LoggingView: View {
                     .ignoresSafeArea()
                 
                 VStack {
-                    HStack {
-                        Toggle("Finish Dream", isOn: $shouldFinishDream)
-                            .toggleStyle(SwitchToggleStyle(tint: .blue))
-                            .foregroundColor(.white)
-                        Spacer()
-                    }
-                    .padding(.bottom, 8)
                     
                     HStack {
                         Spacer()
@@ -50,11 +42,8 @@ struct LoggingView: View {
                                     analysis = try await fms.getOverallAnalysis(dream_description: dream)
                                     emotion = try await fms.getEmotion(dreamText: dream)
                                     tags = try await fms.getRecommendedTags(dreamText: dream)
-                                    finishedContent = "None"
                                     
-                                    if shouldFinishDream {
-                                        finishedContent = try await fms.getFinishedDream(dream_description: dream)
-                                    }
+                                    finishedContent = try await fms.getFinishedDream(dream_description: dream)
                                     
                                     print(analysis, emotion, tags)
                                     canNavigate = true
