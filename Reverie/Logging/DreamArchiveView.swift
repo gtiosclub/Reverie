@@ -4,7 +4,9 @@
 //
 //  Created by Artem Kim on 9/23/25.
 //
+
 import SwiftUI
+
 struct DreamArchiveView: View {
     @EnvironmentObject var ts: TabState
     
@@ -12,6 +14,18 @@ struct DreamArchiveView: View {
     @State private var selectedTag: DreamFilterTag = .allTags
     @State private var selectedDateFilter: DateFilter = .allDates
     @State private var showingLogDream = false
+    
+    @State private var selectedThemeTags: Set<DreamModel.Tags> = []
+    
+    @State private var showFilters = false
+    @State private var showThemesMenu = false
+    @State private var showDatesMenu = false
+    
+    enum SortOrder {
+        case newestFirst
+        case oldestFirst
+    }
+    @State private var sortOrder: SortOrder = .newestFirst
     
     private var currentUser: UserModel? {
         FirebaseLoginService.shared.currUser
@@ -51,7 +65,7 @@ struct DreamArchiveView: View {
     }
     
     private var filteredDreams: [DreamModel] {
-        var dreams = userDreams.sorted(by: { $0.date > $1.date })
+        var dreams = userDreams
         
         if !search.isEmpty {
             dreams = dreams.filter { dream in
@@ -63,13 +77,22 @@ struct DreamArchiveView: View {
         if selectedDateFilter != .allDates,
            let (startDate, endDate) = getDateRange(for: selectedDateFilter) {
             dreams = dreams.filter { dream in
-                return dream.date >= startDate && dream.date <= endDate
+                dream.date >= startDate && dream.date <= endDate
             }
         }
         
-        if case .tag(let selectedTagValue) = selectedTag {
+        if !selectedThemeTags.isEmpty {
             dreams = dreams.filter { dream in
-                dream.tags.contains(selectedTagValue)
+                !Set(dream.tags).isDisjoint(with: selectedThemeTags)
+            }
+        }
+        
+        dreams = dreams.sorted { a, b in
+            switch sortOrder {
+            case .newestFirst:
+                return a.date > b.date
+            case .oldestFirst:
+                return a.date < b.date
             }
         }
         
@@ -79,44 +102,42 @@ struct DreamArchiveView: View {
     private var groupedDreams: [(title: String, dreams: [DreamModel])] {
         let calendar = Calendar.current
         let now = Date()
-
+        
         let startOfToday = calendar.startOfDay(for: now)
         let sevenDaysAgo = calendar.date(byAdding: .day, value: -7, to: startOfToday)!
         let thirtyDaysAgo = calendar.date(byAdding: .day, value: -30, to: startOfToday)!
-
+        
         guard !filteredDreams.isEmpty else { return [] }
-
+        
         func day(_ date: Date) -> Date {
             calendar.startOfDay(for: date)
         }
-
-        let today = filteredDreams.filter {
-            day($0.date) == startOfToday
-        }
-
+        
+        let today = filteredDreams.filter { day($0.date) == startOfToday }
+        
         let lastWeek = filteredDreams.filter {
             let d = day($0.date)
             return d >= sevenDaysAgo && d < startOfToday
         }
-
+        
         let lastMonth = filteredDreams.filter {
             let d = day($0.date)
             return d >= thirtyDaysAgo && d < sevenDaysAgo
         }
-
+        
         let earlier = filteredDreams.filter {
             day($0.date) < thirtyDaysAgo
         }
-
+        
         var result: [(String, [DreamModel])] = []
         if !today.isEmpty { result.append(("Today", today)) }
         if !lastWeek.isEmpty { result.append(("Last Week", lastWeek)) }
         if !lastMonth.isEmpty { result.append(("Last Month", lastMonth)) }
         if !earlier.isEmpty { result.append(("Earlier", earlier)) }
-
+        
         return result
     }
-
+    
     var body: some View {
         ZStack(alignment: .bottom) {
             BackgroundColor()
@@ -127,15 +148,10 @@ struct DreamArchiveView: View {
                     HStack {
                         Text("Archive")
                             .bold()
-                            .font(.title)
+                            .font(.system(size: 32, weight: .bold))
                             .foregroundColor(.white)
-                            .dreamGlow()
                         Spacer()
                         HStack(spacing: 8) {
-                            
-                            
-                            
-                            
                             NavigationLink(destination: LoggingView()) {
                                 HStack {
                                     Image(systemName: "plus")
@@ -144,11 +160,12 @@ struct DreamArchiveView: View {
                                         .foregroundColor(Color(red: 95/255, green: 85/255, blue: 236/255 ))
                                         .padding(.leading, -5)
                                 }
-                                    .padding(7)
-                                    .padding(.horizontal, 7)
-                                    
-                                    .background(RoundedRectangle(cornerRadius: 20)
-                                        .fill(Color(red: 15/255, green: 14/255, blue: 44/255 )))
+                                .padding(7)
+                                .padding(.horizontal, 7)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 20)
+                                        .fill(Color(red: 15/255, green: 14/255, blue: 44/255 ))
+                                )
                             }
                         }
                     }
@@ -174,7 +191,9 @@ struct DreamArchiveView: View {
                                             .padding(.leading, 5)
                                         
                                         ForEach(group.dreams, id: \.id) { dream in
-                                            NavigationLink(destination: DreamEntryView(dream: dream, backToArchive: false)) {
+                                            NavigationLink(
+                                                destination: DreamEntryView(dream: dream, backToArchive: false)
+                                            ) {
                                                 SectionView(
                                                     title: dream.title,
                                                     date: formatDate(dream.date),
@@ -186,7 +205,7 @@ struct DreamArchiveView: View {
                                         }
                                     }
                                 }
-                            } else if search.isEmpty && selectedTag == .allTags && selectedDateFilter == .allDates {
+                            } else if search.isEmpty && selectedThemeTags.isEmpty && selectedDateFilter == .allDates {
                                 VStack(spacing: 16) {
                                     Image(systemName: "moon.zzz")
                                         .font(.system(size: 64))
@@ -223,7 +242,9 @@ struct DreamArchiveView: View {
                         .padding()
                     }
                     
+                    // Search + Filter button row
                     HStack {
+                        // Search
                         HStack {
                             Image(systemName: "magnifyingglass")
                                 .foregroundColor(.white)
@@ -239,20 +260,57 @@ struct DreamArchiveView: View {
                                 .glassEffect(.regular)
                         )
                         
-                        ZStack {
-                            Circle()
-                                .fill(Color.black.opacity(0.25))
-                                .frame(width: 52, height: 52)
-                                .glassEffect(.regular)
-                            
-                            Button(action: {
-                                print("Filter button tapped!")
-                            }) {
+                        // FILTER BUTTON (purple glossy like book button)
+                        Button(action: {
+                            withAnimation(.spring(response: 0.35, dampingFraction: 0.85)) {
+                                showFilters.toggle()
+                            }
+                        }) {
+                            ZStack {
+                                Circle()
+                                    .fill(
+                                        LinearGradient(
+                                            colors: [
+                                                Color(red: 46/255, green: 39/255, blue: 137/255),
+                                                Color(red: 64/255, green: 57/255, blue: 155/255)
+                                            ],
+                                            startPoint: .topLeading,
+                                            endPoint: .bottomTrailing
+                                        )
+                                    )
+                                    .frame(width: 52, height: 52)
+                                    .shadow(
+                                        color: Color(red: 60/255, green: 53/255, blue: 151/255)
+                                            .opacity(0.55),
+                                        radius: 8
+                                    )
+                                    .overlay(
+                                        Circle()
+                                            .strokeBorder(
+                                                AngularGradient(
+                                                    gradient: Gradient(colors: [
+                                                        Color.white.opacity(0.8),
+                                                        Color.white.opacity(0.1),
+                                                        Color.white.opacity(0.6),
+                                                        Color.white.opacity(0.1),
+                                                        Color.white.opacity(0.8)
+                                                    ]),
+                                                    center: .center,
+                                                    startAngle: .degrees(0),
+                                                    endAngle: .degrees(360)
+                                                ),
+                                                lineWidth: 0.5
+                                            )
+                                            .blendMode(.screen)
+                                            .shadow(color: .white.opacity(0.25), radius: 1)
+                                    )
+                                
                                 Image(systemName: "line.3.horizontal.decrease")
-                                    .font(.system(size: 24, weight: .bold))
+                                    .font(.system(size: 28, weight: .semibold))
                                     .foregroundColor(.white)
                             }
                         }
+                        .buttonStyle(.plain)
                         .padding(.leading, 7)
                     }
                     .padding(.horizontal, 10)
@@ -262,6 +320,206 @@ struct DreamArchiveView: View {
             
             TabbarView()
                 .ignoresSafeArea(edges: .bottom)
+            
+            // FILTER CARD
+            if showFilters {
+                ZStack(alignment: .topTrailing) {
+                    
+                    Color.black.opacity(0.001)
+                        .ignoresSafeArea()
+                        .onTapGesture {
+                            withAnimation(.spring(response: 0.3, dampingFraction: 0.85)) {
+                                showFilters = false
+                                showThemesMenu = false
+                                showDatesMenu = false
+                            }
+                        }
+                    
+                    VStack(alignment: .trailing) {
+                        Spacer().frame(height: 110)
+                        
+                        HStack {
+                            Spacer()
+                            
+                            VStack(alignment: .leading, spacing: 18) {
+                                
+                                // Sort section
+                                Button {
+                                    sortOrder = .newestFirst
+                                } label: {
+                                    HStack(spacing: 10) {
+                                        Image(systemName: sortOrder == .newestFirst ? "checkmark" : "")
+                                            .frame(width: 16)
+                                            .foregroundColor(.white)
+                                        Text("Sort Newest to Oldest")
+                                            .foregroundColor(.white)
+                                    }
+                                }
+                                
+                                Button {
+                                    sortOrder = .oldestFirst
+                                } label: {
+                                    HStack(spacing: 10) {
+                                        Image(systemName: sortOrder == .oldestFirst ? "checkmark" : "")
+                                            .frame(width: 16)
+                                            .foregroundColor(.white)
+                                        Text("Sort Oldest to Newest")
+                                            .foregroundColor(.white)
+                                    }
+                                }
+                                
+                                Divider().background(Color.white.opacity(0.25))
+                                
+                                Text("Filters")
+                                    .font(.footnote)
+                                    .foregroundColor(Color.white.opacity(0.5))
+                                
+                                // THEMES ROW
+                                Button {
+                                    withAnimation(.easeInOut(duration: 0.18)) {
+                                        showThemesMenu.toggle()
+                                        if showThemesMenu { showDatesMenu = false }
+                                    }
+                                } label: {
+                                    HStack {
+                                        VStack(alignment: .leading, spacing: 2) {
+                                            Text("Themes")
+                                                .foregroundColor(.white)
+                                            
+                                            if !selectedThemeTags.isEmpty {
+                                                Text(selectedThemeTags.map { $0.rawValue.capitalized }
+                                                    .sorted()
+                                                    .joined(separator: ", "))
+                                                .font(.footnote)
+                                                .foregroundColor(.gray)
+                                            }
+                                        }
+                                        
+                                        Spacer()
+                                        
+                                        Image(systemName: "chevron.right")
+                                            .foregroundColor(.white)
+                                            .rotationEffect(.degrees(showThemesMenu ? 90 : 0))
+                                    }
+                                }
+                                
+                                // THEMES EXPANDED (scrollable, fixed height)
+                                if showThemesMenu {
+                                    ScrollView {
+                                        VStack(alignment: .leading, spacing: 14) {
+                                            
+                                            Button {
+                                                selectedThemeTags.removeAll()
+                                            } label: {
+                                                HStack {
+                                                    Image(systemName: selectedThemeTags.isEmpty ? "checkmark.square.fill" : "square")
+                                                        .foregroundColor(.white)
+                                                    Text("All")
+                                                        .foregroundColor(.white)
+                                                }
+                                            }
+                                            
+                                            ForEach(DreamModel.Tags.allCases, id: \.self) { tag in
+                                                Button {
+                                                    toggleTheme(tag)
+                                                } label: {
+                                                    HStack {
+                                                        Image(systemName: selectedThemeTags.contains(tag) ? "checkmark.square.fill" : "square")
+                                                            .foregroundColor(.white)
+                                                        Text(tag.rawValue.capitalized)
+                                                            .foregroundColor(.white)
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        .padding(.vertical, 4)
+                                    }
+                                    .frame(height: 260) // ~10 items visible at once
+                                    .scrollIndicators(.hidden)
+                                }
+                                
+                                // DATES ROW
+                                Button {
+                                    withAnimation(.easeInOut(duration: 0.18)) {
+                                        showDatesMenu.toggle()
+                                        if showDatesMenu { showThemesMenu = false }
+                                    }
+                                } label: {
+                                    HStack {
+                                        VStack(alignment: .leading, spacing: 2) {
+                                            Text("Dates")
+                                                .foregroundColor(.white)
+                                            
+                                            if selectedDateFilter != .allDates {
+                                                Text(dateFilterLabel(for: selectedDateFilter))
+                                                    .foregroundColor(.gray)
+                                                    .font(.footnote)
+                                            }
+                                        }
+                                        
+                                        Spacer()
+                                        
+                                        Image(systemName: "chevron.right")
+                                            .foregroundColor(.white)
+                                            .rotationEffect(.degrees(showDatesMenu ? 90 : 0))
+                                    }
+                                }
+                                
+                                // DATES EXPANDED
+                                if showDatesMenu {
+                                    VStack(alignment: .leading, spacing: 12) {
+                                        ForEach(DateFilter.allCases) { filter in
+                                            Button {
+                                                selectedDateFilter = filter
+                                            } label: {
+                                                HStack {
+                                                    Image(systemName: selectedDateFilter == filter ? "checkmark.circle.fill" : "circle")
+                                                        .foregroundColor(.white)
+                                                    Text(dateFilterLabel(for: filter))
+                                                        .foregroundColor(.white)
+                                                }
+                                            }
+                                        }
+                                    }
+                                    .padding(.leading, 4)
+                                }
+                                
+                                // REMOVE FILTERS
+                                Button {
+                                    search = ""
+                                    selectedThemeTags.removeAll()
+                                    selectedDateFilter = .allDates
+                                    sortOrder = .newestFirst
+                                } label: {
+                                    HStack {
+                                        Image(systemName: "minus.circle")
+                                            .foregroundColor(.white)
+                                        Text("Remove Filters")
+                                            .foregroundColor(.white)
+                                    }
+                                }
+                                
+                            }
+                            .padding(20)
+                            .frame(width: 300)
+                            .background(
+                                RoundedRectangle(cornerRadius: 26)
+                                    .fill(.ultraThinMaterial)
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 26)
+                                            .fill(Color.black.opacity(0.6))
+                                    )
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 26)
+                                            .stroke(Color.white.opacity(0.10), lineWidth: 1)
+                                    )
+                            )
+                            .padding(.trailing, 14)
+                        }
+                    }
+                    .transition(.opacity)
+                }
+            }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .onAppear {
@@ -271,12 +529,28 @@ struct DreamArchiveView: View {
     }
     
     
+    private func toggleTheme(_ tag: DreamModel.Tags) {
+        if selectedThemeTags.contains(tag) {
+            selectedThemeTags.remove(tag)
+        } else {
+            selectedThemeTags.insert(tag)
+        }
+    }
     
     private func formatDate(_ date: Date) -> String {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
         formatter.timeStyle = .none
         return formatter.string(from: date)
+    }
+    
+    private func dateFilterLabel(for filter: DateFilter) -> String {
+        switch filter {
+        case .allDates: return "All"
+        case .lastSevenDays: return "Last 7 Days"
+        case .lastThirtyDays: return "Last 30 Days"
+        case .earlier: return "Earlier"
+        }
     }
     
     private func getDateRange(for filter: DateFilter) -> (startDate: Date, endDate: Date)? {
@@ -303,9 +577,9 @@ struct DreamArchiveView: View {
         }
     }
 }
+
 #Preview {
     DreamArchiveView()
         .environmentObject(TabState())
 }
-
 

@@ -8,14 +8,18 @@
 import SwiftUI
 
 struct DreamGlow: ViewModifier {
-    private let glowColor = Color(red: 45/255, green: 32/255, blue: 86/255)
+    private let glowColor = Color(red: 110/255, green: 70/255, blue: 255/255) // Violet tone
 
     func body(content: Content) -> some View {
         content
-            .shadow(color: glowColor.opacity(0.25), radius: 18)
-            .shadow(color: glowColor.opacity(0.18), radius: 36)
-            .shadow(color: glowColor.opacity(0.12), radius: 64)
-            .shadow(color: glowColor.opacity(0.08), radius: 96)
+            // Step 1: small bright core
+            .shadow(color: glowColor.opacity(0.6), radius: 6)
+            // Step 2: medium blur ring
+            .shadow(color: glowColor.opacity(0.35), radius: 18)
+            // Step 3: outer soft aura
+            .shadow(color: glowColor.opacity(0.25), radius: 42)
+            // Step 4: far diffuse glow for space feel
+            .shadow(color: glowColor.opacity(0.15), radius: 84)
     }
 }
 
