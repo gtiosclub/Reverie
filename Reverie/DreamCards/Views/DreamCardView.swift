@@ -39,9 +39,9 @@ struct DreamCardView: View {
     
     @Binding var unlockCards: Bool
     
-    @State private var dreamCount: Int = 0
+    @Binding var showArchive: Bool
     
-    @State private var showArchive = false
+    @State private var dreamCount: Int = 0
     
 //    @State private var showCardsCarousel: Bool = false
 //    
@@ -176,46 +176,10 @@ struct DreamCardView: View {
                             }
                         }
                         .task {
-                            //                        do {
-                            //                            let dreams = try await FirebaseDreamService.shared.getDreams()
                             self.dreamCount = user.dreams.count
-                            //                        } catch {
-                            //                            print("Error fetching dreams: \(error)")
-                            //                        }
                         }
                 }
-                //            .sheet(isPresented: $showArchive) {
-                //                CharacterArchiveView(characters: $characters, selectedCharacter: $selectedCharacter)
-                //            }
                 .padding(.bottom, 120)
-                
-                if showArchive {
-                    Color.black.opacity(0.8)
-                        .ignoresSafeArea()
-                        .transition(.opacity)
-                        .onTapGesture {
-                            withAnimation {
-                                showArchive = false
-                            }
-                        }
-                    
-                    CharacterArchiveView(
-                        characters: $characters,
-                        selectedCharacter: $selectedCharacter,
-                        showArchive: $showArchive
-                    )
-                    //                .transition(.opacity)
-                }
-                //            if unlockCards {
-                //                CardUnlockView(
-                //                    namespace: animation,
-                //                    cards: $lockedCharacters,
-                //                    showUnlockView: $unlockCards,
-                //                    showCardsCarousel: $showCardsCarousel,
-                //                    currentPage: $currentPage
-                //                )
-                //                .transition(.opacity)
-                //            }
             }
             .background(.clear)
         }
