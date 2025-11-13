@@ -175,9 +175,10 @@ class DreamModel: Decodable {
         
         // Compute keyword similarity
         let sharedWords = words1.intersection(words2)
-        let allWords = words1.union(words2)
-        let keywordScore = allWords.isEmpty ? 0.0 : Double(sharedWords.count) / Double(allWords.count)
-        
+//        let allWords = words1.union(words2)
+        let minWords = min(words1.count, words2.count)
+        let keywordScore = minWords == 0 ? 0.0 : Double(sharedWords.count) / Double(minWords)
+
         // Emotion similarity
         let emotionScore = dream1.emotion == dream2.emotion ? 1.0 : 0.0
         

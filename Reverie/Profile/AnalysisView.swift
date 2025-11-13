@@ -94,7 +94,7 @@ struct AnalysisView: View {
                         .font(.largeTitle.bold())
                         .foregroundColor(.white)
                     Spacer()
-                    NavigationLink(destination: ConstellationView(dreams: dreamAll, similarityMatrix: simMatrix, threshold: 0.2)) {
+                    NavigationLink(destination: ConstellationView(dreams: dreamAll, similarityMatrix: simMatrix, threshold: 0.4)) {
                         ZStack {
                             Circle()
                                 .fill(
