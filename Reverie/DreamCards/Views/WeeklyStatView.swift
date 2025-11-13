@@ -36,7 +36,7 @@ struct WeeklyStatView: View {
                     .fontWeight(.bold)
                     .foregroundColor(.black)
                     .frame(maxWidth: .infinity, alignment: .center)
-                    .padding(.top, 32)
+                    .padding(.top, 24)
 
                 HStack(spacing: 0) {
                     StatNumberView(
@@ -103,8 +103,8 @@ struct WeeklyStatView: View {
                 RoundedRectangle(cornerRadius: 24, style: .continuous)
                 .fill(LinearGradient(
                     gradient: Gradient(colors: [
-                        Color(hex: "#EDCAFF"),
-                        Color(hex: "#F5E6FF")
+                        DreamModel.Color(hex: "#EDCAFF"),
+                        DreamModel.Color(hex: "#F5E6FF")
                     ]),
                     startPoint: .top,
                     endPoint: .bottom

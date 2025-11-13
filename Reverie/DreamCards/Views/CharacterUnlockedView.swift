@@ -15,7 +15,7 @@ struct CharacterUnlockedView: View {
             RoundedRectangle(cornerRadius: 15)
                 .fill(LinearGradient(gradient: Gradient(colors: [
                     card.cardColor.swiftUIColor,
-                    card.cardColor.lighterColor.opacity(0.25)
+                    card.cardColor.lighterColor
                 ]),
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing))
@@ -52,9 +52,9 @@ struct CharacterUnlockedView: View {
                         EmptyView()
                     }
                 }
-                .frame(width: 180, height: 180)
+                .frame(width: card.isAchievementUnlocked ? 300 : 200, height: card.isAchievementUnlocked ? 300 : 200)
                 .padding(4)
-                .shadow(color: card.cardColor.swiftUIColor.opacity(0.8), radius: 30, x: 0, y: 0)
+                .shadow(color: card.cardColor.swiftUIColor.opacity(0.4), radius: 15)
                 
                 Text(card.name)
                     .font(.title)

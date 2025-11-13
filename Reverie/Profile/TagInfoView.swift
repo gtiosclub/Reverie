@@ -133,7 +133,7 @@ struct TagInfoView: View {
                                                     ForEach(dream.tags.prefix(3), id: \.self) { tag in
                                                         Image(systemName: DreamModel.tagImages(tag: tag))
                                                             .font(.caption)
-                                                            .foregroundColor(DreamModel.tagColors(tag: tagGiven))
+                                                            .foregroundColor(DreamModel.tagColors(tag: tag))
                                                     }
                                                 }
                                             }
