@@ -32,7 +32,6 @@ struct DreamShowView: View {
                         Text("Finish my dream")
                             .font(.system(size: 20))
                             .foregroundColor(.white)
-                        Spacer()
                         if expanded {
                             Button(action: {
                                 withAnimation {
@@ -40,19 +39,22 @@ struct DreamShowView: View {
                                 }
                             }) {
                                 Image(systemName: "info.circle")
-                                    .font(.system(size: 25))
+                                    .font(.system(size: 21))
                                     .opacity(showInfo ? 1: 0.6)
                             }
                             .buttonStyle(.plain)
                             .padding(.trailing, 5)
-                            .padding(.top, 5)
+                            .padding(.leading, 2)
                         }
-                        if expanded == false {
-                            Image(systemName: "chevron.right")
-                                .foregroundColor(.white)
-                        }
+                        Spacer()
+
+                        Image(systemName: expanded ? "chevron.down" :"chevron.up")
+                            .foregroundColor(.white)
+                        
                     }
                     .padding(11)
+                    .padding(.horizontal, 5)
+                    .padding(.vertical, 6)
                     .padding(.bottom, expanded ? 5 : 0)
                     .contentShape(Rectangle())
                     .onTapGesture {
@@ -86,6 +88,7 @@ struct DreamShowView: View {
                             Text(dream.finishedDream)
                                 .foregroundColor(.white)
                                 .padding(.horizontal)
+                                .padding(.leading, 15)
                                 .padding(.bottom)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .multilineTextAlignment(.leading)
