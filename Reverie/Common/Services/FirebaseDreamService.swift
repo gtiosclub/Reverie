@@ -67,6 +67,7 @@ class FirebaseDreamService {
     }
     
     func createDream(dream: DreamModel) async throws -> DreamModel {
+        var newDream = dream
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .short
         dateFormatter.locale = Locale(identifier: "en_US_POSIX")
@@ -93,6 +94,7 @@ class FirebaseDreamService {
             print("Added Data with ref: \(dreamRef)")
             
             try await ref.updateData(["id": dreamRef])
+            newDream.id = dreamRef
 
             let userRef = fb.db.collection("USERS").document(dream.userID)
             try await userRef.updateData([
@@ -106,7 +108,7 @@ class FirebaseDreamService {
             throw error
         }
         
-        FirebaseLoginService.shared.currUser?.dreams.append(dream)
+        FirebaseLoginService.shared.currUser?.dreams.append(newDream)
         
         return dream
     }
