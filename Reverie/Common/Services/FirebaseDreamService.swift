@@ -66,7 +66,7 @@ class FirebaseDreamService {
         return allDreams.sorted(by: { $0.date > $1.date })
     }
     
-    func createDream(dream: DreamModel) async throws -> DreamModel {
+    func createDream(dream: DreamModel) async throws -> String {
         var newDream = dream
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .short
@@ -109,9 +109,6 @@ class FirebaseDreamService {
             throw error
         }
         
-        FirebaseLoginService.shared.currUser?.dreams.append(newDream)
-        
-        return dream
     }
     
     func storeImages(dream: DreamModel, urls: [String]) async {
