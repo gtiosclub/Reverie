@@ -206,29 +206,22 @@ struct LoggingView: View {
                 
                 if isLoading {
                     ZStack {
-                        Rectangle()
-                            .fill(.black.opacity(0.6))
+                        Color.black.opacity(0.85)
                             .ignoresSafeArea()
-                        
-                        VStack(spacing: 20) {
-                            ProgressView()
-                                .progressViewStyle(CircularProgressViewStyle(tint: .white))
-                                .scaleEffect(1.5)
-                            
-                            Text("Analyzing your dream...")
-                                .foregroundColor(.white)
-                                .font(.headline)
+
+                        VStack(spacing: 28) {
+
+                            BookLoadingView()
+                                .scaleEffect(1.4)
+
+                            Text("Analyzing your dream…")
+                                .font(.system(size: 20, weight: .medium))
+                                .foregroundColor(Color.white.opacity(0.9))
                         }
-                        .padding(40)
-                        .background(
-                            RoundedRectangle(cornerRadius: 15)
-                                .fill(Material.thin)
-                        )
-                        .shadow(radius: 10)
                     }
                     .transition(.opacity)
                 }
-                
+
                 TabbarView()
                     .ignoresSafeArea(edges: .bottom)
             }

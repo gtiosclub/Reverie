@@ -79,38 +79,44 @@ struct DreamArchiveView: View {
     private var groupedDreams: [(title: String, dreams: [DreamModel])] {
         let calendar = Calendar.current
         let now = Date()
+
         let startOfToday = calendar.startOfDay(for: now)
-        
-        guard !filteredDreams.isEmpty else { return [] }
-        
         let sevenDaysAgo = calendar.date(byAdding: .day, value: -7, to: startOfToday)!
         let thirtyDaysAgo = calendar.date(byAdding: .day, value: -30, to: startOfToday)!
-        
+
+        guard !filteredDreams.isEmpty else { return [] }
+
+        func day(_ date: Date) -> Date {
+            calendar.startOfDay(for: date)
+        }
+
         let today = filteredDreams.filter {
-            calendar.isDate($0.date, inSameDayAs: now)
+            day($0.date) == startOfToday
         }
-        
+
         let lastWeek = filteredDreams.filter {
-            $0.date >= sevenDaysAgo && $0.date < startOfToday && !calendar.isDate($0.date, inSameDayAs: now)
+            let d = day($0.date)
+            return d >= sevenDaysAgo && d < startOfToday
         }
-        
+
         let lastMonth = filteredDreams.filter {
-            $0.date >= thirtyDaysAgo && $0.date < sevenDaysAgo
+            let d = day($0.date)
+            return d >= thirtyDaysAgo && d < sevenDaysAgo
         }
-        
+
         let earlier = filteredDreams.filter {
-            $0.date < thirtyDaysAgo
+            day($0.date) < thirtyDaysAgo
         }
-        
+
         var result: [(String, [DreamModel])] = []
         if !today.isEmpty { result.append(("Today", today)) }
         if !lastWeek.isEmpty { result.append(("Last Week", lastWeek)) }
         if !lastMonth.isEmpty { result.append(("Last Month", lastMonth)) }
         if !earlier.isEmpty { result.append(("Earlier", earlier)) }
-        
+
         return result
     }
-    
+
     var body: some View {
         ZStack(alignment: .bottom) {
             BackgroundColor()
