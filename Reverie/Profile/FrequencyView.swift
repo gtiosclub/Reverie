@@ -128,7 +128,7 @@ private struct YearlyDreamGraphView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color(red: 35/255, green: 31/255, blue: 49/255))
+        .background(Color.profileContainer)
         .cornerRadius(18)
         .padding()
     }
@@ -195,7 +195,7 @@ struct FrequencyView: View {
         
         ZStack {
             RoundedRectangle(cornerRadius: 18)
-                .fill(Color(red: 35/255, green: 31/255, blue: 49/255))
+                .fill(Color.profileContainer)
             
             VStack(alignment: .leading, spacing: 10) {
                 
