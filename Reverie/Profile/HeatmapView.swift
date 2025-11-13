@@ -40,7 +40,7 @@ struct HeatmapView: View {
     
     private let unselectedSegmentColor = Color(red: 43/255, green: 42/255, blue: 57/255)
     private let primaryPurple = Color(red: 99/255, green: 54/255, blue: 234/255)
-    private let sectionColor = Color(red: 35/255, green: 31/255, blue: 49/255)
+    private let sectionColor = Color.profileContainer
     
     
     init(showSummaryText: Bool = false) {

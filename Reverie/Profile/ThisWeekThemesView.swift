@@ -36,7 +36,7 @@ struct ThisWeekThemesView: View {
         }
         .background(
             RoundedRectangle(cornerRadius: 20)
-                .fill(Color(red: 35/255, green: 31/255, blue: 49/255))
+                .fill(Color.profileContainer)
         )
         .padding(.horizontal)
         .padding(.bottom, 8)
