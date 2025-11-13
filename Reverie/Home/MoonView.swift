@@ -120,7 +120,7 @@ struct Moon: View {
         
         let newRotation = Angle.degrees(Double.random(in: -30...30))
         let newScale = CGFloat.random(in: 0.9...1.1)
-        let duration = Double.random(in: 7...12)
+        let duration = Double.random(in: 15...25)
         
         withAnimation(.easeInOut(duration: duration)) {
             self.position = newPosition

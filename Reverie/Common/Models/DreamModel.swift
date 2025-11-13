@@ -44,18 +44,29 @@ struct DreamModel: Decodable {
         }
     }
     
+    static func Color (hex:String) -> Color{
+            let scanner = Scanner(string: hex)
+            _ = scanner.scanString("#")
+            var rgb: UInt64 = 0
+            scanner.scanHexInt64(&rgb)
+            let r = Double((rgb >> 16) & 0xFF) / 255.0
+            let g = Double((rgb >> 8) & 0xFF) / 255.0
+            let b = Double(rgb & 0xFF) / 255.0
+        return SwiftUICore.Color(red: r, green: g, blue: b)
+    }
+    
     static func emotionColors(emotion: Emotions) -> Color {
         switch emotion {
-        case .happiness: return Color(hex: "#E0C341")
-        case .sadness: return Color(hex: "#3089D3")
-        case .anger: return Color(hex: "#CD3838")
-        case .fear: return Color(hex: "#9B32EC")
-        case .embarrassment: return Color(hex: "#77A437")
-        case .anxiety: return Color(hex: "#B96531")
-        case .neutral: return Color(hex: "#D9D9D9")
+        case .happiness: return self.Color(hex: "#E0C341")
+        case .sadness: return self.Color(hex: "#3089D3")
+        case .anger: return self.Color(hex: "#CD3838")
+        case .fear: return self.Color(hex: "#9B32EC")
+        case .embarrassment: return self.Color(hex: "#77A437")
+        case .anxiety: return self.Color(hex: "#B96531")
+        case .neutral: return self.Color(hex: "#D9D9D9")
         }
     }
-
+    
     static func tagImages(tag: Tags) -> String {
         switch(tag) {
         case .mountains: return "mountain.2.fill"
@@ -94,7 +105,8 @@ struct DreamModel: Decodable {
         case .authority: return "crown.fill"
         }
     }
-
+    
+    
     static func tagColors(tag: Tags) -> Color {
         switch tag {
         case .mountains: return Color(hex: "#724227")
@@ -130,10 +142,54 @@ struct DreamModel: Decodable {
         case .love: return Color(hex: "#FEBDCE")
         case .family: return Color(hex: "#83ACFF")
         case .friends: return Color(hex: "#B19ED1")
-        case .authority: return Color(hex: "#F8F288")  
+        case .authority: return Color(hex: "#F8F288")
         }
     }
     
+    //
+    // MARK: - Recent Dreams
+    /// Returns the most recent dreams up to the specified count.
+    /// - Parameters:
+    ///   - dreams: The full list of DreamModel instances.
+    ///   - count: The number of most recent dreams to return (default: 10).
+    /// - Returns: An array of the most recent DreamModel objects.
+    static func getRecentDreams(from dreams: [DreamModel], count: Int = 10) -> [DreamModel] {
+        let sortedDreams = dreams.sorted { $0.date > $1.date }
+        return Array(sortedDreams.prefix(count))
+    }
+
+    // MARK: - Dream Similarity
+    /// Calculates similarity between two dreams based on shared keywords, emotion, and tags.
+    /// - Parameters:
+    ///   - dream1: The first dream to compare.
+    ///   - dream2: The second dream to compare.
+    /// - Returns: A similarity score between 0.0 (no similarity) and 1.0 (identical).
+    static func calculateSimilarity(between dream1: DreamModel, and dream2: DreamModel) -> Double {
+        // Combine logged and generated content
+        let text1 = (dream1.loggedContent + " " + dream1.generatedContent).lowercased()
+        let text2 = (dream2.loggedContent + " " + dream2.generatedContent).lowercased()
+        
+        // Tokenize words and create sets
+        let words1 = Set(text1.split { !$0.isLetter }.map(String.init))
+        let words2 = Set(text2.split { !$0.isLetter }.map(String.init))
+        
+        // Compute keyword similarity
+        let sharedWords = words1.intersection(words2)
+        let allWords = words1.union(words2)
+        let keywordScore = allWords.isEmpty ? 0.0 : Double(sharedWords.count) / Double(allWords.count)
+        
+        // Emotion similarity
+        let emotionScore = dream1.emotion == dream2.emotion ? 1.0 : 0.0
+        
+        // Tag similarity
+        let sharedTags = Set(dream1.tags).intersection(Set(dream2.tags))
+        let allTags = Set(dream1.tags).union(Set(dream2.tags))
+        let tagScore = allTags.isEmpty ? 0.0 : Double(sharedTags.count) / Double(allTags.count)
+        
+        // Weighted similarity (tuneable weights)
+        let similarity = (keywordScore * 0.6) + (emotionScore * 0.25) + (tagScore * 0.15)
+        return similarity
+    }
     
     static func tagDescription(tag: Tags) -> String {
         switch(tag) {
@@ -208,7 +264,7 @@ struct DreamModel: Decodable {
             "Disasters in dreams symbolize overwhelming change, emotional turmoil, and the breakdown of old structures. They reflect feelings of chaos, fear, or loss of control in waking life. Dreaming of natural or personal catastrophes often signals deep transformation, where destruction clears the way for renewal. Disasters remind the dreamer that upheaval, though frightening, can reveal hidden strength and the potential for rebuilding with greater clarity and purpose."
         }
     }
-
+    
     init(userID: String, id: String, title: String, date: Date, loggedContent: String, generatedContent:String, tags: [Tags], image: [String], emotion: Emotions) {
         self.userID = userID
         self.id = id
@@ -221,10 +277,22 @@ struct DreamModel: Decodable {
         self.emotion = emotion
         self.finishedDream = "None"
     }
-    init(userID: String, id: String, title: String, date: Date, loggedContent: String, generatedContent:String, tags: [Tags], image: [String], emotion: Emotions, finishedDream: String) {
+    
+    init(
+        userID: String,
+        id: String,
+        title: String,
+        date: Date,
+        loggedContent: String,
+        generatedContent: String,
+        tags: [Tags],
+        image: [String],
+        emotion: Emotions,
+        finishedDream: String
+    ) {
         self.userID = userID
         self.id = id
-        self.title = title  
+        self.title = title
         self.date = date
         self.loggedContent = loggedContent
         self.generatedContent = generatedContent
@@ -232,6 +300,29 @@ struct DreamModel: Decodable {
         self.image = image
         self.emotion = emotion
         self.finishedDream = finishedDream
+    }
+}
+
+extension DreamModel.Emotions {
+    var displayName: String { rawValue.capitalized }
+    
+    var detailDescription: String {
+        switch self {
+        case .happiness:
+            return "Filled with warmth, optimism, and an uplifted spirit."
+        case .sadness:
+            return "Characterized by sorrow, heartbreak, grief, and despair."
+        case .anger:
+            return "Fueled by frustration, restlessness, and emotional intensity."
+        case .fear:
+            return "Rooted in unease, looming danger, and heightened senses."
+        case .embarrassment:
+            return "Sparked by self-consciousness, vulnerability, and awkward moments."
+        case .anxiety:
+            return "Marked by worry, tension, and racing thoughts."
+        case .neutral:
+            return "Balanced with calm observation and grounded emotions."
+        }
     }
 }
 
@@ -247,4 +338,6 @@ extension Color {
         let b = Double(rgb & 0xFF) / 255.0
         self.init(red: r, green: g, blue: b)
     }
+    
+    static let profileContainer = Color(hex: "#1D1C3A")
 }

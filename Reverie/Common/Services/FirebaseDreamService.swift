@@ -66,18 +66,18 @@ class FirebaseDreamService {
         return allDreams.sorted(by: { $0.date > $1.date })
     }
     
-    func createDream(dream: DreamModel) async throws -> DreamModel {
+    func createDream(dream: DreamModel) async throws -> String {
         var newDream = dream
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .short
         dateFormatter.locale = Locale(identifier: "en_US_POSIX")
-
+        
         let tagArray = dream.tags.map { $0.rawValue }
-
+        
         print("USER ID: \(dream.userID)")
-
+        
         let dreamData: [String: Any] = [
-            "date": dateFormatter.string(from: dream.date),
+            "date": dream.date,
             "emotion": dream.emotion.rawValue,
             "generatedContent": dream.generatedContent,
             "title": dream.title,
@@ -87,7 +87,7 @@ class FirebaseDreamService {
             "userID": dream.userID,
             "finishedDream": dream.finishedDream,
         ]
-
+        
         do {
             let ref = try await fb.db.collection("DREAMS").addDocument(data: dreamData)
             let dreamRef = ref.documentID
@@ -103,14 +103,12 @@ class FirebaseDreamService {
             
             print("Appended \(dreamRef) to user \(dream.userID)")
             
+            return dreamRef
         } catch {
             print("Error adding document: \(error)")
             throw error
         }
         
-        FirebaseLoginService.shared.currUser?.dreams.append(newDream)
-        
-        return dream
     }
     
     func storeImages(dream: DreamModel, urls: [String]) async {
@@ -128,3 +126,4 @@ class FirebaseDreamService {
         return try document.data(as: DreamModel.self)
     }
 }
+
