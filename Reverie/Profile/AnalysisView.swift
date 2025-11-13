@@ -63,7 +63,7 @@ struct AnalysisView: View {
                             title: "Sleep",
                             icon: "moon.stars.fill",
                             previewContent: {FrequencyView()},
-                            destination: {FrequencyView()},
+                            destination: {HealthKitSleepDashboardView()},
                             trailingView: {EmptyView()}
                             //sleep view stuff here
                         )

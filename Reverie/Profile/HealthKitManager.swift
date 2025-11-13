@@ -135,6 +135,7 @@ final class HealthKitManager {
             let start = cal.date(bySettingHour: 18, minute: 0, second: 0,
                                  of: now.addingTimeInterval(-86400)),
             let end   = cal.date(bySettingHour: 10, minute: 0, second: 0, of: now)
+
         else { completion(nil); return }
 
         fetchSleepSegments(start: start, end: end,
@@ -193,14 +194,16 @@ extension HealthKitManager {
         }
 
         let cal = Calendar.current
-        let end = cal.startOfDay(for: Date())
+//        let end = cal.startOfDay(for: Date())
+        let end = cal.startOfDay(for: Date()).addingTimeInterval(-1)
         guard let start = cal.date(byAdding: .day, value: -daysBack, to: end) else {
             completion([]); return
         }
 
         var interval = DateComponents()
         interval.day = 1
-        let anchor = cal.startOfDay(for: Date())
+//        let anchor = cal.startOfDay(for: Date())
+        let anchor = start 
         let predicate = HKQuery.predicateForSamples(withStart: start,
                                                     end: end.addingTimeInterval(24 * 3600),
                                                     options: [])
@@ -270,4 +273,8 @@ extension HealthKitManager {
 
         healthStore.execute(q)
     }
+    
+    
+    
+    
 }
