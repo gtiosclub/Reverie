@@ -7,70 +7,94 @@
 
 import SwiftUI
 
+struct LazyView<Content: View>: View {
+    let build: () -> Content
+    init(_ build: @autoclosure @escaping () -> Content) {
+        self.build = build
+    }
+    var body: some View { build() }
+}
+
 struct TabbarView: View {
     @EnvironmentObject var ts: TabState
 
     var body: some View {
-//        VStack {
-        HStack (spacing: 0){
-            TabButton(title: Image(systemName: "house"), text: "Home", tab: .home, destination: StartView())
-                .transition(.opacity)
-            TabButton(title: Image(systemName: "chart.bar"), text: "Analysis", tab: .analytics, destination: AnalysisView())
-                .transition(.opacity)
-            TabButton(title: Image(systemName: "doc.text"), text: "Archive", tab: .archive, destination: DreamArchiveView())
-                .transition(.opacity)
+        VStack(spacing: 0) {
+            HStack(spacing: 0) {
+                TabButton(
+                    title: Image(systemName: "house"),
+                    text: "Home",
+                    tab: .home,
+                    destination: LazyView(StartView())
+                )
+
+                TabButton(
+                    title: Image(systemName: "star.fill"),
+                    text: "Archive",
+                    tab: .archive,
+                    destination: LazyView(DreamArchiveView())
+                )
+
+                TabButton(
+                    title: Image(systemName: "chart.bar"),
+                    text: "Analysis",
+                    tab: .analytics,
+                    destination: LazyView(AnalysisView())
+                )
             }
-            .animation(.easeInOut(duration: 0.3), value: ts.activeTab)
-//            .padding()
-            .frame(maxWidth: 300, maxHeight: 50)
+            .frame(maxWidth: 300, maxHeight: 60)
             .glassEffect(.regular)
-//            .glassEffect(.regular, in: .rect)
-            .cornerRadius(20)
-//        }
-//        .frame(maxHeight: .infinity, alignment: .bottom)
-//        .padding(.bottom, -10)
+            .background(Color.black.opacity(0.5))
+            .cornerRadius(100)
+            .padding(.bottom, -20)
+        }
     }
 }
 
-// Tab Buttons
 struct TabButton<Destination: View>: View {
     let title: Image
     let text: String
     let tab: TabType
     let destination: Destination
-    
+
     @EnvironmentObject var ts: TabState
-    
+
     var body: some View {
         NavigationLink(destination: destination) {
             VStack {
-                title
+                if title == Image(systemName: "star.fill") {
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 4)
+                            .stroke(lineWidth: 1.5)
+                            .frame(width: 18, height: 18)
+
+                        title
+                            .font(.system(size: 12))
+                    }
+                    .padding(.bottom, -4)
+                } else {
+                    title
+                }
+
                 Text(text)
-                    .font(.footnote).textScale(.secondary)
+                    .font(.footnote)
             }
-                .frame(maxWidth: .infinity)
-                .padding()
-                .font(.system(size: 18))
-                .foregroundColor(ts.activeTab == tab ? Color.indigo.opacity(0.6) : .gray)
+            .foregroundColor(ts.activeTab == tab ? .indigo.opacity(0.6) : .gray)
+            .frame(maxWidth: .infinity)
+            .padding()
         }
-        .simultaneousGesture(TapGesture().onEnded{
+        .simultaneousGesture(TapGesture().onEnded {
             ts.activeTab = tab
         })
         .navigationBarBackButtonHidden(true)
-        .background(ts.activeTab == tab ?
-                    Capsule()
-                        .glassEffect(.regular)
-                        .frame(maxWidth: .infinity)
-                        .padding(.horizontal, 2.5)
-                        .padding(.vertical, 12)
-                        .opacity(0.3)
-                        .cornerRadius(20)
-                    : nil)
     }
 }
 
 #Preview {
-    TabbarView()
-        .background(BackgroundView())
-        .environmentObject(TabState())
+    NavigationStack {
+        TabbarView()
+            .background(BackgroundView())
+            .environmentObject(TabState())
+    }
 }
+
