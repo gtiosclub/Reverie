@@ -423,6 +423,7 @@ struct DreamEntryView: View {
                 .zIndex(1000)
             }
         }
+        
         .navigationBarHidden(true)
         .navigationDestination(isPresented: $goBack) {
             DreamArchiveView()
