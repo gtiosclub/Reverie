@@ -201,13 +201,21 @@ struct FrequencyView: View {
                 
                 if showSummaryText {
                     VStack(alignment: .leading, spacing: 6) {
-                        Text(activitySummaryText())
-                            .font(.subheadline)
-                            .foregroundColor(.white.opacity(0.8))
-                            .padding(.horizontal, 20)
-                            .padding(.top, 24)
-                            .multilineTextAlignment(.leading)
-                            .fixedSize(horizontal: false, vertical: true)
+                        HStack {
+                            Text(activitySummaryText())
+                                .font(.subheadline)
+                                .foregroundColor(.white.opacity(0.8))
+                                .multilineTextAlignment(.leading)
+                            
+                            Spacer()
+                            
+                            Image(systemName: "chevron.right")
+                                .foregroundColor(.gray)
+                                .font(Font.system(size: 14))
+                        }
+                        .padding(.horizontal)
+                        .padding(.top, 8)
+                        .padding(.bottom, 3)
                         
                         Rectangle()
                             .fill(Color.white.opacity(0.05))
