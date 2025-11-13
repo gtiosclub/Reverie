@@ -94,7 +94,7 @@ struct AnalysisView: View {
                         .font(.largeTitle.bold())
                         .foregroundColor(.white)
                     Spacer()
-                    NavigationLink(destination: ConstellationView(dreams: testDreams, similarityMatrix: testSimMatrix, threshold: 0.4)) {
+                    NavigationLink(destination: ConstellationView(dreams: dreamAll, similarityMatrix: simMatrix, threshold: 0.2)) {
                         ZStack {
                             Circle()
                                 .fill(
@@ -227,7 +227,7 @@ var currentAverageDreamLength: Int {
 }
 
 let dreamAll = FirebaseLoginService.shared.currUser?.dreams ?? []
-
+let simMatrix = generateDreamsSimilarityMatrix(for: dreamAll)
 
 
 #Preview {
