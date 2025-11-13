@@ -40,7 +40,7 @@ struct AnalysisView: View {
 //                                .cornerRadius(12)
                             }
                         )
-                        .padding(.top, -8)
+                        .padding(.top, -2)
                         
                         AnalysisSection (
                             title: "Themes",
@@ -60,14 +60,14 @@ struct AnalysisView: View {
                         )
 //                        .padding(.bottom, 30) // test
                         
-                        AnalysisSection (
-                            title: "Sleep",
-                            icon: "moon.stars.fill",
-                            previewContent: {FrequencyView()},
-                            destination: {FrequencyView()},
-                            trailingView: {EmptyView()}
-                            //sleep view stuff here
-                        )
+//                        AnalysisSection (
+//                            title: "Sleep",
+//                            icon: "moon.stars.fill",
+//                            previewContent: {FrequencyView()},
+//                            destination: {FrequencyView()},
+//                            trailingView: {EmptyView()}
+//                            //sleep view stuff here
+//                        )
                     }
                     .padding(.top, 75)
                     .padding(.horizontal)
@@ -143,7 +143,7 @@ struct AnalysisView: View {
                 }
                 .padding(.leading, 32)
 //                .padding(.top, 12)
-                .padding(.bottom, 12)
+                .padding(.bottom, 30)
                 .background(
                     LinearGradient(
                         gradient: Gradient(stops: [
