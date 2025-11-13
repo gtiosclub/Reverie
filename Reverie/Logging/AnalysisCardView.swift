@@ -88,6 +88,7 @@ struct AnalysisCardView: View {
                             }
                         }
                         .padding(.horizontal)
+                        .padding(.bottom, 20)
                     }
 
                     if let themeCard = cards.first(where: { $0.title.lowercased().contains("theme") || $0.title.lowercased().contains("motif") }) {
@@ -125,6 +126,9 @@ struct AnalysisCardView: View {
             
             
         }
+        .foregroundColor(.white)
+        .tint(.white)
+        .environment(\.colorScheme, .dark)
     }
 
 
@@ -138,12 +142,14 @@ struct AnalysisSectionCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(spacing: 6) {
-                Image(systemName: "sparkles")
-                    .foregroundColor(.white)
-                    .font(.subheadline)
-                Text(title)
-                    .font(.headline.weight(.semibold))
-                    .foregroundColor(.white)
+                if (title != "") {
+                    Image(systemName: "sparkles")
+                        .foregroundColor(.white)
+                        .font(.subheadline)
+                    Text(title)
+                        .font(.headline.weight(.semibold))
+                        .foregroundColor(.white)
+                }
             }
 
             content
@@ -250,4 +256,3 @@ func parseDreamText(text: String) -> [Card] {
         )
     )
 }
-

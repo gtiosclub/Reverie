@@ -13,6 +13,7 @@ struct StartView: View {
     @State private var characters: [CardModel] = FirebaseLoginService.shared.currUser?.dreamCards ?? []
     @State private var selectedCharacter: CardModel? = nil
     @State private var unlockCards: Bool = false
+    @State private var showArchive: Bool = false
     @State private var lockedCharacters: [CardModel] = []
     @State private var showCardsCarousel: Bool = false
     @State private var currentPage: Int = 0
@@ -33,7 +34,8 @@ struct StartView: View {
                         characters: $characters,
                         lockedCharacters: $lockedCharacters,
                         selectedCharacter: $selectedCharacter,
-                        unlockCards: $unlockCards
+                        unlockCards: $unlockCards,
+                        showArchive: $showArchive
                     )
                         .frame(height: UIScreen.main.bounds.height)
                 }
@@ -46,6 +48,23 @@ struct StartView: View {
             VStack {
                 Spacer()
                 TabbarView()
+            }
+            
+            if showArchive {
+                Color.black.opacity(0.8)
+                    .ignoresSafeArea()
+                    .transition(.opacity)
+                    .onTapGesture {
+                        withAnimation {
+                            showArchive = false
+                        }
+                    }
+                
+                CharacterArchiveView(
+                    characters: $characters,
+                    selectedCharacter: $selectedCharacter,
+                    showArchive: $showArchive
+                )
             }
             
             if let character = selectedCharacter {

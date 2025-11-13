@@ -10,7 +10,7 @@ import FoundationModels
 import SwiftUI
 
 
-class DreamModel: Decodable {
+struct DreamModel: Decodable {
     var id: String
     var userID: String
     var title: String
@@ -310,6 +310,29 @@ class DreamModel: Decodable {
         self.image = image
         self.emotion = emotion
         self.finishedDream = finishedDream
+    }
+}
+
+extension DreamModel.Emotions {
+    var displayName: String { rawValue.capitalized }
+    
+    var detailDescription: String {
+        switch self {
+        case .happiness:
+            return "Filled with warmth, optimism, and an uplifted spirit."
+        case .sadness:
+            return "Characterized by sorrow, heartbreak, grief, and despair."
+        case .anger:
+            return "Fueled by frustration, restlessness, and emotional intensity."
+        case .fear:
+            return "Rooted in unease, looming danger, and heightened senses."
+        case .embarrassment:
+            return "Sparked by self-consciousness, vulnerability, and awkward moments."
+        case .anxiety:
+            return "Marked by worry, tension, and racing thoughts."
+        case .neutral:
+            return "Balanced with calm observation and grounded emotions."
+        }
     }
 }
 

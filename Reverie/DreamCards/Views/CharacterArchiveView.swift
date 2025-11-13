@@ -14,7 +14,7 @@ struct CharacterArchiveView: View {
     
     @Environment(\.dismiss) private var dismiss
 
-    private let cols: [GridItem] = Array(repeating: .init(.flexible()), count: 4)
+    private let cols: [GridItem] = Array(repeating: .init(.flexible()), count: 3)
     
     init(characters: Binding<[CardModel]>, selectedCharacter: Binding<CardModel?>, showArchive: Binding<Bool>) {
         self._characters = characters
@@ -37,24 +37,28 @@ struct CharacterArchiveView: View {
     var body: some View {
         GeometryReader { geo in
             ZStack {
+                VStack {
+                    Text("All Characters")
+                        .font(.title2.bold())
+                        .foregroundColor(.white)
+                        .padding(.top, geo.size.height / 11)
+                    
+                    Spacer()
+                }
                 ZStack {
                     VStack {
-                        Text("Character Archive")
-                            .font(.title2.bold())
-                            .foregroundColor(.white)
-                            .padding(.top, 30)
                         TabView {
-                            let pages = createPages(elements: $characters, itemsPerPage: 20)
+                            let pages = createPages(elements: $characters, itemsPerPage: 15)
                             ForEach(pages.indices, id: \.self) { pageIndex in
                                 VStack {
                                     CharacterGridView(
                                         page: pages[pageIndex],
-                                        geoWidth: 400,
+                                        geoWidth: geo.size.width * 0.85,
                                         cols: cols
                                     ) { selected in
                                         self.selectedCharacter = selected
                                     }
-                                    .padding(.top, 8)
+                                    .padding(.top, 20)
                                     Spacer()
                                 }
                             }
@@ -62,7 +66,7 @@ struct CharacterArchiveView: View {
                         .tabViewStyle(.page(indexDisplayMode: .automatic))
                     }
                 }
-                .frame(width: 400, height: 650)
+                .frame(width: geo.size.width * 0.85, height: geo.size.width * 0.85 * (650.0 / 400.0))
                 .background(
                     RoundedRectangle(cornerRadius: 20)
                         .fill(Color.black.opacity(0.85))
@@ -77,23 +81,6 @@ struct CharacterArchiveView: View {
                         .stroke(Color.white.opacity(0.2), lineWidth: 3)
                 )
                 .clipShape(RoundedRectangle(cornerRadius: 20))
-                .overlay(
-                    // Back Button
-                    Button(action: {
-                        withAnimation(.spring()) {
-                            self.showArchive = false
-                        }
-                    }) {
-                        Image(systemName: "chevron.backward")
-                            .font(.system(size: 20, weight: .bold))
-                            .foregroundColor(.white.opacity(0.85))
-                            .padding(13)
-    //                        .background(.ultraThinMaterial, in: Circle())
-                    }
-                    .glassEffect(.regular, in: .circle)
-                    .padding(20),
-                    alignment: .topLeading
-                )
                 
                 if let character = selectedCharacter {
                     DreamCardCharacterInformationView(
@@ -123,7 +110,7 @@ struct CharacterGridView: View {
             ForEach(page.indices, id: \.self) { itemIndex in
                 CharacterView(
                     character: page[itemIndex],
-                    size: geoWidth / 3 * 0.6
+                    size: geoWidth / 2.5 * 0.55
                 )
                 .contentShape(Rectangle())
                 .onTapGesture {

@@ -55,7 +55,7 @@ struct ProfileView: View {
                                 .foregroundColor(.white)
                                 .padding()
                                 .frame(maxWidth: .infinity)
-                                .background(Color(red: 35/255, green: 31/255, blue: 49/255))
+                                .background(Color.profileContainer)
                                 .cornerRadius(12)
                         }
                         NavigationLink(destination: ConstellationView(dreams: testDreams, similarityMatrix: testSimMatrix, threshold: 0.4).background(BackgroundView())) {
@@ -64,7 +64,7 @@ struct ProfileView: View {
                                 .foregroundColor(.white)
                                 .padding()
                                 .frame(maxWidth: .infinity)
-                                .background(Color(red: 35/255, green: 31/255, blue: 49/255))
+                                .background(Color.profileContainer)
                                 .cornerRadius(12)
                         }
                         
@@ -74,7 +74,7 @@ struct ProfileView: View {
                                 .foregroundColor(.white)
                                 .padding()
                                 .frame(maxWidth: .infinity)
-                                .background(Color(red: 35/255, green: 31/255, blue: 49/255))
+                                .background(Color.profileContainer)
                                 .cornerRadius(12)
                         }                        
                         
@@ -322,51 +322,7 @@ func averageDreamWordCount(dreams: [DreamModel]) -> Int {
 //     return (longestStreak, currentStreakCount)
 // }
 func renderEmotionCircles(from dreams: [DreamModel]) -> some View {
-    var emotionsDict = [DreamModel.Emotions: Int]()
-    for dream in dreams {
-        emotionsDict[dream.emotion, default: 0] += 1
-    }
-
-    let colorFor: (DreamModel.Emotions) -> Color = { e in
-        switch e {
-        case .sadness:       return .blue
-        case .happiness:     return .yellow
-        case .fear:          return .purple
-        case .anger:         return .red
-        case .embarrassment: return .orange
-        case .anxiety:       return .green
-        case .neutral:       return .gray
-        }
-    }
-
-    let positions: [CGPoint] = [
-        CGPoint(x: 160, y: 80),
-        CGPoint(x: 280, y: 140),
-        CGPoint(x: 100, y: 180),
-        CGPoint(x: 250, y: 220),
-        CGPoint(x: 200, y: 260),
-        CGPoint(x: 320, y: 200),
-        CGPoint(x: 140, y: 240)
-    ]
-
-    return ZStack {
-        ForEach(Array(emotionsDict.keys.enumerated()), id: \.offset) { index, emotion in
-            if let count = emotionsDict[emotion] {
-                let size = CGFloat(80 + (count * 25)) // ✅ frequency-based size
-                let pos = index < positions.count
-                    ? positions[index]
-                    : CGPoint(x: 150 + CGFloat(index * 40), y: 180) 
-                EmotionBubbleView(
-                    size: size,
-                    color: colorFor(emotion),
-                    start: pos,
-                    jitter: max(28, min(54, size * 0.18))
-                )
-                .zIndex(Double(-size))
-            }
-        }
-    }
-    .padding(.top, -40) // small upward adjustment for the entire group
+    EmotionBubbleChart(dreams: dreams)
 }
 
 /// Current streak of consecutive calendar days with at least one dream, ending at the most recent dream's day.
@@ -387,5 +343,3 @@ func currentDreamStreak(dreams: [DreamModel]) -> Int {
 }
 
 #Preview { ProfileView() }
-
-
