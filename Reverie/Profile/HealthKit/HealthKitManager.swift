@@ -1,3 +1,5 @@
+// HealthKitManager.swift
+
 import Foundation
 import HealthKit
 
@@ -8,7 +10,7 @@ final class HealthKitManager {
     func requestAuthorization(completion: @escaping (Bool, Error?) -> Void) {
         guard HKHealthStore.isHealthDataAvailable() else {
             completion(false, NSError(domain: "HealthKit", code: 1,
-                userInfo: [NSLocalizedDescriptionKey: "Health data not available."]))
+                                      userInfo: [NSLocalizedDescriptionKey: "Health data not available."]))
             return
         }
 
@@ -77,8 +79,10 @@ final class HealthKitManager {
         let predicate = HKQuery.predicateForSamples(withStart: start, end: end, options: [])
         let sort = NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: true)
 
-        let q = HKSampleQuery(sampleType: sleepType, predicate: predicate, limit: HKObjectQueryNoLimit, sortDescriptors: [sort]) {
-            [weak self] _, results, _ in
+        let q = HKSampleQuery(sampleType: sleepType,
+                              predicate: predicate,
+                              limit: HKObjectQueryNoLimit,
+                              sortDescriptors: [sort]) { [weak self] _, results, _ in
             guard let self else { DispatchQueue.main.async { completion([]) }; return }
             let modern = ProcessInfo.processInfo.operatingSystemVersion.majorVersion >= 16
             let samples = (results as? [HKCategorySample]) ?? []
@@ -137,21 +141,32 @@ final class HealthKitManager {
 
 // MARK: - Time series
 extension HealthKitManager {
-    struct DataPoint: Identifiable { let id = UUID(); let date: Date; let value: Double }
+    struct DataPoint: Identifiable {
+        let id = UUID()
+        let date: Date
+        let value: Double
+    }
 
     func fetchDailyQuantitySeries(identifier: HKQuantityTypeIdentifier,
                                   unit: HKUnit,
                                   daysBack: Int = 14,
                                   options: HKStatisticsOptions = .cumulativeSum,
                                   completion: @escaping ([DataPoint]) -> Void) {
-        guard let qType = HKObjectType.quantityType(forIdentifier: identifier) else { completion([]); return }
+        guard let qType = HKObjectType.quantityType(forIdentifier: identifier) else {
+            completion([]); return
+        }
         let cal = Calendar.current
         let end = cal.startOfDay(for: Date())
-        guard let start = cal.date(byAdding: .day, value: -daysBack, to: end) else { completion([]); return }
+        guard let start = cal.date(byAdding: .day, value: -daysBack, to: end) else {
+            completion([]); return
+        }
 
-        var interval = DateComponents(); interval.day = 1
+        var interval = DateComponents()
+        interval.day = 1
         let anchor = cal.startOfDay(for: Date())
-        let predicate = HKQuery.predicateForSamples(withStart: start, end: end.addingTimeInterval(24*3600), options: [])
+        let predicate = HKQuery.predicateForSamples(withStart: start,
+                                                    end: end.addingTimeInterval(24*3600),
+                                                    options: [])
 
         let query = HKStatisticsCollectionQuery(quantityType: qType,
                                                 quantitySamplePredicate: predicate,
@@ -163,7 +178,8 @@ extension HealthKitManager {
             var out: [DataPoint] = []
             results?.enumerateStatistics(from: start, to: end) { stats, _ in
                 let q: HKQuantity? = (options == .cumulativeSum) ? stats.sumQuantity() : stats.averageQuantity()
-                out.append(DataPoint(date: stats.startDate, value: (q?.doubleValue(for: unit)) ?? 0))
+                out.append(DataPoint(date: stats.startDate,
+                                     value: (q?.doubleValue(for: unit)) ?? 0))
             }
             DispatchQueue.main.async { completion(out) }
         }
@@ -177,12 +193,19 @@ extension HealthKitManager {
         }
         let cal = Calendar.current
         let end = cal.startOfDay(for: Date())
-        guard let start = cal.date(byAdding: .day, value: -daysBack, to: end) else { completion([]); return }
+        guard let start = cal.date(byAdding: .day, value: -daysBack, to: end) else {
+            completion([]); return
+        }
 
-        let predicate = HKQuery.predicateForSamples(withStart: start, end: end.addingTimeInterval(24*3600), options: [])
+        let predicate = HKQuery.predicateForSamples(withStart: start,
+                                                    end: end.addingTimeInterval(24*3600),
+                                                    options: [])
         let sort = NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: true)
 
-        let q = HKSampleQuery(sampleType: type, predicate: predicate, limit: HKObjectQueryNoLimit, sortDescriptors: [sort]) { _, results, _ in
+        let q = HKSampleQuery(sampleType: type,
+                              predicate: predicate,
+                              limit: HKObjectQueryNoLimit,
+                              sortDescriptors: [sort]) { _, results, _ in
             let samples = (results as? [HKCategorySample]) ?? []
             var buckets: [Date: TimeInterval] = [:]
             for s in samples {

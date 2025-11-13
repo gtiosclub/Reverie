@@ -1,100 +1,212 @@
+// GraphsView.swift
+
 import SwiftUI
 import Charts
 
 struct GraphsView: View {
     @ObservedObject var vm: HealthKitViewModel
-    @State private var mode: Mode = .timeSeries
-    @State private var xMetric: HealthKitViewModel.MetricKey = .date
-    @State private var yMetric: HealthKitViewModel.MetricKey = .stepCount
-    @State private var daysBack: Int = 14
 
-    enum Mode: String, CaseIterable, Identifiable { case timeSeries = "Time Series", scatter = "Scatter"; var id: String { rawValue } }
+    /// Sleep is always shown; these are extra metrics to overlay.
+    private let compareCandidates: [HealthKitViewModel.MetricKey] = [
+        .heartRate,
+        .restingHeartRate,
+        .stepCount,
+        .distanceKm,
+        .activeEnergy
+    ]
+
+    @State private var selectedComparisons: Set<HealthKitViewModel.MetricKey> = []
 
     var body: some View {
-        VStack(spacing: 12) {
-            Picker("Mode", selection: $mode) {
-                ForEach(Mode.allCases) { Text($0.rawValue).tag($0) }
-            }
-            .pickerStyle(.segmented)
+        VStack(alignment: .leading, spacing: 16) {
 
-            HStack {
-                VStack(alignment: .leading) {
-                    Text("X Axis").font(.caption)
-                    Picker("X Axis", selection: $xMetric) {
-                        Text(HealthKitViewModel.MetricKey.date.label).tag(HealthKitViewModel.MetricKey.date)
-                        ForEach(HealthKitViewModel.MetricKey.allCases.filter { $0 != .date }) {
-                            Text($0.label).tag($0)
-                        }
-                    }.pickerStyle(.menu)
-                }
-                VStack(alignment: .leading) {
-                    Text("Y Axis").font(.caption)
-                    Picker("Y Axis", selection: $yMetric) {
-                        ForEach(HealthKitViewModel.MetricKey.allCases.filter { $0 != .date }) {
-                            Text($0.label).tag($0)
-                        }
-                    }.pickerStyle(.menu)
-                }
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Sleep")
+                    .font(.title2.bold())
+                    .foregroundColor(.white)
+
+                Text("Compare your sleep to other health metrics.")
+                    .font(.subheadline)
+                    .foregroundColor(.white.opacity(0.7))
             }
 
-            HStack {
-                Stepper("Days: \(daysBack)", value: $daysBack, in: 7...60)
-                Spacer()
-                Button("Load Data") { vm.loadDefaultSeries(daysBack: daysBack) }
-                    .buttonStyle(.borderedProminent)
+            VStack(spacing: 12) {
+                MultiMetricLineChart(
+                    series: vm.series,
+                    baseMetric: .asleepHours,
+                    comparisonMetrics: Array(selectedComparisons)
+                )
+                .frame(minHeight: 230)
             }
+            .padding(14)
+            .background(Theme.cardHi, in: RoundedRectangle(cornerRadius: 18))
+            .overlay(
+                RoundedRectangle(cornerRadius: 18)
+                    .stroke(Theme.gridLine, lineWidth: 1)
+            )
 
-            Group {
-                if mode == .timeSeries {
-                    TimeSeriesChart(points: vm.series[yMetric] ?? [], title: yMetric.label)
-                } else {
-                    ScatterChart(xPoints: vm.series[xMetric] ?? [],
-                                 yPoints: vm.series[yMetric] ?? [],
-                                 xLabel: xMetric.label, yLabel: yMetric.label)
-                }
-            }
-            .frame(minHeight: 260)
+            Text("Compare to")
+                .font(.subheadline.weight(.semibold))
+                .foregroundColor(.white.opacity(0.8))
 
-            Spacer()
+            FlexibleButtonGrid(
+                allMetrics: compareCandidates,
+                selected: $selectedComparisons
+            )
         }
-        .padding(.vertical, 8)
-        .onAppear { vm.loadDefaultSeries(daysBack: daysBack) }
+        .padding(.top, 8)
+        .onAppear {
+            if PreviewEnv.isPreview {
+                vm.loadMockForPreview()
+            } else if vm.series.isEmpty {
+                vm.loadDefaultSeries(daysBack: 14)
+            }
+        }
     }
 }
 
-// MARK: - Charts
-private struct TimeSeriesChart: View {
-    let points: [HealthKitManager.DataPoint]
-    let title: String
-    var body: some View {
-        Chart(points) {
-            LineMark(x: .value("Date", $0.date), y: .value(title, $0.value))
-            PointMark(x: .value("Date", $0.date), y: .value(title, $0.value))
+// MARK: - Multi-metric Line Chart
+
+private struct MultiMetricLineChart: View {
+    let series: [HealthKitViewModel.MetricKey: [HealthKitManager.DataPoint]]
+    let baseMetric: HealthKitViewModel.MetricKey
+    let comparisonMetrics: [HealthKitViewModel.MetricKey]
+
+    struct CombinedPoint: Identifiable {
+        let id = UUID()
+        let date: Date
+        let value: Double
+        let metricLabel: String
+    }
+
+    private var allPoints: [CombinedPoint] {
+        var points: [CombinedPoint] = []
+
+        func appendSeries(for key: HealthKitViewModel.MetricKey) {
+            guard let s = series[key] else { return }
+            for dp in s {
+                points.append(
+                    CombinedPoint(date: dp.date,
+                                  value: dp.value,
+                                  metricLabel: key.label)
+                )
+            }
         }
-        .chartXAxisLabel("Date")
-        .chartYAxisLabel(title)
+
+        appendSeries(for: baseMetric)
+        comparisonMetrics.forEach { appendSeries(for: $0) }
+
+        return points
+    }
+
+    var body: some View {
+        Chart(allPoints) { point in
+            LineMark(
+                x: .value("Date", point.date),
+                y: .value("Value", point.value)
+            )
+            .lineStyle(.init(lineWidth: 2))
+            .interpolationMethod(.catmullRom)
+            .foregroundStyle(by: .value("Metric", point.metricLabel))
+
+            PointMark(
+                x: .value("Date", point.date),
+                y: .value("Value", point.value)
+            )
+            .symbolSize(18)
+            .foregroundStyle(by: .value("Metric", point.metricLabel))
+        }
+        .chartXAxis {
+            AxisMarks(values: .automatic) { value in
+                AxisGridLine().foregroundStyle(Theme.gridLine)
+                AxisTick().foregroundStyle(.white.opacity(0.4))
+                AxisValueLabel {
+                    if let date = value.as(Date.self) {
+                        Text(shortDate(date))
+                            .foregroundColor(.white.opacity(0.7))
+                            .font(.caption2)
+                    }
+                }
+            }
+        }
+        .chartYAxis {
+            AxisMarks(position: .leading) { _ in
+                AxisGridLine().foregroundStyle(Theme.gridLine)
+                AxisTick().foregroundStyle(.white.opacity(0.4))
+                AxisValueLabel()
+                    .foregroundStyle(.white.opacity(0.7))
+                    .font(.caption2)
+            }
+        }
+        .chartLegend(position: .bottom)
+        .padding(.horizontal, 4)
+    }
+
+    private func shortDate(_ date: Date) -> String {
+        let f = DateFormatter()
+        f.dateFormat = "MMM d"
+        return f.string(from: date)
     }
 }
 
-private struct ScatterChart: View {
-    struct ScatterPoint: Identifiable { let id = UUID(); let x: Double; let y: Double }
-    let xPoints: [HealthKitManager.DataPoint]
-    let yPoints: [HealthKitManager.DataPoint]
-    let xLabel: String, yLabel: String
+// MARK: - Compare buttons
 
-    var paired: [ScatterPoint] {
-        let cal = Calendar.current
-        let xm = Dictionary(uniqueKeysWithValues: xPoints.map { (cal.startOfDay(for: $0.date), $0.value) })
-        let ym = Dictionary(uniqueKeysWithValues: yPoints.map { (cal.startOfDay(for: $0.date), $0.value) })
-        let days = Set(xm.keys).intersection(ym.keys).sorted()
-        return days.map { ScatterPoint(x: xm[$0] ?? 0, y: ym[$0] ?? 0) }
-    }
+private struct FlexibleButtonGrid: View {
+    let allMetrics: [HealthKitViewModel.MetricKey]
+    @Binding var selected: Set<HealthKitViewModel.MetricKey>
 
     var body: some View {
-        Chart(paired) { p in
-            PointMark(x: .value(xLabel, p.x), y: .value(yLabel, p.y))
+        LazyVGrid(columns: [GridItem(.adaptive(minimum: 140), spacing: 10)], spacing: 10) {
+            ForEach(allMetrics) { metric in
+                let isOn = selected.contains(metric)
+
+                Button {
+                    if isOn { selected.remove(metric) } else { selected.insert(metric) }
+                } label: {
+                    HStack(spacing: 8) {
+                        Image(systemName: icon(for: metric))
+                        Text(buttonTitle(for: metric))
+                            .font(.subheadline.weight(.medium))
+                    }
+                    .foregroundColor(.white)
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 10)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(
+                        RoundedRectangle(cornerRadius: 14)
+                            .fill(isOn ? Color.white.opacity(0.18) : Color.white.opacity(0.06))
+                    )
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 14)
+                            .stroke(isOn ? Color.white.opacity(0.6) : Theme.gridLine,
+                                    lineWidth: 1)
+                    )
+                }
+                .buttonStyle(.plain)
+            }
         }
-        .chartXAxisLabel(xLabel)
-        .chartYAxisLabel(yLabel)
+    }
+
+    private func buttonTitle(for key: HealthKitViewModel.MetricKey) -> String {
+        switch key {
+        case .heartRate:         return "Heart Rate"
+        case .restingHeartRate:  return "Resting HR"
+        case .stepCount:         return "Steps"
+        case .distanceKm:        return "Distance"
+        case .activeEnergy:      return "Active Energy"
+        case .asleepHours, .date:
+            return key.label
+        }
+    }
+
+    private func icon(for key: HealthKitViewModel.MetricKey) -> String {
+        switch key {
+        case .heartRate, .restingHeartRate: return "heart.fill"
+        case .stepCount:                    return "figure.walk"
+        case .distanceKm:                   return "map.fill"
+        case .activeEnergy:                 return "flame.fill"
+        case .asleepHours:                  return "moon.zzz.fill"
+        case .date:                         return "calendar"
+        }
     }
 }
