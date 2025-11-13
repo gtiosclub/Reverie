@@ -55,7 +55,8 @@ struct SectionView: View {
 
 #Preview {
     ZStack {
-        Color.black.ignoresSafeArea()
+        Color(red: 12/255, green: 8/255, blue: 32/255)
+            .ignoresSafeArea()
         VStack(spacing: 0) {
             SectionView(
                 title: "Cave Diving",

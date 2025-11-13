@@ -24,7 +24,7 @@ struct StatisticsView: View {
                         iconName: "flame.fill",
                         label: "STREAK",
                         value: "\(streak)",
-                        sublabel: "days",
+                        sublabel: streak == 1 ? "day" : "days",
                         labelColor: .orange,
                         glowInner: glowInner,
                         glowOuter: glowOuter
@@ -33,7 +33,7 @@ struct StatisticsView: View {
                         iconName: nil,
                         label: "WEEKLY AVG",
                         value: "\(weeklyAverage)",
-                        sublabel: "dreams",
+                        sublabel: weeklyAverage == 1 ? "dream" : "dreams",
                         labelColor: .white.opacity(0.7),
                         glowInner: glowInner,
                         glowOuter: glowOuter
@@ -42,7 +42,7 @@ struct StatisticsView: View {
                         iconName: nil,
                         label: "AVG LENGTH",
                         value: "\(averageLength)",
-                        sublabel: "words",
+                        sublabel: averageLength == 1 ? "word" : "words",
                         labelColor: .white.opacity(0.7),
                         glowInner: glowInner,
                         glowOuter: glowOuter
