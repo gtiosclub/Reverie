@@ -29,9 +29,9 @@ struct AnalysisCardView: View {
 
                 VStack(alignment: .leading, spacing: 16) {
                     Text("Themes")
-                        .font(.headline.weight(.semibold))
+                        .font(.system(size: 19).weight(.bold))
                         .foregroundColor(.white)
-                        .padding(.horizontal)
+                        .padding(.horizontal, 20)
 
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 24) {
@@ -87,7 +87,7 @@ struct AnalysisCardView: View {
                                 .buttonStyle(.plain)
                             }
                         }
-                        .padding(.horizontal)
+                        .padding(.horizontal, 20)
                         .padding(.bottom, 20)
                     }
 
@@ -138,14 +138,12 @@ struct AnalysisSectionCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            HStack(spacing: 6) {
-                if (title != "") {
-                    Image(systemName: "sparkles")
-                        .foregroundColor(.white)
-                        .font(.subheadline)
+            if (title != "") {
+                HStack(spacing: 6) {
                     Text(title)
-                        .font(.headline.weight(.semibold))
+                        .font(.system(size: 19).weight(.bold))
                         .foregroundColor(.white)
+                    
                 }
             }
 
