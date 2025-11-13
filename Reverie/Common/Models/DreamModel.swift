@@ -177,18 +177,27 @@ class DreamModel: Decodable {
         let sharedWords = words1.intersection(words2)
 //        let allWords = words1.union(words2)
         let minWords = min(words1.count, words2.count)
-        let keywordScore = minWords == 0 ? 0.0 : Double(sharedWords.count) / Double(minWords)
+        var keywordScore = minWords == 0 ? 0.0 : Double(sharedWords.count) / Double(minWords)
+        if keywordScore > 0.3 {
+            keywordScore = 1
+        }
+        else {
+            keywordScore = keywordScore + 0.2
+        }
 
         // Emotion similarity
         let emotionScore = dream1.emotion == dream2.emotion ? 1.0 : 0.0
         
         // Tag similarity
         let sharedTags = Set(dream1.tags).intersection(Set(dream2.tags))
-        let allTags = Set(dream1.tags).union(Set(dream2.tags))
-        let tagScore = allTags.isEmpty ? 0.0 : Double(sharedTags.count) / Double(allTags.count)
+//        let allTags = Set(dream1.tags).union(Set(dream2.tags))
+        let minTags = min(dream1.tags.count, dream2.tags.count)
+        var tagScore = minTags == 0 ? 0.0 : Double(sharedTags.count) / Double(minTags)
+        tagScore = tagScore * 2
+        tagScore = min(tagScore, 1)
         
         // Weighted similarity (tuneable weights)
-        let similarity = (keywordScore * 0.6) + (emotionScore * 0.25) + (tagScore * 0.15)
+        let similarity = (keywordScore * 0.65) + (emotionScore * 0.1) + (tagScore * 0.3)
         return similarity
     }
     
