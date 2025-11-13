@@ -30,7 +30,7 @@ class DCFoundationModelService {
         Give the character or object a short, whimsical, and memorable name.
 
         **3. The Third String: The Description**
-        Write a brief story arc or personality for the character, between 100 and 300 characters.
+        Write the significance of the character, between 20 and 60 characters.
         """
         let ModelSession = LanguageModelSession(instructions: instructions)
         
