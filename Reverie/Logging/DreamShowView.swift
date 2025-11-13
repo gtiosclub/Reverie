@@ -26,11 +26,11 @@ struct DreamShowView: View {
                     HStack {
                         Image(systemName: "sparkles")
                             .font(.system(size: 22))
-                            .padding(.trailing, -3)
+                            .padding(.trailing, -2)
                             .padding(.leading, 5)
                         
                         Text("Finish my dream")
-                            .font(.headline)
+                            .font(.system(size: 20))
                             .foregroundColor(.white)
                         Spacer()
                         if expanded {
@@ -40,15 +40,20 @@ struct DreamShowView: View {
                                 }
                             }) {
                                 Image(systemName: "info.circle")
-                                    .font(.system(size: 20))
-                                    .opacity(showInfo ? 1: 0.7)
+                                    .font(.system(size: 25))
+                                    .opacity(showInfo ? 1: 0.6)
                             }
                             .buttonStyle(.plain)
+                            .padding(.trailing, 5)
+                            .padding(.top, 5)
                         }
-                        Image(systemName: expanded ? "chevron.down" : "chevron.right")
-                            .foregroundColor(.white)
+                        if expanded == false {
+                            Image(systemName: "chevron.right")
+                                .foregroundColor(.white)
+                        }
                     }
                     .padding(11)
+                    .padding(.bottom, expanded ? 5 : 0)
                     .contentShape(Rectangle())
                     .onTapGesture {
                         withAnimation(.spring(response: 0.5, dampingFraction: 0.8)) {
@@ -63,22 +68,25 @@ struct DreamShowView: View {
                             Spacer().frame(width: 10)
                             Text("Using your description of your dream, we created a potential ending to the story.")
                                 .font(.system(size: 13))
+                                
                                 .foregroundColor(.white.opacity(0.7))
                                 .multilineTextAlignment(.leading)
                                 .transition(.opacity.combined(with: .move(edge: .top)))
                             Spacer().frame(width: 20)
                         }
                         .padding(.bottom, 17)
+                        .padding(.top, -10)
                         
                         
                     }
                     if expanded {
-                        Divider().background(Color.white.opacity(0.4))
+
                         
                         ScrollView {
                             Text(dream.finishedDream)
                                 .foregroundColor(.white)
-                                .padding()
+                                .padding(.horizontal)
+                                .padding(.bottom)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .multilineTextAlignment(.leading)
                         }
@@ -122,7 +130,7 @@ struct DreamShowView: View {
                         .blendMode(.screen)
                         .shadow(color: .white.opacity(0.25), radius: 1)
                 )
-                .padding()
+                .padding(.horizontal)
                 .onAppear {
                     withAnimation(.easeInOut(duration: 1.5).repeatForever(autoreverses: true)) {
                         glowPulse.toggle()
