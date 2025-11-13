@@ -102,14 +102,6 @@ private struct YearlyDreamGraphView: View {
 
     var body: some View {
         VStack(alignment: .leading) {
-            
-            Text("Dream Frequency")
-                .font(.title2)
-                .fontWeight(.bold)
-                .foregroundColor(.white)
-                .padding(.top, 20)
-                .padding(.horizontal)
-            
             VStack{
                 if monthlyData.contains(where: { $0.frequency > 0 }) {
                     ZStack {
@@ -118,6 +110,8 @@ private struct YearlyDreamGraphView: View {
                         
                         PeakCircles(data: monthlyData)
                     }
+                    .padding(.top, 20)
+
                 } else {
                     Spacer()
                     Text("No dream data for this year")
@@ -134,8 +128,8 @@ private struct YearlyDreamGraphView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color(red: 35/255, green: 31/255, blue: 49/255))
-        .cornerRadius(10)
+        .background(Color.profileContainer)
+        .cornerRadius(18)
         .padding()
     }
 
@@ -182,34 +176,81 @@ struct FrequencyView: View {
     @StateObject private var viewModel = HeatmapViewModel()
     private let yearRange = 2015...2035
     @State private var selectedPageIndex: Int
-
-    init(){
+    
+    var showSummaryText: Bool = false
+    
+    
+    init(showSummaryText: Bool = false) {
         let currentYear = Calendar.current.component(.year, from: Date())
         let currentYearIndex = currentYear - yearRange.lowerBound
         
         let validIndex = (0..<yearRange.count).contains(currentYearIndex) ? currentYearIndex : 0
         self._selectedPageIndex = State(initialValue: validIndex)
+        self.showSummaryText = showSummaryText
+        
     }
-
+    
     var body: some View {
         let years = Array(yearRange)
-        TabView(selection: $selectedPageIndex) {
-            ForEach(0..<years.count, id: \.self) { index in
-                let year = years[index]
-                YearlyDreamGraphView(dreams: viewModel.dreams, year: year)
-                    .tag(index)
+        
+        ZStack {
+            RoundedRectangle(cornerRadius: 18)
+                .fill(Color.profileContainer)
+            
+            VStack(alignment: .leading, spacing: 10) {
+                
+                if showSummaryText {
+                    VStack(alignment: .leading, spacing: 6) {
+                        HStack {
+                            Text(activitySummaryText())
+                                .font(.subheadline)
+                                .foregroundColor(.white.opacity(0.8))
+                                .multilineTextAlignment(.leading)
+                            
+                            Spacer()
+                            
+                            Image(systemName: "chevron.right")
+                                .foregroundColor(.gray)
+                                .font(Font.system(size: 14))
+                        }
+                        .padding(.horizontal)
+                        .padding(.top, 8)
+                        .padding(.bottom, 3)
+                        
+                        Rectangle()
+                            .fill(Color.white.opacity(0.05))
+                            .frame(height: 1)
+                            .padding(.horizontal, 20)
+                            .padding(.top, 10)
+                    }
+                }
+
+                            
+                TabView(selection: $selectedPageIndex) {
+                    ForEach(0..<years.count, id: \.self) { index in
+                        let year = years[index]
+                        YearlyDreamGraphView(dreams: viewModel.dreams, year: year)
+                            .tag(index)
+                    }
+                }
+                .tabViewStyle(.page(indexDisplayMode: .always))
+                .frame(height: 234)
+                .cornerRadius(16)
+                .task {
+                    viewModel.fetchDreams()
+                }
+
+                Spacer(minLength: 12)
             }
+            .padding(.vertical, 10)
         }
-        .tabViewStyle(.page(indexDisplayMode: .always))
-        .frame(height: 300)
-        .clipShape(RoundedRectangle(cornerRadius: 20))
-        .task{
-            viewModel.fetchDreams()
-        }
+        .frame(height: 330)
+        .cornerRadius(18)
+        .padding(.horizontal)
     }
 }
 
 
 #Preview {
-    FrequencyView()
+    FrequencyView(showSummaryText: true)
 }

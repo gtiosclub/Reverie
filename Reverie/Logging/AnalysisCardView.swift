@@ -126,6 +126,9 @@ struct AnalysisCardView: View {
             
             
         }
+        .foregroundColor(.white)
+        .tint(.white)
+        .environment(\.colorScheme, .dark)
     }
 
 
@@ -251,4 +254,3 @@ func parseDreamText(text: String) -> [Card] {
         )
     )
 }
-
