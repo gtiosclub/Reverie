@@ -55,43 +55,43 @@ struct DreamCardView: View {
     private let lastUnlockTimeKey = "lastUnlockTime"
 
     var progress: Float {
-        let calendar = Calendar.current
-        let now = Date()
-
-        let lastUnlockTimeInterval = UserDefaults.standard.double(forKey: lastUnlockTimeKey)
-        let lastUnlockTime: Date
-        
-        var components = DateComponents()
-        components.weekday = 1 // Sunday
-        components.hour = 20    // 6 PM
-//        components.minute = 33  // 6:49 PM
-        
-        if lastUnlockTimeInterval == 0 {
-            
-            let mostRecentUnlockTime = calendar.nextDate(after: now,
-                                                         matching: components,
-                                                         matchingPolicy: .nextTime,
-                                                         direction: .backward) ?? (now - 7*24*60*60)
-            
-            lastUnlockTime = calendar.date(byAdding: .day, value: -7, to: mostRecentUnlockTime)!
-            
-            UserDefaults.standard.set(lastUnlockTime.timeIntervalSince1970, forKey: lastUnlockTimeKey)
-            
-        } else {
-            lastUnlockTime = Date(timeIntervalSince1970: lastUnlockTimeInterval)
-        }
-
-        let nextUnlockTime = calendar.date(byAdding: .day, value: 7, to: lastUnlockTime)!
-
-        let totalDuration = nextUnlockTime.timeIntervalSince(lastUnlockTime)
-        
-        let timeElapsed = now.timeIntervalSince(lastUnlockTime)
-        
-        let progressValue = Float(timeElapsed / totalDuration)
-        
-        // never > 1.0
-        return min(1.0, progressValue)
-//        return 1.0
+//        let calendar = Calendar.current
+//        let now = Date()
+//
+//        let lastUnlockTimeInterval = UserDefaults.standard.double(forKey: lastUnlockTimeKey)
+//        let lastUnlockTime: Date
+//        
+//        var components = DateComponents()
+//        components.weekday = 1 // Sunday
+//        components.hour = 20    // 6 PM
+////        components.minute = 33  // 6:49 PM
+//        
+//        if lastUnlockTimeInterval == 0 {
+//            
+//            let mostRecentUnlockTime = calendar.nextDate(after: now,
+//                                                         matching: components,
+//                                                         matchingPolicy: .nextTime,
+//                                                         direction: .backward) ?? (now - 7*24*60*60)
+//            
+//            lastUnlockTime = calendar.date(byAdding: .day, value: -7, to: mostRecentUnlockTime)!
+//            
+//            UserDefaults.standard.set(lastUnlockTime.timeIntervalSince1970, forKey: lastUnlockTimeKey)
+//            
+//        } else {
+//            lastUnlockTime = Date(timeIntervalSince1970: lastUnlockTimeInterval)
+//        }
+//
+//        let nextUnlockTime = calendar.date(byAdding: .day, value: 7, to: lastUnlockTime)!
+//
+//        let totalDuration = nextUnlockTime.timeIntervalSince(lastUnlockTime)
+//        
+//        let timeElapsed = now.timeIntervalSince(lastUnlockTime)
+//        
+//        let progressValue = Float(timeElapsed / totalDuration)
+//        
+//        // never > 1.0
+//        return min(1.0, progressValue)
+        return 1.0
     }
 
     var body: some View {
