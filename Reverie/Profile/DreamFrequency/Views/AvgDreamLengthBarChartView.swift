@@ -9,13 +9,13 @@ import SwiftUI
 import Charts
 
 // dream dictionary, see AvgDreamLengthModel
-let charactersPerWeek: ([AvgDreamLengthModel], Int) = AvgDreamLengthService.shared.processDreamsIntoWeeklyLengthCounts(dreams: ProfileService.shared.dreams)
+let charactersPerWeek: ([AvgDreamLengthModel], Double) = AvgDreamLengthService.shared.processDreamsIntoWeeklyLengthCounts(dreams: ProfileService.shared.dreams)
 
 struct AvgDreamLengthBarChartView: View {
     
     @State private var dreamData: [AvgDreamLengthModel] = charactersPerWeek.0
     
-    @State private var last3WeeksAverage: Double = Double(charactersPerWeek.1) / AvgDreamLengthService.shared.getDreamCountForLastThreeWeeks(dreams: ProfileService.shared.dreams)
+    @State private var last3WeeksAverage: Double = charactersPerWeek.1
     
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -49,6 +49,7 @@ struct AvgDreamLengthBarChartView: View {
             DreamCharacterBarChartView(dreamData: $dreamData, last3WeeksAverage: $last3WeeksAverage)
         }
         .padding()
+        .padding(.bottom, 10)
         .darkGloss()
     }
 }
@@ -73,8 +74,8 @@ struct DreamCharacterBarChartView: View {
                 let now = Date()
                 let calendar = Calendar.current
                 
-                let endOfLine = dreamData.last?.date ?? now
-                
+                let endOfLine = now
+                                    
                 if let startOfLine = calendar.date(byAdding: .weekOfYear, value: -3, to: endOfLine) {
                     
                     let averageLineData = [
@@ -92,17 +93,26 @@ struct DreamCharacterBarChartView: View {
                     .foregroundStyle(.indigo)
                     .lineStyle(StrokeStyle(lineWidth: 3))
                     .interpolationMethod(.linear)
-                    .annotation(position: .top, alignment: .trailing) {
-                        Text("3-Week Avg: \(last3WeeksAverage, specifier: "%.1f")")
-                            .font(.caption)
-                            .foregroundColor(.indigo)
-                            .padding(.bottom, 2)
-                            .bold()
-                    }
                 }
             }
         }
         .chartLegend(.hidden)
+        .chartOverlay { proxy in
+            GeometryReader { geo in
+                VStack {
+                    Spacer()
+                    HStack {
+                        Spacer()
+                        Text("3-Week Avg: \(last3WeeksAverage, specifier: "%.1f")")
+                            .font(.caption)
+                            .foregroundColor(.indigo)
+                            .bold()
+                    }
+                }
+                .padding(.bottom, -18)
+                .padding(.trailing, 20)
+            }
+        }
         .chartXAxis {
             AxisMarks(values: .automatic(desiredCount: 7)) { value in
                 AxisGridLine()
