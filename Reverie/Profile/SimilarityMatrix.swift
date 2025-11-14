@@ -21,6 +21,5 @@ func generateDreamsSimilarityMatrix(for dreams: [DreamModel]) -> [[Double]] {
             }
         }
     }
-
     return similarityMatrix
 }
