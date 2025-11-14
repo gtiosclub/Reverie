@@ -43,6 +43,7 @@ struct HeatmapView: View {
     private let sectionColor = Color.profileContainer
     
     
+    
     init(showSummaryText: Bool = false) {
         self.showSummaryText = showSummaryText
         
