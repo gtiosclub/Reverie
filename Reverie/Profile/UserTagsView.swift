@@ -37,34 +37,109 @@ let thisWeekTags: [DreamModel.Tags] = findMostCommonTags(dreams: thisWeekDreams)
 let allTags: [DreamModel.Tags] = findMostCommonTags(dreams: allDreams)
 
 struct UserTagsView: View {
+    @Environment(\.dismiss) private var dismiss
+
     var body: some View {
-        ZStack {
-            BackgroundView()
-            ScrollView {
-                VStack(alignment: .leading, spacing: 20) {
-                    Text("This Week")
-                        .foregroundStyle(.white)
-                        .font(.largeTitle.bold())
-                        .padding(.horizontal)
+        NavigationStack {
+            ZStack {
+                BackgroundView().ignoresSafeArea();
+                VStack (spacing: 0) {
+                    HStack {
+                      Button(action: {
+                          dismiss()
+                      }) {
+                          ZStack {
+                              Circle()
+                                  .fill(
+                                      LinearGradient(
+                                          colors: [
+                                              Color(red: 5/255, green: 7/255, blue: 20/255),
+                                              Color(red: 17/255, green: 18/255, blue: 32/255)
+                                          ],
+                                          startPoint: .topLeading,
+                                          endPoint: .bottomTrailing
+                                      )
+                                  )
+                                  .frame(width: 55, height: 55)
+                                  .overlay(
+                                      Circle()
+                                          .strokeBorder(
+                                              AngularGradient(
+                                                  gradient: Gradient(colors: [
+                                                      Color.white.opacity(0.8),
+                                                      Color.white.opacity(0.1),
+                                                      Color.white.opacity(0.6),
+                                                      Color.white.opacity(0.1),
+                                                      Color.white.opacity(0.8)
+                                                  ]),
+                                                  center: .center
+                                              ),
+                                              lineWidth: 0.5
+                                          )
+                                          .blendMode(.screen)
+                                  )
 
-                    TagViewBlock(title: "This Week", tags: thisWeekTags, isExpandable: true)
-                    
-                    Text("Most Common")
-                        .foregroundStyle(.white)
-                        .font(.largeTitle.bold())
-                        .padding(.horizontal)
-                    
-                    TagViewBlock(title: "Most Common", tags: Array(allTags.prefix(5)), isExpandable: false)
+                              Image(systemName: "chevron.left")
+                                  .resizable()
+                                  .scaledToFit()
+                                  .frame(width: 20, height: 20)
+                                  .foregroundColor(.white)
+                                  .padding(.leading, -4)
+                                  .bold(true)
+                          }
+                      }
+                      .buttonStyle(.plain)
+                      .padding(.leading, 8)
 
-                    Text("All")
-                        .foregroundStyle(.white)
-                        .font(.largeTitle.bold())
-                        .padding(.horizontal)
+                      Spacer()
 
-                    TagViewBlock(title: "Archive", tags: allTags, isExpandable: false)
+                      VStack(spacing: 2) {
+                          Text("Themes")
+                              .font(.system(size: 18, weight: .semibold))
+                              .foregroundColor(.white)
+                              .shadow(color: Color(red: 37/255, green: 23/255, blue: 79/255).opacity(0.7), radius: 4)
+                              .shadow(color: Color(red: 37/255, green: 23/255, blue: 79/255).opacity(0.3), radius: 8)
+                      }
+
+                      Spacer()
+
+                      Rectangle()
+                          .fill(Color.clear)
+                          .frame(width: 55, height: 55)
+                          .padding(.trailing, 8)
+                          .opacity(0) // keeps symmetry
+                  }
+                  .padding(.horizontal)
+                  .padding(.top, 10)
+                  .padding(.bottom, 4)
+                    ScrollView {
+                        VStack(alignment: .leading, spacing: 20) {
+                            Text("This Week")
+                                .foregroundStyle(.white)
+                                .font(.system(size:18)).fontWeight(.semibold)
+                                .padding(.horizontal)
+                            
+                            TagViewBlock(title: "This Week", tags: thisWeekTags, isExpandable: true)
+                            
+                            Text("Most Common")
+                                .foregroundStyle(.white)
+                                .font(.system(size:18)).fontWeight(.semibold)
+                                .padding(.horizontal)
+                            
+                            TagViewBlock(title: "Most Common", tags: Array(allTags.prefix(5)), isExpandable: false)
+                            
+                            Text("All")
+                                .foregroundStyle(.white)
+                                .font(.system(size:18)).fontWeight(.semibold)
+                                .padding(.horizontal)
+                            
+                            TagViewBlock(title: "Archive", tags: allTags, isExpandable: false)
+                        }
+                        .padding(.bottom, 80)
+                    }
                 }
-                .padding(.bottom, 80)
             }
+            .navigationBarHidden(true)
         }
     }
 }
