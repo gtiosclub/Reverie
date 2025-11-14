@@ -31,7 +31,7 @@ let d2 = DreamModel(
 )
 
 let thisWeekDreams = getRecentDreams(dreams: FirebaseLoginService.shared.currUser?.dreams ?? [], count: 10)
-let allDreams = FirebaseLoginService.shared.currUser?.dreams ?? []
+let allDreams = ProfileService.shared.dreams
 
 let thisWeekTags: [DreamModel.Tags] = findMostCommonTags(dreams: thisWeekDreams)
 let allTags: [DreamModel.Tags] = findMostCommonTags(dreams: allDreams)
@@ -74,40 +74,11 @@ struct TagViewBlock: View {
     let tags: [DreamModel.Tags]
     let isExpandable: Bool
     var limitToFirstRow: Bool = false
-
-    
-//    @State private var expanded = false
     
     var columns: [GridItem] {
         [GridItem(.adaptive(minimum: 75))]
     }
     
-//    var body: some View {
-//        VStack {
-//            LazyVGrid(columns: columns, spacing: 25) {
-//                ForEach(displayedTags, id: \.self) { tag in
-//                    NavigationLink(destination: TagInfoView(tagGiven: tag)) {
-//                        TagView(tagGiven: tag)
-//                        
-//                    }
-//                }
-//            }
-//            
-//            if isExpandable && tags.count > collapsedTagLimit {
-//                Button(action: {
-//                    withAnimation {
-//                        expanded.toggle()
-//                    }
-//                }) {
-//                    Text(expanded ? "see less" : "see more")
-//                        .foregroundStyle(.gray)
-//                        .font(.subheadline)
-//                        .padding(.top, 8)
-//                        .frame(maxWidth: .infinity, alignment: .center)
-//                }
-//            }
-//        }
-//    }
     var body: some View {
         VStack {
             LazyVGrid(columns: columns, spacing: 25) {
@@ -120,11 +91,6 @@ struct TagViewBlock: View {
             
             if isExpandable && tags.count > collapsedTagLimit {
                 NavigationLink(destination: UserTagsView()) {
-//                    Text("see more")
-//                        .foregroundStyle(.gray)
-//                        .font(.subheadline)
-//                        .padding(.top, 8)
-//                        .frame(maxWidth: .infinity, alignment: .center)
                 }
             }
         }
