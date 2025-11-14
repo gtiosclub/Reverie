@@ -26,14 +26,14 @@ struct DreamFrequencyChartView: View {
     
     @State private var dreamData: [DreamFrequencyChartModel] = dreams.0
     
-    @State private var last3WeeksAverage: Int = dreams.1 / 3
+    @State private var last3WeeksAverage: Double = Double(dreams.1) / Double(3)
     
     
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             VStack(alignment: .leading, spacing: 6) {
                 HStack {
-                    Text(CleanDreamDataService.shared.trendText(allTimeCount: dreamData.count, ThreeWeekAvg: last3WeeksAverage))
+                    Text(CleanDreamDataService.shared.trendText(allTimeAvg: CleanDreamDataService.shared.averageDreamsPerWeek(dreams: dreamData), ThreeWeekAvg: last3WeeksAverage))
                         .font(.subheadline)
                         .foregroundColor(.white.opacity(0.8))
                         .multilineTextAlignment(.leading)
@@ -44,15 +44,15 @@ struct DreamFrequencyChartView: View {
                         .foregroundColor(.gray)
                         .font(Font.system(size: 14))
                 }
-                .padding(.horizontal)
+//                .padding(.horizontal)
                 .padding(.top, 8)
-                .padding(.bottom, 3)
                 
                 Rectangle()
                     .fill(Color.white.opacity(0.05))
                     .frame(height: 1)
-                    .padding(.horizontal, 20)
-                    .padding(.top, 10)
+                    .padding(.horizontal, 8)
+                    .padding(.top, 6)
+                    .padding(.bottom, 4)
             }
             
             Chart {
@@ -101,7 +101,7 @@ struct DreamFrequencyChartView: View {
         .padding()
         .glassEffect(in: .rect)
         .cornerRadius(10)
-        .padding()
+        .padding(.horizontal, 20)
     }
 }
 
