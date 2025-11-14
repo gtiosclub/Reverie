@@ -80,7 +80,7 @@ class CleanDreamDataService {
         } else if allTimeAvg > ThreeWeekAvg * 1.1 {
             return "Over the last 3 weeks, you’ve dreamt less than usual."
         } else {
-            return "Your dream frequency has been about the same as usual."
+            return "Over the last 3 weeks, your dream frequency has been about the same as usual."
         }
     }
 }
