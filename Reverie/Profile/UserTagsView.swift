@@ -48,8 +48,15 @@ struct UserTagsView: View {
                         .padding(.horizontal)
 
                     TagViewBlock(title: "This Week", tags: thisWeekTags, isExpandable: true)
+                    
+                    Text("Most Common")
+                        .foregroundStyle(.white)
+                        .font(.largeTitle.bold())
+                        .padding(.horizontal)
+                    
+                    TagViewBlock(title: "Most Common", tags: Array(allTags.prefix(5)), isExpandable: false)
 
-                    Text("Archive")
+                    Text("All")
                         .foregroundStyle(.white)
                         .font(.largeTitle.bold())
                         .padding(.horizontal)
