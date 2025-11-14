@@ -56,6 +56,8 @@ struct StatisticsView: View {
                             .padding(.top, 4)
                         
                         AvgDreamLengthBarChartView()
+                        
+                        DreamFrequencyChartView(isHomeView: false, isBar: true)
                     }
                     
                     Spacer()

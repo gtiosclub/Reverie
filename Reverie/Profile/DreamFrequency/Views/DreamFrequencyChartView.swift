@@ -30,6 +30,7 @@ struct DreamFrequencyChartView: View {
     
     @State var isHomeView: Bool
     
+    @State var isBar: Bool = false
     
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -53,11 +54,19 @@ struct DreamFrequencyChartView: View {
                     }
                 }
                 .padding(.top, 6)
-                    
-                Text(CleanDreamDataService.shared.trendText(allTimeAvg: CleanDreamDataService.shared.averageDreamsPerWeek(dreams: dreamData), ThreeWeekAvg: last3WeeksAverage))
-                    .font(.subheadline)
-                    .foregroundColor(.white.opacity(0.8))
-                    .multilineTextAlignment(.leading)
+                   
+                if !isBar {
+                    Text(CleanDreamDataService.shared.trendText(allTimeAvg: CleanDreamDataService.shared.averageDreamsPerWeek(dreams: dreamData), ThreeWeekAvg: last3WeeksAverage))
+                        .font(.subheadline)
+                        .foregroundColor(.white.opacity(0.8))
+                        .multilineTextAlignment(.leading)
+                } else {
+                    var (thisMonth, lastMonth) = CleanDreamDataService.shared.monthComparison(dreams: ProfileService.shared.dreams)
+                    Text(CleanDreamDataService.shared.monthTrendText(lastMonth: lastMonth, thisMonth: thisMonth))
+                        .font(.subheadline)
+                        .foregroundColor(.white.opacity(0.8))
+                        .multilineTextAlignment(.leading)
+                }
                 
                 Rectangle()
                     .fill(Color.white.opacity(0.15))
@@ -66,9 +75,14 @@ struct DreamFrequencyChartView: View {
                     .padding(.top, 6)
                     .padding(.bottom, 4)
             }
-            DreamChartView(dreamData: $dreamData, last3WeeksAverage: $last3WeeksAverage)
+            if !isBar {
+                DreamChartView(dreamData: $dreamData, last3WeeksAverage: $last3WeeksAverage)
+            } else {
+                DreamFrequencyBarChartView()
+            }
         }
         .padding()
+        .padding(.bottom, 10)
         .darkGloss()
     }
 }
@@ -121,14 +135,23 @@ struct DreamChartView: View {
                     .foregroundStyle(.indigo)
                     .lineStyle(StrokeStyle(lineWidth: 3))
                     .interpolationMethod(.linear)
-                    .annotation(position: .top, alignment: .trailing) {
+                }
+            }
+        }
+        .chartOverlay { proxy in
+            GeometryReader { geo in
+                VStack {
+                    Spacer()
+                    HStack {
+                        Spacer()
                         Text("3-Week Avg: \(last3WeeksAverage, specifier: "%.1f")")
                             .font(.caption)
                             .foregroundColor(.indigo)
-                            .padding(.bottom, 2)
                             .bold()
                     }
                 }
+                .padding(.bottom, -18)
+                .padding(.trailing, 20)
             }
         }
         .chartXAxis {
