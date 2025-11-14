@@ -22,7 +22,8 @@ struct AnalysisView: View {
 //                            icon: "blank",
                             previewContent: {
                                 VStack(alignment: .leading, spacing: 8) {
-                                    FrequencyView(showSummaryText: true)
+//                                    FrequencyView(showSummaryText: true)
+                                    DreamFrequencyChartView()
                                 }
                             },
                             destination: { StatisticsView(streak: currentStreak, weeklyAverage: currentWeeklyAverage, averageLength: currentAverageDreamLength) },
