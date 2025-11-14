@@ -32,15 +32,19 @@ struct TagInfoView: View {
             
             ScrollView {
                 VStack {
-                    HStack {
-                        Spacer()
-                        Rectangle()
-                            .frame(width: 24, height: 24)
-                            .hidden()
-                    }
-                    .padding()
-                    
-                    Spacer()
+                    Text("Details")
+                        .font(.title3)
+                        .fontWeight(.bold)
+                        .foregroundColor(.white)
+//                    HStack {
+//                        Spacer()
+//                        Rectangle()
+//                            .frame(width: 24, height: 24)
+//                            .hidden()
+//                    }
+//                    .padding()
+//                    
+//                    Spacer()
                     
                     VStack {
                         Circle()
@@ -53,31 +57,34 @@ struct TagInfoView: View {
                                     .scaledToFit()
                                     .frame(width: 80, height: 80)
                                     .foregroundColor(DreamModel.tagColors(tag: tagGiven))
-                                
+                                    .shadow(color: DreamModel.tagColors(tag: tagGiven), radius: 25)
                             )
                         
-                        Rectangle()
-                            .frame(width: 2, height: 20)
-                            .foregroundColor(.gray)
                         Circle()
-                            .frame(width: 8, height: 8)
-                            .foregroundColor(.gray)
+                            .frame(width: 6, height: 6)
+                            .foregroundColor(.white)
+                            .padding(.top, -11.6)
+                        Rectangle()
+                            .frame(width: 1.2, height: 50)
+                            .foregroundColor(.white)
+                            .padding(.top, -16)
+                            .padding(.bottom, -20)
                     }
-                    .padding(.bottom, 20)
                     
                     VStack(spacing: 20) {
                         HStack {
-                            
                             Spacer()
                             Text(tagGiven.rawValue.capitalized)
                                 .font(.largeTitle)
                                 .fontWeight(.bold)
                                 .foregroundColor(.white)
+                                .shadow(color: DreamModel.tagColors(tag: tagGiven), radius: 12)
                             Spacer()
-                            
                         }
                         Divider()
-                            .padding(.horizontal, 40)
+                            .padding(.horizontal, 20)
+                            .foregroundColor(.white)
+                            .bold()
                         ScrollView{
                             if isLoading {
                                 ProgressView()
@@ -100,10 +107,13 @@ struct TagInfoView: View {
                             .fill(Color(red: 11/255, green: 11/255, blue: 22/255))
                             .shadow(color: .black.opacity(0.5), radius: 20, x: 0, y: 10)
                     )
-                    .padding(.horizontal, 20)
+                    .glassEffect(in: .rect)
+                    .cornerRadius(30)
+                    .padding(.horizontal, 40)
                     
                     Spacer()
                 }
+                .padding(.top, -44)
                 
                 Spacer()
                 
@@ -161,7 +171,7 @@ struct TagInfoView: View {
                 .padding(.top, 50)
             }
             .task {
-                let dreams = fetchDreams()
+                let dreams = FirebaseLoginService.shared.currUser?.dreams ?? []
                 let context = generateModelDreamContextByTag(dreams: dreams, category: tagGiven)
                 self.filteredDreams = getDreamsOfCategory(dreams: dreams, category: tagGiven)
                                         .sorted { $0.date > $1.date }
@@ -288,8 +298,6 @@ func fetchOrGenerateTagDescription(context: String, tagGiven: DreamModel.Tags) a
         return newDescription
     }
 }
-
-import FirebaseFirestore
 
 func updateTagDescriptions(tags: [DreamModel.Tags]) {
     Task.detached(priority: .utility) {
