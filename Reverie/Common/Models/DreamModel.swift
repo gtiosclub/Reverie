@@ -175,19 +175,29 @@ struct DreamModel: Decodable {
         
         // Compute keyword similarity
         let sharedWords = words1.intersection(words2)
-        let allWords = words1.union(words2)
-        let keywordScore = allWords.isEmpty ? 0.0 : Double(sharedWords.count) / Double(allWords.count)
-        
+//        let allWords = words1.union(words2)
+        let minWords = min(words1.count, words2.count)
+        var keywordScore = minWords == 0 ? 0.0 : Double(sharedWords.count) / Double(minWords)
+        if keywordScore > 0.3 {
+            keywordScore = 1
+        }
+        else {
+            keywordScore = keywordScore + 0.2
+        }
+
         // Emotion similarity
         let emotionScore = dream1.emotion == dream2.emotion ? 1.0 : 0.0
         
         // Tag similarity
         let sharedTags = Set(dream1.tags).intersection(Set(dream2.tags))
-        let allTags = Set(dream1.tags).union(Set(dream2.tags))
-        let tagScore = allTags.isEmpty ? 0.0 : Double(sharedTags.count) / Double(allTags.count)
+//        let allTags = Set(dream1.tags).union(Set(dream2.tags))
+        let minTags = min(dream1.tags.count, dream2.tags.count)
+        var tagScore = minTags == 0 ? 0.0 : Double(sharedTags.count) / Double(minTags)
+        tagScore = tagScore * 2
+        tagScore = min(tagScore, 1)
         
         // Weighted similarity (tuneable weights)
-        let similarity = (keywordScore * 0.6) + (emotionScore * 0.25) + (tagScore * 0.15)
+        let similarity = (keywordScore * 0.65) + (emotionScore * 0.1) + (tagScore * 0.3)
         return similarity
     }
     
@@ -327,17 +337,12 @@ extension DreamModel.Emotions {
 }
 
 
-extension Color {
-    init(hex: String) {
-        let scanner = Scanner(string: hex)
-        _ = scanner.scanString("#")
-        var rgb: UInt64 = 0
-        scanner.scanHexInt64(&rgb)
-        let r = Double((rgb >> 16) & 0xFF) / 255.0
-        let g = Double((rgb >> 8) & 0xFF) / 255.0
-        let b = Double(rgb & 0xFF) / 255.0
-        self.init(red: r, green: g, blue: b)
-    }
-    
-    static let profileContainer = Color(hex: "#1D1C3A")
-}
+
+
+
+
+
+
+
+
+
