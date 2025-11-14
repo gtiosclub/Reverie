@@ -13,50 +13,56 @@ struct StatisticsView: View {
             BackgroundView()
                 .ignoresSafeArea()
 
-            VStack(spacing: 20) {
-                Text("Activity")
-                    .font(.headline.weight(.semibold))
-                    .foregroundColor(.white)
-                    .padding(.top, 20)
-
-                HStack(spacing: 40) {
-                    StatBlock(
-                        iconName: "flame.fill",
-                        label: "STREAK",
-                        value: "\(streak)",
-                        sublabel: streak == 1 ? "day" : "days",
-                        labelColor: .orange,
-                        glowInner: glowInner,
-                        glowOuter: glowOuter
-                    )
-                    StatBlock(
-                        iconName: nil,
-                        label: "WEEKLY AVG",
-                        value: "\(weeklyAverage)",
-                        sublabel: weeklyAverage == 1 ? "dream" : "dreams",
-                        labelColor: .white.opacity(0.7),
-                        glowInner: glowInner,
-                        glowOuter: glowOuter
-                    )
-                    StatBlock(
-                        iconName: nil,
-                        label: "AVG LENGTH",
-                        value: "\(averageLength)",
-                        sublabel: averageLength == 1 ? "word" : "words",
-                        labelColor: .white.opacity(0.7),
-                        glowInner: glowInner,
-                        glowOuter: glowOuter
-                    )
+            ScrollView(showsIndicators: false) {
+                VStack(spacing: 20) {
+                    Text("Activity")
+                        .font(Font.system(size: 20, weight: .medium, design: .default))
+                        .foregroundColor(.white)
+                    
+                    HStack(spacing: 50) {
+                        StatBlock(
+                            iconName: "flame.fill",
+                            label: "STREAK",
+                            value: "\(streak)",
+                            sublabel: streak == 1 ? "day" : "days",
+                            labelColor: .orange,
+                            glowInner: glowInner,
+                            glowOuter: glowOuter
+                        )
+                        StatBlock(
+                            iconName: nil,
+                            label: "WEEKLY AVG",
+                            value: "\(weeklyAverage)",
+                            sublabel: weeklyAverage == 1 ? "dream" : "dreams",
+                            labelColor: .white.opacity(0.7),
+                            glowInner: glowInner,
+                            glowOuter: glowOuter
+                        )
+                        StatBlock(
+                            iconName: nil,
+                            label: "AVG LENGTH",
+                            value: "\(averageLength)",
+                            sublabel: averageLength == 1 ? "word" : "words",
+                            labelColor: .white.opacity(0.7),
+                            glowInner: glowInner,
+                            glowOuter: glowOuter
+                        )
+                    }
+                    .padding(.top, 10)
+                    
+                    //                FrequencyView()
+                    VStack(spacing: 16) {
+                        DreamFrequencyChartView(isHomeView: false)
+                            .padding(.top, 4)
+                        
+                        AvgDreamLengthBarChartView()
+                    }
+                    
+                    Spacer()
                 }
-                .padding(.top, 4)
-
-//                FrequencyView()
-                DreamFrequencyChartView()
-                    .padding(.top, 16)
-
-                Spacer()
+                .padding(.top, -42)
+                .padding(.horizontal)
             }
-            .padding(.horizontal)
         }
     }
 }
@@ -79,22 +85,21 @@ struct StatBlock: View {
                         .font(.system(size: 12))
                 }
                 Text(label)
-                    .font(.system(size: 11, weight: .semibold))
+                    .font(.system(size: 12, weight: .semibold))
                     .foregroundColor(labelColor)
             }
+            .shadow(color: labelColor, radius: 8)
 
             HStack(alignment: .firstTextBaseline, spacing: 3) {
                 Text(value)
-                    .font(.system(size: 34, weight: .bold))
+                    .font(.system(size: 40, weight: .bold))
                     .foregroundColor(.white)
-                    .shadow(color: glowInner.opacity(0.9), radius: 20, x: 0, y: 0)
-                    .shadow(color: glowOuter.opacity(0.9), radius: 40, x: 0, y: 0)
-                    .shadow(color: glowOuter.opacity(0.7), radius: 60, x: 0, y: 0)
-                    .shadow(color: glowOuter.opacity(0.5), radius: 80, x: 0, y: 0)
+                    .shadow(color: glowOuter, radius: 5)
 
                 Text(sublabel)
                     .font(.system(size: 13))
                     .foregroundColor(.white.opacity(0.6))
+                    .shadow(color: glowOuter, radius: 5)
             }
         }
     }

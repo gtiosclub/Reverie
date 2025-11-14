@@ -25,6 +25,7 @@ struct CombinedHeatmapEmotionView: View {
                 }
             }
             .navigationTitle("Mood")
+            .font(Font.system(size: 16, weight: .medium, design: .default))
             .navigationBarTitleDisplayMode(.inline)
         }
     }
