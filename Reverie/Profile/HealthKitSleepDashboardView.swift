@@ -68,15 +68,21 @@ struct HealthKitSleepDashboardView: View {
 private struct SleepGraphsSection: View {
     @ObservedObject var vm: HealthKitSleepViewModel
 
-    @State private var selectedMetric: HealthKitSleepViewModel.MetricKey = .heartRate
+    @State private var selectedMetric: HealthKitSleepViewModel.MetricKey? = .heartRate
     @State private var daysBack: Int = 14
 
     private let compareMetrics: [HealthKitSleepViewModel.MetricKey] = [
         .heartRate, .restingHeartRate, .stepCount, .distanceKm, .activeEnergy, .asleepHours
     ]
 
+    private var overlayPoints: [HealthKitManager.DataPoint] {
+        guard let key = selectedMetric else { return [] }
+        // For now use daily series; you can later swap to intranight data if you add it
+        return vm.series[key] ?? []
+    }
+
     var body: some View {
-        VStack(alignment: .leading, spacing: 18) {
+        VStack(alignment: .leading, spacing: 28) {
 
             // Title
             Text("Sleep")
@@ -105,92 +111,78 @@ private struct SleepGraphsSection: View {
                     .fill(Color.white.opacity(0.06))
             )
 
-            // Sleep stages timeline
-            RoundedRectangle(cornerRadius: 24)
-                .fill(Color.black.opacity(0.45))
-                .overlay(
-                    VStack(alignment: .leading, spacing: 12) {
-                        if vm.previousNightSegments.isEmpty {
-                            Spacer()
-                            Text("Sleep stages will appear here once data loads.")
-                                .foregroundColor(.white.opacity(0.7))
-                                .font(.footnote)
-                                .multilineTextAlignment(.center)
-                                .frame(maxWidth: .infinity)
-                            Spacer()
-                        } else {
-                            SleepStageChart(segments: vm.previousNightSegments)
-                                .frame(height: 190)
+            // --- BIG GRAPH CARD (explicit height so it can't collapse) ---
+            ZStack {
+                RoundedRectangle(cornerRadius: 24)
+                    .fill(Color.black.opacity(0.45))
 
-                            HStack(spacing: 16) {
-                                legendDot(color: SleepStageChart.colorForStage("Awake"), label: "Awake")
-                                legendDot(color: SleepStageChart.colorForStage("REM"), label: "REM")
-                                legendDot(color: SleepStageChart.colorForStage("Core"), label: "Light/Core")
-                                legendDot(color: SleepStageChart.colorForStage("Deep"), label: "Deep")
-                                Spacer()
-                            }
-                            .padding(.horizontal, 12)
-                            .padding(.bottom, 8)
+                if vm.previousNightSegments.isEmpty {
+                    Text("Sleep stages will appear here once data loads.")
+                        .foregroundColor(.white.opacity(0.7))
+                        .font(.footnote)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, 24)
+                } else {
+                    VStack(alignment: .leading, spacing: 12) {
+                        SleepOverlayChart(
+                            segments: vm.previousNightSegments,
+                            metricPoints: overlayPoints
+                        )
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+
+                        HStack(spacing: 16) {
+                            legendDot(color: sleepStageColor("Awake"), label: "Awake")
+                            legendDot(color: sleepStageColor("REM"), label: "REM")
+                            legendDot(color: sleepStageColor("Core"), label: "Core")
+                            legendDot(color: sleepStageColor("Deep"), label: "Deep")
+                            Spacer()
                         }
+                        .padding(.horizontal, 4)
+                        .padding(.bottom, 4)
                     }
                     .padding(16)
-                )
+                }
+            }
+            .frame(maxWidth: .infinity,
+                   minHeight: 260,
+                   maxHeight: 320)
 
-            // Compare section
-            Text("Compare to")
-                .font(.headline)
-                .foregroundColor(.white)
+            Spacer(minLength: 12)
 
-            let cols = [GridItem(.flexible()), GridItem(.flexible())]
-            LazyVGrid(columns: cols, spacing: 12) {
-                ForEach(compareMetrics, id: \.self) { metric in
-                    MetricButton(
-                        title: metricTitle(metric),
-                        systemImage: metricIcon(metric),
-                        isSelected: selectedMetric == metric
-                    ) {
-                        selectedMetric = metric
+            // --- COMPARE SECTION BELOW THE GRAPH ---
+            VStack(alignment: .leading, spacing: 14) {
+                Text("Compare to")
+                    .font(.headline)
+                    .foregroundColor(.white)
+
+                let cols = [GridItem(.flexible()), GridItem(.flexible())]
+                LazyVGrid(columns: cols, spacing: 12) {
+                    ForEach(compareMetrics, id: \.self) { metric in
+                        MetricButton(
+                            title: metricTitle(metric),
+                            systemImage: metricIcon(metric),
+                            isSelected: selectedMetric == metric
+                        ) {
+                            if selectedMetric == metric {
+                                selectedMetric = nil
+                            } else {
+                                selectedMetric = metric
+                            }
+                        }
                     }
                 }
-            }
 
-            // Line chart for the selected metric
-            Group {
-                if let points = vm.series[selectedMetric], !points.isEmpty {
-                    RoundedRectangle(cornerRadius: 24)
-                        .fill(Color.black.opacity(0.45))
-                        .overlay(
-                            VStack(alignment: .leading, spacing: 8) {
-                                Text(selectedMetric.label)
-                                    .font(.subheadline.bold())
-                                    .foregroundColor(.white)
-                                TimeSeriesChart(points: points)
-                                    .frame(height: 180)
-                            }
-                            .padding(16)
-                        )
-                } else {
-                    RoundedRectangle(cornerRadius: 24)
-                        .fill(Color.black.opacity(0.35))
-                        .overlay(
-                            Text("No data yet for \(metricTitle(selectedMetric)).")
-                                .foregroundColor(.white.opacity(0.7))
-                                .font(.footnote)
-                        )
-                        .frame(height: 120)
+                // Days slider (for daily series)
+                HStack {
+                    Text("Last \(daysBack) days")
+                        .foregroundColor(.white.opacity(0.7))
+                        .font(.footnote)
+                    Spacer()
+                    Stepper("", value: $daysBack, in: 7...60, step: 7) { _ in
+                        vm.loadDefaultSeries(daysBack: daysBack)
+                    }
+                    .labelsHidden()
                 }
-            }
-
-            // Days slider
-            HStack {
-                Text("Last \(daysBack) days")
-                    .foregroundColor(.white.opacity(0.7))
-                    .font(.footnote)
-                Spacer()
-                Stepper("", value: $daysBack, in: 7...60, step: 7) { _ in
-                    vm.loadDefaultSeries(daysBack: daysBack)
-                }
-                .labelsHidden()
             }
         }
         .padding(18)
@@ -198,7 +190,6 @@ private struct SleepGraphsSection: View {
             RoundedRectangle(cornerRadius: 28)
                 .fill(Color.white.opacity(0.04))
         )
-        .onAppear { vm.loadDefaultSeries(daysBack: daysBack) }
     }
 
     // MARK: helpers
@@ -324,86 +315,114 @@ private struct MetricButton: View {
     }
 }
 
-// MARK: - Charts
+// MARK: - Charts helpers
 
-private struct TimeSeriesChart: View {
-    let points: [HealthKitManager.DataPoint]
-
-    var body: some View {
-        Chart(points) { point in
-            LineMark(
-                x: .value("Date", point.date),
-                y: .value("Value", point.value)
-            )
-            .interpolationMethod(.catmullRom)
-        }
-        .chartXAxis {
-            AxisMarks(values: .stride(by: .day)) { value in
-                AxisGridLine()
-                AxisValueLabel {
-                    if let date = value.as(Date.self) {
-                        Text(Self.dayFormatter.string(from: date))
-                    }
-                }
-            }
-        }
-        .chartYAxis { AxisMarks() }
+/// Shared stage color so the overlay + legend stay consistent.
+private func sleepStageColor(_ stage: String) -> Color {
+    switch stage {
+    case "Awake":
+        return Color(red: 0.99, green: 0.57, blue: 0.18)
+    case "REM":
+        return Color(red: 0.96, green: 0.28, blue: 0.64)
+    case "Core", "Asleep":
+        return Color(red: 0.35, green: 0.78, blue: 0.47)
+    case "Deep":
+        return Color(red: 0.24, green: 0.55, blue: 0.97)
+    case "In Bed":
+        return Color.white.opacity(0.15)
+    default:
+        return Color.white.opacity(0.3)
     }
-
-    private static let dayFormatter: DateFormatter = {
-        let df = DateFormatter()
-        df.dateFormat = "MMM d"
-        return df
-    }()
 }
 
-private struct SleepStageChart: View {
+/// BIG combined chart: multi-row sleep map background + optional metric line/area overlay.
+private struct SleepOverlayChart: View {
     let segments: [HealthKitManager.SleepSegment]
+    let metricPoints: [HealthKitManager.DataPoint]
+
+    // Shared x-domain so bars and line line up in time
+    private var xDomain: ClosedRange<Date>? {
+        let segDates = segments.flatMap { [$0.start, $0.end] }
+        let metricDates = metricPoints.map { $0.date }
+        let all = segDates + metricDates
+        guard let minDate = all.min(), let maxDate = all.max() else {
+            return nil
+        }
+        return minDate...maxDate
+    }
 
     var body: some View {
-        Chart(segments, id: \.start) { seg in
-            BarMark(
-                xStart: .value("Start", seg.start),
-                xEnd: .value("End", seg.end),
-                y: .value("Row", "Sleep")
-            )
-            .cornerRadius(2)
-            .foregroundStyle(Self.colorForStage(seg.stage))
-        }
-        .chartXAxis {
-            AxisMarks(values: .stride(by: .hour)) { value in
-                AxisGridLine()
-                AxisValueLabel {
-                    if let date = value.as(Date.self) {
-                        Text(Self.hourFormatter.string(from: date))
+        ZStack {
+            // BACKGROUND: sleep stages, multiple rows (Awake / REM / Core / Deep)
+            if !segments.isEmpty {
+                Chart(segments, id: \.start) { seg in
+                    BarMark(
+                        xStart: .value("Start", seg.start),
+                        xEnd: .value("End", seg.end),
+                        y: .value("Stage", seg.stage)
+                    )
+                    .cornerRadius(4)
+                    .foregroundStyle(sleepStageColor(seg.stage))
+                }
+                .chartXScale(domain: xDomain ?? defaultDomain)
+                .chartYAxis {
+                    AxisMarks(position: .leading)
+                }
+                .chartXAxis {
+                    AxisMarks(values: .stride(by: .hour)) { value in
+                        AxisGridLine()
+                        AxisValueLabel {
+                            if let date = value.as(Date.self) {
+                                Text(Self.hourFormatter.string(from: date))
+                            }
+                        }
                     }
+                }
+                .chartLegend(.hidden)
+                .chartPlotStyle { plot in
+                    plot.background(.clear)
+                }
+                .allowsHitTesting(false)
+            }
+
+            // FOREGROUND: selected metric as a filled “graph” + line
+            if !metricPoints.isEmpty {
+                Chart(metricPoints) { point in
+                    AreaMark(
+                        x: .value("Time", point.date),
+                        y: .value("Value", point.value)
+                    )
+                    .interpolationMethod(.catmullRom)
+                    .opacity(0.35)
+
+                    LineMark(
+                        x: .value("Time", point.date),
+                        y: .value("Value", point.value)
+                    )
+                    .interpolationMethod(.catmullRom)
+                    .lineStyle(StrokeStyle(lineWidth: 2.0, lineCap: .round))
+                    .symbol(.circle)
+                }
+                .chartXScale(domain: xDomain ?? defaultDomain)
+                .chartXAxis(.hidden)
+                .chartYAxis(.hidden)
+                .chartPlotStyle { plot in
+                    plot.background(.clear)
                 }
             }
         }
-        .chartYAxis(.hidden)
-        .chartLegend(.hidden)
     }
 
-    static func colorForStage(_ stage: String) -> Color {
-        switch stage {
-        case "Awake":
-            return Color(red: 0.99, green: 0.57, blue: 0.18)
-        case "REM":
-            return Color(red: 0.96, green: 0.28, blue: 0.64)
-        case "Core", "Asleep":
-            return Color(red: 0.35, green: 0.78, blue: 0.47)
-        case "Deep":
-            return Color(red: 0.24, green: 0.55, blue: 0.97)
-        case "In Bed":
-            return Color.white.opacity(0.15)
-        default:
-            return Color.white.opacity(0.3)
-        }
+    // Fallback domain if we somehow have no data
+    private var defaultDomain: ClosedRange<Date> {
+        let now = Date()
+        let later = Calendar.current.date(byAdding: .hour, value: 8, to: now) ?? now
+        return now...later
     }
 
     private static let hourFormatter: DateFormatter = {
         let df = DateFormatter()
-        df.dateFormat = "ha"
+        df.dateFormat = "HH:mm"
         return df
     }()
 }

@@ -196,7 +196,7 @@ final class HealthKitSleepViewModel: ObservableObject {
         }
     }
 
-    // MARK: - Dummy data
+    // MARK: - Dummy data (for previews / auth failure)
 
     private func loadDummyData(daysBack: Int = 14) {
         heartRate = "72"

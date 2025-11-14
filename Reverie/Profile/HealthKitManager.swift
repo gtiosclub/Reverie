@@ -5,7 +5,6 @@
 //  Created by Abhiram Raju on 11/13/25.
 //
 
-
 import Foundation
 import HealthKit
 
@@ -21,14 +20,13 @@ final class HealthKitManager {
         }
 
         var readTypes = Set<HKObjectType>()
-        // Activity / vitals
+
         if let t = HKQuantityType.quantityType(forIdentifier: .heartRate) { readTypes.insert(t) }
         if let t = HKQuantityType.quantityType(forIdentifier: .restingHeartRate) { readTypes.insert(t) }
         if let t = HKQuantityType.quantityType(forIdentifier: .stepCount) { readTypes.insert(t) }
         if let t = HKQuantityType.quantityType(forIdentifier: .distanceWalkingRunning) { readTypes.insert(t) }
         if let t = HKQuantityType.quantityType(forIdentifier: .activeEnergyBurned) { readTypes.insert(t) }
 
-        // Sleep + related
         if let t = HKCategoryType.categoryType(forIdentifier: .sleepAnalysis) { readTypes.insert(t) }
         if let t = HKQuantityType.quantityType(forIdentifier: .respiratoryRate) { readTypes.insert(t) }
         if let t = HKQuantityType.quantityType(forIdentifier: .oxygenSaturation) { readTypes.insert(t) }
@@ -135,7 +133,6 @@ final class HealthKitManager {
             let start = cal.date(bySettingHour: 18, minute: 0, second: 0,
                                  of: now.addingTimeInterval(-86400)),
             let end   = cal.date(bySettingHour: 10, minute: 0, second: 0, of: now)
-
         else { completion(nil); return }
 
         fetchSleepSegments(start: start, end: end,
@@ -194,16 +191,14 @@ extension HealthKitManager {
         }
 
         let cal = Calendar.current
-//        let end = cal.startOfDay(for: Date())
-        let end = cal.startOfDay(for: Date()).addingTimeInterval(-1)
+        let end = cal.startOfDay(for: Date())
         guard let start = cal.date(byAdding: .day, value: -daysBack, to: end) else {
             completion([]); return
         }
 
         var interval = DateComponents()
         interval.day = 1
-//        let anchor = cal.startOfDay(for: Date())
-        let anchor = start 
+        let anchor = cal.startOfDay(for: Date())
         let predicate = HKQuery.predicateForSamples(withStart: start,
                                                     end: end.addingTimeInterval(24 * 3600),
                                                     options: [])
@@ -273,8 +268,4 @@ extension HealthKitManager {
 
         healthStore.execute(q)
     }
-    
-    
-    
-    
 }
