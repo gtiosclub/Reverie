@@ -33,7 +33,6 @@ extension DreamModel.Emotions {
 
 // MARK: - Main Heatmap View
 struct HeatmapView: View {
-    @StateObject private var viewModel = HeatmapViewModel()
     @State private var selectedTimeframe = 1 // 0: 30 days, 1: 1 year, 2: All
     
     var showSummaryText: Bool = false
@@ -64,7 +63,7 @@ struct HeatmapView: View {
                             if showSummaryText {
                                 VStack(alignment: .leading, spacing: 6) {
                                     HStack {
-                                        activitySummaryText1()
+                                        moodSummary()
                                             .font(.subheadline)
                                             .foregroundColor(.white.opacity(0.8))
                                             .multilineTextAlignment(.leading)
@@ -105,7 +104,7 @@ struct HeatmapView: View {
                                 
                                 HeatmapContainerView(
                                     selectedTimeframe: $selectedTimeframe,
-                                    dreams: viewModel.dreams
+                                    dreams: ProfileService.shared.dreams
                                 )
                                 
                                 if !showSummaryText {
@@ -125,9 +124,7 @@ struct HeatmapView: View {
                 }
                 .padding(.top, 15)
             }
-            .refreshable { viewModel.fetchDreams() }
         }
-        .task { viewModel.fetchDreams() }
     }}
     
     // MARK: - Heatmap Container (Handles different timeframe views)
