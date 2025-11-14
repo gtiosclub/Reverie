@@ -33,10 +33,14 @@ struct DreamFrequencyChartView: View {
         VStack(alignment: .leading, spacing: 10) {
             VStack(alignment: .leading, spacing: 6) {
                 HStack {
-                    Text(CleanDreamDataService.shared.trendText(allTimeAvg: CleanDreamDataService.shared.averageDreamsPerWeek(dreams: dreamData), ThreeWeekAvg: last3WeeksAverage))
-                        .font(.subheadline)
-                        .foregroundColor(.white.opacity(0.8))
-                        .multilineTextAlignment(.leading)
+                    Image(systemName: "moon.fill")
+                        .foregroundColor(.indigo)
+                        .font(Font.system(size: 14, weight: .bold))
+                        .padding(.trailing, 2)
+                    Text("Dreams")
+                        .foregroundColor(.indigo)
+                        .font(Font.system(size: 14))
+                        .bold()
                     
                     Spacer()
                     
@@ -44,64 +48,98 @@ struct DreamFrequencyChartView: View {
                         .foregroundColor(.gray)
                         .font(Font.system(size: 14))
                 }
-//                .padding(.horizontal)
                 .padding(.top, 8)
+                    
+                Text(CleanDreamDataService.shared.trendText(allTimeAvg: CleanDreamDataService.shared.averageDreamsPerWeek(dreams: dreamData), ThreeWeekAvg: last3WeeksAverage))
+                    .font(.subheadline)
+                    .foregroundColor(.white.opacity(0.8))
+                    .multilineTextAlignment(.leading)
                 
                 Rectangle()
-                    .fill(Color.white.opacity(0.05))
+                    .fill(Color.white.opacity(0.15))
                     .frame(height: 1)
                     .padding(.horizontal, 8)
                     .padding(.top, 6)
                     .padding(.bottom, 4)
             }
-            
-            Chart {
-                ForEach(dreamData) { data in
-                    // line connecting data points
-                    LineMark(
-                        x: .value("Date", data.date, unit: .weekOfMonth),
-                        y: .value("Dreams", data.count)
-                    )
-                    // line smooth and curved
-                    .interpolationMethod(.catmullRom)
-                    .foregroundStyle(Color.indigo)
-
-                    // data point
-                    PointMark(
-                        x: .value("Date", data.date, unit: .weekOfMonth),
-                        y: .value("Dreams", data.count)
-                    )
-                    .foregroundStyle(.indigo)
-                    .symbolSize(CGSize(width: 8, height: 8))
-                }
-                
-                if last3WeeksAverage > 0 {
-                    RuleMark(
-                        y: .value("3 Week Avg", last3WeeksAverage)
-                    )
-                    .lineStyle(StrokeStyle(lineWidth: 2))
-                    .foregroundStyle(.indigo)
-                }
-                
-            }
-            .chartXAxis {
-                AxisMarks(values: .automatic(desiredCount: 7)) { value in
-                    AxisGridLine()
-                    AxisValueLabel(format: .dateTime.month(.abbreviated), centered: true)
-                }
-            }
-            .chartYAxis {
-                AxisMarks { value in
-                    AxisGridLine()
-                    AxisValueLabel()
-                }
-            }
-            .frame(height: 250)
+            DreamChartView(dreamData: $dreamData, last3WeeksAverage: $last3WeeksAverage)
         }
         .padding()
-        .glassEffect(in: .rect)
-        .cornerRadius(10)
-        .padding(.horizontal, 20)
+        .darkGloss()
+    }
+}
+
+struct DreamChartView: View {
+    @Binding var dreamData: [DreamFrequencyChartModel]
+    @Binding var last3WeeksAverage: Double
+    
+    var body: some View {
+        Chart {
+            ForEach(dreamData) { data in
+                // line connecting data points
+                LineMark(
+                    x: .value("Date", data.date, unit: .weekOfMonth),
+                    y: .value("Dreams", data.count)
+                )
+                // line smooth and curved
+                .interpolationMethod(.catmullRom)
+                .foregroundStyle(.gray.opacity(0.7))
+                
+                // data point
+                PointMark(
+                    x: .value("Date", data.date, unit: .weekOfMonth),
+                    y: .value("Dreams", data.count)
+                )
+                .foregroundStyle(.gray.opacity(0.7))
+                .symbolSize(CGSize(width: 8, height: 8))
+            }
+            
+            if last3WeeksAverage > 0 {
+                let now = Date()
+                let calendar = Calendar.current
+                
+                let endOfLine = now
+                
+                if let startOfLine = calendar.date(byAdding: .weekOfMonth, value: -3, to: endOfLine) {
+                    
+                    let averageLineData = [
+                        (date: startOfLine, value: last3WeeksAverage),
+                        (date: endOfLine, value: last3WeeksAverage)
+                    ]
+                    
+                    ForEach(averageLineData, id: \.date) { point in
+                        LineMark(
+                            x: .value("Date", point.date),
+                            y: .value("3-Week Avg", point.value),
+                            series: .value("Data", "Average")
+                        )
+                    }
+                    .foregroundStyle(.indigo)
+                    .lineStyle(StrokeStyle(lineWidth: 3))
+                    .interpolationMethod(.linear)
+                    .annotation(position: .top, alignment: .trailing) {
+                        Text("3-Week Avg: \(last3WeeksAverage, specifier: "%.1f")")
+                            .font(.caption)
+                            .foregroundColor(.indigo)
+                            .padding(.bottom, 2)
+                            .bold()
+                    }
+                }
+            }
+        }
+        .chartXAxis {
+            AxisMarks(values: .automatic(desiredCount: 7)) { value in
+                AxisGridLine()
+                AxisValueLabel(format: .dateTime.month(.abbreviated), centered: true)
+            }
+        }
+        .chartYAxis {
+            AxisMarks { value in
+                AxisGridLine()
+                AxisValueLabel()
+            }
+        }
+        .frame(height: 250)
     }
 }
 
