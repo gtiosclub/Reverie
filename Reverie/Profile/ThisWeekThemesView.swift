@@ -43,12 +43,7 @@ struct ThisWeekThemesView: View {
                     .padding(.bottom, 16)
             }
         }
-        .background(
-            RoundedRectangle(cornerRadius: 20)
-                .fill(Color.profileContainer)
-        )
-        .padding(.horizontal)
-        .padding(.bottom, 8)
+        .darkGloss()
     }
 }
 
