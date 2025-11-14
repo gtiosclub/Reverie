@@ -9,7 +9,7 @@ import SwiftUI
 import Charts
 
 // dream dictionary, see DreamFrequencyChartModel
-let dreams: ([DreamFrequencyChartModel], Int) = CleanDreamDataService.shared.processDreamsIntoWeeklyCounts(dreams: FirebaseLoginService.shared.currUser?.dreams ?? [])
+let dreams: ([DreamFrequencyChartModel], Int) = CleanDreamDataService.shared.processDreamsIntoWeeklyCounts(dreams: ProfileService.shared.dreams)
 
 // DEFAULT DATA
 let placeholderData: [DreamFrequencyChartModel] = [
