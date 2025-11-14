@@ -63,12 +63,21 @@ class CleanDreamDataService {
             last3Weeks: last3WeeksCounts
         )
     }
+        
+    // get all time average dreams per week
+    func averageDreamsPerWeek(dreams: [DreamFrequencyChartModel]) -> Double {
+        guard !dreams.isEmpty else { return 0 }
+        
+        let totalDreams = dreams.reduce(0) { $0 + $1.count }
+        
+        return Double(totalDreams) / Double(dreams.count)
+    }
     
     // gets trend information
-    func trendText(allTimeCount: Int, ThreeWeekAvg: Int) -> String {
-        if Double(allTimeCount) * 1.1 < Double(ThreeWeekAvg) {
+    func trendText(allTimeAvg: Double, ThreeWeekAvg: Double) -> String {
+        if allTimeAvg * 1.1 < ThreeWeekAvg {
             return "Over the last 3 weeks, you’ve dreamt more on average."
-        } else if Double(allTimeCount) > Double(ThreeWeekAvg) * 1.1 {
+        } else if allTimeAvg > ThreeWeekAvg * 1.1 {
             return "Over the last 3 weeks, you’ve dreamt less than usual."
         } else {
             return "Your dream frequency has been about the same as usual."

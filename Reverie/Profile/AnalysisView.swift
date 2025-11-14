@@ -36,7 +36,7 @@ struct AnalysisView: View {
                                         .foregroundColor(.orange)
                                 }
                                 .padding(.horizontal, 10)
-                                .padding(.vertical, 4)
+                                .padding(.top, 4)
 //                                .background(Color.orange.opacity(0.15))
 //                                .cornerRadius(12)
                             }
