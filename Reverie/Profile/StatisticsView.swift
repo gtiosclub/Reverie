@@ -50,7 +50,8 @@ struct StatisticsView: View {
                 }
                 .padding(.top, 4)
 
-                FrequencyView()
+//                FrequencyView()
+                DreamFrequencyChartView()
                     .padding(.top, 16)
 
                 Spacer()
