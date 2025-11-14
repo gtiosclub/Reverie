@@ -57,8 +57,8 @@ struct HeatmapView: View {
             ScrollView {
                 VStack(spacing: 24) {
                     ZStack {
-                        RoundedRectangle(cornerRadius: 18)
-                            .fill(sectionColor)
+//                        RoundedRectangle(cornerRadius: 18)
+//                            .fill(sectionColor)
                         VStack(alignment: .leading, spacing: 10) {
                             if showSummaryText {
                                 VStack(alignment: .leading, spacing: 6) {
@@ -116,13 +116,11 @@ struct HeatmapView: View {
                         }
                         .padding(.vertical, 10)
                     }
-                    .frame(maxWidth: .infinity)
-                    .cornerRadius(18)
-                    .padding(.horizontal)
+                    .darkGloss()
                     
                     Spacer()
                 }
-                .padding(.top, 15)
+//                .padding(.top, 15)
             }
         }
     }}
