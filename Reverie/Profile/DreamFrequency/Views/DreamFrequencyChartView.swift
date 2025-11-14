@@ -28,6 +28,8 @@ struct DreamFrequencyChartView: View {
     
     @State private var last3WeeksAverage: Double = Double(dreams.1) / Double(3)
     
+    @State var isHomeView: Bool
+    
     
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -36,7 +38,7 @@ struct DreamFrequencyChartView: View {
                     Image(systemName: "moon.fill")
                         .foregroundColor(.indigo)
                         .font(Font.system(size: 14, weight: .bold))
-                        .padding(.trailing, 2)
+                        .padding(.trailing, 1)
                     Text("Dreams")
                         .foregroundColor(.indigo)
                         .font(Font.system(size: 14))
@@ -44,11 +46,13 @@ struct DreamFrequencyChartView: View {
                     
                     Spacer()
                     
-                    Image(systemName: "chevron.right")
-                        .foregroundColor(.gray)
-                        .font(Font.system(size: 14))
+                    if isHomeView {
+                        Image(systemName: "chevron.right")
+                            .foregroundColor(.gray)
+                            .font(Font.system(size: 14))
+                    }
                 }
-                .padding(.top, 8)
+                .padding(.top, 6)
                     
                 Text(CleanDreamDataService.shared.trendText(allTimeAvg: CleanDreamDataService.shared.averageDreamsPerWeek(dreams: dreamData), ThreeWeekAvg: last3WeeksAverage))
                     .font(.subheadline)
@@ -144,5 +148,5 @@ struct DreamChartView: View {
 }
 
 #Preview {
-    DreamFrequencyChartView()
+    DreamFrequencyChartView(isHomeView: true)
 }

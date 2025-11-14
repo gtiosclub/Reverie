@@ -41,27 +41,42 @@ struct UserTagsView: View {
         ZStack {
             BackgroundView()
             ScrollView {
+                HStack(alignment: .center) {
+                    Text("Themes")
+                        .font(Font.system(size: 20, weight: .medium, design: .default))
+                        .foregroundColor(.white)
+                        .padding(.top, -42)
+                        .dreamGlow()
+                }
+                
                 VStack(alignment: .leading, spacing: 20) {
-                    Text("This Week")
+                    Text("Recent")
                         .foregroundStyle(.white)
-                        .font(.largeTitle.bold())
+                        .font(Font.system(size: 20, weight: .medium, design: .default))
                         .padding(.horizontal)
+                        .padding(.top, 8)
+                        .dreamGlow()
 
                     TagViewBlock(title: "This Week", tags: thisWeekTags, isExpandable: true)
+                        .padding(.leading, 32)
                     
                     Text("Most Common")
                         .foregroundStyle(.white)
-                        .font(.largeTitle.bold())
+                        .font(Font.system(size: 20, weight: .medium, design: .default))
                         .padding(.horizontal)
+                        .dreamGlow()
                     
                     TagViewBlock(title: "Most Common", tags: Array(allTags.prefix(5)), isExpandable: false)
+                        .padding(.leading, 32)
 
                     Text("All")
                         .foregroundStyle(.white)
-                        .font(.largeTitle.bold())
+                        .font(Font.system(size: 20, weight: .medium, design: .default))
                         .padding(.horizontal)
+                        .dreamGlow()
 
                     TagViewBlock(title: "Archive", tags: allTags, isExpandable: false)
+                        .padding(.leading, 32)
                 }
                 .padding(.bottom, 80)
             }
