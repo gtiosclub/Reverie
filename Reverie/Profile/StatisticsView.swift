@@ -18,6 +18,7 @@ struct StatisticsView: View {
                     Text("Activity")
                         .font(Font.system(size: 20, weight: .medium, design: .default))
                         .foregroundColor(.white)
+                        .padding(.horizontal)
                     
                     HStack(spacing: 60) {
                         StatBlock(
@@ -49,6 +50,7 @@ struct StatisticsView: View {
                         )
                     }
                     .padding(.top, 10)
+                    .padding(.horizontal)
                     
                     //                FrequencyView()
                     VStack(spacing: 16) {
@@ -63,7 +65,6 @@ struct StatisticsView: View {
                     Spacer()
                 }
                 .padding(.top, -42)
-                .padding(.horizontal)
             }
         }
     }
