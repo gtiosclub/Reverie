@@ -109,6 +109,8 @@ class CleanDreamDataService {
 
         let lastMonthAvgPerWeek = Double(lastMonthDreams) / Double(max(weeksInLastMonth, 1))
 
+        print("Average THIS month: \(thisMonthAvgPerWeek)")
+        print("Average LAST month: \(lastMonthAvgPerWeek)")
 
         return (thisMonthAvgPerWeek, lastMonthAvgPerWeek)
     }
