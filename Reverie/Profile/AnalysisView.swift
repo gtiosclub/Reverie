@@ -70,6 +70,16 @@ struct AnalysisView: View {
                             trailingView: {EmptyView()}
                             //sleep view stuff here
                         )
+                        
+                        
+                        AnalysisSection (
+                            title: "Health",
+                            icon: "moon.stars.fill",
+                            previewContent: {GraphsView(vm:HealthKitViewModel())},
+                            destination: {GraphsView(vm:HealthKitViewModel())},
+                            trailingView: {EmptyView()}
+                            //sleep view stuff here
+                        )
                     }
                     .padding(.top, 75)
                     .padding(.horizontal)

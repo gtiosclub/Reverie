@@ -2,6 +2,7 @@
 
 import Foundation
 import HealthKit
+import Combine
 
 @MainActor
 final class HealthKitViewModel: ObservableObject {
@@ -197,7 +198,7 @@ final class HealthKitViewModel: ObservableObject {
         }
 
         series[.heartRate]       = mk(72,    6)
-        series[.restingHeartRate]= mk(58,    4)
+        series[.restingHeartRate] = mk(58,    4)
         series[.stepCount]       = mk(9000,  2500)
         series[.distanceKm]      = mk(6.2,   2.0)
         series[.activeEnergy]    = mk(450,   120)

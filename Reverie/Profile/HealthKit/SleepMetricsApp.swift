@@ -1,6 +1,5 @@
 import SwiftUI
 
-@main
 struct SleepMetricsApp: App {
     @StateObject private var vm = HealthKitViewModel()
 
