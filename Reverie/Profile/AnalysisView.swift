@@ -51,6 +51,36 @@ struct AnalysisView: View {
                         destination: {UserTagsView()},
                         trailingView: {EmptyView()}
                         
+                        AnalysisSection (
+                            title: "Themes",
+                            icon: "camera.macro",
+                            previewContent: {ThisWeekThemesView(thisWeekTags: thisWeekTags)},
+                            destination: {UserTagsView()},
+                            trailingView: {EmptyView()}
+                            
+                        )
+                        
+                        AnalysisSection (
+                            title: "Moods",
+                            icon: "face.smiling.fill",
+                            previewContent: {HeatmapView(showSummaryText: true)},
+                            destination: {CombinedHeatmapEmotionView(dreams: dreamAll)},
+                            trailingView: {EmptyView()}
+                        )
+                        .padding(.bottom, 30) // test
+                        
+                        AnalysisSection (
+                            title: "Sleep",
+                            icon: "moon.stars.fill",
+                            previewContent: {FrequencyView()},
+                            destination: {HealthKitSleepDashboardView()},
+                            trailingView: {EmptyView()}
+                            //sleep view stuff here
+                        )
+                    }
+                    .padding(.top, 75)
+                    .padding(.horizontal)
+                    .padding(.bottom)
                     )
                     
                     AnalysisSection (
