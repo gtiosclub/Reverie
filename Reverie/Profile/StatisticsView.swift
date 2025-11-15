@@ -19,7 +19,7 @@ struct StatisticsView: View {
                         .font(Font.system(size: 20, weight: .medium, design: .default))
                         .foregroundColor(.white)
                     
-                    HStack(spacing: 50) {
+                    HStack(spacing: 60) {
                         StatBlock(
                             iconName: "flame.fill",
                             label: "STREAK",
@@ -84,22 +84,22 @@ struct StatBlock: View {
                 if let iconName = iconName {
                     Image(systemName: iconName)
                         .foregroundColor(labelColor)
-                        .font(.system(size: 12))
+                        .font(.system(size: 15))
                 }
                 Text(label)
-                    .font(.system(size: 12, weight: .semibold))
+                    .font(.system(size: 15, weight: .semibold))
                     .foregroundColor(labelColor)
             }
             .shadow(color: labelColor, radius: 8)
 
             HStack(alignment: .firstTextBaseline, spacing: 3) {
                 Text(value)
-                    .font(.system(size: 40, weight: .bold))
+                    .font(.system(size: 48, weight: .bold))
                     .foregroundColor(.white)
                     .shadow(color: glowOuter, radius: 5)
 
                 Text(sublabel)
-                    .font(.system(size: 13))
+                    .font(.system(size: 15))
                     .foregroundColor(.white.opacity(0.6))
                     .shadow(color: glowOuter, radius: 5)
             }
