@@ -11,7 +11,7 @@ enum TabType {
     case home
     case analytics
     case archive
-    case none
+    case logging
     
 //    var index: Int {
 //        switch self {
@@ -23,7 +23,6 @@ enum TabType {
 //    }
 }
 
-final class TabState: ObservableObject {
-    static let shared = TabState()
-    var activeTab: TabType = .home
+class TabState: ObservableObject {
+    @Published var activeTab: TabType = .home
 }
