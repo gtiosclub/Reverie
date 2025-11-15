@@ -131,8 +131,8 @@ struct DreamArchiveView: View {
         
         var result: [(String, [DreamModel])] = []
         if !today.isEmpty { result.append(("Today", today)) }
-        if !lastWeek.isEmpty { result.append(("Last Week", lastWeek)) }
-        if !lastMonth.isEmpty { result.append(("Last Month", lastMonth)) }
+        if !lastWeek.isEmpty { result.append(("This Week", lastWeek)) }
+        if !lastMonth.isEmpty { result.append(("This Month", lastMonth)) }
         if !earlier.isEmpty { result.append(("Earlier", earlier)) }
         
         return result
@@ -147,8 +147,8 @@ struct DreamArchiveView: View {
                 VStack(alignment: .leading, spacing: 16) {
                     HStack {
                         Text("Archive")
-                            .bold()
-                            .font(.system(size: 32, weight: .bold))
+                            .font(.custom("InstrumentSans-Bold", size: 32))
+
                             .foregroundColor(.white)
                         Spacer()
                         HStack(spacing: 8) {
@@ -175,20 +175,21 @@ struct DreamArchiveView: View {
                 
                 ZStack(alignment: .top) {
                     ScrollView {
-                        VStack(alignment: .leading, spacing: 24) {
+                        VStack(alignment: .leading, spacing: 40) {
                             Spacer(minLength: 30)
                             
                             if !groupedDreams.isEmpty {
                                 ForEach(groupedDreams, id: \.title) { group in
-                                    VStack(alignment: .leading, spacing: 12) {
+                                    VStack(alignment: .leading, spacing: 8) {
                                         Text(group.title)
-                                            .font(.headline)
+                                            .font(.custom("InstrumentSans-SemiBold", size: 18))
                                             .foregroundColor(.white)
+                                            .dreamGlow()
                                         
                                         Rectangle()
                                             .fill(Color.white.opacity(0.5))
                                             .frame(height: 1)
-                                            .padding(.leading, 5)
+                                        //    .padding(.leading, 5)
                                         
                                         ForEach(group.dreams, id: \.id) { dream in
                                             NavigationLink(
@@ -283,6 +284,11 @@ struct DreamArchiveView: View {
                                     .glassEffect(.regular)
                             )
                         }
+                        .shadow(
+                            color: Color(red: 60/255, green: 53/255, blue: 151/255)
+                                .opacity(0.55),
+                            radius: 8
+                            )
                         
                         Button(action: {
                             withAnimation(.spring(response: 0.35, dampingFraction: 0.85)) {
