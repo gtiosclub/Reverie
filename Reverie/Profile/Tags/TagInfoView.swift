@@ -25,6 +25,8 @@ struct TagInfoView: View {
     @State private var modelResponse: String = ""
     @State private var isLoading: Bool = true
     @State private var filteredDreams: [DreamModel] = []
+    @Environment(\.dismiss) private var dismiss
+
 
     var body: some View {
         ZStack {
@@ -65,30 +67,69 @@ struct TagInfoView: View {
                     
                     VStack(spacing: 20) {
                         HStack {
-                            Spacer()
-                            Text(tagGiven.rawValue.capitalized)
-                                .font(.largeTitle)
-                                .fontWeight(.bold)
-                                .foregroundColor(.white)
-                                .shadow(color: DreamModel.tagColors(tag: tagGiven), radius: 12)
-                            Spacer()
-                        }
-                        Divider()
-                            .padding(.horizontal, 20)
-                            .foregroundColor(.white)
-                            .bold()
-                        ScrollView{
-                            if isLoading {
-                                ProgressView()
-                                    .progressViewStyle(CircularProgressViewStyle(tint: .white))
-                                    .padding()
-                            } else {
-                                Text(modelResponse)
-                                    .font(.body)
-                                    .foregroundColor(.white.opacity(0.8))
-                                    .multilineTextAlignment(.center)
-                                    .padding(.horizontal, 20)
+                            Button(action: {
+                                dismiss()
+                            }) {
+                                ZStack {
+                                    Circle()
+                                        .fill(
+                                            LinearGradient(
+                                                colors: [
+                                                    Color(red: 5/255, green: 7/255, blue: 20/255),
+                                                    Color(red: 17/255, green: 18/255, blue: 32/255)
+                                                ],
+                                                startPoint: .topLeading,
+                                                endPoint: .bottomTrailing
+                                            )
+                                        )
+                                        .frame(width: 55, height: 55)
+                                        .overlay(
+                                            Circle()
+                                                .strokeBorder(
+                                                    AngularGradient(
+                                                        gradient: Gradient(colors: [
+                                                            Color.white.opacity(0.8),
+                                                            Color.white.opacity(0.1),
+                                                            Color.white.opacity(0.6),
+                                                            Color.white.opacity(0.1),
+                                                            Color.white.opacity(0.8)
+                                                        ]),
+                                                        center: .center
+                                                    ),
+                                                    lineWidth: 0.5
+                                                )
+                                                .blendMode(.screen)
+                                        )
+                                    
+                                    Image(systemName: "chevron.left")
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: 20, height: 20)
+                                        .foregroundColor(.white)
+                                        .padding(.leading, -4)
+                                        .bold(true)
+                                }
                             }
+                            .buttonStyle(.plain)
+                            .padding(.leading, 8)
+                            
+                            Spacer()
+                            
+                            VStack(spacing: 2) {
+                                Text("Details")
+                                    .font(.system(size: 18, weight: .semibold))
+                                    .foregroundColor(.white)
+                                    .shadow(color: Color(red: 37/255, green: 23/255, blue: 79/255).opacity(0.7), radius: 4)
+                                    .shadow(color: Color(red: 37/255, green: 23/255, blue: 79/255).opacity(0.3), radius: 8)
+                            }
+                            
+                            Spacer()
+                            
+                            Rectangle()
+                                .fill(Color.clear)
+                                .frame(width: 55, height: 55)
+                                .padding(.trailing, 8)
+                                .opacity(0) // keeps symmetry
                         }
                         .frame(minHeight: 260, maxHeight: 300)
                         
@@ -122,42 +163,100 @@ struct TagInfoView: View {
                             NavigationLink(destination: DreamEntryView(dream: dream, backToArchive: false)) {
                                 VStack(spacing: 15) {
                                     HStack {
-                                        VStack(alignment: .leading, spacing: 5) {
-                                            HStack(spacing: 8) {
-                                                Text(dream.title)
-                                                    .font(.headline)
-                                                    .foregroundColor(.white)
-                                                
-                                                HStack(spacing: 4) {
-                                                    ForEach(dream.tags.prefix(3), id: \.self) { tag in
-                                                        Image(systemName: DreamModel.tagImages(tag: tag))
-                                                            .font(.caption)
-                                                            .foregroundColor(DreamModel.tagColors(tag: tag))
-                                                    }
-                                                }
-                                            }
-                                            Text(formatDate(dream.date))
-                                                .font(.subheadline)
-                                                .foregroundColor(.gray)
-                                        }
                                         Spacer()
-                                        Image(systemName: "chevron.right")
-                                            .foregroundColor(.gray)
-                                            .font(.system(size: 14, weight: .semibold))
+                                        Text(tagGiven.rawValue.capitalized)
+                                            .font(.largeTitle)
+                                            .fontWeight(.bold)
+                                            .foregroundColor(.white)
+                                            .shadow(color: DreamModel.tagColors(tag: tagGiven), radius: 12)
+                                        Spacer()
                                     }
-                                    .padding(.vertical, 8)
-                                    .padding(.horizontal, 25)
-                                    
                                     Divider()
-                                        .background(Color.white.opacity(0.2))
-                                        .padding(.leading, 25)
+                                        .padding(.horizontal, 20)
+                                        .foregroundColor(.white)
+                                        .bold()
+                                    ScrollView{
+                                        if isLoading {
+                                            ProgressView()
+                                                .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                                                .padding()
+                                        } else {
+                                            Text(modelResponse)
+                                                .font(.body)
+                                                .foregroundColor(.white.opacity(0.8))
+                                                .multilineTextAlignment(.center)
+                                                .padding(.horizontal, 20)
+                                        }
+                                    }
+                                    .frame(minHeight: 260, maxHeight: 300)
+                                    
+                                }
+                                .padding(20)
+                                .darkGloss()
+                                
+                                Spacer()
+                            }
+                            .padding(.top, -44)
+                            
+                            Spacer()
+                            
+                            VStack(alignment: .leading, spacing: 15) {
+                                Text("Found In")
+                                    .font(.title3)
+                                    .fontWeight(.bold)
+                                    .foregroundColor(.white)
+                                    .padding(.horizontal, 25)
+                                
+                                Divider()
+                                    .background(Color.white.opacity(0.3))
+                                    .padding(.horizontal, 25)
+                                
+                                VStack(spacing: 0) {
+                                    ForEach(filteredDreams, id: \.id) { dream in
+                                        NavigationLink(destination: DreamEntryView(dream: dream, backToArchive: false)) {
+                                            VStack(spacing: 15) {
+                                                HStack {
+                                                    VStack(alignment: .leading, spacing: 5) {
+                                                        HStack(spacing: 8) {
+                                                            Text(dream.title)
+                                                                .font(.headline)
+                                                                .foregroundColor(.white)
+                                                            
+                                                            HStack(spacing: 4) {
+                                                                ForEach(dream.tags.prefix(3), id: \.self) { tag in
+                                                                    Image(systemName: DreamModel.tagImages(tag: tag))
+                                                                        .font(.caption)
+                                                                        .foregroundColor(DreamModel.tagColors(tag: tag))
+                                                                }
+                                                            }
+                                                        }
+                                                        Text(formatDate(dream.date))
+                                                            .font(.subheadline)
+                                                            .foregroundColor(.gray)
+                                                    }
+                                                    Spacer()
+                                                    Image(systemName: "chevron.right")
+                                                        .foregroundColor(.gray)
+                                                        .font(.system(size: 14, weight: .semibold))
+                                                }
+                                                .padding(.vertical, 8)
+                                                .padding(.horizontal, 25)
+                                                
+                                                Divider()
+                                                    .background(Color.white.opacity(0.2))
+                                                    .padding(.leading, 25)
+                                            }
+                                        }
+                                    }
                                 }
                             }
+                            .padding(.bottom, 50)
+                            .padding(.top, 50)
                         }
                     }
+                    .navigationBarHidden(true)
+
                 }
-                .padding(.bottom, 50)
-                .padding(.top, 50)
             }
             .task {
                 let dreams = FirebaseLoginService.shared.currUser?.dreams ?? []
