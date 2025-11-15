@@ -16,7 +16,7 @@ struct HomeView: View {
     
     var body: some View {
         ZStack {
-            MoonView()
+//            MoonView()
             FloatingStickersView(characters: characters)
             //            VStack {
             //                Text("Good Morning, \(FirebaseLoginService.shared.currUser?.name ?? "Dreamer")")
