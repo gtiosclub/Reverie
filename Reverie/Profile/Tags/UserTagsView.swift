@@ -113,11 +113,12 @@ struct UserTagsView: View {
                   .padding(.top, 10)
                   .padding(.bottom, 4)
                     ScrollView {
-                        VStack(alignment: .leading, spacing: 20) {
+                        VStack(alignment: .leading, spacing: 22) {
                             Text("This Week")
                                 .foregroundStyle(.white)
                                 .font(.system(size:18)).fontWeight(.semibold)
                                 .padding(.horizontal)
+                                .dreamGlow()
                             
                             TagViewBlock(title: "This Week", tags: thisWeekTags, isExpandable: true)
                             
@@ -125,6 +126,7 @@ struct UserTagsView: View {
                                 .foregroundStyle(.white)
                                 .font(.system(size:18)).fontWeight(.semibold)
                                 .padding(.horizontal)
+                                .dreamGlow()
                             
                             TagViewBlock(title: "Most Common", tags: Array(allTags.prefix(5)), isExpandable: false)
                             
@@ -132,9 +134,11 @@ struct UserTagsView: View {
                                 .foregroundStyle(.white)
                                 .font(.system(size:18)).fontWeight(.semibold)
                                 .padding(.horizontal)
+                                .dreamGlow()
                             
                             TagViewBlock(title: "Archive", tags: allTags, isExpandable: false)
                         }
+                        .padding(.top, 20)
                         .padding(.bottom, 80)
                     }
                 }
@@ -169,7 +173,8 @@ struct TagViewBlock: View {
                 }
             }
         }
-    }   
+        .padding(.bottom, 10)
+    }
 
     
     private var collapsedTagLimit: Int {
