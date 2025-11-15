@@ -33,18 +33,9 @@ struct TagInfoView: View {
             ScrollView {
                 VStack {
                     Text("Details")
-                        .font(.title3)
-                        .fontWeight(.bold)
-                        .foregroundColor(.white)
-//                    HStack {
-//                        Spacer()
-//                        Rectangle()
-//                            .frame(width: 24, height: 24)
-//                            .hidden()
-//                    }
-//                    .padding()
-//                    
-//                    Spacer()
+                        .font(.title3.bold())
+                        .foregroundStyle(.white)
+                        .dreamGlow()
                     
                     VStack {
                         Circle()
@@ -68,7 +59,7 @@ struct TagInfoView: View {
                             .frame(width: 1.2, height: 50)
                             .foregroundColor(.white)
                             .padding(.top, -16)
-                            .padding(.bottom, -20)
+                            .padding(.bottom, -8)
                     }
                     
                     VStack(spacing: 20) {
@@ -101,15 +92,8 @@ struct TagInfoView: View {
                         .frame(minHeight: 260, maxHeight: 300)
                         
                     }
-                    .padding(.vertical, 30)
-                    .background(
-                        RoundedRectangle(cornerRadius: 30)
-                            .fill(Color(red: 11/255, green: 11/255, blue: 22/255))
-                            .shadow(color: .black.opacity(0.5), radius: 20, x: 0, y: 10)
-                    )
-                    .glassEffect(in: .rect)
-                    .cornerRadius(30)
-                    .padding(.horizontal, 40)
+                    .padding(20)
+                    .darkGloss()
                     
                     Spacer()
                 }
