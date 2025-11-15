@@ -134,6 +134,24 @@ struct AnalysisView: View {
                                     .shadow(color: .white.opacity(0.25), radius: 1)
                             )
                         
+                        AnalysisSection (
+                            title: "Sleep",
+                            icon: "moon.stars.fill",
+                            previewContent: {FrequencyView()},
+                            destination: {FrequencyView()},
+                            trailingView: {EmptyView()}
+                            //sleep view stuff here
+                        )
+                        
+                        
+                        AnalysisSection (
+                            title: "Health",
+                            icon: "moon.stars.fill",
+                            previewContent: {GraphsView(vm:HealthKitViewModel())},
+                            destination: {GraphsView(vm:HealthKitViewModel())},
+                            trailingView: {EmptyView()}
+                            //sleep view stuff here
+                        )
                         Image(systemName: "moon.stars.fill")
                             .font(.title2)
                             .foregroundColor(.white)
