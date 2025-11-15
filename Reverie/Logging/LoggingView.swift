@@ -26,6 +26,10 @@ struct LoggingView: View {
     
     private let audioManager = AudioService()
     
+    init(initialText: String = "") {
+           _dream = State(initialValue: initialText)
+       }
+    
     var body: some View {
         NavigationStack {
             ZStack(alignment: .bottom) {

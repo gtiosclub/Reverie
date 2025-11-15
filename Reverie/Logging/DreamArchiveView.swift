@@ -526,19 +526,14 @@ struct DreamArchiveView: View {
                                 }
                                 
                             }
-                            .padding(20)
-                            .frame(width: 300)
+                            .padding(40)
+                            .frame(width: 350)
                             .background(
                                 RoundedRectangle(cornerRadius: 26)
                                     .fill(Color.black.opacity(0.55))
-                                    .background(.regularMaterial)
-                                    .clipShape(RoundedRectangle(cornerRadius: 26))
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 26)
-                                            .stroke(Color.white.opacity(0.10), lineWidth: 1)
-                                    )
-                                    .shadow(color: Color.black.opacity(0.4), radius: 20, x: 0, y: 8)
+                                    .darkGloss()
                             )
+
 
 
                             .padding(.trailing, 14)
