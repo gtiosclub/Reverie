@@ -116,54 +116,62 @@ struct EmotionBubbleChart: View {
     }
     
     private var chartContainer: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: 36, style: .continuous)
-                .fill(containerColor)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 36)
-                        .stroke(Color.white.opacity(0.08), lineWidth: 1)
-                )
-                .shadow(color: Color.black.opacity(0.45), radius: 18, x: 0, y: 12)
-            
-            GeometryReader { geo in
-                let chartSize = geo.size
-                let minSide = min(chartSize.width, chartSize.height)
-                let maxCount = max(emotionBubbles.map(\.count).max() ?? 1, 1)
+        VStack {
+            Text("Tap to view the percentage of your dream moods")
+                .font(.subheadline)
+                .font(.system(size: 17, weight: .medium))
+                .foregroundColor(.white)
+            ZStack {
+                //            RoundedRectangle(cornerRadius: 36, style: .continuous)
+                //                .fill(containerColor)
+                //                .overlay(
+                //                    RoundedRectangle(cornerRadius: 36)
+                //                        .stroke(Color.white.opacity(0.08), lineWidth: 1)
+                //                )
+                //                .shadow(color: Color.black.opacity(0.45), radius: 18, x: 0, y: 12)
                 
-                ZStack {
-                    ForEach(emotionBubbles) { bubble in
-                        let slot = bubbleSlots[bubble.slotIndex]
-                        let center = CGPoint(x: slot.x * chartSize.width,
-                                             y: slot.y * chartSize.height)
-                        EmotionBubbleView(
-                            size: bubbleSize(for: bubble, minSide: minSide, maxCount: maxCount),
-                            color: bubble.color,
-                            start: center,
-                            jitter: max(16, minSide * 0.05)
-                        )
-                        .onTapGesture {
-                            withAnimation(.spring(response: 0.45, dampingFraction: 0.85)) {
-                                selectedBubble = bubble
+                GeometryReader { geo in
+                    let chartSize = geo.size
+                    let minSide = min(chartSize.width, chartSize.height)
+                    let maxCount = max(emotionBubbles.map(\.count).max() ?? 1, 1)
+                    
+                    ZStack {
+                        ForEach(emotionBubbles) { bubble in
+                            let slot = bubbleSlots[bubble.slotIndex]
+                            let center = CGPoint(x: slot.x * chartSize.width,
+                                                 y: slot.y * chartSize.height)
+                            EmotionBubbleView(
+                                size: bubbleSize(for: bubble, minSide: minSide, maxCount: maxCount),
+                                color: bubble.color,
+                                start: center,
+                                jitter: max(16, minSide * 0.05)
+                            )
+                            .onTapGesture {
+                                withAnimation(.spring(response: 0.45, dampingFraction: 0.85)) {
+                                    selectedBubble = bubble
+                                }
                             }
                         }
                     }
+                    .frame(width: chartSize.width, height: chartSize.height)
                 }
-                .frame(width: chartSize.width, height: chartSize.height)
-            }
-            .clipShape(RoundedRectangle(cornerRadius: 36, style: .continuous))
-            
-            if let bubble = selectedBubble {
-                Color.black.opacity(0.35)
-                    .clipShape(RoundedRectangle(cornerRadius: 36, style: .continuous))
-                    .onTapGesture { dismissSelection() }
-                    .transition(.opacity)
+                .clipShape(RoundedRectangle(cornerRadius: 36, style: .continuous))
                 
-                EmotionBubbleDetailCard(bubble: bubble, onClose: dismissSelection)
-                    .padding(.horizontal, 24)
-                    .transition(.scale.combined(with: .opacity))
+                if let bubble = selectedBubble {
+                    Color.black.opacity(0.35)
+                        .clipShape(RoundedRectangle(cornerRadius: 36, style: .continuous))
+                        .onTapGesture { dismissSelection() }
+                        .transition(.opacity)
+                    
+                    EmotionBubbleDetailCard(bubble: bubble, onClose: dismissSelection)
+                        .padding(.horizontal, 24)
+                        .transition(.scale.combined(with: .opacity))
+                }
             }
+            .frame(height: chartHeight)
+            .darkGloss()
         }
-        .frame(height: chartHeight)
+
     }
     
     private var emotionBubbles: [EmotionBubble] {
