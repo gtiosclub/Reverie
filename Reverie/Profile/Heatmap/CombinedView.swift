@@ -8,8 +8,7 @@
 import SwiftUI
 
 struct CombinedHeatmapEmotionView: View {
-    let dreams: [DreamModel]
-    let dreamAll = FirebaseLoginService.shared.currUser?.dreams ?? []
+    let dreams: [DreamModel] = ProfileService.shared.dreams
 
     var body: some View {
         NavigationStack {
@@ -26,6 +25,7 @@ struct CombinedHeatmapEmotionView: View {
                 }
             }
             .navigationTitle("Mood")
+            .font(Font.system(size: 16, weight: .medium, design: .default))
             .navigationBarTitleDisplayMode(.inline)
         }
     }
@@ -33,5 +33,5 @@ struct CombinedHeatmapEmotionView: View {
 
 
 #Preview {
-    CombinedHeatmapEmotionView(dreams: dreamAll)
+    CombinedHeatmapEmotionView()
 }

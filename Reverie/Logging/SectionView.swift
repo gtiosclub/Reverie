@@ -1,18 +1,33 @@
 import SwiftUI
 
 struct SectionView: View {
+    let line: Bool
     let title: String
     let date: String
     let tags: [DreamModel.Tags]
     let description: String
+    
+    init(
+        title: String,
+        date: String,
+        tags: [DreamModel.Tags],
+        description: String,
+        line: Bool = true
+    ) {
+        self.title = title
+        self.date = date
+        self.tags = tags
+        self.description = description
+        self.line = line
+    }
 
     var body: some View {
         VStack(spacing: 0) {
             HStack(alignment: .center) {
-                VStack(alignment: .leading, spacing: 10) {
-                    HStack(spacing: 20) {
+                VStack(alignment: .leading, spacing: 5) {
+                    HStack(spacing: 27) {
                         Text(title)
-                            .font(.system(size: 20, weight: .semibold))
+                            .font(.custom("InstrumentSans-Regular", size: 18))
                             .foregroundColor(.white)
                             .lineLimit(1)
                             .dreamGlow()
@@ -23,7 +38,7 @@ struct SectionView: View {
                                     Image(systemName: DreamModel.tagImages(tag: tag))
                                         .foregroundColor(DreamModel.tagColors(tag: tag))
                                         .font(.headline)
-                                        .dreamGlow()
+//                                        .dreamGlow()
                                 }
                             }
                         }
@@ -34,12 +49,13 @@ struct SectionView: View {
                         .font(.subheadline)
                         .foregroundColor(.white.opacity(0.6))
                 }
+                .padding(.leading, -9)
 
                 Spacer()
 
                 Image(systemName: "chevron.right")
                     .foregroundColor(.white.opacity(0.8))
-                    .font(.title3)
+                    .font(.system(size: 14, weight: .medium))
             }
             .padding(.vertical, 16)
             .padding(.horizontal, 20)
@@ -47,7 +63,7 @@ struct SectionView: View {
             Rectangle()
                 .fill(Color.white.opacity(0.5))
                 .frame(height: 1)
-                .padding(.leading, 5)
+              //  .padding(.leading, 5)
         }
         .background(Color.clear)
     }
@@ -60,7 +76,7 @@ struct SectionView: View {
         VStack(spacing: 0) {
             SectionView(
                 title: "Cave Diving",
-                date: "September 14th, 2024",
+                date: "September 14",
                 tags: [.love, .falling, .animals, .authority, .chase, .disasters, .celebration, .fantasy, .fight, .food, .nature],
                 description: "Dream description preview Dream description preview Dream description preview Dream description preview"
             )

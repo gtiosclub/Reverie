@@ -13,49 +13,59 @@ struct StatisticsView: View {
             BackgroundView()
                 .ignoresSafeArea()
 
-            VStack(spacing: 20) {
-                Text("Activity")
-                    .font(.headline.weight(.semibold))
-                    .foregroundColor(.white)
-                    .padding(.top, 20)
-
-                HStack(spacing: 40) {
-                    StatBlock(
-                        iconName: "flame.fill",
-                        label: "STREAK",
-                        value: "\(streak)",
-                        sublabel: streak == 1 ? "day" : "days",
-                        labelColor: .orange,
-                        glowInner: glowInner,
-                        glowOuter: glowOuter
-                    )
-                    StatBlock(
-                        iconName: nil,
-                        label: "WEEKLY AVG",
-                        value: "\(weeklyAverage)",
-                        sublabel: weeklyAverage == 1 ? "dream" : "dreams",
-                        labelColor: .white.opacity(0.7),
-                        glowInner: glowInner,
-                        glowOuter: glowOuter
-                    )
-                    StatBlock(
-                        iconName: nil,
-                        label: "AVG LENGTH",
-                        value: "\(averageLength)",
-                        sublabel: averageLength == 1 ? "word" : "words",
-                        labelColor: .white.opacity(0.7),
-                        glowInner: glowInner,
-                        glowOuter: glowOuter
-                    )
+            ScrollView(showsIndicators: false) {
+                VStack(spacing: 20) {
+                    Text("Activity")
+                        .font(Font.system(size: 20, weight: .medium, design: .default))
+                        .foregroundColor(.white)
+                        .padding(.horizontal)
+                    
+                    HStack(spacing: 60) {
+                        StatBlock(
+                            iconName: "flame.fill",
+                            label: "STREAK",
+                            value: "\(streak)",
+                            sublabel: streak == 1 ? "day" : "days",
+                            labelColor: .orange,
+                            glowInner: glowInner,
+                            glowOuter: glowOuter
+                        )
+                        StatBlock(
+                            iconName: nil,
+                            label: "WEEKLY AVG",
+                            value: "\(weeklyAverage)",
+                            sublabel: weeklyAverage == 1 ? "dream" : "dreams",
+                            labelColor: .white.opacity(0.7),
+                            glowInner: glowInner,
+                            glowOuter: glowOuter
+                        )
+                        StatBlock(
+                            iconName: nil,
+                            label: "AVG LENGTH",
+                            value: "\(averageLength)",
+                            sublabel: averageLength == 1 ? "word" : "words",
+                            labelColor: .white.opacity(0.7),
+                            glowInner: glowInner,
+                            glowOuter: glowOuter
+                        )
+                    }
+                    .padding(.top, 10)
+                    .padding(.horizontal)
+                    
+                    //                FrequencyView()
+                    VStack(spacing: 16) {
+                        DreamFrequencyChartView(isHomeView: false)
+                            .padding(.top, 4)
+                        
+                        AvgDreamLengthBarChartView()
+                        
+                        DreamFrequencyChartView(isHomeView: false, isBar: true)
+                    }
+                    
+                    Spacer()
                 }
-                .padding(.top, 4)
-
-                FrequencyView()
-                    .padding(.top, 16)
-
-                Spacer()
+                .padding(.top, -42)
             }
-            .padding(.horizontal)
         }
     }
 }
@@ -75,25 +85,24 @@ struct StatBlock: View {
                 if let iconName = iconName {
                     Image(systemName: iconName)
                         .foregroundColor(labelColor)
-                        .font(.system(size: 12))
+                        .font(.system(size: 15))
                 }
                 Text(label)
-                    .font(.system(size: 11, weight: .semibold))
+                    .font(.system(size: 15, weight: .semibold))
                     .foregroundColor(labelColor)
             }
+            .shadow(color: labelColor, radius: 8)
 
             HStack(alignment: .firstTextBaseline, spacing: 3) {
                 Text(value)
-                    .font(.system(size: 34, weight: .bold))
+                    .font(.system(size: 48, weight: .bold))
                     .foregroundColor(.white)
-                    .shadow(color: glowInner.opacity(0.9), radius: 20, x: 0, y: 0)
-                    .shadow(color: glowOuter.opacity(0.9), radius: 40, x: 0, y: 0)
-                    .shadow(color: glowOuter.opacity(0.7), radius: 60, x: 0, y: 0)
-                    .shadow(color: glowOuter.opacity(0.5), radius: 80, x: 0, y: 0)
+                    .shadow(color: glowOuter, radius: 5)
 
                 Text(sublabel)
-                    .font(.system(size: 13))
+                    .font(.system(size: 15))
                     .foregroundColor(.white.opacity(0.6))
+                    .shadow(color: glowOuter, radius: 5)
             }
         }
     }

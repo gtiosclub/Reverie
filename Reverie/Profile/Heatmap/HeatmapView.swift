@@ -25,7 +25,7 @@ extension DreamModel.Emotions {
         case .anxiety:
             return .green
         case .neutral:
-            return .gray
+            return .white
         }
     }
 }
@@ -33,14 +33,15 @@ extension DreamModel.Emotions {
 
 // MARK: - Main Heatmap View
 struct HeatmapView: View {
-    @StateObject private var viewModel = HeatmapViewModel()
     @State private var selectedTimeframe = 1 // 0: 30 days, 1: 1 year, 2: All
+    @State private var enabledEmotions: Set<DreamModel.Emotions> = Set(DreamModel.Emotions.allCases)
     
     var showSummaryText: Bool = false
     
     private let unselectedSegmentColor = Color(red: 43/255, green: 42/255, blue: 57/255)
     private let primaryPurple = Color(red: 99/255, green: 54/255, blue: 234/255)
     private let sectionColor = Color.profileContainer
+    
     
     
     init(showSummaryText: Bool = false) {
@@ -55,19 +56,54 @@ struct HeatmapView: View {
     var body: some View {
         ZStack {
             ScrollView {
-                VStack(spacing: 24) {
+                VStack(spacing: 20) {
+                    
+                    if !showSummaryText {
+                        HStack {
+                            moodSummary()
+                                .font(.subheadline)
+                                .font(.system(size: 14, weight: .medium))
+                                .foregroundColor(.white.opacity(0.8))
+                                .multilineTextAlignment(.leading)
+                            
+                            Spacer()
+                        }
+                        .padding(.horizontal, 20)
+                                
+            
+                        Picker("Timeframe", selection: $selectedTimeframe) {
+                            Text("30 Days").tag(0)
+                            Text("1 Year").tag(1)
+                            Text("All").tag(2)
+                        }
+                        .pickerStyle(SegmentedPickerStyle())
+                        .padding(.horizontal, 20)
+                        .padding(.top, 12)
+                        .padding(.bottom, 8)
+                    }
+                    
                     ZStack {
-                        RoundedRectangle(cornerRadius: 18)
-                            .fill(sectionColor)
+//                        RoundedRectangle(cornerRadius: 18)
+//                            .fill(sectionColor)
                         VStack(alignment: .leading, spacing: 10) {
                             if showSummaryText {
                                 VStack(alignment: .leading, spacing: 6) {
-                                    activitySummaryText1()
-                                        .font(.subheadline)
-                                        .padding(.horizontal, 20)
-                                        .padding(.top, 12)
-                                        .multilineTextAlignment(.leading)
-                                        .fixedSize(horizontal: false, vertical: true)
+                                    HStack {
+                                        moodSummary()
+                                            .font(.subheadline)
+                                            .foregroundColor(.white.opacity(0.8))
+                                            .multilineTextAlignment(.leading)
+                                        
+                                        Spacer()
+                                        
+                                        Image(systemName: "chevron.right")
+                                            .foregroundColor(.gray)
+                                            .font(Font.system(size: 14))
+                                        
+                                    }
+                                    .padding(.horizontal)
+                                    .padding(.top, 8)
+                                    .padding(.bottom, 3)
                                     
                                     Rectangle()
                                         .fill(Color.white.opacity(0.05))
@@ -76,54 +112,49 @@ struct HeatmapView: View {
                                         .padding(.top, 6)
                                 }
                             }
-                            
-                            Picker("Timeframe", selection: $selectedTimeframe) {
-                                Text("30 days").tag(0)
-                                Text("1 year").tag(1)
-                                Text("All").tag(2)
-                            }
-                            .pickerStyle(SegmentedPickerStyle())
-                            .padding(.horizontal, 20)
-                            .padding(.top, 8)
-                            .padding(.bottom, 10)
-                            
+   
                             VStack(alignment:.leading, spacing: 30) {
     
                                 
                                 HeatmapContainerView(
                                     selectedTimeframe: $selectedTimeframe,
-                                    dreams: viewModel.dreams
+                                    dreams: ProfileService.shared.dreams,
+                                    enabledEmotions: $enabledEmotions
                                 )
-                                
-                                EmotionLegendView()
-                                    .padding(.horizontal)
+
                             }
                             .padding(.bottom, 20)
                         }
                         .padding(.vertical, 10)
                     }
-                    .frame(maxWidth: .infinity)
-                    .cornerRadius(18)
-                    .padding(.horizontal)
+                    .darkGloss()
                     
+                                        
+                    if !showSummaryText {
+                        EmotionLegendView(enabledEmotions: $enabledEmotions)
+                        .padding(.horizontal, 20)
+                        .frame(maxWidth: .infinity, alignment: .center)                  }
                     Spacer()
                 }
-                .padding(.top, 15)
+
+//                .padding(.top, 15)
             }
-            .refreshable { viewModel.fetchDreams() }
         }
-        .task { viewModel.fetchDreams() }
     }}
     
     // MARK: - Heatmap Container (Handles different timeframe views)
     struct HeatmapContainerView: View {
         @Binding var selectedTimeframe: Int
         let dreams: [DreamModel]
+        @Binding var enabledEmotions: Set<DreamModel.Emotions>
         
+        private var filteredDreams: [DreamModel] { // **NEW COMPUTED PROPERTY**
+                dreams.filter { enabledEmotions.contains($0.emotion) }
+            }
         private var dreamsByDate: [Date: DreamModel.Emotions] {
             var dict = [Date: DreamModel.Emotions]()
             let calendar = Calendar.current
-            for dream in dreams {
+            for dream in filteredDreams {
                 let startOfDay = calendar.startOfDay(for: dream.date)
                 dict[startOfDay] = dream.emotion
             }
@@ -134,11 +165,11 @@ struct HeatmapView: View {
             Group {
                 switch selectedTimeframe {
                 case 0:
-                    MonthlyScrollView(dreams: dreams, dreamsByDate: dreamsByDate)
+                    MonthlyScrollView(dreams: filteredDreams, dreamsByDate: dreamsByDate)
                 case 1:
-                    YearlyScrollView(dreams: dreams, dreamsByDate: dreamsByDate)
+                    YearlyScrollView(dreams: filteredDreams, dreamsByDate: dreamsByDate)
                 case 2:
-                    AllTimeScrollView(dreams: dreams, dreamsByDate: dreamsByDate)
+                    AllTimeScrollView(dreams: filteredDreams, dreamsByDate: dreamsByDate)
                 default:
                     EmptyView()
                 }
@@ -287,12 +318,12 @@ struct HeatmapView: View {
         
         var body: some View {
             VStack(alignment: .leading, spacing: 8) {
-                Text(String(year))
-                    .font(.headline)
-                    .foregroundColor(.white)
+//                Text(String(year))
+//                    .font(.headline)
+//                    .foregroundColor(.white)
                 
-                let cellSpacing: CGFloat = 4
-                let cellSize: CGFloat = 16
+                let cellSpacing: CGFloat = 6
+                let cellSize: CGFloat = 15.4
                 let weeksCount = Int(ceil(Double(dates.count) / 7.0))
                 
                 ScrollViewReader { proxy in
@@ -324,7 +355,7 @@ struct HeatmapView: View {
                                             if dateIndex < dates.count {
                                                 let date = dates[dateIndex]
                                                 RoundedRectangle(cornerRadius: 3)
-                                                    .fill(dreamsByDate[date]?.color ?? Color.black.opacity(0.2))
+                                                    .fill(dreamsByDate[date]?.color ?? Color.gray.opacity(0.2))
                                                     .frame(width: cellSize, height: cellSize)
                                             } else {
                                                 Rectangle().fill(Color.clear).frame(width: cellSize, height: cellSize)
@@ -375,9 +406,9 @@ struct HeatmapView: View {
                     if let date = days[index] {
                         let emotion = dreamsByDate[date]
                         RoundedRectangle(cornerRadius: 4)
-                            .fill(emotion?.color ?? Color.black.opacity(0.2))
+                            .fill(emotion?.color ?? Color.gray.opacity(0.2))
                             .frame(height: 35)
-                            .overlay(Text("\(calendar.component(.day, from: date))").foregroundColor(.white))
+                            .overlay(Text("\(calendar.component(.day, from: date))").foregroundColor(.black))
                     } else {
                         Rectangle().fill(Color.clear)
                     }
@@ -387,25 +418,57 @@ struct HeatmapView: View {
     }
     
     // MARK: - Emotion Legend View
-    struct EmotionLegendView: View {
-        let emotions: [DreamModel.Emotions] = [.sadness, .happiness, .fear, .anger, .embarrassment, .anxiety, .neutral]
-        private let columns: [GridItem] = [GridItem(.adaptive(minimum: 120), spacing: 10)]
-        
-        var body: some View {
-            LazyVGrid(columns: columns, alignment: .leading, spacing: 10) {
-                ForEach(emotions.indices, id: \.self) { index in
-                    HStack {
-                        RoundedRectangle(cornerRadius: 2)
-                            .fill(emotions[index].color)
-                            .frame(width: 12, height: 12)
-                        Text(String(describing: emotions[index]).capitalized)
-                            .font(.caption)
-                            .foregroundColor(.gray)
+struct EmotionLegendView: View {
+    @Binding var enabledEmotions: Set<DreamModel.Emotions>
+    
+    private func toggleEmotion(_ emotion: DreamModel.Emotions) {
+        if enabledEmotions.contains(emotion) {
+            enabledEmotions.remove(emotion)
+        } else {
+            enabledEmotions.insert(emotion)
+        }
+    }
+    
+    let emotions: [DreamModel.Emotions] = [.sadness, .happiness, .fear, .anger, .embarrassment, .anxiety, .neutral]
+    private let columns: [GridItem] = [GridItem(.adaptive(minimum: 120), spacing: 10, alignment: .leading)]
+    
+    var body: some View {
+        LazyVGrid(columns: columns, alignment: .center, spacing: 10) {
+            ForEach(emotions.indices, id: \.self) { index in
+                let emotion = emotions[index]
+                let isEnabled = enabledEmotions.contains(emotion)
+                
+                HStack {
+                    RoundedRectangle(cornerRadius: 2)
+                        .fill(emotions[index].color)
+                        .frame(width: 16, height: 16)
+                        .overlay(
+                            Group {
+                                if isEnabled {
+                                    Image(systemName: "checkmark")
+                                        .resizable()
+                                        .foregroundColor(.black)
+                                        .scaledToFit()
+                                        .padding(4)
+                                }
+                            }
+                        )
+                    
+                    Text(String(describing: emotions[index]).capitalized)
+                    //                            .font(.subheadline)
+                        .font(.system(size: 17, weight: .medium))
+                        .foregroundColor(.white)
+                }
+                
+                .onTapGesture {
+                    withAnimation(.easeIn(duration: 0.15)) {
+                        toggleEmotion(emotion)
                     }
                 }
             }
         }
     }
+}
 
 #Preview {
     HeatmapView()

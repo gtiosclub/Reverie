@@ -32,15 +32,11 @@ struct TagInfoView: View {
             
             ScrollView {
                 VStack {
-                    HStack {
-                        Spacer()
-                        Rectangle()
-                            .frame(width: 24, height: 24)
-                            .hidden()
-                    }
-                    .padding()
-                    
-                    Spacer()
+                    Text("Details")
+                        .font(.title3.bold())
+                        .foregroundStyle(.white)
+                        .dreamGlow()
+                        .padding(.bottom, 10)
                     
                     VStack {
                         Circle()
@@ -53,31 +49,34 @@ struct TagInfoView: View {
                                     .scaledToFit()
                                     .frame(width: 80, height: 80)
                                     .foregroundColor(DreamModel.tagColors(tag: tagGiven))
-                                
+                                    .shadow(color: DreamModel.tagColors(tag: tagGiven), radius: 25)
                             )
                         
-                        Rectangle()
-                            .frame(width: 2, height: 20)
-                            .foregroundColor(.gray)
                         Circle()
-                            .frame(width: 8, height: 8)
-                            .foregroundColor(.gray)
+                            .frame(width: 6, height: 6)
+                            .foregroundColor(.white)
+                            .padding(.top, -11.6)
+                        Rectangle()
+                            .frame(width: 1.2, height: 50)
+                            .foregroundColor(.white)
+                            .padding(.top, -16)
+                            .padding(.bottom, -8)
                     }
-                    .padding(.bottom, 20)
                     
                     VStack(spacing: 20) {
                         HStack {
-                            
                             Spacer()
                             Text(tagGiven.rawValue.capitalized)
                                 .font(.largeTitle)
                                 .fontWeight(.bold)
                                 .foregroundColor(.white)
+                                .shadow(color: DreamModel.tagColors(tag: tagGiven), radius: 12)
                             Spacer()
-                            
                         }
                         Divider()
-                            .padding(.horizontal, 40)
+                            .padding(.horizontal, 20)
+                            .foregroundColor(.white)
+                            .bold()
                         ScrollView{
                             if isLoading {
                                 ProgressView()
@@ -94,16 +93,16 @@ struct TagInfoView: View {
                         .frame(minHeight: 260, maxHeight: 300)
                         
                     }
-                    .padding(.vertical, 30)
-                    .background(
-                        RoundedRectangle(cornerRadius: 30)
-                            .fill(Color(red: 11/255, green: 11/255, blue: 22/255))
-                            .shadow(color: .black.opacity(0.5), radius: 20, x: 0, y: 10)
-                    )
-                    .padding(.horizontal, 20)
+                    .padding(20)
+                    .darkGloss()
                     
                     Spacer()
                 }
+                .padding(.top, -44)
+                
+                Spacer()
+                
+                HeatmapTagsView(selectedTag: tagGiven)
                 
                 Spacer()
                 
@@ -161,7 +160,7 @@ struct TagInfoView: View {
                 .padding(.top, 50)
             }
             .task {
-                let dreams = fetchDreams()
+                let dreams = FirebaseLoginService.shared.currUser?.dreams ?? []
                 let context = generateModelDreamContextByTag(dreams: dreams, category: tagGiven)
                 self.filteredDreams = getDreamsOfCategory(dreams: dreams, category: tagGiven)
                                         .sorted { $0.date > $1.date }
@@ -189,7 +188,6 @@ struct TagInfoView: View {
     
 }
 
-
 func generateModelDreamContextByTag(dreams: [DreamModel], category: DreamModel.Tags) -> String{
     let filteredDreams : [DreamModel] = getDreamsOfCategory(dreams: dreams, category: category)
     
@@ -210,15 +208,6 @@ func generateModelDreamContextByTag(dreams: [DreamModel], category: DreamModel.T
         """
     }
     return dreamContexts.joined(separator: "\n\n---\n\n")
-}
-
-func fetchDreams() -> [DreamModel] {
-    guard let user = FirebaseLoginService.shared.currUser else {
-        print("No current user found")
-        return []
-    }
-    
-    return user.dreams
 }
 
 func getModelTagResponse(context: String, tagGiven: DreamModel.Tags) async throws -> String {
@@ -289,8 +278,6 @@ func fetchOrGenerateTagDescription(context: String, tagGiven: DreamModel.Tags) a
     }
 }
 
-import FirebaseFirestore
-
 func updateTagDescriptions(tags: [DreamModel.Tags]) {
     Task.detached(priority: .utility) {
         do {
@@ -299,7 +286,7 @@ func updateTagDescriptions(tags: [DreamModel.Tags]) {
                  return
             }
 
-            let allDreams = await fetchDreams()
+            let allDreams = await ProfileService.shared.dreams
             let db = Firestore.firestore()
 
             for tag in tags {

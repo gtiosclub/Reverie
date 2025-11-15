@@ -31,7 +31,7 @@ let d2 = DreamModel(
 )
 
 let thisWeekDreams = getRecentDreams(dreams: FirebaseLoginService.shared.currUser?.dreams ?? [], count: 10)
-let allDreams = FirebaseLoginService.shared.currUser?.dreams ?? []
+let allDreams = ProfileService.shared.dreams
 
 let thisWeekTags: [DreamModel.Tags] = findMostCommonTags(dreams: thisWeekDreams)
 let allTags: [DreamModel.Tags] = findMostCommonTags(dreams: allDreams)
@@ -41,20 +41,42 @@ struct UserTagsView: View {
         ZStack {
             BackgroundView()
             ScrollView {
+                HStack(alignment: .center) {
+                    Text("Themes")
+                        .font(Font.system(size: 20, weight: .medium, design: .default))
+                        .foregroundColor(.white)
+                        .padding(.top, -42)
+                        .dreamGlow()
+                }
+                
                 VStack(alignment: .leading, spacing: 20) {
-                    Text("This Week")
+                    Text("Recent")
                         .foregroundStyle(.white)
-                        .font(.largeTitle.bold())
+                        .font(Font.system(size: 20, weight: .medium, design: .default))
                         .padding(.horizontal)
+                        .padding(.top, 8)
+                        .dreamGlow()
 
                     TagViewBlock(title: "This Week", tags: thisWeekTags, isExpandable: true)
-
-                    Text("Archive")
+                        .padding(.leading, 32)
+                    
+                    Text("Most Common")
                         .foregroundStyle(.white)
-                        .font(.largeTitle.bold())
+                        .font(Font.system(size: 20, weight: .medium, design: .default))
                         .padding(.horizontal)
+                        .dreamGlow()
+                    
+                    TagViewBlock(title: "Most Common", tags: Array(allTags.prefix(5)), isExpandable: false)
+                        .padding(.leading, 32)
+
+                    Text("All")
+                        .foregroundStyle(.white)
+                        .font(Font.system(size: 20, weight: .medium, design: .default))
+                        .padding(.horizontal)
+                        .dreamGlow()
 
                     TagViewBlock(title: "Archive", tags: allTags, isExpandable: false)
+                        .padding(.leading, 32)
                 }
                 .padding(.bottom, 80)
             }
@@ -67,40 +89,11 @@ struct TagViewBlock: View {
     let tags: [DreamModel.Tags]
     let isExpandable: Bool
     var limitToFirstRow: Bool = false
-
-    
-//    @State private var expanded = false
     
     var columns: [GridItem] {
         [GridItem(.adaptive(minimum: 75))]
     }
     
-//    var body: some View {
-//        VStack {
-//            LazyVGrid(columns: columns, spacing: 25) {
-//                ForEach(displayedTags, id: \.self) { tag in
-//                    NavigationLink(destination: TagInfoView(tagGiven: tag)) {
-//                        TagView(tagGiven: tag)
-//                        
-//                    }
-//                }
-//            }
-//            
-//            if isExpandable && tags.count > collapsedTagLimit {
-//                Button(action: {
-//                    withAnimation {
-//                        expanded.toggle()
-//                    }
-//                }) {
-//                    Text(expanded ? "see less" : "see more")
-//                        .foregroundStyle(.gray)
-//                        .font(.subheadline)
-//                        .padding(.top, 8)
-//                        .frame(maxWidth: .infinity, alignment: .center)
-//                }
-//            }
-//        }
-//    }
     var body: some View {
         VStack {
             LazyVGrid(columns: columns, spacing: 25) {
@@ -113,11 +106,6 @@ struct TagViewBlock: View {
             
             if isExpandable && tags.count > collapsedTagLimit {
                 NavigationLink(destination: UserTagsView()) {
-//                    Text("see more")
-//                        .foregroundStyle(.gray)
-//                        .font(.subheadline)
-//                        .padding(.top, 8)
-//                        .frame(maxWidth: .infinity, alignment: .center)
                 }
             }
         }
@@ -126,7 +114,7 @@ struct TagViewBlock: View {
     
     private var collapsedTagLimit: Int {
         // Number of tags that fit in one row
-        Int(UIScreen.main.bounds.width / 120)
+        Int(UIScreen.main.bounds.width / 110)
     }
     
     private var displayedTags: [DreamModel.Tags] {
