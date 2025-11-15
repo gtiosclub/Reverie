@@ -418,57 +418,57 @@ struct HeatmapView: View {
     }
     
     // MARK: - Emotion Legend View
-    struct EmotionLegendView: View {
-        @Binding var enabledEmotions: Set<DreamModel.Emotions>
-        
-        private func toggleEmotion(_ emotion: DreamModel.Emotions) {
-                if enabledEmotions.contains(emotion) {
-                    enabledEmotions.remove(emotion)
-                } else {
-                    enabledEmotions.insert(emotion)
-                }
+struct EmotionLegendView: View {
+    @Binding var enabledEmotions: Set<DreamModel.Emotions>
+    
+    private func toggleEmotion(_ emotion: DreamModel.Emotions) {
+        if enabledEmotions.contains(emotion) {
+            enabledEmotions.remove(emotion)
+        } else {
+            enabledEmotions.insert(emotion)
         }
-        
-        let emotions: [DreamModel.Emotions] = [.sadness, .happiness, .fear, .anger, .embarrassment, .anxiety, .neutral]
-        private let columns: [GridItem] = [GridItem(.adaptive(minimum: 120), spacing: 10, alignment: .leading)]
-        
-        var body: some View {
-            LazyVGrid(columns: columns, alignment: .center, spacing: 10) {
-                ForEach(emotions.indices, id: \.self) { index in
-                    let emotion = emotions[index]
-                    let isEnabled = enabledEmotions.contains(emotion)
-                    
-                    HStack {
-                        RoundedRectangle(cornerRadius: 2)
-                            .fill(emotions[index].color)
-                            .frame(width: 16, height: 16)
-                            .overlay(
-                                Group {
-                                    if isEnabled {
-                                        Image(systemName: "checkmark")
-                                            .resizable()
-                                            .foregroundColor(.black)
-                                            .scaledToFit()
-                                            .padding(4)
-                                    }
+    }
+    
+    let emotions: [DreamModel.Emotions] = [.sadness, .happiness, .fear, .anger, .embarrassment, .anxiety, .neutral]
+    private let columns: [GridItem] = [GridItem(.adaptive(minimum: 120), spacing: 10, alignment: .leading)]
+    
+    var body: some View {
+        LazyVGrid(columns: columns, alignment: .center, spacing: 10) {
+            ForEach(emotions.indices, id: \.self) { index in
+                let emotion = emotions[index]
+                let isEnabled = enabledEmotions.contains(emotion)
+                
+                HStack {
+                    RoundedRectangle(cornerRadius: 2)
+                        .fill(emotions[index].color)
+                        .frame(width: 16, height: 16)
+                        .overlay(
+                            Group {
+                                if isEnabled {
+                                    Image(systemName: "checkmark")
+                                        .resizable()
+                                        .foregroundColor(.black)
+                                        .scaledToFit()
+                                        .padding(4)
                                 }
-                            )
-        
-                        Text(String(describing: emotions[index]).capitalized)
-//                            .font(.subheadline)
-                            .font(.system(size: 17, weight: .medium))
-                            .foregroundColor(.white)
-                    }
-
-                    .onTapGesture {
-                        withAnimation(.easeIn(duration: 0.15)) {
-                            toggleEmotion(emotion)
-                        }
+                            }
+                        )
+                    
+                    Text(String(describing: emotions[index]).capitalized)
+                    //                            .font(.subheadline)
+                        .font(.system(size: 17, weight: .medium))
+                        .foregroundColor(.white)
+                }
+                
+                .onTapGesture {
+                    withAnimation(.easeIn(duration: 0.15)) {
+                        toggleEmotion(emotion)
                     }
                 }
             }
         }
     }
+}
 
 #Preview {
     HeatmapView()
