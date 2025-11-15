@@ -80,7 +80,48 @@ class CleanDreamDataService {
         } else if allTimeAvg > ThreeWeekAvg * 1.1 {
             return "Over the last 3 weeks, you’ve dreamt less than usual."
         } else {
-            return "Your dream frequency has been about the same as usual."
+            return "Over the last 3 weeks, your dream frequency has been about the same as usual."
+        }
+    }
+    
+    func monthComparison(dreams: [DreamModel]) -> (Double, Double) {
+        let calendar = Calendar.current
+        let now = Date()
+
+        let startOfThisMonth = calendar.date(from: calendar.dateComponents([.year, .month], from: now))!
+
+        let thisMonthDreams = dreams.filter {
+            calendar.isDate($0.date, equalTo: now, toGranularity: .month)
+        }.count
+
+        let weeksPassedThisMonth = calendar.dateComponents([.weekOfMonth], from: startOfThisMonth, to: now).weekOfMonth ?? 1
+
+        let thisMonthAvgPerWeek = Double(thisMonthDreams) / Double(max(weeksPassedThisMonth, 1))
+
+        let startOfLastMonth = calendar.date(byAdding: .month, value: -1, to: startOfThisMonth)!
+        let endOfLastMonth = calendar.date(byAdding: .day, value: -1, to: startOfThisMonth)!
+
+        let lastMonthDreams = dreams.filter {
+            calendar.isDate($0.date, equalTo: startOfLastMonth, toGranularity: .month)
+        }.count
+
+        let weeksInLastMonth = calendar.dateComponents([.weekOfMonth], from: startOfLastMonth, to: endOfLastMonth).weekOfMonth ?? 1
+
+        let lastMonthAvgPerWeek = Double(lastMonthDreams) / Double(max(weeksInLastMonth, 1))
+
+        print("Average THIS month: \(thisMonthAvgPerWeek)")
+        print("Average LAST month: \(lastMonthAvgPerWeek)")
+
+        return (thisMonthAvgPerWeek, lastMonthAvgPerWeek)
+    }
+    
+    func monthTrendText(lastMonth: Double, thisMonth: Double) -> String {
+        if lastMonth * 1.1 < thisMonth {
+            return "You’ve dreamt more on average this month."
+        } else if lastMonth > thisMonth * 1.1 {
+            return "You’ve dreamt less than average this month."
+        } else {
+            return "You've dreamt about the same this month as last month."
         }
     }
 }

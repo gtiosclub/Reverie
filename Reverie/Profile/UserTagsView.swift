@@ -174,7 +174,7 @@ struct TagViewBlock: View {
     
     private var collapsedTagLimit: Int {
         // Number of tags that fit in one row
-        Int(UIScreen.main.bounds.width / 120)
+        Int(UIScreen.main.bounds.width / 100)
     }
     
     private var displayedTags: [DreamModel.Tags] {
