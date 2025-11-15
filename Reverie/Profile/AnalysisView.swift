@@ -60,16 +60,22 @@ struct AnalysisView: View {
                         destination: {CombinedHeatmapEmotionView()},
                         trailingView: {EmptyView()}
                     )
-                    //                        .padding(.bottom, 30) // test
+                    AnalysisSection (
+                        title: "Sleep",
+                        previewContent: {GraphsView(vm: HealthKitViewModel())},
+                        destination: {GraphsView(vm: HealthKitViewModel())},
+                        trailingView: {EmptyView()}
+                        //sleep view stuff here
+                    )
                     
-                    //                        AnalysisSection (
-                    //                            title: "Sleep",
-                    //                            icon: "moon.stars.fill",
-                    //                            previewContent: {FrequencyView()},
-                    //                            destination: {FrequencyView()},
-                    //                            trailingView: {EmptyView()}
-                    //                            //sleep view stuff here
-                    //                        )
+                    
+                    AnalysisSection (
+                        title: "Health",
+                        previewContent: {GraphsView(vm:HealthKitViewModel())},
+                        destination: {GraphsView(vm:HealthKitViewModel())},
+                        trailingView: {EmptyView()}
+                        //sleep view stuff here
+                    )
                 }
                 .padding(.top, 75)
 //                .padding(.horizontal)
@@ -108,11 +114,6 @@ struct AnalysisView: View {
                                 )
                             )
                             .frame(width: 55, height: 55)
-                        //                                .shadow(
-                        //                                    color: Color(red: 60/255, green: 53/255, blue: 151/255)
-                        //                                        .opacity(glowPulse ? 0.9 : 0.4),
-                        //                                    radius: glowPulse ? 10 : 5
-                        //                                )
                             .overlay(
                                 Circle()
                                     .strokeBorder(
@@ -133,25 +134,6 @@ struct AnalysisView: View {
                                     .blendMode(.screen)
                                     .shadow(color: .white.opacity(0.25), radius: 1)
                             )
-                        
-                        AnalysisSection (
-                            title: "Sleep",
-                            icon: "moon.stars.fill",
-                            previewContent: {FrequencyView()},
-                            destination: {FrequencyView()},
-                            trailingView: {EmptyView()}
-                            //sleep view stuff here
-                        )
-                        
-                        
-                        AnalysisSection (
-                            title: "Health",
-                            icon: "moon.stars.fill",
-                            previewContent: {GraphsView(vm:HealthKitViewModel())},
-                            destination: {GraphsView(vm:HealthKitViewModel())},
-                            trailingView: {EmptyView()}
-                            //sleep view stuff here
-                        )
                         Image(systemName: "moon.stars.fill")
                             .font(.title2)
                             .foregroundColor(.white)
