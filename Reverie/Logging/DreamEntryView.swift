@@ -179,7 +179,7 @@ struct DreamEntryView: View {
 
                 VStack(alignment: .leading, spacing: 1) {
                     if !dream.tags.isEmpty {
-//                        ScrollView(.horizontal, showsIndicators: false) {
+
                         HStack() {
                             Spacer(minLength: 0)
                             ForEach(dream.tags, id: \.self) { tag in
@@ -195,63 +195,158 @@ struct DreamEntryView: View {
                             
                             Spacer(minLength: 0)
                         }
-                        .padding(.bottom, 6)
+                        .padding(.bottom, 12)
                         .padding(.top, -5)
                         
-//                        }
-//                        .frame(maxWidth: .infinity)
-//                        .padding(.top, 2)
+
                     }
 
                     ZStack {
+                        
                         Capsule()
-                            .fill(Color.black)
+                            .fill(Color.black.opacity(0.35))
+                            .frame(height: 43)
                             .overlay(
-                                Capsule()
-                                    .stroke(
-                                        LinearGradient(
-                                            colors: [
-                                                Color.white.opacity(0.9),
-                                                Color.white.opacity(0.15),
-                                                Color.white.opacity(0.25),
-                                                Color.white.opacity(0.7)
-                                            ],
-                                            startPoint: .topLeading,
-                                            endPoint: .bottomTrailing
-                                        ),
-                                        lineWidth: 1.5
+                                Capsule().stroke(
+                                    AngularGradient(
+                                        gradient: Gradient(colors: [
+                                            Color.white.opacity(0.8),
+                                            Color.white.opacity(0.3),
+                                            Color.white.opacity(0.6),
+                                            Color.white.opacity(0.3),
+                                            Color.white.opacity(0.8)
+                                        ]),
+                                        center: .center,
+                                        startAngle: .degrees(0),
+                                        endAngle: .degrees(360)
+                                    ),
+                                    lineWidth: 0.5
+                                )
+                                .blendMode(.screen)
+                            )
+                            .padding(.horizontal, 15)
+                        
+                        HStack(spacing: 0) {
+                            Button(action: {
+                                withAnimation(.easeInOut) { selectedTab = 0 }
+                            }) {
+                                Text("Dream")
+                                    .font(.system(size: 17, weight: .semibold))
+                                    .foregroundColor(selectedTab == 0 ? .white : .white.opacity(0.6))
+                                    .frame(maxWidth: .infinity)
+                                    .frame(height: 40)
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 30)
+                                            .fill(selectedTab == 0 ?
+                                              LinearGradient(
+                                                      gradient: Gradient(stops: [
+                                                          .init(color: Color(red: 29/255, green: 26/255, blue: 95/255).opacity(1), location: 0.0),
+                                                          .init(color: Color(red: 50/255, green: 45/255, blue: 126/255), location: 0.5),
+                                                          .init(color: Color(red: 29/255, green: 26/255, blue: 95/255).opacity(1), location: 1.0)
+                                                      ]),
+                                                      startPoint: .leading,
+                                                      endPoint: .trailing
+                                                  ) :
+                                                    LinearGradient(
+                                                        colors: [.black, .black],
+                                                        startPoint: .leading,
+                                                        endPoint: .trailing
+                                                    ))
                                     )
-                                    .shadow(color: .white.opacity(0.2), radius: 1)
-                                    .blendMode(.screen)
-                            )
-                            .overlay(
-                                HStack {
-                                    Spacer()
-                                    Rectangle()
-                                        .fill(
-                                            LinearGradient(
-                                                colors: [
-                                                    Color.white.opacity(0.35),
-                                                    Color.white.opacity(0.1)
-                                                ],
-                                                startPoint: .top,
-                                                endPoint: .bottom
-                                            )
-                                        )
-                                        .frame(width: 1)
-                                    Spacer()
-                                }
-                            )
-                            .frame(height: 30.5)
-                            .padding(.horizontal)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 30)
+                                            .stroke(selectedTab == 0 ? AngularGradient(
+                                                gradient: Gradient(stops: [
+                                                    .init(color: Color.white.opacity(0.5), location: 0.15),
+                                                    .init(color: Color.white.opacity(0.0), location: 0.20),
+                                                    .init(color: Color.white.opacity(0.6), location: 0.65),
+                                                    .init(color: Color.white.opacity(0.5), location: 0.85),
+                                                    .init(color: Color.white.opacity(0.7), location: 1.00)
+                                                ]),
+                                                center: .center,
+                                                startAngle: .degrees(0),
+                                                endAngle: .degrees(360)
+                                            ): AngularGradient(
+                                                gradient: Gradient(colors: [
+                                                    Color.white.opacity(0),
+                                                    Color.white.opacity(0),
+                                                    Color.white.opacity(0),
+                                                    Color.white.opacity(0),
+                                                    Color.white.opacity(0)
+                                                ]),
+                                                center: .center,
+                                                startAngle: .degrees(0),
+                                                endAngle: .degrees(360)
+                                            ), lineWidth: 0.5)
 
-                        Picker("Dream Tabs", selection: $selectedTab) {
-                            Text("Dream").tag(0)
-                            Text("Analysis").tag(1)
+                                    )
+                            }
+                            .buttonStyle(.plain)
+
+                            Button(action: {
+                                withAnimation(.easeInOut) { selectedTab = 1 }
+                            }) {
+                                HStack(spacing: 3) {
+                                    Image(systemName: "sparkles")
+                                        .font(.system(size: 16, weight: .semibold))
+                                        .foregroundColor(selectedTab == 1 ? .white : .white.opacity(0.6))
+
+                                    Text("Analysis")
+                                        .font(.system(size: 17, weight: .semibold))
+                                        .foregroundColor(selectedTab == 1 ? .white : .white.opacity(0.6))
+                                }
+                                    .frame(maxWidth: .infinity)
+                                    .frame(height: 40)
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 30)
+                                            .fill(selectedTab == 1 ?
+                                                  LinearGradient(
+                                                          gradient: Gradient(stops: [
+                                                              .init(color: Color(red: 29/255, green: 26/255, blue: 95/255).opacity(1), location: 0.0),
+                                                              .init(color: Color(red: 50/255, green: 45/255, blue: 126/255), location: 0.5),
+                                                              .init(color: Color(red: 29/255, green: 26/255, blue: 95/255).opacity(1), location: 1.0)
+                                                          ]),
+                                                          startPoint: .leading,
+                                                          endPoint: .trailing
+                                                      ) :
+                                                        LinearGradient(
+                                                            colors: [.black, .black],
+                                                            startPoint: .leading,
+                                                            endPoint: .trailing
+                                                        ))
+                                    )
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 30)
+                                            .stroke(selectedTab == 1 ? AngularGradient(
+                                                gradient: Gradient(stops: [
+                                                    .init(color: Color.white.opacity(0.4), location: 0.15),
+                                                    .init(color: Color.white.opacity(0.0), location: 0.20),
+                                                    .init(color: Color.white.opacity(0.6), location: 0.65),
+                                                    .init(color: Color.white.opacity(0.5), location: 0.85),
+                                                    .init(color: Color.white.opacity(0.7), location: 1.00)
+                                                ]),
+                                                center: .center,
+                                                startAngle: .degrees(0),
+                                                endAngle: .degrees(360)
+                                            ) : AngularGradient(
+                                                gradient: Gradient(colors: [
+                                                    Color.white.opacity(0),
+                                                    Color.white.opacity(0),
+                                                    Color.white.opacity(0),
+                                                    Color.white.opacity(0),
+                                                    Color.white.opacity(0)
+                                                ]),
+                                                center: .center,
+                                                startAngle: .degrees(0),
+                                                endAngle: .degrees(360)
+                                            ), lineWidth: 0.5)
+                                    )
+                            }
+                            .buttonStyle(.plain)
                         }
-                        .pickerStyle(.segmented)
-                        .glassEffect(.regular)
                         .padding(.horizontal)
+                        .animation(.easeInOut, value: selectedTab)
+
                     }
 
                     TabView(selection: $selectedTab) {
@@ -328,6 +423,7 @@ struct DreamEntryView: View {
                 .zIndex(1000)
             }
         }
+        
         .navigationBarHidden(true)
         .navigationDestination(isPresented: $goBack) {
             DreamArchiveView()

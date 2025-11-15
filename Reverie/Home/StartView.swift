@@ -8,11 +8,13 @@
 import SwiftUI
 
 struct StartView: View {
+    @Binding var showLogging: Bool
     @EnvironmentObject var ts: TabState
     @State private var isOnHomeScreen = false
     @State private var characters: [CardModel] = FirebaseLoginService.shared.currUser?.dreamCards ?? []
     @State private var selectedCharacter: CardModel? = nil
     @State private var unlockCards: Bool = false
+    @State private var showArchive: Bool = false
     @State private var lockedCharacters: [CardModel] = []
     @State private var showCardsCarousel: Bool = false
     @State private var currentPage: Int = 0
@@ -25,7 +27,7 @@ struct StartView: View {
             
             ScrollView(.vertical) {
                 VStack(spacing: 0) {
-                    HomeView(characters: $characters)
+                    HomeView(characters: $characters, showLogging: $showLogging)
                         .frame(height: UIScreen.main.bounds.height)
                     
                     DreamCardView(
@@ -33,7 +35,8 @@ struct StartView: View {
                         characters: $characters,
                         lockedCharacters: $lockedCharacters,
                         selectedCharacter: $selectedCharacter,
-                        unlockCards: $unlockCards
+                        unlockCards: $unlockCards,
+                        showArchive: $showArchive
                     )
                         .frame(height: UIScreen.main.bounds.height)
                 }
@@ -46,6 +49,23 @@ struct StartView: View {
             VStack {
                 Spacer()
                 TabbarView()
+            }
+            
+            if showArchive {
+                Color.black.opacity(0.8)
+                    .ignoresSafeArea()
+                    .transition(.opacity)
+                    .onTapGesture {
+                        withAnimation {
+                            showArchive = false
+                        }
+                    }
+                
+                CharacterArchiveView(
+                    characters: $characters,
+                    selectedCharacter: $selectedCharacter,
+                    showArchive: $showArchive
+                )
             }
             
             if let character = selectedCharacter {
@@ -104,7 +124,7 @@ struct StartView: View {
 }
 
 #Preview {
-    StartView()
+    StartView(showLogging: .constant(false))
         .environment(FirebaseLoginService.shared)
         .environmentObject(TabState())
 }

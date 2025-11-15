@@ -12,8 +12,9 @@ struct LoggingView: View {
     @State private var dream = ""
     @State private var title = ""
     @State private var date = Date()
-    @State private var shouldFinishDream = false
     private let fms = FoundationModelService()
+    @Environment(\.dismiss) private var dismiss
+
     
     @State private var analysis: String = ""
     @State private var emotion: DreamModel.Emotions = .neutral
@@ -25,6 +26,10 @@ struct LoggingView: View {
     
     private let audioManager = AudioService()
     
+    init(initialText: String = "") {
+           _dream = State(initialValue: initialText)
+       }
+    
     var body: some View {
         NavigationStack {
             ZStack(alignment: .bottom) {
@@ -32,29 +37,78 @@ struct LoggingView: View {
                     .ignoresSafeArea()
                 
                 VStack {
-                    HStack {
-                        Toggle("Finish Dream", isOn: $shouldFinishDream)
-                            .toggleStyle(SwitchToggleStyle(tint: .blue))
-                            .foregroundColor(.white)
-                        Spacer()
-                    }
-                    .padding(.bottom, 8)
                     
                     HStack {
+                        Button(action: {
+                            ts.activeTab = .home
+//                            dismiss()
+                        }) {
+                            ZStack {
+                                Circle()
+                                    .fill(
+                                        LinearGradient(
+                                            colors: [
+                                                Color(red: 5/255, green: 7/255, blue: 20/255),
+                                                Color(red: 17/255, green: 18/255, blue: 32/255)
+                                            ],
+                                            startPoint: .topLeading,
+                                            endPoint: .bottomTrailing
+                                        )
+                                    )
+                                    .frame(width: 55, height: 55)
+
+                                    .overlay(
+                                        Circle()
+                                            .strokeBorder(
+                                                AngularGradient(
+                                                    gradient: Gradient(colors: [
+                                                        Color.white.opacity(0.8),
+                                                        Color.white.opacity(0.1),
+                                                        Color.white.opacity(0.6),
+                                                        Color.white.opacity(0.1),
+                                                        Color.white.opacity(0.8)
+                                                    ]),
+                                                    center: .center,
+                                                    startAngle: .degrees(0),
+                                                    endAngle: .degrees(360)
+                                                ),
+                                                lineWidth: 0.5
+                                            )
+                                            .blendMode(.screen)
+                                    )
+
+                                Image(systemName: "chevron.left")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 20, height: 20)
+                                    .foregroundColor(.white)
+                                    .padding(.leading, -4)
+                                    .bold(true)
+                            }
+                        }
+                        .buttonStyle(.plain)
+                        .padding(.leading, 8)
+                        
                         Spacer()
-                        Button {
+                        
+                        TextField("Dream Name", text: $title)
+                            .foregroundColor(.white)
+                            .font(.system(size: 18, weight: .bold))
+                            .tint(.white)
+                            .multilineTextAlignment(.center)
+                        Spacer()
+                        
+                        Button(action: {
                             Task {
                                 isLoading = true
                                 
                                 do {
+                                    UIApplication.shared.hideKeyboard()
                                     analysis = try await fms.getOverallAnalysis(dream_description: dream)
                                     emotion = try await fms.getEmotion(dreamText: dream)
                                     tags = try await fms.getRecommendedTags(dreamText: dream)
-                                    finishedContent = "None"
                                     
-                                    if shouldFinishDream {
-                                        finishedContent = try await fms.getFinishedDream(dream_description: dream)
-                                    }
+                                    finishedContent = try await fms.getFinishedDream(dream_description: dream)
                                     
                                     print(analysis, emotion, tags)
                                     canNavigate = true
@@ -64,15 +118,53 @@ struct LoggingView: View {
                                 
                                 isLoading = false
                             }
-                        } label: {
-                            Image(systemName: "checkmark")
-                                .font(.system(size: 24, weight: .bold))
-                                .foregroundColor(.white)
-                                .padding(6)
-                                .background(Circle().fill(Color(red: 0.15, green: 0.15, blue: 0.15).opacity(0.9)))
-                                .padding(.vertical, 4)
-                                .opacity(title.isEmpty || dream.isEmpty ? 0 : 1)
+
+                        }) {
+                            ZStack {
+                                Circle()
+                                    .fill(
+                                        LinearGradient(
+                                            colors: [
+                                                Color(red: 42/255, green: 35/255, blue: 133/255),
+                                                Color(red: 64/255, green: 57/255, blue: 155/255)
+                                            ],
+                                            startPoint: .topLeading,
+                                            endPoint: .bottomTrailing
+                                        )
+                                    )
+                                    .frame(width: 55, height: 55)
+
+                                    .overlay(
+                                        Circle()
+                                            .strokeBorder(
+                                                AngularGradient(
+                                                    gradient: Gradient(colors: [
+                                                        Color.white.opacity(0.8),
+                                                        Color.white.opacity(0.1),
+                                                        Color.white.opacity(0.6),
+                                                        Color.white.opacity(0.1),
+                                                        Color.white.opacity(0.8)
+                                                    ]),
+                                                    center: .center,
+                                                    startAngle: .degrees(0),
+                                                    endAngle: .degrees(360)
+                                                ),
+                                                lineWidth: 0.5
+                                            )
+                                            .blendMode(.screen)
+                                    )
+                                    .glassEffect()
+
+                                Image(systemName: "checkmark")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 20, height: 20)
+                                    .foregroundColor(.white)
+                            }
+                            .opacity(title.isEmpty || dream.isEmpty ? 0 : 1)
                         }
+                        .buttonStyle(.plain)
+                        .padding(.leading, 8)
                         
                         NavigationLink(destination: SaveDreamView(newDream: DreamModel(
                             userID: FirebaseLoginService.shared.currUser?.userID ?? "no id",
@@ -90,38 +182,13 @@ struct LoggingView: View {
                         }
                     }
                     
-                    HStack {
-                        ZStack(alignment: .leading) {
-                            if title.isEmpty {
-                                Text("Dream Name")
-                                    .foregroundColor(.white.opacity(0.6))
-                                    .font(.custom("Inter", size: 30))
-                                    .font(.title)
-                                    .fontWeight(.bold)
-                            }
-                            TextField("", text: $title)
-                                .foregroundColor(.white)
-                                .textFieldStyle(.plain)
-                                .tint(.white)
-                                .font(.title)
-                        }
-                        
-                        Spacer()
-                        
-                        ZStack {
-                            DatePicker("", selection: $date, displayedComponents: [.date])
-                                .glassEffect(.regular, in: .rect)
-                                .labelsHidden()
-                            Text(date.formatted(date: .abbreviated, time: .omitted))
-                                .foregroundColor(.white)
-                        }
-                    }
                     
                     ZStack(alignment: .topLeading) {
                         if (dream.isEmpty && audioManager.audioCapturerState == .stopped) {
-                            Text("Start new dream entry...")
-                                .foregroundColor(.white.opacity(0.6))
+                            Text("Last night I dreamed about...")
+                                .foregroundColor(.white.opacity(0.5))
                                 .padding(.vertical, 8)
+                                .padding(.top, 30)
                         }
                         TextField("", text: Binding(
                             get: {
@@ -139,6 +206,7 @@ struct LoggingView: View {
                         .textFieldStyle(.plain)
                         .tint(.white)
                         .padding(.vertical, 8)
+                        .padding(.top, 30)
                     }
                     
                     Spacer()
@@ -198,7 +266,8 @@ struct LoggingView: View {
                                         .glassEffect()
                                 )
                         })
-                        .padding(.bottom, 60)
+                        .padding(.bottom, 70)
+                        .padding(.leading, 290)
                     }
                 }
                 .padding()
@@ -206,37 +275,39 @@ struct LoggingView: View {
                 
                 if isLoading {
                     ZStack {
-                        Rectangle()
-                            .fill(.black.opacity(0.6))
+                        Color.black.opacity(0.85)
                             .ignoresSafeArea()
-                        
-                        VStack(spacing: 20) {
-                            ProgressView()
-                                .progressViewStyle(CircularProgressViewStyle(tint: .white))
-                                .scaleEffect(1.5)
-                            
-                            Text("Analyzing your dream...")
-                                .foregroundColor(.white)
-                                .font(.headline)
+
+                        VStack(spacing: 28) {
+
+                            BookLoadingView()
+                                .scaleEffect(1.4)
+
+                            Text("Analyzing your dream…")
+                                .font(.system(size: 20, weight: .medium))
+                                .foregroundColor(Color.white.opacity(0.9))
                         }
-                        .padding(40)
-                        .background(
-                            RoundedRectangle(cornerRadius: 15)
-                                .fill(Material.thin)
-                        )
-                        .shadow(radius: 10)
                     }
                     .transition(.opacity)
                 }
-                
+
                 TabbarView()
                     .ignoresSafeArea(edges: .bottom)
             }
+            .ignoresSafeArea(.keyboard, edges: .bottom)
+
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .onAppear {
-                ts.activeTab = .none
+                ts.activeTab = .logging
             }
         }
+    }
+}
+
+extension UIApplication {
+    func hideKeyboard() {
+        sendAction(#selector(UIResponder.resignFirstResponder),
+                   to: nil, from: nil, for: nil)
     }
 }
 

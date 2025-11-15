@@ -7,20 +7,10 @@
 
 import SwiftUI
 
-struct DreamGlow: ViewModifier {
-    private let glowColor = Color(red: 45/255, green: 32/255, blue: 86/255)
-
-    func body(content: Content) -> some View {
-        content
-            .shadow(color: glowColor.opacity(0.25), radius: 18)
-            .shadow(color: glowColor.opacity(0.18), radius: 36)
-            .shadow(color: glowColor.opacity(0.12), radius: 64)
-            .shadow(color: glowColor.opacity(0.08), radius: 96)
-    }
-}
-
 extension View {
     func dreamGlow() -> some View {
-        modifier(DreamGlow())
+        self
+            .shadow(color: Color(red: 140/255, green: 60/255, blue: 255/255).opacity(0.95), radius: 12)
+            .shadow(color: Color(red: 140/255, green: 60/255, blue: 255/255).opacity(0.75), radius: 26)
     }
 }

@@ -29,9 +29,9 @@ struct AnalysisCardView: View {
 
                 VStack(alignment: .leading, spacing: 16) {
                     Text("Themes")
-                        .font(.headline.weight(.semibold))
+                        .font(.system(size: 19).weight(.bold))
                         .foregroundColor(.white)
-                        .padding(.horizontal)
+                        .padding(.horizontal, 20)
 
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 24) {
@@ -87,7 +87,8 @@ struct AnalysisCardView: View {
                                 .buttonStyle(.plain)
                             }
                         }
-                        .padding(.horizontal)
+                        .padding(.horizontal, 20)
+                        .padding(.bottom, 20)
                     }
 
                     if let themeCard = cards.first(where: { $0.title.lowercased().contains("theme") || $0.title.lowercased().contains("motif") }) {
@@ -121,10 +122,13 @@ struct AnalysisCardView: View {
                 }
                 .padding(.leading, 30)
             }
-            .padding(.vertical, 25)
+            .padding(.top, 25)
             
             
         }
+        .foregroundColor(.white)
+        .tint(.white)
+        .environment(\.colorScheme, .dark)
     }
 
 
@@ -137,13 +141,13 @@ struct AnalysisSectionCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            HStack(spacing: 6) {
-                Image(systemName: "sparkles")
-                    .foregroundColor(.white)
-                    .font(.subheadline)
-                Text(title)
-                    .font(.headline.weight(.semibold))
-                    .foregroundColor(.white)
+            if (title != "") {
+                HStack(spacing: 6) {
+                    Text(title)
+                        .font(.system(size: 19).weight(.bold))
+                        .foregroundColor(.white)
+                    
+                }
             }
 
             content
@@ -154,43 +158,7 @@ struct AnalysisSectionCard: View {
         }
         .padding(20)
         .frame(maxWidth: .infinity, minHeight: 100, alignment: .leading)
-        .background(
-            RoundedRectangle(cornerRadius: 25)
-                .fill(
-                    LinearGradient(
-                        colors: [
-                            Color.black.opacity(0.7),
-                            Color.white.opacity(0.01)
-                        ],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-                )
-                .overlay(
-                    RoundedRectangle(cornerRadius: 25)
-                        .strokeBorder(
-                            AngularGradient(
-                                gradient: Gradient(stops: [
-                                    .init(color: Color.white.opacity(0.9), location: 0.15),
-                                    .init(color: Color.white.opacity(0.1), location: 0.35),
-                                    .init(color: Color.white.opacity(0.9), location: 0.65),
-                                    .init(color: Color.white.opacity(0.05), location: 0.85),
-                                    .init(color: Color.white.opacity(0.7), location: 1.00)
-                                ]),
-                                center: .center,
-                                startAngle: .degrees(0),
-                                endAngle: .degrees(360)
-                            ),
-                            lineWidth: 0.3
-                        )
-                        .blendMode(.screen)
-                )
-                .shadow(color: Color.white.opacity(0.1), radius: 12, x: 0, y: 0)
-
-                .shadow(color: Color.black.opacity(0.6), radius: 10, x: 0, y: 6)
-
-        )
-        .padding(.horizontal, 20)
+        .darkGloss()
     }
 }
 
@@ -250,4 +218,3 @@ func parseDreamText(text: String) -> [Card] {
         )
     )
 }
-
