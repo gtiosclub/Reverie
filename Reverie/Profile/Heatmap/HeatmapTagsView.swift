@@ -10,27 +10,31 @@ import FirebaseFirestore
 import FirebaseAuth
 
 struct HeatmapTagsView: View {
-    @State private var selectedTag: DreamModel.Tags
-    @State private var selectedTimeframe = 1
-    
-    init(tag: DreamModel.Tags = .animals) {
-        self._selectedTag = State(initialValue: tag)
-    }
+    let selectedTag: DreamModel.Tags
+    @State private var selectedTimeframe = 0
     
     var body: some View {
         ZStack {
-            ScrollView {
-                VStack(spacing: 8) {
-                    Picker("Timeframe", selection: $selectedTimeframe) {
-                        Text("30 Days").tag(0)
-                        Text("1 Year").tag(1)
-                        Text("All").tag(2)
-                    }
-                    .pickerStyle(SegmentedPickerStyle())
-                    .padding(.horizontal, 20)
-                    .padding(.top, 12)
-                    .padding(.bottom, 8)
-                    
+            VStack(spacing: 8) {
+                VStack(alignment: .leading) {
+                    Text("Frequency in Dreams")
+                        .font(.title3)
+                        .fontWeight(.bold)
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 20)
+                }
+                
+                Picker("Timeframe", selection: $selectedTimeframe) {
+                    Text("30 Days").tag(0)
+                    Text("1 Year").tag(1)
+                    Text("All").tag(2)
+                }
+                .pickerStyle(SegmentedPickerStyle())
+                .padding(.horizontal, 20)
+                .padding(.top, 8)
+                .padding(.bottom, 8)
+                
+                ScrollView {
                     ZStack {
                         VStack(alignment:.leading, spacing: 30) {
                             HeatmapContainerTagsView(
@@ -43,9 +47,9 @@ struct HeatmapTagsView: View {
                     }
                     .padding(.vertical, 10)
                 }
+                .darkGloss()
             }
-            .darkGloss()
-            
+            .padding(.top, 10)
             Spacer()
         }
     }
@@ -163,7 +167,6 @@ struct AllTimeScrollTagsView: View {
     }
 }
 
-// MARK: - Yearly Heatmap Grid
 struct YearlyHeatmapGridTags: View {
     let year: Int
     let dreamsByDate: [Date: Color]
@@ -232,7 +235,7 @@ struct YearlyHeatmapGridTags: View {
                                         if dateIndex < dates.count {
                                             let date = dates[dateIndex]
                                             RoundedRectangle(cornerRadius: 3)
-//                                                .fill(dreamsByDate[date]?.color ?? Color.gray.opacity(0.2))
+                                                .fill(dreamsByDate[date] ?? Color.gray.opacity(0.2))
                                                 .frame(width: cellSize, height: cellSize)
                                         } else {
                                             Rectangle().fill(Color.clear).frame(width: cellSize, height: cellSize)
@@ -313,5 +316,5 @@ struct MonthlyHeatmapGridTags: View {
 }
 
 #Preview {
-    HeatmapTagsView(tag: .animals)
+    HeatmapTagsView(selectedTag: .animals)
 }
