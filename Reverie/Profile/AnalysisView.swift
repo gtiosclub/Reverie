@@ -89,9 +89,11 @@ struct AnalysisView: View {
             .ignoresSafeArea(edges: .top)
             .blendMode(.overlay)
             
+           
             HStack {
                 Text("Analysis")
-                    .font(.largeTitle.bold())
+                    .bold()
+                    .font(.system(size: 32, weight: .bold))
                     .foregroundColor(.white)
                 Spacer()
                 NavigationLink(destination: ConstellationView(dreams: ProfileService.shared.dreams, similarityMatrix: simMatrix, threshold: 0.65)) {
@@ -161,9 +163,9 @@ struct AnalysisView: View {
                     //                        .padding(.top, 8)
                 }
             }
-            .padding(.leading, 32)
+            .padding(.leading, 17)
             //                .padding(.top, 12)
-            .padding(.bottom, 30)
+            .padding(.bottom, 4)
             .background(
                 LinearGradient(
                     gradient: Gradient(stops: [
@@ -193,7 +195,8 @@ struct AnalysisSection<Preview: View, Destination: View, Trailing: View>: View {
         VStack(alignment: .leading, spacing: 20) {
             HStack {
                 Text(title)
-                    .font(.title3.bold())
+                    .font(.system(size:18))
+                    .fontWeight(.semibold)
                     .foregroundStyle(.white)
                     .dreamGlow()
                     
