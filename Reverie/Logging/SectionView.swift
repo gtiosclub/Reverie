@@ -1,10 +1,25 @@
 import SwiftUI
 
 struct SectionView: View {
+    let line: Bool
     let title: String
     let date: String
     let tags: [DreamModel.Tags]
     let description: String
+    
+    init(
+        title: String,
+        date: String,
+        tags: [DreamModel.Tags],
+        description: String,
+        line: Bool = true
+    ) {
+        self.title = title
+        self.date = date
+        self.tags = tags
+        self.description = description
+        self.line = line
+    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -44,10 +59,12 @@ struct SectionView: View {
             .padding(.vertical, 16)
             .padding(.horizontal, 20)
 
-            Rectangle()
-                .fill(Color.white.opacity(0.5))
-                .frame(height: 1)
-                .padding(.leading, 5)
+            if line {
+                Rectangle()
+                    .fill(Color.white.opacity(0.5))
+                    .frame(height: 1)
+                    .padding(.leading, 5)
+            }
         }
         .background(Color.clear)
     }
