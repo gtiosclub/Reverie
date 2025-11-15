@@ -36,6 +36,7 @@ struct TagInfoView: View {
                         .font(.title3.bold())
                         .foregroundStyle(.white)
                         .dreamGlow()
+                        .padding(.bottom, 10)
                     
                     VStack {
                         Circle()

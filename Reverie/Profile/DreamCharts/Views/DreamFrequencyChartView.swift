@@ -33,8 +33,8 @@ struct DreamFrequencyChartView: View {
     @State var isBar: Bool = false
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: 14) {
+            VStack(alignment: .leading, spacing: 14) {
                 HStack {
                     Image(systemName: "moon.fill")
                         .foregroundColor(.indigo)
@@ -150,7 +150,7 @@ struct DreamChartView: View {
                             .bold()
                     }
                 }
-                .padding(.bottom, -20)
+                .padding(.bottom, -24)
                 .padding(.trailing, 20)
             }
         }
@@ -166,6 +166,7 @@ struct DreamChartView: View {
                 AxisValueLabel()
             }
         }
+        .padding(.bottom, 12)
         .frame(height: 250)
     }
 }
