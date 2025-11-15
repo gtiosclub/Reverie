@@ -1,10 +1,25 @@
 import SwiftUI
 
 struct SectionView: View {
+    let line: Bool
     let title: String
     let date: String
     let tags: [DreamModel.Tags]
     let description: String
+    
+    init(
+        title: String,
+        date: String,
+        tags: [DreamModel.Tags],
+        description: String,
+        line: Bool = true
+    ) {
+        self.title = title
+        self.date = date
+        self.tags = tags
+        self.description = description
+        self.line = line
+    }
 
     var body: some View {
         VStack(spacing: 0) {
