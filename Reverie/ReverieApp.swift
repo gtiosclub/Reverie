@@ -21,7 +21,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 //    @StateObject private var tabState = TabState()
 //    @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
 //    @State private var linkActive = false
-//    
+//
 //    @AppStorage("pendingRoute", store: UserDefaults(suiteName: "group.reverie"))
 //    private var pendingRoute: String = ""
 //
@@ -39,6 +39,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 //        }
 //    }
 //}
+
 @main
 struct ReverieApp: App {
     @StateObject private var tabState = TabState()
@@ -47,6 +48,15 @@ struct ReverieApp: App {
     private var pendingRoute: String = ""
     
     @State private var openLogging = false   // << controls navigation
+
+    // NEW: access DreamRouter (for Siri text)
+    @StateObject private var router = DreamRouter.shared
+
+    // NEW: store the text that will go into LoggingView
+    @State private var loggingInitialText: String = ""
+
+    // NEW: watch scene phase so we know when app becomes active after Siri
+    @Environment(\.scenePhase) private var scenePhase
 
     var body: some Scene {
         WindowGroup {
@@ -59,10 +69,25 @@ struct ReverieApp: App {
                         openLogging = true
                     }
                     .navigationDestination(isPresented: $openLogging) {
-                        LoggingView()
+                        // pass prefilled text when coming from Siri
+                        LoggingView(initialText: loggingInitialText)
                     }
             }
             .environmentObject(tabState)
+            .onChange(of: scenePhase) { phase in
+                if phase == .active {
+                    handlePendingDream()
+                }
+            }
         }
     }
+
+    // NEW: read text from DreamRouter (set by the App Intent) and open LoggingView
+    private func handlePendingDream() {
+        guard let text = router.pendingDreamText, !text.isEmpty else { return }
+        loggingInitialText = text
+        openLogging = true
+        router.pendingDreamText = nil
+    }
 }
+
