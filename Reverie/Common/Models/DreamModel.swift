@@ -63,7 +63,7 @@ struct DreamModel: Decodable {
         case .fear: return self.Color(hex: "#9B32EC")
         case .embarrassment: return self.Color(hex: "#77A437")
         case .anxiety: return self.Color(hex: "#B96531")
-        case .neutral: return self.Color(hex: "#D9D9D9")
+        case .neutral: return self.Color(hex: "#FFFFFF")
         }
     }
     

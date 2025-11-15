@@ -24,7 +24,7 @@ struct AnalysisView: View {
                         previewContent: {
                             VStack(alignment: .leading, spacing: 8) {
                                 //                                    FrequencyView(showSummaryText: true)
-                                DreamFrequencyChartView()
+                                DreamFrequencyChartView(isHomeView: true)
                             }
                         },
                         destination: { StatisticsView(streak: currentStreak, weeklyAverage: ProfileService.shared.currentWeeklyAverage(), averageLength: currentAverageDreamLength) },
@@ -150,7 +150,6 @@ struct AnalysisView: View {
                 LinearGradient(
                     gradient: Gradient(stops: [
                         .init(color: DreamModel.Color(hex: "#010023"), location: 0.0),
-                        .init(color: DreamModel.Color(hex: "#010023"), location: 0.8),
                         .init(color: Color.clear, location: 1.0)
                     ]),
                     startPoint: .top,
@@ -176,9 +175,10 @@ struct AnalysisSection<Preview: View, Destination: View, Trailing: View>: View {
         VStack(alignment: .leading, spacing: 20) {
             HStack {
                 Text(title)
-                    .font(.title2.bold())
+                    .font(.title3.bold())
                     .foregroundStyle(.white)
-                
+                    .dreamGlow()
+                    
                 Spacer()
                 trailingView()
             }
