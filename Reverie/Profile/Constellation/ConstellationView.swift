@@ -477,12 +477,22 @@ struct ConstellationView: View {
 //                    .scaleEffect(selectedDream == nil ? 0.95 : 1.0)
                 VStack {
                     Spacer()
-                    DreamPopupView(dream: dream)
-                                    .padding(.bottom, 40) // adjust height from bottom
-                                    .transition(.move(edge: .bottom).combined(with: .opacity))
-                                    .animation(.easeInOut, value: selectedDream?.id)
-                                    .scaleEffect(selectedDream == nil ? 0.95 : 1.0)
-                            }
+                    //                    DreamPopupView(dream: dream)
+                    //                                    .padding(.bottom, 40) // adjust height from bottom
+                    //                                    .transition(.move(edge: .bottom).combined(with: .opacity))
+                    //                                    .animation(.easeInOut, value: selectedDream?.id)
+                    //                                    .scaleEffect(selectedDream == nil ? 0.95 : 1.0)
+                    //                            }
+                    
+                    NavigationLink(
+                        destination: DreamEntryView(dream: dream, backToArchive: false)
+                    ) {
+                        SectionView( title: dream.title, date: dream.date.formatted(), tags: dream.tags, description: dream.loggedContent, line:false)
+                            .darkGloss()
+                            .padding(.bottom, 40)
+
+                    }
+                }
                 .ignoresSafeArea(edges:.bottom)
             }
         }
