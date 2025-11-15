@@ -167,8 +167,8 @@ struct DreamArchiveView: View {
                                         .fill(Color(red: 15/255, green: 14/255, blue: 44/255 ))
                                 )
                             }
-                            .navigationBarBackButtonHidden(true)
                         }
+                        .navigationBarHidden(true)
                     }
                 }
                 .padding()

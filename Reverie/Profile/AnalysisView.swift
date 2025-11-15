@@ -226,7 +226,7 @@ var currentAverageDreamLength: Int {
     return total / dreams.count
 }
 
-let simMatrix = generateDreamsSimilarityMatrix(for: ProfileService.shared.dreams)
+let simMatrix = ProfileService.shared.generateDreamsSimilarityMatrix()
 
 #Preview {
     AnalysisView()
