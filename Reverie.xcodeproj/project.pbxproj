@@ -54,6 +54,40 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		398A64B62EC9245E00789865 /* Exceptions for "Reverie" folder in "LoggingWidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"Common/Instrument_Sans/InstrumentSans-Italic-VariableFont_wdth,wght.ttf",
+				"Common/Instrument_Sans/InstrumentSans-VariableFont_wdth,wght.ttf",
+				Common/Instrument_Sans/OFL.txt,
+				Common/Instrument_Sans/README.txt,
+				"Common/Instrument_Sans/static/InstrumentSans_Condensed-Bold.ttf",
+				"Common/Instrument_Sans/static/InstrumentSans_Condensed-BoldItalic.ttf",
+				"Common/Instrument_Sans/static/InstrumentSans_Condensed-Italic.ttf",
+				"Common/Instrument_Sans/static/InstrumentSans_Condensed-Medium.ttf",
+				"Common/Instrument_Sans/static/InstrumentSans_Condensed-MediumItalic.ttf",
+				"Common/Instrument_Sans/static/InstrumentSans_Condensed-Regular.ttf",
+				"Common/Instrument_Sans/static/InstrumentSans_Condensed-SemiBold.ttf",
+				"Common/Instrument_Sans/static/InstrumentSans_Condensed-SemiBoldItalic.ttf",
+				"Common/Instrument_Sans/static/InstrumentSans_SemiCondensed-Bold.ttf",
+				"Common/Instrument_Sans/static/InstrumentSans_SemiCondensed-BoldItalic.ttf",
+				"Common/Instrument_Sans/static/InstrumentSans_SemiCondensed-Italic.ttf",
+				"Common/Instrument_Sans/static/InstrumentSans_SemiCondensed-Medium.ttf",
+				"Common/Instrument_Sans/static/InstrumentSans_SemiCondensed-MediumItalic.ttf",
+				"Common/Instrument_Sans/static/InstrumentSans_SemiCondensed-Regular.ttf",
+				"Common/Instrument_Sans/static/InstrumentSans_SemiCondensed-SemiBold.ttf",
+				"Common/Instrument_Sans/static/InstrumentSans_SemiCondensed-SemiBoldItalic.ttf",
+				"Common/Instrument_Sans/static/InstrumentSans-Bold.ttf",
+				"Common/Instrument_Sans/static/InstrumentSans-BoldItalic.ttf",
+				"Common/Instrument_Sans/static/InstrumentSans-Italic.ttf",
+				"Common/Instrument_Sans/static/InstrumentSans-Medium.ttf",
+				"Common/Instrument_Sans/static/InstrumentSans-MediumItalic.ttf",
+				"Common/Instrument_Sans/static/InstrumentSans-Regular.ttf",
+				"Common/Instrument_Sans/static/InstrumentSans-SemiBold.ttf",
+				"Common/Instrument_Sans/static/InstrumentSans-SemiBoldItalic.ttf",
+			);
+			target = 47D198B82EA840CE0010F7BC /* LoggingWidgetExtension */;
+		};
 		47094D492EAA95370060150A /* Exceptions for "Reverie" folder in "Reverie" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -83,6 +117,7 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				47094D492EAA95370060150A /* Exceptions for "Reverie" folder in "Reverie" target */,
+				398A64B62EC9245E00789865 /* Exceptions for "Reverie" folder in "LoggingWidgetExtension" target */,
 			);
 			path = Reverie;
 			sourceTree = "<group>";
