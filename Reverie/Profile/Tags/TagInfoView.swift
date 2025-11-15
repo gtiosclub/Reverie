@@ -36,6 +36,7 @@ struct TagInfoView: View {
                         .font(.title3.bold())
                         .foregroundStyle(.white)
                         .dreamGlow()
+                        .padding(.bottom, 10)
                     
                     VStack {
                         Circle()
@@ -98,6 +99,10 @@ struct TagInfoView: View {
                     Spacer()
                 }
                 .padding(.top, -44)
+                
+                Spacer()
+                
+                HeatmapTagsView(selectedTag: tagGiven)
                 
                 Spacer()
                 
@@ -183,7 +188,6 @@ struct TagInfoView: View {
     
 }
 
-
 func generateModelDreamContextByTag(dreams: [DreamModel], category: DreamModel.Tags) -> String{
     let filteredDreams : [DreamModel] = getDreamsOfCategory(dreams: dreams, category: category)
     
@@ -204,15 +208,6 @@ func generateModelDreamContextByTag(dreams: [DreamModel], category: DreamModel.T
         """
     }
     return dreamContexts.joined(separator: "\n\n---\n\n")
-}
-
-func fetchDreams() -> [DreamModel] {
-    guard let user = FirebaseLoginService.shared.currUser else {
-        print("No current user found")
-        return []
-    }
-    
-    return user.dreams
 }
 
 func getModelTagResponse(context: String, tagGiven: DreamModel.Tags) async throws -> String {
@@ -291,7 +286,7 @@ func updateTagDescriptions(tags: [DreamModel.Tags]) {
                  return
             }
 
-            let allDreams = await fetchDreams()
+            let allDreams = await ProfileService.shared.dreams
             let db = Firestore.firestore()
 
             for tag in tags {
