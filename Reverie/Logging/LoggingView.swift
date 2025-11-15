@@ -40,7 +40,8 @@ struct LoggingView: View {
                     
                     HStack {
                         Button(action: {
-                            dismiss()
+                            ts.activeTab = .home
+//                            dismiss()
                         }) {
                             ZStack {
                                 Circle()
@@ -297,7 +298,7 @@ struct LoggingView: View {
 
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .onAppear {
-                ts.activeTab = .none
+                ts.activeTab = .logging
             }
         }
     }
