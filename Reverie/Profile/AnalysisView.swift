@@ -72,8 +72,8 @@ struct AnalysisView: View {
                     //                        )
                 }
                 .padding(.top, 75)
-                .padding(.horizontal)
-                .padding(.bottom)
+//                .padding(.horizontal)
+                .padding(.bottom, 50)
             }
             LinearGradient(
                 gradient: Gradient(colors: [
