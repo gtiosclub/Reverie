@@ -109,7 +109,7 @@ struct DreamCharacterBarChartView: View {
                             .bold()
                     }
                 }
-                .padding(.bottom, -18)
+                .padding(.bottom, -20)
                 .padding(.trailing, 20)
             }
         }

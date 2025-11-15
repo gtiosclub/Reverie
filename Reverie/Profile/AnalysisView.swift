@@ -175,9 +175,10 @@ struct AnalysisSection<Preview: View, Destination: View, Trailing: View>: View {
         VStack(alignment: .leading, spacing: 20) {
             HStack {
                 Text(title)
-                    .font(.title2.bold())
+                    .font(.title3.bold())
                     .foregroundStyle(.white)
-                
+                    .dreamGlow()
+                    
                 Spacer()
                 trailingView()
             }
