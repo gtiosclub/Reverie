@@ -8,15 +8,15 @@ struct HealthKitSleepDashboardView: View {
     var body: some View {
         ZStack {
             // Background gradient
-            LinearGradient(
-                colors: [
-                    Color(red: 0.10, green: 0.02, blue: 0.20),
-                    Color(red: 0.03, green: 0.01, blue: 0.10)
-                ],
-                startPoint: .top,
-                endPoint: .bottom
-            )
-            .ignoresSafeArea()
+//            LinearGradient(
+//                colors: [
+//                    Color(red: 0.10, green: 0.02, blue: 0.20),
+//                    Color(red: 0.03, green: 0.01, blue: 0.10)
+//                ],
+//                startPoint: .top,
+//                endPoint: .bottom
+//            )
+//            .ignoresSafeArea()
 
             ScrollView {
                 VStack(spacing: 24) {
@@ -24,7 +24,7 @@ struct HealthKitSleepDashboardView: View {
                     // Top sleep card (graph + compare buttons)
                     SleepGraphsSection(vm: vm)
                         .padding(.top, 8)
-                        .darkGloss()
+//                        .darkGloss()
 
                     // Metric cards below
 //                    VStack(spacing: 24) {
@@ -54,7 +54,7 @@ struct HealthKitSleepDashboardView: View {
 //                    }
 //                    .padding(.bottom, 32)
                 }
-                .padding(.horizontal, 20)
+//                .padding(.horizontal, 20)
             }
         }
         .onAppear { vm.requestAndFetch() }
@@ -71,8 +71,9 @@ private struct SleepGraphsSection: View {
     @ObservedObject var vm: HealthKitSleepViewModel
 
     @State private var daysBack: Int = 14
-    @State private var selectedMetrics: Set<HealthKitSleepViewModel.MetricKey> = [] // Allow multiple
-    @State private var selectedDate: Date = Date()
+    @State private var selectedMetrics: Set<HealthKitSleepViewModel.MetricKey> = [.intranightHR, .intranightRespRate,] // Allow multiple
+//    @State private var selectedDate: Date = Date()
+    @State private var selectedDate: Date = Calendar.current.date(byAdding: .day, value: -1, to: Date()) ?? Date()
     @State private var showDatePicker = false
 
 
@@ -137,7 +138,7 @@ private struct SleepGraphsSection: View {
                     Text(previousNightString)
                         .foregroundColor(.white)
                         .font(.subheadline.weight(.medium))
-                    Spacer()
+//                    Spacer()
                 }
                 .padding(.horizontal, 14)
                 .padding(.vertical, 8)
@@ -172,7 +173,7 @@ private struct SleepGraphsSection: View {
                             legendDot(color: sleepStageColor("REM"), label: "REM")
                             legendDot(color: sleepStageColor("Core"), label: "Core")
                             legendDot(color: sleepStageColor("Deep"), label: "Deep")
-                            Spacer()
+//                            Spacer()
                         }
                         .padding(.horizontal, 4)
                         .padding(.bottom, 4)
@@ -180,6 +181,7 @@ private struct SleepGraphsSection: View {
                     .padding(16)
                 }
             }
+            .darkGloss()
 //            .frame(maxWidth: .infinity,
 //                   minHeight: 260,
 //                   maxHeight: 320)
@@ -188,10 +190,10 @@ private struct SleepGraphsSection: View {
                    maxHeight: 400)
 
 
-            Spacer(minLength: 12)
+//            Spacer(minLength: 12)
 
             // --- COMPARE SECTION BELOW THE GRAPH ---
-            VStack(alignment: .leading, spacing: 14) {
+            VStack(alignment: .leading) {
                 Text("Compare to")
                     .font(.headline)
                     .foregroundColor(.white)
@@ -202,7 +204,8 @@ private struct SleepGraphsSection: View {
                         MetricButton(
                             title: metricTitle(metric),
                             systemImage: metricIcon(metric),
-                            isSelected: selectedMetrics.contains(metric)
+                            isSelected: selectedMetrics.contains(metric),
+                            accentColor: colorForMetric(metric)
                         ) {
                             if selectedMetrics.contains(metric) {
                                 selectedMetrics.remove(metric)
@@ -420,6 +423,7 @@ private struct MetricButton: View {
     let title: String
     let systemImage: String
     let isSelected: Bool
+    let accentColor: Color
     let action: () -> Void
 
     var body: some View {
@@ -427,6 +431,7 @@ private struct MetricButton: View {
             HStack(spacing: 10) {
                 Image(systemName: systemImage)
                     .font(.subheadline)
+                    .foregroundColor(isSelected ? accentColor : accentColor.opacity(0.6))
                 Text(title)
                     .font(.subheadline.weight(.medium))
                 Spacer()
@@ -435,10 +440,8 @@ private struct MetricButton: View {
             .padding(.vertical, 10)
             .background(
                 RoundedRectangle(cornerRadius: 18)
-                    .fill(isSelected ? Color.white.opacity(0.25)
-                                     : Color.white.opacity(0.08))
+                    .fill(isSelected ? accentColor.opacity(0.2) : Color.white.opacity(0.08))
             )
-            .foregroundColor(.white)
         }
         .buttonStyle(.plain)
     }
@@ -636,7 +639,7 @@ private struct SleepOverlayChart: View {
                 }
             }
             .frame(maxWidth: .infinity)
-            .padding(.bottom, 4) // Small gap between charts
+//            .padding(.bottom, 4) // Small gap between charts
             
             // BACKGROUND: Sleep bar with X-axis (this is the ONLY X-axis)
             if !segments.isEmpty {
@@ -667,14 +670,16 @@ private struct SleepOverlayChart: View {
                 .chartPlotStyle { plot in
                     plot.background(.clear)
                 }
+                .padding(.leading, 25)
+                .padding(.trailing, 25)
 
                 .frame(height: 60) // Includes space for X-axis labels
             }
         }
+//        .darkGloss()
     }
 
 
-    
 
     private var defaultDomain: ClosedRange<Date> {
         let now = Date()
