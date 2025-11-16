@@ -281,6 +281,8 @@ struct AnalysisView: View {
         return ProfileService.shared.currentDreamStreak()
     }
     
+    @State var dreamHealthData: [DailyHealthData] = []
+    
     var body: some View {
         ZStack(alignment:.top) {
             BackgroundView()
@@ -331,8 +333,8 @@ struct AnalysisView: View {
                     
                     AnalysisSection (
                         title: "Sleep",
-                        previewContent: {DreamFrequencyChartView(isHomeView: true)},
-                        destination: {HealthKitSleepDashboardView()},
+                        previewContent: {HealthDreamChartView(dreamHealthData: $dreamHealthData, isHomeView: true)},
+                        destination: {HealthDreamChartView(dreamHealthData: $dreamHealthData, isHomeView: true)},
                         trailingView: {EmptyView()}
                                             //sleep view stuff here
                     )
@@ -385,11 +387,6 @@ struct AnalysisView: View {
                                 )
                             )
                             .frame(width: 55, height: 55)
-                        //                                .shadow(
-                        //                                    color: Color(red: 60/255, green: 53/255, blue: 151/255)
-                        //                                        .opacity(glowPulse ? 0.9 : 0.4),
-                        //                                    radius: glowPulse ? 10 : 5
-                        //                                )
                             .overlay(
                                 Circle()
                                     .strokeBorder(
@@ -410,7 +407,6 @@ struct AnalysisView: View {
                                     .blendMode(.screen)
                                     .shadow(color: .white.opacity(0.25), radius: 1)
                             )
-                        
                         Image(systemName: "moon.stars.fill")
                             .font(.title2)
                             .foregroundColor(.white)
@@ -433,6 +429,34 @@ struct AnalysisView: View {
                     endPoint: .bottom
                 )
             )
+            .task {
+                do {
+                    try await HealthKitChartService.shared.requestAuthorization()
+                    
+                    var healthData = try await HealthKitChartService.shared.fetchLast7WeeksAveraged()
+                    
+                    healthData = healthData.map { item in
+                        var copy = item
+                        copy.sleepDuration /= 3600
+                        copy.remSleep /= 3600
+                        return copy
+                    }
+                    
+                    dreamHealthData = healthData
+                    
+                    for day in dreamHealthData {
+                        print("Date:", day.date)
+                        print("Sleep:", day.sleepDuration)
+                        print("REM:", day.remSleep)
+                        print("Steps:", day.steps)
+                        print("Exercise:", day.exerciseMinutes)
+                        print("Calories:", day.caloriesBurned)
+                    }
+                    
+                } catch {
+                    print("HealthKit error:", error)
+                }
+            }
             VStack {
                 Spacer()
                 TabbarView()
