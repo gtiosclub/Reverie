@@ -30,7 +30,7 @@ struct DreamShowView: View {
                             .padding(.leading, 5)
                         
                         Text("Finish my dream")
-                            .font(.system(size: 20))
+                            .font(.custom("InstrumentSans-SemiBold", size: 20))
                             .foregroundColor(.white)
                         if expanded {
                             Button(action: {
@@ -69,7 +69,7 @@ struct DreamShowView: View {
                         HStack(alignment: .top, spacing: 0) {
                             Spacer().frame(width: 10)
                             Text("Using your description of your dream, we created a potential ending to the story.")
-                                .font(.system(size: 13))
+                                .font(.custom("InstrumentSans-SemiBold", size: 18))
                                 
                                 .foregroundColor(.white.opacity(0.7))
                                 .multilineTextAlignment(.leading)
