@@ -131,4 +131,3 @@ struct StartView: View {
         .environment(FirebaseLoginService.shared)
         .environmentObject(TabState())
 }
-
