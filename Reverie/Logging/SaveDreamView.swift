@@ -14,6 +14,7 @@ struct SaveDreamView: View {
     @State private var showTagDropdown = false
     @State private var selectedDate = Date()
     @State private var showPicker = false
+    @State private var title = ""
 
     @Environment(\.presentationMode) var presentationMode
     
@@ -76,7 +77,7 @@ struct SaveDreamView: View {
                     }
                     .buttonStyle(.plain)
                     .contentShape(Rectangle())
-                    .padding(.leading, 17)
+                    .padding(.leading, 50)
                     .padding(.trailing, 10)
                     .padding(.vertical, 4)
                 }
@@ -89,11 +90,12 @@ struct SaveDreamView: View {
         .clipShape(RoundedRectangle(cornerRadius: 15))
         .background(
             RoundedRectangle(cornerRadius: 15)
-                .fill(Material.regular)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 15)
-                        .stroke(Color.white.opacity(0.2), lineWidth: 1)
-                )
+                .fill(Color.clear)
+                .darkGloss()
+//                .overlay(
+//                    RoundedRectangle(cornerRadius: 15)
+//                        .stroke(Color.white.opacity(0.2), lineWidth: 1)
+//                )
         )
         .shadow(color: .black.opacity(0.5), radius: 15, x: 0, y: 8)
     }
@@ -156,7 +158,14 @@ struct SaveDreamView: View {
                 .padding(.leading, 8)
                 
                 Spacer()
-                
+
+                Text(newDream.title)
+                    .foregroundColor(.white)
+                    .font(.custom("InstrumentSans-SemiBold", size: 18))
+                    .multilineTextAlignment(.center)
+                    .dreamGlow()
+
+                Spacer()
                 
                 Button(action: {
                     Task {
@@ -403,6 +412,7 @@ struct SaveDreamView: View {
 
             if showTagDropdown {
                 dropdownView
+                    .frame(width: 400)
                     .offset(y: searchBarY + 60)
                     .padding(.horizontal)
                     .scaleEffect(showTagDropdown ? 1 : 0.97)
