@@ -13,8 +13,8 @@ struct ReverieShortcuts: AppShortcutsProvider {
         AppShortcut(
             intent: LogDreamIntent(),
             phrases: [
-                "Log my dream about \(.intentParameter(\.$dream)) in \(.applicationName)",
-                "Log dream about \(.intentParameter(\.$dream))"
+                "Log my dream in \(.applicationName)",
+                "Log dream in \(.applicationName)"
             ],
             shortTitle: "Log Dream",
             systemImageName: "moon.stars"
