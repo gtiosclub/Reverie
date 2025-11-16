@@ -117,12 +117,13 @@ struct EmotionBubbleChart: View {
     
     private var chartContainer: some View {
         VStack {
-            Text("Tap to view the percentage of your dream moods")
-                .font(.subheadline)
-                .font(.system(size: 17, weight: .medium))
-                .foregroundColor(.white)
+            Text("Tap to view the percentage of your dream moods.")
+                .font(.system(size: 14))
+                .foregroundColor(.white.opacity(0.7))
                 .padding(.top, 25)
                 .padding(.bottom, 20)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 20)
             
             ZStack {
                 //            RoundedRectangle(cornerRadius: 36, style: .continuous)

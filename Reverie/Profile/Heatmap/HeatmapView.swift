@@ -90,8 +90,8 @@ struct HeatmapView: View {
                                 VStack(alignment: .leading, spacing: 6) {
                                     HStack {
                                         moodSummary()
-                                            .font(.subheadline)
-                                            .foregroundColor(.white.opacity(0.8))
+                                            .font(.system(size: 14))
+                                        .foregroundColor(.white.opacity(0.7))
                                             .multilineTextAlignment(.leading)
                                         
                                         Spacer()
@@ -452,7 +452,7 @@ struct EmotionLegendView: View {
                     
                     Text(String(describing: emotions[index]).capitalized)
                     //                            .font(.subheadline)
-                        .font(.system(size: 17, weight: .medium))
+                        .font(.system(size: 14, weight: .semibold))
                         .foregroundColor(.white)
                 }
                 
