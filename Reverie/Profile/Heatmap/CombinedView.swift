@@ -8,11 +8,13 @@
 import SwiftUI
 
 struct CombinedHeatmapEmotionView: View {
+
     let dreams: [DreamModel] = ProfileService.shared.dreams
+    @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         NavigationStack {
-            ZStack {
+            ZStack (alignment: .top){
                 BackgroundView()
                     .ignoresSafeArea()
 
