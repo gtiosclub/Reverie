@@ -22,13 +22,19 @@ final class HealthKitSleepViewModel: ObservableObject {
     @Published var respiratoryRate = "-"
     @Published var oxygenSaturation = "-"
     @Published var hrv = "-"
+    
+    @Published var intranightHeartRate: [HealthKitManager.DataPoint] = []
+    @Published var intranightHRV: [HealthKitManager.DataPoint] = []
+    @Published var intranightRespiratoryRate: [HealthKitManager.DataPoint] = []
+    @Published var intranightOxygenSaturation: [HealthKitManager.DataPoint] = []
 
     // For the sleep-stage timeline chart
     @Published var previousNightSegments: [HealthKitManager.SleepSegment] = []
 
     // Time-series data for charts
     enum MetricKey: String, CaseIterable, Identifiable {
-        case date, heartRate, restingHeartRate, stepCount, distanceKm, activeEnergy, asleepHours
+        case date, heartRate, restingHeartRate, stepCount, distanceKm, activeEnergy, asleepHours, intranightHR, intranightHRV, intranightRespRate, intranightO2
+
         var id: String { rawValue }
         var label: String {
             switch self {
@@ -39,6 +45,10 @@ final class HealthKitSleepViewModel: ObservableObject {
             case .distanceKm:      return "Distance (km, daily)"
             case .activeEnergy:    return "Active Energy (kcal, daily)"
             case .asleepHours:     return "Asleep (hrs, daily)"
+            case .intranightHR:    return "HR During Sleep (bpm)"
+            case .intranightHRV:   return "HRV During Sleep (ms)"
+            case .intranightRespRate: return "Resp Rate During Sleep"
+            case .intranightO2:    return "O2 Sat During Sleep (%)"
             }
         }
     }
@@ -193,8 +203,47 @@ final class HealthKitSleepViewModel: ObservableObject {
 
         manager.fetchSleepSegments(start: start, end: end, onlyAppleHealthSource: true) { segs in
             self.previousNightSegments = segs
+            if !segs.isEmpty {
+                self.loadIntranightMetrics(sleepSegments: segs)
+            }
         }
+        
     }
+    
+    private func loadIntranightMetrics(sleepSegments: [HealthKitManager.SleepSegment]) {
+            // Fetch multiple metrics at once
+            let metricsToFetch: [HKQuantityTypeIdentifier] = [
+                .heartRate,
+                .heartRateVariabilitySDNN,
+                .respiratoryRate,
+                .oxygenSaturation
+            ]
+            
+            manager.fetchMetricsDuringSleep(
+                sleepSegments: sleepSegments,
+                metrics: metricsToFetch
+            ) { [weak self] results in
+                guard let self = self else { return }
+                
+                // Store in published properties
+                self.intranightHeartRate = results[.heartRate] ?? []
+                self.intranightHRV = results[.heartRateVariabilitySDNN] ?? []
+                self.intranightRespiratoryRate = results[.respiratoryRate] ?? []
+                self.intranightOxygenSaturation = results[.oxygenSaturation] ?? []
+                
+                // Also update the series dictionary for chart comparison
+                self.series[.intranightHR] = self.intranightHeartRate
+                self.series[.intranightHRV] = self.intranightHRV
+                self.series[.intranightRespRate] = self.intranightRespiratoryRate
+                self.series[.intranightO2] = self.intranightOxygenSaturation
+                
+                print("📊 Loaded intranight data:")
+                print("  HR samples: \(self.intranightHeartRate.count)")
+                print("  HRV samples: \(self.intranightHRV.count)")
+                print("  Resp samples: \(self.intranightRespiratoryRate.count)")
+                print("  O2 samples: \(self.intranightOxygenSaturation.count)")
+            }
+        }
 
     // MARK: - Dummy data (for previews / auth failure)
 
