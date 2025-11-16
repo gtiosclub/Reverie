@@ -61,7 +61,7 @@ struct SaveDreamView: View {
     
 
     var dropdownView: some View {
-        ScrollView(.vertical, showsIndicators: true) {
+        ScrollView(.vertical, showsIndicators: false) {
             VStack(alignment: .leading, spacing: 10) {
                 ForEach(filteredTags, id: \.self) { tag in
                     Button(action: {

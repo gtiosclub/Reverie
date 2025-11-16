@@ -113,7 +113,7 @@ struct TabbarView: View {
         HStack(spacing: 0) {
             TabButton(title: Image(systemName: "house"), text: "Home", tab: .home)
             TabButton(title: Image(systemName: "star.fill"), text: "Archive", tab: .archive)
-            TabButton(title: Image(systemName: "chart.bar"), text: "Analysis", tab: .analytics)
+            TabButton(title: Image(systemName: "chart.bar"), text: "Insights", tab: .analytics)
         }
         .frame(maxWidth: 300, maxHeight: 60)
         .glassEffect(.regular)
