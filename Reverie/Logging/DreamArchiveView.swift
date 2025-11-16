@@ -246,45 +246,45 @@ struct DreamArchiveView: View {
                     
                     HStack {
                         ZStack {
-                            Capsule()
-                                    .strokeBorder(
-                                        AngularGradient(
-                                            gradient: Gradient(colors: [
-                                                Color.white.opacity(0.8),
-                                                Color.white.opacity(0.1),
-                                                Color.white.opacity(0.6),
-                                                Color.white.opacity(0.1),
-                                                Color.white.opacity(0.8)
-                                            ]),
-                                            center: .center,
-                                            startAngle: .degrees(0),
-                                            endAngle: .degrees(360)
-                                        ),
-                                        lineWidth: 1
-                                    )
-
-                                    .frame(
-                                            width: 315,
-                                            height: 52.5
-                                        )
-                                    .blendMode(.screen)
-                                    .shadow(color: .white.opacity(0.25), radius: 1)
-                            
+                            // INNER content
                             HStack {
                                 Image(systemName: "magnifyingglass")
                                     .foregroundColor(.white)
+
                                 TextField("Search", text: $search)
                                     .foregroundColor(.white)
                                     .accentColor(.white)
                             }
-                            .padding(15)
-                            .cornerRadius(10)
+                            .padding(.horizontal, 15)
+                            .frame(width: 315, height: 52.5)
                             .background(
-                                Color.black.opacity(0.25)
-                                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                                Color.black.opacity(0.15)
+                                    .clipShape(Capsule())
                                     .glassEffect(.regular)
                             )
+
+                            // OUTER stroke — forced ABOVE EVERYTHING
+                            Capsule()
+                                .strokeBorder(
+                                    AngularGradient(
+                                        gradient: Gradient(colors: [
+                                            Color.white.opacity(0.9),
+                                            Color.white.opacity(0.15),
+                                            Color.white.opacity(0.6),
+                                            Color.white.opacity(0.15),
+                                            Color.white.opacity(0.9)
+                                        ]),
+                                        center: .center,
+                                        startAngle: .degrees(0),
+                                        endAngle: .degrees(360)
+                                    ),
+                                    lineWidth: 0.2
+                                )
+                                .allowsHitTesting(false)  // important
+                                .frame(width: 315, height: 52.5)
                         }
+                        .compositingGroup()               // ensures stroke isn’t blended away
+
                         .shadow(
                             color: Color(red: 60/255, green: 53/255, blue: 151/255)
                                 .opacity(0.55),
@@ -297,69 +297,91 @@ struct DreamArchiveView: View {
                             }
                         }) {
                             ZStack {
-                                Circle()
-                                    .fill(
-                                        (selectedThemeTags.isEmpty && selectedDateFilter == .allDates) ?
-                                        
+                                let filtersOff = selectedThemeTags.isEmpty && selectedDateFilter == .allDates
+
+                                Group {
+                                    if filtersOff {
+                                        // 🔹 MATCHES SEARCH BAR EXACTLY (glass + dark tint)
+                                        Color.clear
+                                            .background(
+                                                Color.black.opacity(0.15)
+                                                    .clipShape(Circle())
+                                                    .glassEffect(.regular)
+                                            )
+                                            .overlay(
+                                                Circle()
+                                                    .strokeBorder(
+                                                        AngularGradient(
+                                                            gradient: Gradient(colors: [
+                                                                Color.white.opacity(0.8),
+                                                                Color.white.opacity(0.1),
+                                                                Color.white.opacity(0.6),
+                                                                Color.white.opacity(0.1),
+                                                                Color.white.opacity(0.8)
+                                                            ]),
+                                                            center: .center,
+                                                            startAngle: .degrees(0),
+                                                            endAngle: .degrees(360)
+                                                        ),
+                                                        lineWidth: 0.4
+                                                    )
+                                                    .blendMode(.screen)
+                                                    .shadow(color: .white.opacity(0.25), radius: 1)
+                                            )
+                                    } else {
                                         LinearGradient(
                                             colors: [
-                                                Color(red: 4/255, green: 4/255, blue: 20/255),
-                                                Color(red: 18/255, green: 18/255, blue: 35/255)
-                                            ],
-                                            startPoint: .topLeading,
-                                            endPoint: .bottomTrailing
-                                        ) : LinearGradient(
-                                            colors: [
-                                                Color(red: 46/255, green: 39/255, blue: 137/255),
-                                                Color(red: 64/255, green: 57/255, blue: 155/255)
+                                                Color(red: 46/255, green: 39/255, blue: 137/255).opacity(0.45),
+                                                Color(red: 64/255, green: 57/255, blue: 155/255).opacity(0.45)
                                             ],
                                             startPoint: .topLeading,
                                             endPoint: .bottomTrailing
                                         )
-                                        
-                                    )
-                                    .frame(width: 52, height: 52)
-                                    .shadow(
-                                        color: Color(red: 60/255, green: 53/255, blue: 151/255)
-                                            .opacity(0.55),
-                                        radius: 8
-                                    )
-                                    .overlay(
-                                        Circle()
-                                            .strokeBorder(
-                                                AngularGradient(
-                                                    gradient: Gradient(colors: [
-                                                        Color.white.opacity(0.8),
-                                                        Color.white.opacity(0.1),
-                                                        Color.white.opacity(0.6),
-                                                        Color.white.opacity(0.1),
-                                                        Color.white.opacity(0.8)
-                                                    ]),
-                                                    center: .center,
-                                                    startAngle: .degrees(0),
-                                                    endAngle: .degrees(360)
-                                                ),
-                                                lineWidth: 0.5
-                                            )
-                                            .blendMode(.screen)
-                                            .shadow(color: .white.opacity(0.25), radius: 1)
-                                    )
-                                
+                                        .clipShape(Circle())
+                                        .glassEffect(.regular)
+                                        .overlay(
+                                            Circle()
+                                                .strokeBorder(
+                                                    AngularGradient(
+                                                        gradient: Gradient(colors: [
+                                                            Color.white.opacity(0.8),
+                                                            Color.white.opacity(0.1),
+                                                            Color.white.opacity(0.6),
+                                                            Color.white.opacity(0.1),
+                                                            Color.white.opacity(0.8)
+                                                        ]),
+                                                        center: .center,
+                                                        startAngle: .degrees(0),
+                                                        endAngle: .degrees(360)
+                                                    ),
+                                                    lineWidth: 0.5
+                                                )
+                                                .blendMode(.screen)
+                                                .shadow(color: .white.opacity(0.25), radius: 1)
+                                        )
+                                    }
+                                }
+                                .frame(width: 52, height: 52)
+                                .shadow(
+                                    color: Color(red: 60/255, green: 53/255, blue: 151/255).opacity(0.55),
+                                    radius: 8
+                                )
+
                                 Image(systemName: "line.3.horizontal.decrease")
-                                    .font(.system(size: 28, weight: .semibold))
+                                    .font(.system(size: 24, weight: .semibold))
                                     .foregroundColor(.white)
                             }
                         }
                         .buttonStyle(.plain)
                         .padding(.leading, 7)
+
                     }
                     .padding(.horizontal, 10)
                     .padding(.top, -3)
                 }
             }
             
-            TabbarView()
-                .ignoresSafeArea(edges: .bottom)
+
             
             if showFilters {
                 ZStack(alignment: .topTrailing) {
@@ -382,30 +404,7 @@ struct DreamArchiveView: View {
                             
                             VStack(alignment: .leading, spacing: 18) {
                                 
-                                // Sort section
-//                                Button {
-//                                    sortOrder = .newestFirst
-//                                } label: {
-//                                    HStack(spacing: 10) {
-//                                        Image(systemName: sortOrder == .newestFirst ? "checkmark" : "")
-//                                            .frame(width: 16)
-//                                            .foregroundColor(.white)
-//                                        Text("Sort Newest to Oldest")
-//                                            .foregroundColor(.white)
-//                                    }
-//                                }
-                                
-//                                Button {
-//                                    sortOrder = .oldestFirst
-//                                } label: {
-//                                    HStack(spacing: 10) {
-//                                        Image(systemName: sortOrder == .oldestFirst ? "checkmark" : "")
-//                                            .frame(width: 16)
-//                                            .foregroundColor(.white)
-//                                        Text("Sort Oldest to Newest")
-//                                            .foregroundColor(.white)
-//                                    }
-//                                }
+
                                 
                                 
                                 Text("Filters")
@@ -550,13 +549,18 @@ struct DreamArchiveView: View {
                 }
             }
         }
-        .ignoresSafeArea(.keyboard, edges: .bottom)
 
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .onAppear {
             ts.activeTab = .archive
         }
         .preferredColorScheme(.dark)
+        .overlay(alignment: .bottom) {
+            TabbarView()
+                .ignoresSafeArea(.container, edges: .bottom)
+                .ignoresSafeArea(.keyboard, edges: .bottom)
+        }
+        .ignoresSafeArea(.keyboard, edges: .bottom)
     }
     
     
