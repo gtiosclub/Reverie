@@ -17,6 +17,14 @@ struct CombinedHeatmapEmotionView: View {
                     .ignoresSafeArea()
 
                 ScrollView {
+                    HStack(alignment: .center) {
+                        Text("Moods")
+                            .font(.custom("InstrumentSans-SemiBold", size: 18))
+                            .foregroundColor(.white)
+                            .padding(.top, -42)
+                            .dreamGlow()
+                    }
+                    
                     VStack(spacing: 5) {
                         HeatmapView()
                         renderEmotionCircles(from: dreams)
@@ -24,8 +32,6 @@ struct CombinedHeatmapEmotionView: View {
                     .padding()
                 }
             }
-            .navigationTitle("Mood")
-            .font(Font.system(size: 16, weight: .medium, design: .default))
             .navigationBarTitleDisplayMode(.inline)
         }
     }

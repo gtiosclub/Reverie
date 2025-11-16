@@ -18,14 +18,19 @@ struct HealthView: View {
                     .ignoresSafeArea()
 
                 ScrollView {
+                    HStack(alignment: .center) {
+                        Text("Health")
+                            .font(.custom("InstrumentSans-SemiBold", size: 18))
+                            .foregroundColor(.white)
+                            .padding(.top, -42)
+                            .dreamGlow()
+                    }
                     VStack {
                         HealthDreamChartView(dreamHealthData: $dreamHealthData, isHomeView: isHomeView)
                     }
                     .padding()
                 }
             }
-            .navigationTitle("Health")
-            .font(Font.system(size: 16, weight: .medium, design: .default))
             .navigationBarTitleDisplayMode(.inline)
         }
     }
