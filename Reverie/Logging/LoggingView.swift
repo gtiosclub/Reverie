@@ -294,6 +294,8 @@ struct LoggingView: View {
             .ignoresSafeArea(.keyboard, edges: .bottom)
 
             .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .navigationBarHidden(true)
+
         }
     }
 }
