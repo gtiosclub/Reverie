@@ -13,8 +13,8 @@ import FirebaseFirestore
 struct TagDescription: Codable, Identifiable {
     @DocumentID var id: String?
 
-    var description: String
     
+    var description: String
     var tag: String
     var userID: String
 }
@@ -25,168 +25,251 @@ struct TagInfoView: View {
     @State private var modelResponse: String = ""
     @State private var isLoading: Bool = true
     @State private var filteredDreams: [DreamModel] = []
+    @Environment(\.dismiss) private var dismiss
 
     var body: some View {
-        ZStack {
-            BackgroundView()
-            
-            ScrollView {
-                VStack {
-                    Text("Details")
-                        .font(.title3.bold())
-                        .foregroundStyle(.white)
-                        .dreamGlow()
-                        .padding(.bottom, 10)
-                    
-                    VStack {
-                        Circle()
-                            .fill(Color(red: 11/255, green: 11/255, blue: 22/255))
-                            .frame(width: 150, height: 150)
-                            .glassEffect(.regular.interactive())
-                            .overlay(
-                                Image(systemName: DreamModel.tagImages(tag: tagGiven))
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 80, height: 80)
-                                    .foregroundColor(DreamModel.tagColors(tag: tagGiven))
-                                    .shadow(color: DreamModel.tagColors(tag: tagGiven), radius: 25)
-                            )
-                        
-                        Circle()
-                            .frame(width: 6, height: 6)
-                            .foregroundColor(.white)
-                            .padding(.top, -11.6)
-                        Rectangle()
-                            .frame(width: 1.2, height: 50)
-                            .foregroundColor(.white)
-                            .padding(.top, -16)
-                            .padding(.bottom, -8)
-                    }
-                    
-                    VStack(spacing: 20) {
-                        HStack {
-                            Spacer()
-                            Text(tagGiven.rawValue.capitalized)
-                                .font(.largeTitle)
+        NavigationStack {
+            ZStack(alignment: .top) {
+
+                BackgroundView().ignoresSafeArea()
+
+                ScrollView {
+                    VStack(spacing: 30) {
+
+                        VStack {
+                            Circle()
+                                .fill(Color(red: 11/255, green: 11/255, blue: 22/255))
+                                .frame(width: 150, height: 150)
+                                .glassEffect(.regular.interactive())
+                                .overlay(
+                                    Image(systemName: DreamModel.tagImages(tag: tagGiven))
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: 80, height: 80)
+                                        .foregroundColor(DreamModel.tagColors(tag: tagGiven))
+                                        .shadow(color: DreamModel.tagColors(tag: tagGiven), radius: 25)
+                                )
+
+                            Circle()
+                                .frame(width: 6, height: 6)
+                                .foregroundColor(.white)
+                                .padding(.top, -11.6)
+
+                            Rectangle()
+                                .frame(width: 1.2, height: 50)
+                                .foregroundColor(.white)
+                                .padding(.top, -16)
+                                .padding(.bottom, -8)
+                        }
+                        .padding(.top, 110)
+
+                        VStack(spacing: 15) {
+                            HStack {
+                                Spacer()
+                                Text(tagGiven.rawValue.capitalized)
+                                    .font(.largeTitle)
+                                    .fontWeight(.bold)
+                                    .foregroundColor(.white)
+                                    .shadow(color: DreamModel.tagColors(tag: tagGiven), radius: 12)
+                                Spacer()
+                            }
+
+                            Divider()
+                                .padding(.horizontal, 20)
+                                .foregroundColor(.white)
+
+                            ScrollView {
+                                if isLoading {
+                                    ProgressView()
+                                        .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                                        .padding()
+                                } else {
+                                    Text(modelResponse)
+                                        .font(.body)
+                                        .foregroundColor(.white.opacity(0.8))
+                                        .multilineTextAlignment(.center)
+                                        .padding(.horizontal, 20)
+                                }
+                            }
+                            .frame(minHeight: 260, maxHeight: 300)
+                        }
+                        .padding(20)
+                        .darkGloss()
+
+                        HeatmapTagsView(selectedTag: tagGiven)
+
+                        VStack(alignment: .leading, spacing: 15) {
+                            Text("Found In")
+                                .font(.title3)
                                 .fontWeight(.bold)
                                 .foregroundColor(.white)
-                                .shadow(color: DreamModel.tagColors(tag: tagGiven), radius: 12)
-                            Spacer()
-                        }
-                        Divider()
-                            .padding(.horizontal, 20)
-                            .foregroundColor(.white)
-                            .bold()
-                        ScrollView{
-                            if isLoading {
-                                ProgressView()
-                                    .progressViewStyle(CircularProgressViewStyle(tint: .white))
-                                    .padding()
-                            } else {
-                                Text(modelResponse)
-                                    .font(.body)
-                                    .foregroundColor(.white.opacity(0.8))
-                                    .multilineTextAlignment(.center)
-                                    .padding(.horizontal, 20)
-                            }
-                        }
-                        .frame(minHeight: 260, maxHeight: 300)
-                        
-                    }
-                    .padding(20)
-                    .darkGloss()
-                    
-                    Spacer()
-                }
-                .padding(.top, -44)
-                
-                Spacer()
-                
-                HeatmapTagsView(selectedTag: tagGiven)
-                
-                Spacer()
-                
-                VStack(alignment: .leading, spacing: 15) {
-                    Text("Found In")
-                        .font(.title3)
-                        .fontWeight(.bold)
-                        .foregroundColor(.white)
-                        .padding(.horizontal, 25)
-                    
-                    Divider()
-                        .background(Color.white.opacity(0.3))
-                        .padding(.horizontal, 25)
-                    
-                    VStack(spacing: 0) {
-                        ForEach(filteredDreams, id: \.id) { dream in
-                            NavigationLink(destination: DreamEntryView(dream: dream, backToArchive: false)) {
-                                VStack(spacing: 15) {
-                                    HStack {
-                                        VStack(alignment: .leading, spacing: 5) {
-                                            HStack(spacing: 8) {
-                                                Text(dream.title)
-                                                    .font(.headline)
-                                                    .foregroundColor(.white)
-                                                
-                                                HStack(spacing: 4) {
-                                                    ForEach(dream.tags.prefix(3), id: \.self) { tag in
-                                                        Image(systemName: DreamModel.tagImages(tag: tag))
-                                                            .font(.caption)
-                                                            .foregroundColor(DreamModel.tagColors(tag: tag))
+                                .padding(.horizontal, 25)
+
+                            Divider()
+                                .background(Color.white.opacity(0.3))
+                                .padding(.horizontal, 25)
+
+                            VStack(spacing: 0) {
+                                ForEach(filteredDreams, id: \.id) { dream in
+                                    NavigationLink(destination: DreamEntryView(dream: dream, backToArchive: false)) {
+                                        VStack(spacing: 15) {
+                                            HStack {
+                                                VStack(alignment: .leading, spacing: 5) {
+                                                    HStack(spacing: 8) {
+                                                        Text(dream.title)
+                                                            .font(.headline)
+                                                            .foregroundColor(.white)
+
+                                                        HStack(spacing: 4) {
+                                                            ForEach(dream.tags.prefix(3), id: \.self) { tag in
+                                                                Image(systemName: DreamModel.tagImages(tag: tag))
+                                                                    .font(.caption)
+                                                                    .foregroundColor(DreamModel.tagColors(tag: tag))
+                                                            }
+                                                        }
                                                     }
+                                                    Text(formatDate(dream.date))
+                                                        .font(.subheadline)
+                                                        .foregroundColor(.gray)
                                                 }
+                                                Spacer()
+                                                Image(systemName: "chevron.right")
+                                                    .foregroundColor(.gray)
+                                                    .font(.system(size: 14, weight: .semibold))
                                             }
-                                            Text(formatDate(dream.date))
-                                                .font(.subheadline)
-                                                .foregroundColor(.gray)
+                                            .padding(.vertical, 8)
+                                            .padding(.horizontal, 25)
+
+                                            Divider()
+                                                .background(Color.white.opacity(0.2))
+                                                .padding(.leading, 25)
                                         }
-                                        Spacer()
-                                        Image(systemName: "chevron.right")
-                                            .foregroundColor(.gray)
-                                            .font(.system(size: 14, weight: .semibold))
                                     }
-                                    .padding(.vertical, 8)
-                                    .padding(.horizontal, 25)
-                                    
-                                    Divider()
-                                        .background(Color.white.opacity(0.2))
-                                        .padding(.leading, 25)
                                 }
                             }
                         }
+                        .padding(.bottom, 80)
+
                     }
                 }
-                .padding(.bottom, 50)
-                .padding(.top, 50)
+
+                LinearGradient(
+                    gradient: Gradient(colors: [
+                        Color.black.opacity(0.9),
+                        Color.black.opacity(0.6),
+                        Color.black.opacity(0.3),
+                        Color.black.opacity(0)
+                    ]),
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+                .frame(height: 90)
+                .ignoresSafeArea(edges: .top)
+                .blendMode(.overlay)
+
+                HStack {
+                    Button(action: { dismiss() }) {
+                        ZStack {
+                            Circle()
+                                .fill(
+                                    LinearGradient(
+                                        colors: [
+                                            Color(red: 5/255, green: 7/255, blue: 20/255),
+                                            Color(red: 17/255, green: 18/255, blue: 32/255)
+                                        ],
+                                        startPoint: .topLeading,
+                                        endPoint: .bottomTrailing
+                                    )
+                                )
+                                .frame(width: 55, height: 55)
+                                .overlay(
+                                    Circle()
+                                        .strokeBorder(
+                                            AngularGradient(
+                                                gradient: Gradient(colors: [
+                                                    Color.white.opacity(0.8),
+                                                    Color.white.opacity(0.1),
+                                                    Color.white.opacity(0.6),
+                                                    Color.white.opacity(0.1),
+                                                    Color.white.opacity(0.8)
+                                                ]),
+                                                center: .center
+                                            ),
+                                            lineWidth: 0.5
+                                        )
+                                        .blendMode(.screen)
+                                )
+
+                            Image(systemName: "chevron.left")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 20, height: 20)
+                                .foregroundColor(.white)
+                                .padding(.leading, -4)
+                                .bold(true)
+                        }
+                    }
+                    .buttonStyle(.plain)
+                    .padding(.leading, 8)
+
+                    Spacer()
+
+                    Text("Details")
+                        .font(.system(size: 18, weight: .semibold))
+                        .foregroundColor(.white)
+                        .shadow(color: Color(red: 37/255, green: 23/255, blue: 79/255).opacity(0.7), radius: 4)
+                        .shadow(color: Color(red: 37/255, green: 23/255, blue: 79/255).opacity(0.3), radius: 8)
+
+                    Spacer()
+
+                    Rectangle()
+                        .fill(Color.clear)
+                        .frame(width: 55, height: 55)
+                        .opacity(0)
+                }
+                .padding(.horizontal)
+                .padding(.top, 8)
+                .padding(.bottom, 4)
+                .background(
+                    LinearGradient(
+                        gradient: Gradient(stops: [
+                            .init(color: Color(hex: "#010023"), location: 0.0),
+                            .init(color: Color.clear, location: 1.0)
+                        ]),
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                )
             }
-            .task {
-                let dreams = FirebaseLoginService.shared.currUser?.dreams ?? []
-                let context = generateModelDreamContextByTag(dreams: dreams, category: tagGiven)
-                self.filteredDreams = getDreamsOfCategory(dreams: dreams, category: tagGiven)
-                                        .sorted { $0.date > $1.date }
-            
-                if(modelResponse.isEmpty){
-                    do {
-                        let response = try await fetchOrGenerateTagDescription(context: context, tagGiven: tagGiven)
-                        self.modelResponse = response
-                    } catch {
-                        modelResponse = "Error: Could not analyze your dream. Please check your connection."
-                        print("Error loading model response: \(error)")
-                    }
-                    
-                    isLoading = false
+            .navigationBarHidden(true)
+        }
+        .task {
+            let dreams = FirebaseLoginService.shared.currUser?.dreams ?? []
+            let context = generateModelDreamContextByTag(dreams: dreams, category: tagGiven)
+            self.filteredDreams = getDreamsOfCategory(dreams: dreams, category: tagGiven)
+                .sorted { $0.date > $1.date }
+
+            if modelResponse.isEmpty {
+                do {
+                    let response = try await fetchOrGenerateTagDescription(context: context, tagGiven: tagGiven)
+                    self.modelResponse = response
+                } catch {
+                    modelResponse = "Error: Could not analyze your dream. Please check your connection."
+                    print("Error loading model response: \(error)")
                 }
+
+                isLoading = false
             }
         }
     }
-    
+
     private func formatDate(_ date: Date) -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = "MMMM d"
         return formatter.string(from: date)
     }
-    
 }
+
 
 func generateModelDreamContextByTag(dreams: [DreamModel], category: DreamModel.Tags) -> String{
     let filteredDreams : [DreamModel] = getDreamsOfCategory(dreams: dreams, category: category)
