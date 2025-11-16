@@ -1,4 +1,9 @@
-
+//
+//  AnalysisView.swift
+//  Reverie
+//
+//  Created by Isha Jain on 11/6/25.
+//
 
 import SwiftUI
 
@@ -20,7 +25,6 @@ struct AnalysisView: View {
                         title: "Activity",
                         previewContent: {
                             VStack(alignment: .leading, spacing: 8) {
-                                //                                    FrequencyView(showSummaryText: true)
                                 DreamFrequencyChartView(isHomeView: true)
                             }
                         },
@@ -77,9 +81,9 @@ struct AnalysisView: View {
                     //                            //sleep view stuff here
                     //                        )
                 }
-                .padding(.top, 75)
+                .padding(.top, 70)
 //                .padding(.horizontal)
-                .padding(.bottom, 50)
+                .padding(.horizontal, 16)
             }
             LinearGradient(
                 gradient: Gradient(colors: [
@@ -96,7 +100,7 @@ struct AnalysisView: View {
            .blendMode(.overlay)
                                
             HStack {
-                Text("Analysis")
+                Text("Insights")
                     .font(.custom("InstrumentSans-Bold", size: 32))
                     .foregroundColor(.white)
                 Spacer()
@@ -143,9 +147,9 @@ struct AnalysisView: View {
                     //                        .padding(.top, 8)
                 }
             }
-           .padding(.leading, 32)
-           //                .padding(.top, 12)
-           .padding(.bottom, 30)
+            .padding(.leading, 17)
+                       .padding(.top, 8)
+                       .padding(.bottom, 40)
            .background(
                LinearGradient(
                    gradient: Gradient(stops: [
@@ -203,17 +207,20 @@ struct AnalysisSection<Preview: View, Destination: View, Trailing: View>: View {
         VStack(alignment: .leading, spacing: 20) {
             HStack {
                 Text(title)
-                    .font(.title3.bold())
+                    .font(.system(size:18))
+                    .fontWeight(.semibold)
                     .foregroundStyle(.white)
                     .dreamGlow()
                     
                 Spacer()
                 trailingView()
             }
-            .padding(.horizontal)
+            //.padding(.horizontal)
 
+            
             NavigationLink(destination: destination()) {
                 previewContent()
+                    .padding(.leading, -17)
             }
         }
     }

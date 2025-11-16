@@ -100,14 +100,15 @@ struct TagInfoView: View {
 
                         VStack(alignment: .leading, spacing: 15) {
                             Text("Found In")
-                                .font(.title3)
-                                .fontWeight(.bold)
+                                .font(.system(size: 18))
+                                .fontWeight(.semibold)
                                 .foregroundColor(.white)
-                                .padding(.horizontal, 25)
+                                .padding(.horizontal, 20)
+                                .dreamGlow()
 
                             Divider()
                                 .background(Color.white.opacity(0.3))
-                                .padding(.horizontal, 25)
+                                .padding(.horizontal, 20)
 
                             VStack(spacing: 0) {
                                 ForEach(filteredDreams, id: \.id) { dream in
@@ -138,7 +139,7 @@ struct TagInfoView: View {
                                                     .font(.system(size: 14, weight: .semibold))
                                             }
                                             .padding(.vertical, 8)
-                                            .padding(.horizontal, 25)
+                                            .padding(.horizontal, 20)
 
                                             Divider()
                                                 .background(Color.white.opacity(0.2))
@@ -219,6 +220,7 @@ struct TagInfoView: View {
                         .foregroundColor(.white)
                         .shadow(color: Color(red: 37/255, green: 23/255, blue: 79/255).opacity(0.7), radius: 4)
                         .shadow(color: Color(red: 37/255, green: 23/255, blue: 79/255).opacity(0.3), radius: 8)
+                        .dreamGlow()
 
                     Spacer()
 
