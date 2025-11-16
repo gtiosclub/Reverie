@@ -9,7 +9,6 @@
 import SwiftUI
 import Firebase
 
-// MARK: - App Delegate (Firebase)
 class AppDelegate: NSObject, UIApplicationDelegate {
     func application(
         _ application: UIApplication,
@@ -20,13 +19,11 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     }
 }
 
-// MARK: - Main App
 @main
 struct ReverieApp: App {
     @StateObject private var tabState = TabState()
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
 
-    // Shared Siri → App Router
     @StateObject private var router = DreamRouter.shared
 
     @Environment(\.scenePhase) private var scenePhase
@@ -35,14 +32,12 @@ struct ReverieApp: App {
         WindowGroup {
             NavigationStack {
                 AuthRoutingView()
-                    // Navigation triggered by DreamRouter
                     .navigationDestination(isPresented: $router.navigateToLog) {
                         LoggingView(initialText: router.injectedDreamText)
                     }
             }
             .environmentObject(tabState)
             .onChange(of: scenePhase) { phase in
-                // When app becomes active after Siri interaction
                 if phase == .active {
                     handlePendingDreamIfNeeded()
                 }
@@ -50,7 +45,6 @@ struct ReverieApp: App {
         }
     }
 
-    // MARK: - Handle Dream from Siri
     private func handlePendingDreamIfNeeded() {
         print("🔎 Checking for pending dream…")
 
