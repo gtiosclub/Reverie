@@ -52,13 +52,19 @@ struct ReverieApp: App {
 
     // MARK: - Handle Dream from Siri
     private func handlePendingDreamIfNeeded() {
-        guard let text = router.pendingDreamText, !text.isEmpty else { return }
+        print("🔎 Checking for pending dream…")
 
-        // Tell router to open the LoggingView with Siri text
+        guard let text = router.pendingDreamText, !text.isEmpty else {
+            print("⛔️ No pending dream found.")
+            return
+        }
+
+        print("✨ Pending dream detected: \(text)")
+        print("📬 Telling DreamRouter to navigate to logging view.")
         router.navigateToLoggingView(with: text)
 
-        // Consume the pending dream so it doesn't repeat
         router.pendingDreamText = nil
+        print("🧹 Cleared pendingDreamText")
     }
 }
 
