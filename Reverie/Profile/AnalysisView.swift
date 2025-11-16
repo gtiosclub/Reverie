@@ -359,15 +359,15 @@ struct AnalysisView: View {
                     Color.black.opacity(0.9),
                     Color.black.opacity(0.6),
                     Color.black.opacity(0.3),
-                    Color.black.opacity(0)
-                ]),
-                startPoint: .top,
-                endPoint: .bottom
-            )
-            .frame(height: 90)
-            .ignoresSafeArea(edges: .top)
-            .blendMode(.overlay)
-            
+                   Color.black.opacity(0)
+               ]),
+               startPoint: .top,
+               endPoint: .bottom
+           )
+           .frame(height: 90)
+           .ignoresSafeArea(edges: .top)
+           .blendMode(.overlay)
+                               
             HStack {
                 Text("Analysis")
                     .font(.custom("InstrumentSans-Bold", size: 32))
@@ -416,19 +416,19 @@ struct AnalysisView: View {
                     //                        .padding(.top, 8)
                 }
             }
-            .padding(.leading, 32)
-            //                .padding(.top, 12)
-            .padding(.bottom, 30)
-            .background(
-                LinearGradient(
-                    gradient: Gradient(stops: [
-                        .init(color: DreamModel.Color(hex: "#010023"), location: 0.0),
-                        .init(color: Color.clear, location: 1.0)
-                    ]),
-                    startPoint: .top,
-                    endPoint: .bottom
-                )
-            )
+           .padding(.leading, 32)
+           //                .padding(.top, 12)
+           .padding(.bottom, 30)
+           .background(
+               LinearGradient(
+                   gradient: Gradient(stops: [
+                       .init(color: DreamModel.Color(hex: "#010023"), location: 0.0),
+                       .init(color: Color.clear, location: 1.0)
+                   ]),
+                   startPoint: .top,
+                   endPoint: .bottom
+               )
+           )
             .task {
                 do {
                     try await HealthKitChartService.shared.requestAuthorization()
