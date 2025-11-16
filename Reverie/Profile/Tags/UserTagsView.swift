@@ -37,53 +37,136 @@ let thisWeekTags: [DreamModel.Tags] = findMostCommonTags(dreams: thisWeekDreams)
 let allTags: [DreamModel.Tags] = findMostCommonTags(dreams: allDreams)
 
 struct UserTagsView: View {
+    @Environment(\.dismiss) private var dismiss
+
     var body: some View {
-        ZStack {
-            BackgroundView()
+        NavigationStack {
+            ZStack (alignment: .top){
+                BackgroundView().ignoresSafeArea()
             ScrollView {
-                HStack(alignment: .center) {
-                    Text("Themes")
-                        .font(.custom("InstrumentSans-SemiBold", size: 18))
-                        .foregroundColor(.white)
-                        .padding(.top, -42)
-                        .dreamGlow()
-                }
-                
-                VStack(alignment: .leading, spacing: 20) {
-                    Text("Recent")
-                        .foregroundStyle(.white)
-                        .font(Font.system(size: 20, weight: .medium, design: .default))
-                        .padding(.horizontal)
-                        .padding(.top, 8)
-                        .dreamGlow()
+        
+                VStack(alignment: .leading, spacing: 22) {
+                   Text("This Week")
+                       .foregroundStyle(.white)
+                       .font(.system(size:18)).fontWeight(.semibold)
+                       .padding(.horizontal)
+                       .dreamGlow()
+                   
+                   TagViewBlock(title: "This Week", tags: thisWeekTags, isExpandable: true)
+                   
+                   Text("Most Common")
+                       .foregroundStyle(.white)
+                       .font(.system(size:18)).fontWeight(.semibold)
+                       .padding(.horizontal)
+                       .dreamGlow()
+                   
+                   TagViewBlock(title: "Most Common", tags: Array(allTags.prefix(5)), isExpandable: false)
+                   
+                   Text("All")
+                       .foregroundStyle(.white)
+                       .font(.system(size:18)).fontWeight(.semibold)
+                       .padding(.horizontal)
+                       .dreamGlow()
+                   
+                   TagViewBlock(title: "Archive", tags: allTags, isExpandable: false)
+               }
+               .padding(.top, 90)
+               .padding(.bottom, 80)
+           }
+                LinearGradient(
+                          gradient: Gradient(colors: [
+                              Color.black.opacity(0.9),
+                              Color.black.opacity(0.6),
+                              Color.black.opacity(0.3),
+                              Color.black.opacity(0)
+                          ]),
+                          startPoint: .top,
+                          endPoint: .bottom
+                      )
+                      .frame(height: 90)
+                      .ignoresSafeArea(edges: .top)
+                      .blendMode(.overlay)
 
-                    TagViewBlock(title: "This Week", tags: thisWeekTags, isExpandable: true)
-                        .padding(.leading, 32)
-                    
-                    Text("Most Common")
-                        .foregroundStyle(.white)
-                        .font(Font.system(size: 20, weight: .medium, design: .default))
-                        .padding(.horizontal)
-                        .dreamGlow()
-                    
-                    TagViewBlock(title: "Most Common", tags: Array(allTags.prefix(5)), isExpandable: false)
-                        .padding(.leading, 32)
+                      // Nav bar content
+                      HStack {
+                          Button(action: { dismiss() }) {
+                              ZStack {
+                                  Circle()
+                                      .fill(
+                                          LinearGradient(
+                                              colors: [
+                                                  Color(red: 5/255, green: 7/255, blue: 20/255),
+                                                  Color(red: 17/255, green: 18/255, blue: 32/255)
+                                              ],
+                                              startPoint: .topLeading,
+                                              endPoint: .bottomTrailing
+                                          )
+                                      )
+                                      .frame(width: 55, height: 55)
+                                      .overlay(
+                                          Circle()
+                                              .strokeBorder(
+                                                  AngularGradient(
+                                                      gradient: Gradient(colors: [
+                                                          Color.white.opacity(0.8),
+                                                          Color.white.opacity(0.1),
+                                                          Color.white.opacity(0.6),
+                                                          Color.white.opacity(0.1),
+                                                          Color.white.opacity(0.8)
+                                                      ]),
+                                                      center: .center
+                                                  ),
+                                                  lineWidth: 0.5
+                                              )
+                                              .blendMode(.screen)
+                                      )
 
-                    Text("All")
-                        .foregroundStyle(.white)
-                        .font(Font.system(size: 20, weight: .medium, design: .default))
-                        .padding(.horizontal)
-                        .dreamGlow()
+                                  Image(systemName: "chevron.left")
+                                      .resizable()
+                                      .scaledToFit()
+                                      .frame(width: 20, height: 20)
+                                      .foregroundColor(.white)
+                                      .padding(.leading, -4)
+                                      .bold(true)
+                              }
+                          }
+                          .buttonStyle(.plain)
+                          .padding(.leading, 8)
 
-                    TagViewBlock(title: "Archive", tags: allTags, isExpandable: false)
-                        .padding(.leading, 32)
-                }
-                .padding(.bottom, 80)
-            }
-        }
-    }
-}
+                          Spacer()
 
+                          Text("Themes")
+                              .font(.system(size: 18, weight: .semibold))
+                              .foregroundColor(.white)
+                              .shadow(color: Color(red: 37/255, green: 23/255, blue: 79/255).opacity(0.7), radius: 4)
+                              .shadow(color: Color(red: 37/255, green: 23/255, blue: 79/255).opacity(0.3), radius: 8)
+                              .dreamGlow()
+
+                          Spacer()
+
+                          Rectangle()
+                              .fill(Color.clear)
+                              .frame(width: 55, height: 55)
+                              .opacity(0) // keeps symmetry
+                      }
+                      .padding(.horizontal)
+                      .padding(.top, 8)
+                      .padding(.bottom, 4)
+                      .background(
+                          LinearGradient(
+                              gradient: Gradient(stops: [
+                                  .init(color: Color(hex: "#010023"), location: 0.0),
+                                  .init(color: Color.clear, location: 1.0)
+                              ]),
+                              startPoint: .top,
+                              endPoint: .bottom
+                          )
+                      )
+                  }
+                  .navigationBarHidden(true)
+              }
+          }
+      }
 struct TagViewBlock: View {
     let title: String
     let tags: [DreamModel.Tags]
