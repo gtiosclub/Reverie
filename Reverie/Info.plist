@@ -26,6 +26,8 @@ AppIntentsSupported
 		<string>InstrumentSans-Regular.ttf</string>
 		<string>InstrumentSans-SemiBold.ttf</string>
 		<string>InstrumentSans-Bold.ttf</string>
+		<string></string>
+		<string></string>
 	</array>
 </dict>
 </plist>
