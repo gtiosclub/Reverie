@@ -22,7 +22,7 @@ struct AnalysisView: View {
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading, spacing: 20) {
                     AnalysisSection(
-                        title: "Activity",
+                        title: "Insights",
                         previewContent: {
                             VStack(alignment: .leading, spacing: 8) {
                                 DreamFrequencyChartView(isHomeView: true)
