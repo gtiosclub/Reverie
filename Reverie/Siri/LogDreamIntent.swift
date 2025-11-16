@@ -14,11 +14,11 @@ struct LogDreamIntent: AppIntent {
 
     static var opensApplication = true
 
-    @Parameter(title: "Dream Description")
+    @Parameter(title: "Dream Description", default: "")
     var dream: String
 
     static var parameterSummary: some ParameterSummary {
-        Summary("Log my dream: \(\.$dream)")
+        Summary("Log my dream \(\.$dream)")
     }
 
     func perform() async throws -> some IntentResult {
