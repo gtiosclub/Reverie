@@ -67,14 +67,14 @@ struct DreamShowView: View {
                     if showInfo {
                         
                         HStack(alignment: .top, spacing: 0) {
-                            Spacer().frame(width: 10)
+                            Spacer().frame(width: 18)
                             Text("Using your description of your dream, we created a potential ending to the story.")
-                                .font(.custom("InstrumentSans-SemiBold", size: 18))
+                                .font(.custom("InstrumentSans-SemiBold", size: 12))
                                 
                                 .foregroundColor(.white.opacity(0.7))
                                 .multilineTextAlignment(.leading)
                                 .transition(.opacity.combined(with: .move(edge: .top)))
-                            Spacer().frame(width: 20)
+                            Spacer().frame(width: 16)
                         }
                         .padding(.bottom, 17)
                         .padding(.top, -10)
