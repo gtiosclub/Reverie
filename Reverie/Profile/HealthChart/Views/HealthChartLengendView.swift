@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct HealthChartLegendView: View {
-    @Binding var selectedMetric: HealthMetric
+    var selectedMetricExpanded: HealthMetricExpanded
 
     var body: some View {
         HStack(spacing: 20) {
@@ -26,7 +26,7 @@ struct HealthChartLegendView: View {
                 Circle()
                     .fill(.purple)
                     .frame(width: 10, height: 10)
-                Text(selectedMetric.rawValue)
+                Text(selectedMetricExpanded.rawValue)
                     .font(.caption)
                     .foregroundColor(.white)
             }
