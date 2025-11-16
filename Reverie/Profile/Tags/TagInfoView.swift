@@ -219,6 +219,7 @@ struct TagInfoView: View {
                         .foregroundColor(.white)
                         .shadow(color: Color(red: 37/255, green: 23/255, blue: 79/255).opacity(0.7), radius: 4)
                         .shadow(color: Color(red: 37/255, green: 23/255, blue: 79/255).opacity(0.3), radius: 8)
+                        .dreamGlow()
 
                     Spacer()
 
