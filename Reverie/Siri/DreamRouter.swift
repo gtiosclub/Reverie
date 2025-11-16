@@ -19,7 +19,10 @@ class DreamRouter: ObservableObject {
     @Published var injectedDreamText: String = ""
     
     func navigateToLoggingView(with text: String) {
-        injectedDreamText = text
-        navigateToLog = true
+        print("🚀 DreamRouter.navigateToLoggingView called")
+            print("➡️ Injecting text: \(text)")
+            injectedDreamText = text
+            navigateToLog = true
+            print("📍 navigateToLog set to TRUE")
     }
 }
