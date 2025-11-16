@@ -63,7 +63,7 @@ struct AnalysisView: View {
                     )
                     
                     AnalysisSection (
-                        title: "Sleep",
+                        title: "Health",
                         previewContent: {HealthDreamChartView(dreamHealthData: $dreamHealthData, isHomeView: true)},
                         destination: {HealthView(dreamHealthData: $dreamHealthData, isHomeView: false)},
                         trailingView: {EmptyView()}
