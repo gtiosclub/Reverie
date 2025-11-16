@@ -150,7 +150,7 @@ struct HealthChartView: View {
             DreamRelativeFrequencyChartModel(
                 id: data.id,
                 date: data.date,
-                count: Int(Double(data.count) / Double(totalCount) * 100)
+                count: Int(Double(data.count) / (Double(totalCount) + 0.001) * 100)
             )
         }
     }
