@@ -191,6 +191,60 @@ final class HealthKitSleepViewModel: ObservableObject {
             }
         }
     }
+    
+    func loadDataForDate(_ date: Date) {
+        let cal = Calendar.current
+        // Get the previous night's sleep window (6 PM of date to 10 AM next day)
+        guard
+            let start = cal.date(bySettingHour: 18, minute: 0, second: 0, of: date),
+            let end = cal.date(bySettingHour: 10, minute: 0, second: 0,
+                              of: date.addingTimeInterval(86400))
+        else { return }
+        
+        // Fetch sleep segments for this date
+        manager.fetchSleepSegments(start: start, end: end, onlyAppleHealthSource: true) { segs in
+            self.previousNightSegments = segs
+            
+            // Calculate breakdown
+            self.calculateBreakdown(from: segs)
+            
+            // Load intranight metrics if we have sleep data
+            if !segs.isEmpty {
+                self.loadIntranightMetrics(sleepSegments: segs)
+            }
+        }
+    }
+
+    private func calculateBreakdown(from segs: [HealthKitManager.SleepSegment]) {
+        guard !segs.isEmpty else { return }
+        let modern = ProcessInfo.processInfo.operatingSystemVersion.majorVersion >= 16
+        
+        var rem = 0.0, deep = 0.0, core = 0.0
+        var asleep = 0.0, awake = 0.0
+        var awakens = 0
+        
+        for s in segs {
+            switch s.stage {
+            case "REM":  rem += s.hours; asleep += s.hours
+            case "Deep": deep += s.hours; asleep += s.hours
+            case "Core": core += s.hours; asleep += s.hours
+            case "Asleep":
+                asleep += s.hours
+                if !modern { core += s.hours }
+            case "Awake":
+                awake += s.hours
+                awakens += 1
+            default: break
+            }
+        }
+        
+        self.remHours = String(format: "%.1f", rem)
+        self.deepHours = String(format: "%.1f", deep)
+        self.coreHours = String(format: "%.1f", core)
+        self.totalSleepHours = String(format: "%.1f", rem + deep + core)
+        self.awakenings = "\(awakens)"
+        self.sleepDuration = String(format: "%.1f", asleep)
+    }
 
     private func loadPreviousNightSegments() {
         let cal = Calendar.current

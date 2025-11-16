@@ -72,6 +72,8 @@ private struct SleepGraphsSection: View {
 
     @State private var daysBack: Int = 14
     @State private var selectedMetrics: Set<HealthKitSleepViewModel.MetricKey> = [] // Allow multiple
+    @State private var selectedDate: Date = Date()
+    @State private var showDatePicker = false
 
 
     private let compareMetrics: [HealthKitSleepViewModel.MetricKey] = [
@@ -99,7 +101,7 @@ private struct SleepGraphsSection: View {
     private func colorForMetric(_ key: HealthKitSleepViewModel.MetricKey) -> Color {
          switch key {
          case .intranightHR:     return Color(red: 1.0, green: 0.27, blue: 0.33)  // Red
-         case .intranightRespRate: return Color(red: 0.5, green: 1.0, blue: 0.6)  // Mint green
+         case .intranightRespRate: return Color(.indigo)  // Mint green
          case .heartRate:        return Color(red: 1.0, green: 0.4, blue: 0.5)    // Pink
          case .restingHeartRate: return Color(red: 0.8, green: 0.4, blue: 1.0)    // Purple
          case .stepCount:        return Color(red: 0.3, green: 0.9, blue: 0.9)    // Cyan
@@ -125,20 +127,26 @@ private struct SleepGraphsSection: View {
                 .font(.subheadline)
 
             // Date pill
-            HStack(spacing: 8) {
-                Image(systemName: "calendar")
-                    .foregroundColor(.white)
-                Text(previousNightString)
-                    .foregroundColor(.white)
-                    .font(.subheadline.weight(.medium))
-                Spacer()
+            Button(action: {
+                // Show date picker - we'll add this next
+                showDatePicker = true
+            }) {
+                HStack(spacing: 8) {
+                    Image(systemName: "calendar")
+                        .foregroundColor(.white)
+                    Text(previousNightString)
+                        .foregroundColor(.white)
+                        .font(.subheadline.weight(.medium))
+                    Spacer()
+                }
+                .padding(.horizontal, 14)
+                .padding(.vertical, 8)
+                .background(
+                    RoundedRectangle(cornerRadius: 20)
+                        .fill(Color.white.opacity(0.06))
+                )
             }
-            .padding(.horizontal, 14)
-            .padding(.vertical, 8)
-            .background(
-                RoundedRectangle(cornerRadius: 20)
-                    .fill(Color.white.opacity(0.06))
-            )
+            .buttonStyle(.plain)
 
             // --- BIG GRAPH CARD (explicit height so it can't collapse) ---
             ZStack {
@@ -223,6 +231,54 @@ private struct SleepGraphsSection: View {
             RoundedRectangle(cornerRadius: 28)
                 .fill(Color.white.opacity(0.04))
         )
+        
+        .sheet(isPresented: $showDatePicker) {
+            DatePickerSheet(selectedDate: $selectedDate) {
+                // When date changes, fetch new data
+                vm.loadDataForDate(selectedDate)
+            }
+        }
+    }
+    
+    private struct DatePickerSheet: View {
+        @Environment(\.dismiss) var dismiss
+        @Binding var selectedDate: Date
+        let onDateChange: () -> Void
+        
+        var body: some View {
+            NavigationView {
+                VStack(spacing: 20) {
+                    Text("Select Night")
+                        .font(.headline)
+                        .padding(.top)
+                    
+                    DatePicker(
+                        "Date",
+                        selection: $selectedDate,
+                        in: ...Date(), // Can't select future dates
+                        displayedComponents: .date
+                    )
+                    .datePickerStyle(.graphical)
+                    .padding()
+                    
+                    Spacer()
+                }
+                .toolbar {
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button("Done") {
+                            onDateChange()
+                            dismiss()
+                        }
+                    }
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button("Cancel") {
+                            dismiss()
+                        }
+                    }
+                }
+            }
+            .presentationDetents([.medium])
+        }
     }
 
     // MARK: helpers
@@ -232,7 +288,7 @@ private struct SleepGraphsSection: View {
         let formatter = DateFormatter()
         formatter.dateFormat = "EEEE, MMMM d"
         let yesterday = cal.date(byAdding: .day, value: -1, to: Date()) ?? Date()
-        return formatter.string(from: yesterday)
+        return formatter.string(from: selectedDate)
     }
 
     private var remSummaryText: String {
@@ -244,7 +300,7 @@ private struct SleepGraphsSection: View {
         if h == 0 && minutes == 0 {
             return "No REM sleep recorded last night."
         }
-        return "You spent \(h) hours and \(minutes) minutes in REM sleep last night."
+        return "You spent \(h) hours and \(minutes) minutes in REM sleep."
     }
 
 //    private func metricTitle(_ key: HealthKitSleepViewModel.MetricKey) -> String {
@@ -281,7 +337,7 @@ private struct SleepGraphsSection: View {
     
     private func metricTitle(_ key: HealthKitSleepViewModel.MetricKey) -> String {
         switch key {
-        case .intranightHR:     return "HR During Sleep"
+        case .intranightHR:     return "Heart Rate"
         case .intranightHRV:    return "HRV During Sleep"
         case .intranightRespRate: return "Resp Rate"
         case .intranightO2:     return "O2 Saturation"
@@ -436,73 +492,6 @@ private struct SleepOverlayChart: View {
         return (minVal - padding)...(maxVal + padding)
     }
     
-//    var body: some View {
-//        ZStack {
-//            // FOREGROUND: Metric lines with full Y-axis
-//            ForEach(Array(overlayData.enumerated()), id: \.offset) { index, item in
-//                Chart(item.points) { point in
-//                    LineMark(
-//                        x: .value("Time", point.date),
-//                        y: .value("Value", point.value)
-//                    )
-//                    .interpolationMethod(.catmullRom)
-//                    .lineStyle(StrokeStyle(lineWidth: 2.5, lineCap: .round, lineJoin: .round))
-//                    .foregroundStyle(item.color)
-//                    .symbol {
-//                        Circle()
-//                            .fill(item.color)
-//                            .frame(width: 5, height: 5)
-//                    }
-//                }
-//                .chartXScale(domain: xDomain ?? defaultDomain)
-//                .chartYScale(domain: yDomain(for: item.points))
-//                .chartXAxis {
-//                    AxisMarks(values: .stride(by: .hour)) { value in
-//                        AxisGridLine()
-//                        AxisValueLabel {
-//                            if let date = value.as(Date.self) {
-//                                Text(Self.hourFormatter.string(from: date))
-//                                    .font(.caption2)
-//                            }
-//                        }
-//                    }
-//                }
-//                .chartYAxis {
-//                    AxisMarks(position: .leading) { _ in
-//                        AxisValueLabel()
-//                            .font(.caption2)
-//                    }
-//                }
-//                .chartPlotStyle { plot in
-//                    plot.background(.clear)
-//                }
-//            }
-//            
-//            // BACKGROUND: Sleep stages overlay at bottom of chart
-//            if !segments.isEmpty {
-//                VStack {
-//                    Spacer()
-//                    GeometryReader { geo in
-//                        HStack(spacing: 0) {
-//                            ForEach(Array(segments.enumerated()), id: \.offset) { _, seg in
-//                                let totalDuration = (xDomain?.upperBound ?? seg.end).timeIntervalSince(xDomain?.lowerBound ?? seg.start)
-//                                let segDuration = seg.end.timeIntervalSince(seg.start)
-//                                let widthRatio = CGFloat(segDuration / totalDuration)
-//                                
-//                                Rectangle()
-//                                    .fill(sleepStageColor(seg.stage).opacity(0.7))
-//                                    .frame(width: geo.size.width * widthRatio, height: 30)
-//                            }
-//                        }
-//                        .cornerRadius(6)
-//                    }
-//                    .frame(height: 30)
-//                    .padding(.bottom, 25)       
-//                }
-//                .allowsHitTesting(false)
-//            }
-//        }
-//    }
 
     @ViewBuilder
         private var sleepBarChart: some View {
@@ -511,7 +500,8 @@ private struct SleepOverlayChart: View {
                     BarMark(
                         xStart: .value("Start", seg.start),
                         xEnd: .value("End", seg.end),
-                        y: .value("Stage", 0)
+                        y: .value("Stage", 0),
+                        height: .fixed(50)
                     )
                     .cornerRadius(4)
                     .foregroundStyle(sleepStageColor(seg.stage).opacity(0.8))
@@ -539,14 +529,14 @@ private struct SleepOverlayChart: View {
 //                }
                 .chartYAxisLabel(position: .bottom, alignment: .center) {
                     // Placeholder for proper bar placement
-                    Rectangle().frame(height: 30).hidden()
+                    Rectangle().frame(height: 80).hidden()
                 }
                 .chartLegend(.hidden)
                 .chartPlotStyle { plot in
                     plot.background(.clear)
                 }
                 .frame(height: 30)
-                .padding(.bottom, 25)
+//                .padding(.bottom, 60)
             }
         }
 
@@ -571,6 +561,7 @@ private struct SleepOverlayChart: View {
                     .chartXScale(domain: xDomain ?? defaultDomain)
                     .chartXAxis(.hidden) // Hidden to let the sleepBarChart render the main axis
                     .chartYAxis(.hidden) // Hidden, typically you'd show this on the right side if needed
+                    .chartYScale(domain: yDomain(for: item.points))
                     .chartPlotStyle { plot in
                         plot.background(.clear)
                     }
@@ -580,19 +571,111 @@ private struct SleepOverlayChart: View {
         
         // --- Composed Body View ---
 
-        var body: some View {
-            ZStack(alignment: .bottom) { // Use ZStack with alignment for clearer stacking
-                // BACKGROUND: Single-row sleep bar (now a simple view)
-                sleepBarChart
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom) // Ensure it hugs the bottom
+//        var body: some View {
+//            ZStack(alignment: .bottom) { // Use ZStack with alignment for clearer stacking
+//                // BACKGROUND: Single-row sleep bar
+//                sleepBarChart
+//                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom) // Ensure it hugs the bottom
+//
+//                // FOREGROUND: Metric lines
+//                metricLineCharts
+////                    .padding(.bottom, 55)
+//                    .allowsHitTesting(false)
+//            }
+//        }
+    
+//    var body: some View {
+//        VStack(spacing: 0) {
+//            // FOREGROUND: Metric lines (takes up most of the space)
+//            ZStack {
+//                metricLineCharts
+//            }
+//            .frame(maxWidth: .infinity, maxHeight: .infinity)
+//            
+//            // BACKGROUND: Sleep bar at the bottom (below the metric lines)
+//            sleepBarChart
+//                .frame(height: 50) // Fixed height for sleep bar
+//        }
+//    }
+    
+    var body: some View {
+        VStack(spacing: 0) {
+            // FOREGROUND: Metric lines (no X-axis)
+            ZStack {
+                if !overlayData.isEmpty {
+                    ForEach(Array(overlayData.enumerated()), id: \.offset) { index, item in
+                        Chart(item.points) { point in
+                            LineMark(
+                                x: .value("Time", point.date),
+                                y: .value("Value", point.value)
+                            )
+                            .interpolationMethod(.catmullRom)
+                            .lineStyle(StrokeStyle(lineWidth: 2.5, lineCap: .round, lineJoin: .round))
+                            .foregroundStyle(item.color)
+                            .symbol {
+                                Circle()
+                                    .fill(item.color)
+                                    .frame(width: 5, height: 5)
+                            }
+                        }
+                        .chartXScale(domain: xDomain ?? defaultDomain)
+                        .chartXAxis(.hidden) // Completely hidden
+                        .chartYAxis {
+                            AxisMarks(position: index == 0 ? .leading : .trailing) { _ in
+                                AxisValueLabel()
+                                    .font(.caption2)
+                            }
+                        }
+                        .chartYScale(domain: yDomain(for: item.points))
+                        .chartPlotStyle { plot in
+                            plot.background(.clear)
+                        }
+                        .padding(.leading, index == 0 ? 0 : 45)
+                        .padding(.trailing, index == 0 ? 45 : 0)
+                    }
+                }
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.bottom, 4) // Small gap between charts
+            
+            // BACKGROUND: Sleep bar with X-axis (this is the ONLY X-axis)
+            if !segments.isEmpty {
+                Chart(segments, id: \.start) { seg in
+                    BarMark(
+                        xStart: .value("Start", seg.start),
+                        xEnd: .value("End", seg.end),
+                        y: .value("Stage", 0),
+                        height: .fixed(30)
+                    )
+                    .cornerRadius(4)
+                    .foregroundStyle(sleepStageColor(seg.stage).opacity(0.8))
+                }
+                .chartXScale(domain: xDomain ?? defaultDomain)
+                .chartXAxis {
+                    AxisMarks(values: .stride(by: .hour)) { value in
+                        AxisGridLine()
+                        AxisValueLabel {
+                            if let date = value.as(Date.self) {
+                                Text(Self.hourFormatter.string(from: date))
+                                    .font(.caption2)
+                            }
+                        }
+                    }
+                }
+                .chartYAxis(.hidden) // Hide Y-axis for sleep bar
+                .chartLegend(.hidden)
+                .chartPlotStyle { plot in
+                    plot.background(.clear)
+                }
 
-                // FOREGROUND: Metric lines (now a simple view)
-                metricLineCharts
-                    .padding(.bottom, 55) // Push up the metric lines to clear the sleep bar and its padding
+                .frame(height: 60) // Includes space for X-axis labels
             }
         }
+    }
 
-    // Fallback domain if we somehow have no data
+
+    
+
     private var defaultDomain: ClosedRange<Date> {
         let now = Date()
         let later = Calendar.current.date(byAdding: .hour, value: 8, to: now) ?? now
@@ -601,7 +684,9 @@ private struct SleepOverlayChart: View {
 
     private static let hourFormatter: DateFormatter = {
         let df = DateFormatter()
-        df.dateFormat = "HH:mm"
+        df.dateFormat = "h a"
         return df
     }()
 }
+
+
