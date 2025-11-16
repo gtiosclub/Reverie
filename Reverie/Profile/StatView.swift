@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+
 struct StatView: View {
     
     let stat: Int

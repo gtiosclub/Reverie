@@ -450,6 +450,7 @@ struct ConstellationView: View {
     let dreams: [DreamModel]
     let similarityMatrix: [[Double]]
     let threshold: Double
+    @Environment(\.dismiss) private var dismiss
     @State private var selectedDream: DreamModel? = nil
 
     var body: some View {
@@ -457,55 +458,147 @@ struct ConstellationView: View {
         let effectiveThreshold: Double = threshold.isNaN
             ? DreamNetworkBuilder.determineDynamicThreshold(matrix: similarityMatrix, targetDensity: 0.25)
             : threshold
-
         ZStack {
-            DreamSimilarityGraph(
-                dreams: dreams,
-                similarityMatrix: similarityMatrix,
-                threshold: effectiveThreshold,
-                selectedDream: $selectedDream
-            )
+            BackgroundView().ignoresSafeArea()
 
-            if let dream = selectedDream {
-                Color.black.opacity(0.001)
-                    .ignoresSafeArea()
-                    .onTapGesture { selectedDream = nil }
+                   DreamSimilarityGraph(
+                       dreams: dreams,
+                       similarityMatrix: similarityMatrix,
+                       threshold: effectiveThreshold,
+                       selectedDream: $selectedDream
+                   )
+                   .ignoresSafeArea()
 
-//                DreamPopupView(dream: dream)
-//                    .transition(.move(edge: .bottom).combined(with: .opacity))
-//                    .animation(.easeInOut, value: selectedDream?.id)
-//                    .scaleEffect(selectedDream == nil ? 0.95 : 1.0)
-                VStack {
-                    Spacer()
-                    //                    DreamPopupView(dream: dream)
-                    //                                    .padding(.bottom, 40) // adjust height from bottom
-                    //                                    .transition(.move(edge: .bottom).combined(with: .opacity))
-                    //                                    .animation(.easeInOut, value: selectedDream?.id)
-                    //                                    .scaleEffect(selectedDream == nil ? 0.95 : 1.0)
-                    //                            }
-                    
-                    NavigationLink(
-                        destination: DreamEntryView(dream: dream, backToArchive: false)
-                    ) {
-                        SectionView( title: dream.title, date: dream.date.formatted(), tags: dream.tags, description: dream.loggedContent, line:false)
-                            .darkGloss()
-                            .padding(.bottom, 40)
+//                   LinearGradient(
+//                       gradient: Gradient(colors: [
+//                           Color.black.opacity(0.9),
+//                           Color.black.opacity(0.6),
+//                           Color.black.opacity(0.3),
+//                           Color.black.opacity(0)
+//                       ]),
+//                       startPoint: .top,
+//                       endPoint: .bottom
+//                   )
+//                   .frame(height: 90)
+//                   .ignoresSafeArea(edges: .top)
+//                  // .blendMode(.overlay)
 
-                    }
-                }
-                .ignoresSafeArea(edges:.bottom)
-            }
-        }
-        .background(BackgroundView())
+                   VStack(spacing: 0) {
+                       HStack {
+                           Button(action: { dismiss() }) {
+                               ZStack {
+                                   Circle()
+                                       .fill(
+                                           LinearGradient(
+                                               colors: [
+                                                   Color(red: 5/255, green: 7/255, blue: 20/255),
+                                                   Color(red: 17/255, green: 18/255, blue: 32/255)
+                                               ],
+                                               startPoint: .topLeading,
+                                               endPoint: .bottomTrailing
+                                           )
+                                       )
+                                       .frame(width: 55, height: 55)
+                                       .overlay(
+                                           Circle()
+                                               .strokeBorder(
+                                                   AngularGradient(
+                                                       gradient: Gradient(colors: [
+                                                           Color.white.opacity(0.8),
+                                                           Color.white.opacity(0.1),
+                                                           Color.white.opacity(0.6),
+                                                           Color.white.opacity(0.1),
+                                                           Color.white.opacity(0.8)
+                                                       ]),
+                                                       center: .center
+                                                   ),
+                                                   lineWidth: 0.5
+                                               )
+                                               .blendMode(.screen)
+                                       )
+                                   Image(systemName: "chevron.left")
+                                       .resizable()
+                                       .scaledToFit()
+                                       .frame(width: 20, height: 20)
+                                       .foregroundColor(.white)
+                                       .padding(.leading, -4)
+                                       .bold(true)
+                               }
+                           }
+                           .buttonStyle(.plain)
+                           .padding(.leading, 8)
 
-    }
-}
+                           Spacer()
 
-// MARK: - Preview
-#Preview {
-    // If you want auto-threshold, pass .nan here:
-    ConstellationView(dreams: testDreams, similarityMatrix: testSimMatrix, threshold: 0.4)
-        .background(BackgroundView())
-}
+                           Text("Constellation")
+                               .font(.system(size: 18, weight: .semibold))
+                               .foregroundColor(.white)
+                               .shadow(color: Color(red: 37/255, green: 23/255, blue: 79/255).opacity(0.7), radius: 4)
+                               .shadow(color: Color(red: 37/255, green: 23/255, blue: 79/255).opacity(0.3), radius: 8)
 
+                           Spacer()
 
+                           Rectangle()
+                               .fill(Color.clear)
+                               .frame(width: 55, height: 55)
+                       }
+                       .padding(.horizontal)
+                       .padding(.top, 8)
+                       .padding(.bottom, 4)
+                       .background(
+                           LinearGradient(
+                               gradient: Gradient(stops: [
+                                   .init(color: Color(hex: "#010023"), location: 0.0),
+                                   .init(color: Color.clear, location: 1.0)
+                               ]),
+                               startPoint: .top,
+                               endPoint: .bottom
+                           )
+                       )
+
+                       Text("Move around to explore. Select a dream to see its connections.")
+                           .font(.system(size: 14))
+                           .foregroundColor(.white.opacity(0.85))
+                           .multilineTextAlignment(.center)
+                           .padding(.top, 8)
+                           .padding(.bottom, 12)
+                           .padding(.horizontal, 20)
+
+                       Spacer() 
+                   }
+
+                   // MARK: - Popup overlay for selected dream
+                   if let dream = selectedDream {
+                       Color.black.opacity(0.001)
+                           .ignoresSafeArea()
+                           .onTapGesture { selectedDream = nil }
+
+                       VStack {
+                           Spacer()
+
+                           NavigationLink(
+                               destination: DreamEntryView(dream: dream, backToArchive: false)
+                           ) {
+                               SectionView(
+                                   title: dream.title,
+                                   date: dream.date.formatted(),
+                                   tags: dream.tags,
+                                   description: dream.loggedContent,
+                                   line: false
+                               )
+                               .darkGloss()
+                               .padding(.bottom, 40)
+                           }
+                       }
+                       .ignoresSafeArea(edges: .bottom)
+                   }
+               }
+               .navigationBarHidden(true)
+           }
+       }
+
+       // MARK: - Preview
+       #Preview {
+           ConstellationView(dreams: testDreams, similarityMatrix: testSimMatrix, threshold: 0.4)
+               .background(BackgroundView())
+       }

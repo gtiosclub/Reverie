@@ -53,8 +53,10 @@ struct DreamCardView: View {
     
 //    @State private var degrees: Double = 8.0
     private let lastUnlockTimeKey = "lastUnlockTime"
+    
+    @Binding var progress: Float
 
-    var progress: Float {
+//    var progress: Float {
 //        let calendar = Calendar.current
 //        let now = Date()
 //
@@ -91,8 +93,8 @@ struct DreamCardView: View {
 //        
 //        // never > 1.0
 //        return min(1.0, progressValue)
-        return 1.0
-    }
+//        return 1.0
+//    }
 
     var body: some View {
         GeometryReader { geo in
