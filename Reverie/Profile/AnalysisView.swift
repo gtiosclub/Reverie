@@ -81,9 +81,10 @@ struct AnalysisView: View {
                     //                            //sleep view stuff here
                     //                        )
                 }
-                .padding(.top, 70)
+                .padding(.top, 80)
 //                .padding(.horizontal)
                 .padding(.horizontal, 16)
+                .padding(.bottom, 80)
             }
             LinearGradient(
                 gradient: Gradient(colors: [
@@ -221,13 +222,14 @@ struct AnalysisSection<Preview: View, Destination: View, Trailing: View>: View {
             NavigationLink(destination: destination()) {
                 previewContent()
                     .padding(.leading, -17)
+                    .padding(.trailing, -17)
             }
         }
     }
 }
 
 func moodSummary() -> Text {
-    let baseColor = Color.white.opacity(0.8)
+    let baseColor = Color.white.opacity(0.7)
     
     guard let dreams = FirebaseLoginService.shared.currUser?.dreams, !dreams.isEmpty else {
         return Text("No dream data available.")
