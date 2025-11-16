@@ -38,7 +38,7 @@ class HealthKitChartService {
         let calendar = Calendar.current
         
         let endDate = Date()
-        guard let startDate = calendar.date(byAdding: .weekOfYear, value: -6, to: endDate) else {
+        guard let startDate = calendar.date(byAdding: .weekOfYear, value: -7, to: endDate) else {
             throw NSError(domain: "", code: -1)
         }
         
