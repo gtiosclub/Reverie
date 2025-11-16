@@ -168,6 +168,7 @@ struct DreamArchiveView: View {
                                 )
                             }
                         }
+                        .navigationBarHidden(true)
                     }
                 }
                 .padding()

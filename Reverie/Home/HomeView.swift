@@ -12,11 +12,10 @@ struct HomeView: View {
 //    @Environment(FirebaseLoginService.self) private var fls
     
     @Binding var characters: [CardModel]
-    @Binding var showLogging: Bool
     
     var body: some View {
         ZStack {
-            MoonView()
+//            MoonView()
             FloatingStickersView(characters: characters)
             //            VStack {
             //                Text("Good Morning, \(FirebaseLoginService.shared.currUser?.name ?? "Dreamer")")
@@ -47,7 +46,7 @@ struct HomeView: View {
                     .foregroundColor(.white)
                     .font(.body)
                     .padding(.bottom, 19)
-                NewLogView(showLogging: $showLogging)
+                NewLogView()
             }
             .padding(.bottom, 30)
         }

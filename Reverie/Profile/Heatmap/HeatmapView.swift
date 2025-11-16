@@ -106,16 +106,15 @@ struct HeatmapView: View {
                                     .padding(.bottom, 3)
                                     
                                     Rectangle()
-                                        .fill(Color.white.opacity(0.05))
+                                        .fill(Color.white.opacity(0.15))
                                         .frame(height: 1)
-                                        .padding(.horizontal, 20)
+                                        .padding(.horizontal, 8)
                                         .padding(.top, 6)
+                                        .padding(.bottom, 4)
                                 }
                             }
    
-                            VStack(alignment:.leading, spacing: 30) {
-    
-                                
+                            VStack(alignment:.leading) {
                                 HeatmapContainerView(
                                     selectedTimeframe: $selectedTimeframe,
                                     dreams: ProfileService.shared.dreams,
@@ -123,7 +122,6 @@ struct HeatmapView: View {
                                 )
 
                             }
-                            .padding(.bottom, 20)
                         }
                         .padding(.vertical, 10)
                     }
@@ -134,9 +132,7 @@ struct HeatmapView: View {
                         EmotionLegendView(enabledEmotions: $enabledEmotions)
                         .padding(.horizontal, 20)
                         .frame(maxWidth: .infinity, alignment: .center)                  }
-                    Spacer()
                 }
-
 //                .padding(.top, 15)
             }
         }
@@ -418,57 +414,57 @@ struct HeatmapView: View {
     }
     
     // MARK: - Emotion Legend View
-    struct EmotionLegendView: View {
-        @Binding var enabledEmotions: Set<DreamModel.Emotions>
-        
-        private func toggleEmotion(_ emotion: DreamModel.Emotions) {
-                if enabledEmotions.contains(emotion) {
-                    enabledEmotions.remove(emotion)
-                } else {
-                    enabledEmotions.insert(emotion)
-                }
+struct EmotionLegendView: View {
+    @Binding var enabledEmotions: Set<DreamModel.Emotions>
+    
+    private func toggleEmotion(_ emotion: DreamModel.Emotions) {
+        if enabledEmotions.contains(emotion) {
+            enabledEmotions.remove(emotion)
+        } else {
+            enabledEmotions.insert(emotion)
         }
-        
-        let emotions: [DreamModel.Emotions] = [.sadness, .happiness, .fear, .anger, .embarrassment, .anxiety, .neutral]
-        private let columns: [GridItem] = [GridItem(.adaptive(minimum: 120), spacing: 10, alignment: .leading)]
-        
-        var body: some View {
-            LazyVGrid(columns: columns, alignment: .center, spacing: 10) {
-                ForEach(emotions.indices, id: \.self) { index in
-                    let emotion = emotions[index]
-                    let isEnabled = enabledEmotions.contains(emotion)
-                    
-                    HStack {
-                        RoundedRectangle(cornerRadius: 2)
-                            .fill(emotions[index].color)
-                            .frame(width: 16, height: 16)
-                            .overlay(
-                                Group {
-                                    if isEnabled {
-                                        Image(systemName: "checkmark")
-                                            .resizable()
-                                            .foregroundColor(.black)
-                                            .scaledToFit()
-                                            .padding(4)
-                                    }
+    }
+    
+    let emotions: [DreamModel.Emotions] = [.sadness, .happiness, .fear, .anger, .embarrassment, .anxiety, .neutral]
+    private let columns: [GridItem] = [GridItem(.adaptive(minimum: 120), spacing: 10, alignment: .leading)]
+    
+    var body: some View {
+        LazyVGrid(columns: columns, alignment: .center, spacing: 10) {
+            ForEach(emotions.indices, id: \.self) { index in
+                let emotion = emotions[index]
+                let isEnabled = enabledEmotions.contains(emotion)
+                
+                HStack {
+                    RoundedRectangle(cornerRadius: 2)
+                        .fill(emotions[index].color)
+                        .frame(width: 16, height: 16)
+                        .overlay(
+                            Group {
+                                if isEnabled {
+                                    Image(systemName: "checkmark")
+                                        .resizable()
+                                        .foregroundColor(.black)
+                                        .scaledToFit()
+                                        .padding(4)
                                 }
-                            )
-        
-                        Text(String(describing: emotions[index]).capitalized)
-//                            .font(.subheadline)
-                            .font(.system(size: 17, weight: .medium))
-                            .foregroundColor(.white)
-                    }
-
-                    .onTapGesture {
-                        withAnimation(.easeIn(duration: 0.15)) {
-                            toggleEmotion(emotion)
-                        }
+                            }
+                        )
+                    
+                    Text(String(describing: emotions[index]).capitalized)
+                    //                            .font(.subheadline)
+                        .font(.system(size: 17, weight: .medium))
+                        .foregroundColor(.white)
+                }
+                
+                .onTapGesture {
+                    withAnimation(.easeIn(duration: 0.15)) {
+                        toggleEmotion(emotion)
                     }
                 }
             }
         }
     }
+}
 
 #Preview {
     HeatmapView()
