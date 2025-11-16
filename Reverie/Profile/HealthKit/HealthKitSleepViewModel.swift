@@ -203,7 +203,7 @@ final class HealthKitSleepViewModel: ObservableObject {
         else { return }
         
         // Fetch sleep segments for this date
-        manager.fetchSleepSegments(start: start, end: end, onlyAppleHealthSource: true) { segs in
+        manager.fetchSleepSegments(start: start, end: end, onlyAppleHealthSource: false) { segs in
             self.previousNightSegments = segs
             
             // Calculate breakdown
@@ -256,7 +256,7 @@ final class HealthKitSleepViewModel: ObservableObject {
             let end   = cal.date(bySettingHour: 10, minute: 0, second: 0, of: now)
         else { return }
 
-        manager.fetchSleepSegments(start: start, end: end, onlyAppleHealthSource: true) { segs in
+        manager.fetchSleepSegments(start: start, end: end, onlyAppleHealthSource: false) { segs in
             self.previousNightSegments = segs
             if !segs.isEmpty {
                 self.loadIntranightMetrics(sleepSegments: segs)
