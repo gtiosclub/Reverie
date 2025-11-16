@@ -15,6 +15,7 @@ struct CardUnlockView: View {
     @Binding var showUnlockView: Bool
     @Binding var showCardsCarousel: Bool
     @Binding var currentPage: Int
+    @Binding var progress: Float
     
     @State var shown = false
     
@@ -36,6 +37,7 @@ struct CardUnlockView: View {
                 }
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                     withAnimation(.interactiveSpring(response: 0.7, dampingFraction: 0.75)) {
+                        progress = 0
                         showUnlockView = false
                     }
                 }
@@ -174,7 +176,8 @@ struct CardUnlockView_Previews: PreviewProvider {
                 cards: $cards,
                 showUnlockView: $showUnlockView,
                 showCardsCarousel: $showCardsCarousel,
-                currentPage: $currentPage
+                currentPage: $currentPage,
+                progress: .constant(1.0)
             )
         }
     }
