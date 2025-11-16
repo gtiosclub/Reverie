@@ -53,7 +53,7 @@ class Predictor {
             let confidence = (durationFactor * 0.4 + variabilityFactor * 0.3 + timeOfNightFactor * 0.3)
             
             // Only include predictions with reasonable confidence
-            if confidence > 0.3 {
+            if confidence > 0.5 {
                 let reasoning = buildReasoning(
                     duration: durationMinutes,
                     variability: hrVariability,
