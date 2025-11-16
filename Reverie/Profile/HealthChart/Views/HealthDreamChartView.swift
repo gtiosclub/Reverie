@@ -17,6 +17,15 @@ enum HealthMetric: String, CaseIterable, Identifiable {
     var id: String { rawValue }
 }
 
+enum HealthMetricExpanded: String, CaseIterable, Identifiable {
+    case sleep = "Hours Slept"
+    case exercise = "Exercise Minutes"
+    case calories = "Calories Burned"
+    case steps = "Steps Taken"
+
+    var id: String { rawValue }
+}
+
 struct HealthDreamChartView: View {
     @State private var dreamData: [DreamFrequencyChartModel] = CleanDreamDataService.shared.processDreamsIntoWeeklyCounts(dreams: ProfileService.shared.dreams).0
     
@@ -49,9 +58,9 @@ struct HealthDreamChartView: View {
                     Text(metric.rawValue).tag(metric)
                 }
             }
-            .pickerStyle(.segmented)
-            .padding(.horizontal)
-            .padding(.bottom, 8)
+            .pickerStyle(SegmentedPickerStyle())
+            .padding(.horizontal, 20)
+            .padding(.bottom, 20)
         }
         VStack(alignment: .leading, spacing: 14) {
             VStack(alignment: .leading, spacing: 14) {
@@ -93,10 +102,12 @@ struct HealthDreamChartView: View {
                 selectedMetric: $selectedMetric,
                 isHomeView: $isHomeView
             )
+            
+            HealthChartLegendView(selectedMetric: $selectedMetric)
         }
         .padding()
-        .padding(.bottom, 10)
         .darkGloss()
+        .padding(.bottom, 30)
     }
 }
 
@@ -116,6 +127,17 @@ struct HealthChartView: View {
     @Binding var selectedMetric: HealthMetric
     @Binding var isHomeView: Bool
     
+    var dreamDataPercent: [DreamRelativeFrequencyChartModel] {
+        let totalCount = dreamData.map { $0.count }.reduce(0, +)
+        return dreamData.map { data in
+            DreamRelativeFrequencyChartModel(
+                id: data.id,
+                date: data.date,
+                count: Int(Double(data.count) / Double(totalCount) * 100)
+            )
+        }
+    }
+    
     var maxMetricValue: Int {
         switch selectedMetric {
         case .sleep:
@@ -133,36 +155,15 @@ struct HealthChartView: View {
         VStack(spacing: 8) {
             ZStack {
                 Chart {
-                    ForEach(dreamData) { data in
+                    ForEach(dreamDataPercent) { data in
                         LineMark(
                             x: .value("Date", data.date),
-                            y: .value("Dream Count", data.count)
+                            y: .value("Dream Count", data.count * maxMetricValue / 100)
                         )
                         .interpolationMethod(.catmullRom)
                         .foregroundStyle(.indigo)
                         .symbol(.circle)
                     }
-                }
-                .chartYAxis {
-                    AxisMarks(position: .leading) {
-                        AxisGridLine()
-                        AxisValueLabel()
-                    }
-                    AxisMarks(position: .leading, values: [50]) { _ in
-                        AxisGridLine()
-                        AxisValueLabel(centered: false)
-                            .foregroundStyle(.clear)
-                    }
-                }
-                .chartXAxis {
-                    AxisMarks(values: .automatic(desiredCount: 14)) { value in
-                        AxisGridLine()
-                        AxisValueLabel(format: .dateTime.month(.abbreviated), centered: true)
-                    }
-                }
-                .chartYScale(domain: 0...maxDream)
-                
-                Chart {
                     switch selectedMetric {
                     case .sleep:
                         ForEach(sleepData) { sleep in
@@ -213,16 +214,16 @@ struct HealthChartView: View {
                         }
                     }
                 }
-                .chartXAxis(.hidden)
                 .chartYAxis {
-                    AxisMarks(position: .trailing) {
+                    AxisMarks(position: .leading) {
                         AxisGridLine()
                         AxisValueLabel()
                     }
-                    AxisMarks(position: .trailing, values: [50]) { _ in
+                }
+                .chartXAxis {
+                    AxisMarks(values: .automatic(desiredCount: 14)) { value in
                         AxisGridLine()
-                        AxisValueLabel(centered: false)
-                            .foregroundStyle(.clear)
+                        AxisValueLabel(format: .dateTime.month(.abbreviated), centered: true)
                     }
                 }
                 .chartYScale(domain: 0...maxMetricValue)
@@ -231,16 +232,16 @@ struct HealthChartView: View {
         .padding(.horizontal)
         .frame(height: 260)
         .task {
-            maxSleep = Int(ceil((sleepData.map { $0.hours }.max() ?? 9) + 1))
-            maxExercise = Int(ceil((exerciseData.map { $0.minutes }.max() ?? 20) + 5))
-            maxSteps = Int(ceil((stepsData.map { Double($0.steps) }.max() ?? 5000) + 500))
-            maxCalories = Int(ceil((caloriesData.map { $0.calories }.max() ?? 200) + 50))
-            maxDream = (dreamData.map { $0.count }.max() ?? 9) + 1
+            maxSleep = Int(ceil((sleepData.map { $0.hours }.max() ?? 9)))
+            maxExercise = Int(ceil((exerciseData.map { $0.minutes }.max() ?? 20)))
+            maxSteps = Int(ceil((stepsData.map { Double($0.steps) }.max() ?? 5000)))
+            maxCalories = Int(ceil((caloriesData.map { $0.calories }.max() ?? 200)))
+            maxDream = (dreamData.map { $0.count }.max() ?? 9)
         }
     }
 }
 
-#Preview {
-    DreamFrequencyChartView(isHomeView: true)
-}
+//#Preview {
+//    DreamFrequencyChartView(isHomeView: true)
+//}
 

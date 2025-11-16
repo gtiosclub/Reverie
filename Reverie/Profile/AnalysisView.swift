@@ -333,7 +333,7 @@ struct AnalysisView: View {
                     AnalysisSection (
                         title: "Sleep",
                         previewContent: {HealthDreamChartView(dreamHealthData: $dreamHealthData, isHomeView: true)},
-                        destination: {HealthDreamChartView(dreamHealthData: $dreamHealthData, isHomeView: false)},
+                        destination: {HealthView(dreamHealthData: $dreamHealthData, isHomeView: false)},
                         trailingView: {EmptyView()}
                                             //sleep view stuff here
                     )
