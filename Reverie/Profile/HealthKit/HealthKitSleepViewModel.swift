@@ -27,6 +27,7 @@ final class HealthKitSleepViewModel: ObservableObject {
     @Published var intranightHRV: [HealthKitManager.DataPoint] = []
     @Published var intranightRespiratoryRate: [HealthKitManager.DataPoint] = []
     @Published var intranightOxygenSaturation: [HealthKitManager.DataPoint] = []
+    @Published var dreamPredictions: [DreamPrediction] = []
 
     // For the sleep-stage timeline chart
     @Published var previousNightSegments: [HealthKitManager.SleepSegment] = []
@@ -265,39 +266,57 @@ final class HealthKitSleepViewModel: ObservableObject {
     }
     
     private func loadIntranightMetrics(sleepSegments: [HealthKitManager.SleepSegment]) {
-            // Fetch multiple metrics at once
-            let metricsToFetch: [HKQuantityTypeIdentifier] = [
-                .heartRate,
-                .heartRateVariabilitySDNN,
-                .respiratoryRate,
-                .oxygenSaturation
-            ]
+        
+        print("intrasnight metrics funtion called")
+        // Fetch multiple metrics at once
+        let metricsToFetch: [HKQuantityTypeIdentifier] = [
+            .heartRate,
+            .heartRateVariabilitySDNN,
+            .respiratoryRate,
+            .oxygenSaturation
+        ]
+        
+        manager.fetchMetricsDuringSleep(
+            sleepSegments: sleepSegments,
+            metrics: metricsToFetch
+        ) { [weak self] results in
+            guard let self = self else { return }
             
-            manager.fetchMetricsDuringSleep(
-                sleepSegments: sleepSegments,
-                metrics: metricsToFetch
-            ) { [weak self] results in
-                guard let self = self else { return }
-                
-                // Store in published properties
-                self.intranightHeartRate = results[.heartRate] ?? []
-                self.intranightHRV = results[.heartRateVariabilitySDNN] ?? []
-                self.intranightRespiratoryRate = results[.respiratoryRate] ?? []
-                self.intranightOxygenSaturation = results[.oxygenSaturation] ?? []
-                
-                // Also update the series dictionary for chart comparison
-                self.series[.intranightHR] = self.intranightHeartRate
-                self.series[.intranightHRV] = self.intranightHRV
-                self.series[.intranightRespRate] = self.intranightRespiratoryRate
-                self.series[.intranightO2] = self.intranightOxygenSaturation
-                
-                print("📊 Loaded intranight data:")
-                print("  HR samples: \(self.intranightHeartRate.count)")
-                print("  HRV samples: \(self.intranightHRV.count)")
-                print("  Resp samples: \(self.intranightRespiratoryRate.count)")
-                print("  O2 samples: \(self.intranightOxygenSaturation.count)")
+            // Store in published properties
+            self.intranightHeartRate = results[.heartRate] ?? []
+            self.intranightHRV = results[.heartRateVariabilitySDNN] ?? []
+            self.intranightRespiratoryRate = results[.respiratoryRate] ?? []
+            self.intranightOxygenSaturation = results[.oxygenSaturation] ?? []
+            
+            // Also update the series dictionary for chart comparison
+            self.series[.intranightHR] = self.intranightHeartRate
+            self.series[.intranightHRV] = self.intranightHRV
+            self.series[.intranightRespRate] = self.intranightRespiratoryRate
+            self.series[.intranightO2] = self.intranightOxygenSaturation
+            
+            print("📊 Loaded intranight data:")
+            print("  HR samples: \(self.intranightHeartRate.count)")
+            print("  HRV samples: \(self.intranightHRV.count)")
+            print("  Resp samples: \(self.intranightRespiratoryRate.count)")
+            print("  O2 samples: \(self.intranightOxygenSaturation.count)")
+            
+            // NOW call dream prediction AFTER heart rate data is loaded
+            if !self.intranightHeartRate.isEmpty {
+                print("calling dream predictor with \(self.intranightHeartRate.count) HR samples")
+                let dp = Predictor()
+                dp.predictDreamTimes(
+                    sleepSegments: sleepSegments,
+                    heartRateData: self.intranightHeartRate
+                ) { predictions in
+                    self.dreamPredictions = predictions
+                    print("🌙 Predicted \(predictions.count) potential dream periods")
+                    for prediction in predictions {
+                        print("  Dream: \(prediction.startTime) - \(prediction.endTime), confidence: \(prediction.confidence)")
+                    }
+                }
             }
         }
+    }
 
     // MARK: - Dummy data (for previews / auth failure)
 
