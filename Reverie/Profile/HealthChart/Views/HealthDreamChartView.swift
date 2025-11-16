@@ -24,6 +24,19 @@ enum HealthMetricExpanded: String, CaseIterable, Identifiable {
     case steps = "Steps Taken"
 
     var id: String { rawValue }
+    
+    init(from metric: HealthMetric) {
+        switch metric {
+        case .sleep:
+            self = .sleep
+        case .steps:
+            self = .steps
+        case .exercise:
+            self = .exercise
+        case .calories:
+            self = .calories
+        }
+    }
 }
 
 struct HealthDreamChartView: View {
@@ -34,6 +47,10 @@ struct HealthDreamChartView: View {
     @State var isHomeView: Bool
     
     @State var selectedMetric: HealthMetric = .sleep
+    
+    var selectedMetricExpanded: HealthMetricExpanded {
+        HealthMetricExpanded(from: selectedMetric)
+    }
     
     private var sleepData: [SleepDurationChartModel] {
         dreamHealthData.map { SleepDurationChartModel(date: $0.date, hours: $0.sleepDuration) }
@@ -103,7 +120,7 @@ struct HealthDreamChartView: View {
                 isHomeView: $isHomeView
             )
             
-            HealthChartLegendView(selectedMetric: $selectedMetric)
+            HealthChartLegendView(selectedMetricExpanded: selectedMetricExpanded)
         }
         .padding()
         .darkGloss()
