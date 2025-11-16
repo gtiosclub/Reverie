@@ -158,4 +158,4 @@ func renderEmotionCircles(from dreams: [DreamModel]) -> some View {
     EmotionBubbleChart(dreams: dreams)
 }
 
-#Preview { ProfileView() }
+//#Preview { ProfileView() }
