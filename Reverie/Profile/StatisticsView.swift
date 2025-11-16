@@ -16,11 +16,12 @@ struct StatisticsView: View {
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 20) {
                     Text("Activity")
-                        .font(Font.system(size: 20, weight: .medium, design: .default))
+                        .font(.custom("InstrumentSans-SemiBold", size: 18))
+                        .dreamGlow()
                         .foregroundColor(.white)
                         .padding(.horizontal)
                     
-                    HStack(spacing: 60) {
+                    HStack(spacing: 56) {
                         StatBlock(
                             iconName: "flame.fill",
                             label: "STREAK",
@@ -30,6 +31,7 @@ struct StatisticsView: View {
                             glowInner: glowInner,
                             glowOuter: glowOuter
                         )
+                        
                         StatBlock(
                             iconName: nil,
                             label: "WEEKLY AVG",
@@ -39,6 +41,7 @@ struct StatisticsView: View {
                             glowInner: glowInner,
                             glowOuter: glowOuter
                         )
+                        
                         StatBlock(
                             iconName: nil,
                             label: "AVG LENGTH",
@@ -49,8 +52,9 @@ struct StatisticsView: View {
                             glowOuter: glowOuter
                         )
                     }
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .padding(.horizontal, 10)
                     .padding(.top, 10)
-                    .padding(.horizontal)
                     
                     //                FrequencyView()
                     VStack(spacing: 16) {

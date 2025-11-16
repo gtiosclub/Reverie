@@ -43,7 +43,7 @@ struct UserTagsView: View {
             ScrollView {
                 HStack(alignment: .center) {
                     Text("Themes")
-                        .font(Font.system(size: 20, weight: .medium, design: .default))
+                        .font(.custom("InstrumentSans-SemiBold", size: 18))
                         .foregroundColor(.white)
                         .padding(.top, -42)
                         .dreamGlow()
@@ -109,7 +109,7 @@ struct TagViewBlock: View {
                 }
             }
         }
-    }   
+    }
 
     
     private var collapsedTagLimit: Int {
@@ -129,5 +129,5 @@ struct TagViewBlock: View {
     }
 
 #Preview {
-    UserTagsView().background(ProfileView())
+    UserTagsView()
 }

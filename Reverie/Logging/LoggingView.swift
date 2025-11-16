@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct LoggingView: View {
-    @EnvironmentObject var ts: TabState
     @State private var dream = ""
     @State private var title = ""
     @State private var date = Date()
@@ -40,8 +39,7 @@ struct LoggingView: View {
                     
                     HStack {
                         Button(action: {
-                            ts.activeTab = .home
-//                            dismiss()
+                            dismiss()
                         }) {
                             ZStack {
                                 Circle()
@@ -93,9 +91,10 @@ struct LoggingView: View {
                         
                         TextField("Dream Name", text: $title)
                             .foregroundColor(.white)
-                            .font(.system(size: 18, weight: .bold))
+                            .font(.custom("InstrumentSans-SemiBold", size: 18))
                             .tint(.white)
                             .multilineTextAlignment(.center)
+                            .dreamGlow()
                         Spacer()
                         
                         Button(action: {
@@ -267,7 +266,6 @@ struct LoggingView: View {
                                 )
                         })
                         .padding(.bottom, 70)
-                        .padding(.leading, 290)
                     }
                 }
                 .padding()
@@ -291,15 +289,11 @@ struct LoggingView: View {
                     .transition(.opacity)
                 }
 
-                TabbarView()
-                    .ignoresSafeArea(edges: .bottom)
+
             }
             .ignoresSafeArea(.keyboard, edges: .bottom)
 
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .onAppear {
-                ts.activeTab = .logging
-            }
         }
     }
 }
@@ -313,5 +307,4 @@ extension UIApplication {
 
 #Preview {
     LoggingView()
-        .environmentObject(TabState())
 }

@@ -8,6 +8,8 @@ struct AnalysisView: View {
         return ProfileService.shared.currentDreamStreak()
     }
     
+    @State var dreamHealthData: [DailyHealthData] = []
+    
     var body: some View {
         ZStack(alignment:.top) {
             BackgroundView()
@@ -58,8 +60,8 @@ struct AnalysisView: View {
                     
                     AnalysisSection (
                         title: "Sleep",
-                        previewContent: {DreamFrequencyChartView(isHomeView: true)},
-                        destination: {HealthKitSleepDashboardView()},
+                        previewContent: {HealthDreamChartView(dreamHealthData: $dreamHealthData, isHomeView: true)},
+                        destination: {HealthView(dreamHealthData: $dreamHealthData, isHomeView: false)},
                         trailingView: {EmptyView()}
                                             //sleep view stuff here
                     )
@@ -84,18 +86,18 @@ struct AnalysisView: View {
                     Color.black.opacity(0.9),
                     Color.black.opacity(0.6),
                     Color.black.opacity(0.3),
-                    Color.black.opacity(0)
-                ]),
-                startPoint: .top,
-                endPoint: .bottom
-            )
-            .frame(height: 90)
-            .ignoresSafeArea(edges: .top)
-            .blendMode(.overlay)
-            
+                   Color.black.opacity(0)
+               ]),
+               startPoint: .top,
+               endPoint: .bottom
+           )
+           .frame(height: 90)
+           .ignoresSafeArea(edges: .top)
+           .blendMode(.overlay)
+                               
             HStack {
                 Text("Analysis")
-                    .font(.largeTitle.bold())
+                    .font(.custom("InstrumentSans-Bold", size: 32))
                     .foregroundColor(.white)
                 Spacer()
                 NavigationLink(destination: ConstellationView(dreams: ProfileService.shared.dreams, similarityMatrix: simMatrix, threshold: 0.65)) {
@@ -112,11 +114,6 @@ struct AnalysisView: View {
                                 )
                             )
                             .frame(width: 55, height: 55)
-                        //                                .shadow(
-                        //                                    color: Color(red: 60/255, green: 53/255, blue: 151/255)
-                        //                                        .opacity(glowPulse ? 0.9 : 0.4),
-                        //                                    radius: glowPulse ? 10 : 5
-                        //                                )
                             .overlay(
                                 Circle()
                                     .strokeBorder(
@@ -137,7 +134,6 @@ struct AnalysisView: View {
                                     .blendMode(.screen)
                                     .shadow(color: .white.opacity(0.25), radius: 1)
                             )
-                        
                         Image(systemName: "moon.stars.fill")
                             .font(.title2)
                             .foregroundColor(.white)
@@ -147,19 +143,47 @@ struct AnalysisView: View {
                     //                        .padding(.top, 8)
                 }
             }
-            .padding(.leading, 32)
-            //                .padding(.top, 12)
-            .padding(.bottom, 30)
-            .background(
-                LinearGradient(
-                    gradient: Gradient(stops: [
-                        .init(color: DreamModel.Color(hex: "#010023"), location: 0.0),
-                        .init(color: Color.clear, location: 1.0)
-                    ]),
-                    startPoint: .top,
-                    endPoint: .bottom
-                )
-            )
+           .padding(.leading, 32)
+           //                .padding(.top, 12)
+           .padding(.bottom, 30)
+           .background(
+               LinearGradient(
+                   gradient: Gradient(stops: [
+                       .init(color: DreamModel.Color(hex: "#010023"), location: 0.0),
+                       .init(color: Color.clear, location: 1.0)
+                   ]),
+                   startPoint: .top,
+                   endPoint: .bottom
+               )
+           )
+            .task {
+                do {
+                    try await HealthKitChartService.shared.requestAuthorization()
+                    
+                    var healthData = try await HealthKitChartService.shared.fetchLast7WeeksAveraged()
+                    
+                    healthData = healthData.map { item in
+                        var copy = item
+                        copy.sleepDuration /= 3600
+                        copy.remSleep /= 3600
+                        return copy
+                    }
+                    
+                    dreamHealthData = healthData
+                    
+                    for day in dreamHealthData {
+                        print("Date:", day.date)
+                        print("Sleep:", day.sleepDuration)
+                        print("REM:", day.remSleep)
+                        print("Steps:", day.steps)
+                        print("Exercise:", day.exerciseMinutes)
+                        print("Calories:", day.caloriesBurned)
+                    }
+                    
+                } catch {
+                    print("HealthKit error:", error)
+                }
+            }
             VStack {
                 Spacer()
                 TabbarView()

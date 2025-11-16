@@ -106,16 +106,15 @@ struct HeatmapView: View {
                                     .padding(.bottom, 3)
                                     
                                     Rectangle()
-                                        .fill(Color.white.opacity(0.05))
+                                        .fill(Color.white.opacity(0.15))
                                         .frame(height: 1)
-                                        .padding(.horizontal, 20)
+                                        .padding(.horizontal, 8)
                                         .padding(.top, 6)
+                                        .padding(.bottom, 4)
                                 }
                             }
    
-                            VStack(alignment:.leading, spacing: 30) {
-    
-                                
+                            VStack(alignment:.leading) {
                                 HeatmapContainerView(
                                     selectedTimeframe: $selectedTimeframe,
                                     dreams: ProfileService.shared.dreams,
@@ -123,7 +122,6 @@ struct HeatmapView: View {
                                 )
 
                             }
-                            .padding(.bottom, 20)
                         }
                         .padding(.vertical, 10)
                     }
@@ -134,9 +132,7 @@ struct HeatmapView: View {
                         EmotionLegendView(enabledEmotions: $enabledEmotions)
                         .padding(.horizontal, 20)
                         .frame(maxWidth: .infinity, alignment: .center)                  }
-                    Spacer()
                 }
-
 //                .padding(.top, 15)
             }
         }

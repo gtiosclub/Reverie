@@ -1,35 +1,32 @@
 //
-//  CombinedView.swift
+//  HealthView.swift
 //  Reverie
 //
-//  Created by Isha Jain on 11/8/25.
+//  Created by Brayden Huguenard on 11/16/25.
 //
 
 import SwiftUI
 
-struct CombinedHeatmapEmotionView: View {
-
-    let dreams: [DreamModel] = ProfileService.shared.dreams
-    @Environment(\.dismiss) private var dismiss
+struct HealthView: View {
+    @Binding var dreamHealthData: [DailyHealthData]
+    @State var isHomeView: Bool
 
     var body: some View {
         NavigationStack {
-            ZStack (alignment: .top){
+            ZStack {
                 BackgroundView()
                     .ignoresSafeArea()
 
                 ScrollView {
                     HStack(alignment: .center) {
-                        Text("Moods")
+                        Text("Health")
                             .font(.custom("InstrumentSans-SemiBold", size: 18))
                             .foregroundColor(.white)
                             .padding(.top, -42)
                             .dreamGlow()
                     }
-                    
-                    VStack(spacing: 5) {
-                        HeatmapView()
-                        renderEmotionCircles(from: dreams)
+                    VStack {
+                        HealthDreamChartView(dreamHealthData: $dreamHealthData, isHomeView: isHomeView)
                     }
                     .padding()
                 }

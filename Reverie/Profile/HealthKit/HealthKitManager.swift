@@ -389,8 +389,4 @@ extension HealthKitManager {
             return HKUnit.count()
         }
     }
-    
-    private func predictDreamTime() {
-        
-    }
 }
