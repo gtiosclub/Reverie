@@ -262,27 +262,24 @@ struct DreamArchiveView: View {
                                         lineWidth: 1
                                     )
 
-                                    .frame(
-                                            width: 315,
-                                            height: 52.5
-                                        )
                                     .blendMode(.screen)
                                     .shadow(color: .white.opacity(0.25), radius: 1)
-                            
-                            HStack {
-                                Image(systemName: "magnifyingglass")
-                                    .foregroundColor(.white)
-                                TextField("Search", text: $search)
-                                    .foregroundColor(.white)
-                                    .accentColor(.white)
-                            }
-                            .padding(15)
-                            .cornerRadius(10)
-                            .background(
-                                Color.black.opacity(0.25)
-                                    .clipShape(RoundedRectangle(cornerRadius: 10))
-                                    .glassEffect(.regular)
-                            )
+                                    .frame(width: 315, height: 52.5)
+                                    .overlay(
+                                        HStack {
+                                            Image(systemName: "magnifyingglass")
+                                                .foregroundColor(.white)
+                                            TextField("Search", text: $search)
+                                                .foregroundColor(.white)
+                                        }
+                                        .padding(.horizontal, 15)
+                                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                        .background(
+                                            Color.black.opacity(0.25)
+                                                .clipShape(RoundedRectangle(cornerRadius: 10))
+                                                .glassEffect(.regular)
+                                        )
+                                    )
                         }
                         .shadow(
                             color: Color(red: 60/255, green: 53/255, blue: 151/255)
@@ -297,27 +294,17 @@ struct DreamArchiveView: View {
                         }) {
                             ZStack {
                                 Circle()
-                                    .fill(
-                                        (selectedThemeTags.isEmpty && selectedDateFilter == .allDates) ?
-                                        
-                                        LinearGradient(
-                                            colors: [
-                                                Color(red: 4/255, green: 4/255, blue: 20/255),
-                                                Color(red: 18/255, green: 18/255, blue: 35/255)
-                                            ],
-                                            startPoint: .topLeading,
-                                            endPoint: .bottomTrailing
-                                        ) : LinearGradient(
-                                            colors: [
-                                                Color(red: 46/255, green: 39/255, blue: 137/255),
-                                                Color(red: 64/255, green: 57/255, blue: 155/255)
-                                            ],
-                                            startPoint: .topLeading,
-                                            endPoint: .bottomTrailing
-                                        )
-                                        
-                                    )
+                                    .fill(Color.clear)
                                     .frame(width: 52, height: 52)
+                                    .background(
+                                        (selectedThemeTags.isEmpty && selectedDateFilter == .allDates) ?
+                                        LinearGradient( colors: [ Color.black.opacity(0.25), Color.black.opacity(0.25) ], startPoint: .topLeading, endPoint: .bottomTrailing )
+                                            .clipShape(Circle())
+                                            .glassEffect(.regular) :
+                                            LinearGradient( colors: [ Color(red: 46/255, green: 39/255, blue: 137/255).opacity(0.45), Color(red: 64/255, green: 57/255, blue: 155/255).opacity(0.45) ], startPoint: .topLeading, endPoint: .bottomTrailing )
+                                                .clipShape(Circle())
+                                                .glassEffect(.regular)
+                                    )
                                     .shadow(
                                         color: Color(red: 60/255, green: 53/255, blue: 151/255)
                                             .opacity(0.55),
@@ -343,11 +330,14 @@ struct DreamArchiveView: View {
                                             .blendMode(.screen)
                                             .shadow(color: .white.opacity(0.25), radius: 1)
                                     )
-                                
-                                Image(systemName: "line.3.horizontal.decrease")
-                                    .font(.system(size: 28, weight: .semibold))
-                                    .foregroundColor(.white)
+                                    .overlay(
+                                        Image(systemName: "line.3.horizontal.decrease")
+                                            .font(.system(size: 24, weight: .semibold))
+                                            .foregroundColor(.white)
+                                    )
+
                             }
+
                         }
                         .buttonStyle(.plain)
                         .padding(.leading, 7)
@@ -381,30 +371,7 @@ struct DreamArchiveView: View {
                             
                             VStack(alignment: .leading, spacing: 18) {
                                 
-                                // Sort section
-//                                Button {
-//                                    sortOrder = .newestFirst
-//                                } label: {
-//                                    HStack(spacing: 10) {
-//                                        Image(systemName: sortOrder == .newestFirst ? "checkmark" : "")
-//                                            .frame(width: 16)
-//                                            .foregroundColor(.white)
-//                                        Text("Sort Newest to Oldest")
-//                                            .foregroundColor(.white)
-//                                    }
-//                                }
-                                
-//                                Button {
-//                                    sortOrder = .oldestFirst
-//                                } label: {
-//                                    HStack(spacing: 10) {
-//                                        Image(systemName: sortOrder == .oldestFirst ? "checkmark" : "")
-//                                            .frame(width: 16)
-//                                            .foregroundColor(.white)
-//                                        Text("Sort Oldest to Newest")
-//                                            .foregroundColor(.white)
-//                                    }
-//                                }
+
                                 
                                 
                                 Text("Filters")
