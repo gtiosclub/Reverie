@@ -101,7 +101,8 @@ struct DreamEntryView: View {
 
                     VStack(spacing: 2) {
                         Text(dream.title)
-                            .font(.system(size: 18, weight: .semibold))
+                            .font(.custom("InstrumentSans-SemiBold", size: 18))
+                            .dreamGlow()
                             .foregroundColor(.white)
                             .frame(maxWidth: 180)
                             .multilineTextAlignment(.center)
@@ -400,13 +401,14 @@ struct DreamEntryView: View {
                             .frame(width: 32, height: 32)
                             .foregroundStyle(DreamModel.tagColors(tag: tag))
                         Text(tag.rawValue.capitalized)
-                            .font(.title2.bold())
+                            .font(.custom("InstrumentSans-Bold", size: 32))
                             .foregroundColor(.white)
 
                         Text(DreamModel.tagDescription(tag: tag))
                             .multilineTextAlignment(.center)
                             .foregroundColor(.white.opacity(0.8))
                             .padding(.horizontal)
+                            .font(.custom("InstrumentSans-Regular", size: 14))
                     }
                     .frame(width: 320, height: 520)
                     .background(
