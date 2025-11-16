@@ -38,11 +38,10 @@ struct AnalysisView: View {
                             }
                             .padding(.horizontal, 10)
                             .padding(.top, 4)
-                            //                                .background(Color.orange.opacity(0.15))
-                            //                                .cornerRadius(12)
+                            .cornerRadius(12)
                         }
                     )
-                    //                        .padding(.top, -2)
+
                     
                     AnalysisSection (
                         title: "Themes",
@@ -71,9 +70,9 @@ struct AnalysisView: View {
                     //                            //sleep view stuff here
                     //                        )
                 }
-                .padding(.top, 75)
+                .padding(.top, 70)
 //                .padding(.horizontal)
-                .padding(.bottom, 50)
+                .padding(.horizontal, 16)
             }
             LinearGradient(
                 gradient: Gradient(colors: [
@@ -136,24 +135,24 @@ struct AnalysisView: View {
                                     .shadow(color: .white.opacity(0.25), radius: 1)
                             )
                         
-                        AnalysisSection (
+                        /*AnalysisSection (
                             title: "Sleep",
-                            icon: "moon.stars.fill",
+                            //icon: "moon.stars.fill",
                             previewContent: {FrequencyView()},
                             destination: {FrequencyView()},
                             trailingView: {EmptyView()}
                             //sleep view stuff here
-                        )
+                        )*/
                         
                         
-                        AnalysisSection (
+                       /* AnalysisSection (
                             title: "Health",
-                            icon: "moon.stars.fill",
+                            //icon: "moon.stars.fill",
                             previewContent: {GraphsView(vm:HealthKitViewModel())},
                             destination: {GraphsView(vm:HealthKitViewModel())},
                             trailingView: {EmptyView()}
                             //sleep view stuff here
-                        )
+                        )*/
                         Image(systemName: "moon.stars.fill")
                             .font(.title2)
                             .foregroundColor(.white)
@@ -164,8 +163,8 @@ struct AnalysisView: View {
                 }
             }
             .padding(.leading, 17)
-            //                .padding(.top, 12)
-            .padding(.bottom, 4)
+            .padding(.top, 8)
+            .padding(.bottom, 40)
             .background(
                 LinearGradient(
                     gradient: Gradient(stops: [
