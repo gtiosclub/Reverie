@@ -14,12 +14,14 @@ class DreamRouter: ObservableObject {
 
     @Published var pendingDreamText: String? = nil
     
-    // Navigation fields for logging screen
     @Published var navigateToLog: Bool = false
     @Published var injectedDreamText: String = ""
     
     func navigateToLoggingView(with text: String) {
-        injectedDreamText = text
-        navigateToLog = true
+        print("🚀 DreamRouter.navigateToLoggingView called")
+            print("➡️ Injecting text: \(text)")
+            injectedDreamText = text
+            navigateToLog = true
+            print("📍 navigateToLog set to TRUE")
     }
 }
