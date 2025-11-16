@@ -27,8 +27,10 @@ struct HealthView: View {
                     }
                     VStack {
                         HealthDreamChartView(dreamHealthData: $dreamHealthData, isHomeView: isHomeView)
+                        HealthKitSleepDashboardView()
+                            .padding(.horizontal, -22)
                     }
-                    .padding()
+//                    .padding()
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
@@ -40,3 +42,4 @@ struct HealthView: View {
 #Preview {
     CombinedHeatmapEmotionView()
 }
+
