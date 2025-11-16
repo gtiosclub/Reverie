@@ -36,3 +36,9 @@ struct MetricPoint: Identifiable {
     let date: Date
     let value: Double
 }
+
+struct DreamRelativeFrequencyChartModel: Identifiable {
+    let id: UUID
+    let date: Date
+    let count: Int
+}
