@@ -16,12 +16,16 @@ struct HeatmapTagsView: View {
     var body: some View {
         ZStack {
             VStack(spacing: 8) {
-                VStack(alignment: .leading) {
+                VStack(/*alignment: .leading*/) {
                     Text("Frequency in Dreams")
-                        .font(.title3)
-                        .fontWeight(.bold)
+                        .font(.system(size: 18))
+                        .fontWeight(.semibold)
+                        .dreamGlow()
                         .foregroundColor(.white)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+
                         .padding(.horizontal, 20)
+                        .padding(.bottom, 4)
                 }
                 
                 Picker("Timeframe", selection: $selectedTimeframe) {
