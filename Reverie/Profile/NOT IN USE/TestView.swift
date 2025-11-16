@@ -96,3 +96,17 @@
 //        }
 //    }
 //}
+import SwiftUI
+
+struct TestView: View {
+    var body: some View {
+        NavigationView {
+            HealthKitSleepDashboardView()
+                .navigationBarTitle("Sleep", displayMode: .inline)
+        }
+    }
+}
+
+#Preview {
+    TestView()
+}
