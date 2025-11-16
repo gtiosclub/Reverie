@@ -17,7 +17,7 @@ struct StatisticsView: View {
 
                 ScrollView(showsIndicators: false) {
                     VStack(spacing: 20) {
-                        HStack(spacing: 56) {
+                        HStack(spacing: 40) {
                             StatBlock(
                                 iconName: "flame.fill",
                                 label: "STREAK",
@@ -47,7 +47,7 @@ struct StatisticsView: View {
                                 glowInner: glowInner,
                                 glowOuter: glowOuter
                             )
-                        }
+                        }.padding(.top, 30)
                 //.frame(maxWidth: .infinity, alignment: .center)
                     .padding(.horizontal, 10)
                     .padding(.top, 10)
@@ -179,16 +179,17 @@ struct StatBlock: View {
                         .font(.system(size: 15))
                 }
                 Text(label)
-                    .font(.system(size: 15, weight: .semibold))
+                    .font(.system(size: 14, weight: .semibold))
                     .foregroundColor(labelColor)
             }
             .shadow(color: labelColor, radius: 8)
 
             HStack(alignment: .firstTextBaseline, spacing: 3) {
                 Text(value)
-                    .font(.system(size: 48, weight: .bold))
+                    .font(.system(size: 44, weight: .bold))
                     .foregroundColor(.white)
                     .shadow(color: glowOuter, radius: 5)
+                    .lineLimit(1)
 
                 Text(sublabel)
                     .font(.system(size: 15))
