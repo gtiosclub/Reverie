@@ -14,7 +14,6 @@ class DreamRouter: ObservableObject {
 
     @Published var pendingDreamText: String? = nil
     
-    // Navigation fields for logging screen
     @Published var navigateToLog: Bool = false
     @Published var injectedDreamText: String = ""
     
