@@ -91,9 +91,10 @@ struct LoggingView: View {
                         
                         TextField("Dream Name", text: $title)
                             .foregroundColor(.white)
-                            .font(.system(size: 18, weight: .bold))
+                            .font(.custom("InstrumentSans-SemiBold", size: 18))
                             .tint(.white)
                             .multilineTextAlignment(.center)
+                            .dreamGlow()
                         Spacer()
                         
                         Button(action: {
@@ -265,7 +266,6 @@ struct LoggingView: View {
                                 )
                         })
                         .padding(.bottom, 70)
-                        .padding(.leading, 290)
                     }
                 }
                 .padding()
@@ -288,6 +288,8 @@ struct LoggingView: View {
                     }
                     .transition(.opacity)
                 }
+
+
             }
             .ignoresSafeArea(.keyboard, edges: .bottom)
 
