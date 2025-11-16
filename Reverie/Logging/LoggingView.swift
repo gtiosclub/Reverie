@@ -291,8 +291,7 @@ struct LoggingView: View {
                     .transition(.opacity)
                 }
 
-                TabbarView()
-                    .ignoresSafeArea(edges: .bottom)
+
             }
             .ignoresSafeArea(.keyboard, edges: .bottom)
 
