@@ -202,11 +202,13 @@ struct AnalysisSection<Preview: View, Destination: View, Trailing: View>: View {
                 Spacer()
                 trailingView()
             }
-            .padding(.horizontal)
+            //.padding(.horizontal)
 
             NavigationLink(destination: destination()) {
                 previewContent()
+                    .padding(.leading, -17)
             }
+            
         }
     }
 }

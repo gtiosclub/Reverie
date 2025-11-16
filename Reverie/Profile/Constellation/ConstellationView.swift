@@ -564,7 +564,7 @@ struct ConstellationView: View {
                            .padding(.bottom, 12)
                            .padding(.horizontal, 20)
 
-                       Spacer() /
+                       Spacer() 
                    }
 
                    // MARK: - Popup overlay for selected dream
