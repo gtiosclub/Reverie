@@ -8,11 +8,10 @@
 import SwiftUI
 
 struct NewLogView: View {
-    @Binding var showLogging: Bool
-    
     var body: some View {
-        Button {
-            showLogging = true
+        NavigationLink {
+            LoggingView()
+                .navigationBarBackButtonHidden(true)
         } label: {
             HStack {
                 Image(systemName: "plus")
@@ -40,8 +39,7 @@ struct NewLogView: View {
     }
 }
 
-
 #Preview {
-    NewLogView(showLogging: .constant(false))
+    NewLogView()
         .background(BackgroundView())
 }
