@@ -308,10 +308,11 @@ struct AnalysisView: View {
                             }
                             .padding(.horizontal, 10)
                             .padding(.top, 4)
-                            .cornerRadius(12)
+                            //                                .background(Color.orange.opacity(0.15))
+                            //                                .cornerRadius(12)
                         }
                     )
-
+                    //                        .padding(.top, -2)
                     
                     AnalysisSection (
                         title: "Themes",
@@ -349,9 +350,9 @@ struct AnalysisView: View {
                     //                            //sleep view stuff here
                     //                        )
                 }
-                .padding(.top, 70)
+                .padding(.top, 75)
 //                .padding(.horizontal)
-                .padding(.horizontal, 16)
+                .padding(.bottom, 50)
             }
             LinearGradient(
                 gradient: Gradient(colors: [
@@ -367,7 +368,6 @@ struct AnalysisView: View {
             .ignoresSafeArea(edges: .top)
             .blendMode(.overlay)
             
-           
             HStack {
                 Text("Analysis")
                     .font(.custom("InstrumentSans-Bold", size: 32))
@@ -416,9 +416,9 @@ struct AnalysisView: View {
                     //                        .padding(.top, 8)
                 }
             }
-            .padding(.leading, 17)
-            .padding(.top, 8)
-            .padding(.bottom, 40)
+            .padding(.leading, 32)
+            //                .padding(.top, 12)
+            .padding(.bottom, 30)
             .background(
                 LinearGradient(
                     gradient: Gradient(stops: [
@@ -476,21 +476,18 @@ struct AnalysisSection<Preview: View, Destination: View, Trailing: View>: View {
         VStack(alignment: .leading, spacing: 20) {
             HStack {
                 Text(title)
-                    .font(.system(size:18))
-                    .fontWeight(.semibold)
+                    .font(.title3.bold())
                     .foregroundStyle(.white)
                     .dreamGlow()
                     
                 Spacer()
                 trailingView()
             }
-            //.padding(.horizontal)
+            .padding(.horizontal)
 
             NavigationLink(destination: destination()) {
                 previewContent()
-                    .padding(.leading, -17)
             }
-            
         }
     }
 }
