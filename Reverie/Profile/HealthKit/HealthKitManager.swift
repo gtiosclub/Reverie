@@ -1,4 +1,9 @@
-// HealthKitManager.swift
+//
+//  HealthKitManager.swift
+//  Reverie
+//
+//  Created by Abhiram Raju on 11/13/25.
+//
 
 import Foundation
 import HealthKit
@@ -10,18 +15,18 @@ final class HealthKitManager {
     func requestAuthorization(completion: @escaping (Bool, Error?) -> Void) {
         guard HKHealthStore.isHealthDataAvailable() else {
             completion(false, NSError(domain: "HealthKit", code: 1,
-                                      userInfo: [NSLocalizedDescriptionKey: "Health data not available."]))
+                userInfo: [NSLocalizedDescriptionKey: "Health data not available."]))
             return
         }
 
         var readTypes = Set<HKObjectType>()
-        // Activity / vitals
+
         if let t = HKQuantityType.quantityType(forIdentifier: .heartRate) { readTypes.insert(t) }
         if let t = HKQuantityType.quantityType(forIdentifier: .restingHeartRate) { readTypes.insert(t) }
         if let t = HKQuantityType.quantityType(forIdentifier: .stepCount) { readTypes.insert(t) }
         if let t = HKQuantityType.quantityType(forIdentifier: .distanceWalkingRunning) { readTypes.insert(t) }
         if let t = HKQuantityType.quantityType(forIdentifier: .activeEnergyBurned) { readTypes.insert(t) }
-        // Sleep + related
+
         if let t = HKCategoryType.categoryType(forIdentifier: .sleepAnalysis) { readTypes.insert(t) }
         if let t = HKQuantityType.quantityType(forIdentifier: .respiratoryRate) { readTypes.insert(t) }
         if let t = HKQuantityType.quantityType(forIdentifier: .oxygenSaturation) { readTypes.insert(t) }
@@ -43,7 +48,8 @@ final class HealthKitManager {
         healthStore.execute(q)
     }
 
-    // MARK: Sleep (enum-free)
+    // MARK: Sleep core
+
     private func stageName(for code: Int, modern: Bool) -> String {
         if modern {
             // iOS16+: 0=inBed, 1=asleepUnspecified, 2=awake, 3=core, 4=deep, 5=rem
@@ -66,11 +72,16 @@ final class HealthKitManager {
     }
 
     struct SleepSegment {
-        let start: Date, end: Date, hours: Double
-        let stage: String, rawValue: Int, sourceBundleID: String
+        let start: Date
+        let end: Date
+        let hours: Double
+        let stage: String
+        let rawValue: Int
+        let sourceBundleID: String
     }
 
-    func fetchSleepSegments(start: Date, end: Date,
+    func fetchSleepSegments(start: Date,
+                            end: Date,
                             onlyAppleHealthSource: Bool = true,
                             completion: @escaping ([SleepSegment]) -> Void) {
         guard let sleepType = HKCategoryType.categoryType(forIdentifier: .sleepAnalysis) else {
@@ -84,6 +95,7 @@ final class HealthKitManager {
                               limit: HKObjectQueryNoLimit,
                               sortDescriptors: [sort]) { [weak self] _, results, _ in
             guard let self else { DispatchQueue.main.async { completion([]) }; return }
+
             let modern = ProcessInfo.processInfo.operatingSystemVersion.majorVersion >= 16
             let samples = (results as? [HKCategorySample]) ?? []
             let filtered = onlyAppleHealthSource
@@ -93,7 +105,7 @@ final class HealthKitManager {
             let segs = filtered.map { s in
                 SleepSegment(start: s.startDate,
                              end: s.endDate,
-                             hours: s.endDate.timeIntervalSince(s.startDate)/3600.0,
+                             hours: s.endDate.timeIntervalSince(s.startDate) / 3600.0,
                              stage: self.stageName(for: s.value, modern: modern),
                              rawValue: s.value,
                              sourceBundleID: s.sourceRevision.source.bundleIdentifier)
@@ -104,42 +116,64 @@ final class HealthKitManager {
     }
 
     struct SleepBreakdown {
-        let remHours: Double, deepHours: Double, coreHours: Double
-        let asleepHours: Double, inBedHours: Double, awakeHours: Double
+        let remHours: Double
+        let deepHours: Double
+        let coreHours: Double
+        let asleepHours: Double
+        let inBedHours: Double
+        let awakeHours: Double
         let awakeningsCount: Int
     }
 
     func fetchPreviousNightSleepBreakdown(onlyAppleHealthSource: Bool = true,
                                           completion: @escaping (SleepBreakdown?) -> Void) {
-        let cal = Calendar.current, now = Date()
+        let cal = Calendar.current
+        let now = Date()
         guard
-            let start = cal.date(bySettingHour: 18, minute: 0, second: 0, of: now.addingTimeInterval(-86400)),
+            let start = cal.date(bySettingHour: 18, minute: 0, second: 0,
+                                 of: now.addingTimeInterval(-86400)),
             let end   = cal.date(bySettingHour: 10, minute: 0, second: 0, of: now)
         else { completion(nil); return }
 
-        fetchSleepSegments(start: start, end: end, onlyAppleHealthSource: onlyAppleHealthSource) { segs in
+        fetchSleepSegments(start: start, end: end,
+                           onlyAppleHealthSource: onlyAppleHealthSource) { segs in
             guard !segs.isEmpty else { completion(nil); return }
             let modern = ProcessInfo.processInfo.operatingSystemVersion.majorVersion >= 16
-            var rem=0.0, deep=0.0, core=0.0, asleep=0.0, inBed=0.0, awake=0.0, awakens=0
+
+            var rem = 0.0, deep = 0.0, core = 0.0
+            var asleep = 0.0, inBed = 0.0, awake = 0.0
+            var awakens = 0
+
             for s in segs {
                 switch s.stage {
-                case "REM":  rem+=s.hours; asleep+=s.hours
-                case "Deep": deep+=s.hours; asleep+=s.hours
-                case "Core": core+=s.hours; asleep+=s.hours
-                case "Asleep": asleep+=s.hours; if !modern { core+=s.hours }
-                case "Awake": awake+=s.hours; awakens+=1
-                case "In Bed": inBed+=s.hours
+                case "REM":  rem += s.hours; asleep += s.hours
+                case "Deep": deep += s.hours; asleep += s.hours
+                case "Core": core += s.hours; asleep += s.hours
+                case "Asleep":
+                    asleep += s.hours
+                    if !modern { core += s.hours }
+                case "Awake":
+                    awake += s.hours
+                    awakens += 1
+                case "In Bed":
+                    inBed += s.hours
                 default: break
                 }
             }
-            completion(SleepBreakdown(remHours: rem, deepHours: deep, coreHours: core,
-                                      asleepHours: asleep, inBedHours: inBed, awakeHours: awake,
+
+            completion(SleepBreakdown(remHours: rem,
+                                      deepHours: deep,
+                                      coreHours: core,
+                                      asleepHours: asleep,
+                                      inBedHours: inBed,
+                                      awakeHours: awake,
                                       awakeningsCount: awakens))
         }
     }
 }
 
 // MARK: - Time series
+
 extension HealthKitManager {
     struct DataPoint: Identifiable {
         let id = UUID()
@@ -155,6 +189,7 @@ extension HealthKitManager {
         guard let qType = HKObjectType.quantityType(forIdentifier: identifier) else {
             completion([]); return
         }
+
         let cal = Calendar.current
         let end = cal.startOfDay(for: Date())
         guard let start = cal.date(byAdding: .day, value: -daysBack, to: end) else {
@@ -165,7 +200,7 @@ extension HealthKitManager {
         interval.day = 1
         let anchor = cal.startOfDay(for: Date())
         let predicate = HKQuery.predicateForSamples(withStart: start,
-                                                    end: end.addingTimeInterval(24*3600),
+                                                    end: end.addingTimeInterval(24 * 3600),
                                                     options: [])
 
         let query = HKStatisticsCollectionQuery(quantityType: qType,
@@ -177,12 +212,15 @@ extension HealthKitManager {
         query.initialResultsHandler = { _, results, _ in
             var out: [DataPoint] = []
             results?.enumerateStatistics(from: start, to: end) { stats, _ in
-                let q: HKQuantity? = (options == .cumulativeSum) ? stats.sumQuantity() : stats.averageQuantity()
+                let q: HKQuantity? = (options == .cumulativeSum)
+                    ? stats.sumQuantity()
+                    : stats.averageQuantity()
                 out.append(DataPoint(date: stats.startDate,
                                      value: (q?.doubleValue(for: unit)) ?? 0))
             }
             DispatchQueue.main.async { completion(out) }
         }
+
         healthStore.execute(query)
     }
 
@@ -191,6 +229,7 @@ extension HealthKitManager {
         guard let type = HKCategoryType.categoryType(forIdentifier: .sleepAnalysis) else {
             completion([]); return
         }
+
         let cal = Calendar.current
         let end = cal.startOfDay(for: Date())
         guard let start = cal.date(byAdding: .day, value: -daysBack, to: end) else {
@@ -208,20 +247,25 @@ extension HealthKitManager {
                               sortDescriptors: [sort]) { _, results, _ in
             let samples = (results as? [HKCategorySample]) ?? []
             var buckets: [Date: TimeInterval] = [:]
+
             for s in samples {
                 // exclude Awake (2) & InBed (0); everything else counts as asleep
                 if s.value == 2 || s.value == 0 { continue }
                 let key = cal.startOfDay(for: s.startDate)
                 buckets[key, default: 0] += s.endDate.timeIntervalSince(s.startDate)
             }
+
             var out: [DataPoint] = []
             var d = start
             while d < end {
-                out.append(DataPoint(date: d, value: (buckets[d] ?? 0)/3600.0))
+                out.append(DataPoint(date: d,
+                                     value: (buckets[d] ?? 0) / 3600.0))
                 d = cal.date(byAdding: .day, value: 1, to: d)!
             }
+
             DispatchQueue.main.async { completion(out) }
         }
+
         healthStore.execute(q)
     }
 }
