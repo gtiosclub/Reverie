@@ -370,7 +370,7 @@ struct AnalysisView: View {
             
             HStack {
                 Text("Analysis")
-                    .font(.largeTitle.bold())
+                    .font(.custom("InstrumentSans-Bold", size: 32))
                     .foregroundColor(.white)
                 Spacer()
                 NavigationLink(destination: ConstellationView(dreams: ProfileService.shared.dreams, similarityMatrix: simMatrix, threshold: 0.65)) {
