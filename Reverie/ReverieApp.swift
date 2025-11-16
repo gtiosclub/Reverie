@@ -27,6 +27,20 @@ struct ReverieApp: App {
     @StateObject private var router = DreamRouter.shared
 
     @Environment(\.scenePhase) private var scenePhase
+    
+    init() {
+        HealthKitService.shared.requestAuthorization { success in
+            print("HK authorized:", success)
+
+            if success {
+                Task {
+                    await NotificationService.shared.scheduleNotificationsFromSleep()
+                }
+            }
+        }
+
+        NotificationService.shared.requestAuthorization()
+    }
 
     var body: some Scene {
         WindowGroup {
