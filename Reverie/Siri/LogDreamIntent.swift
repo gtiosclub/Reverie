@@ -5,6 +5,7 @@
 //  Created by amber verma on 11/15/25.
 //
 
+
 import AppIntents
 
 struct LogDreamIntent: AppIntent {
@@ -14,11 +15,11 @@ struct LogDreamIntent: AppIntent {
 
     static var opensApplication = true
 
-    @Parameter(title: "Dream Description", default: "")
+    @Parameter(title: "Dream Description")
     var dream: String
 
     static var parameterSummary: some ParameterSummary {
-        Summary("Log my dream \(\.$dream)")
+        Summary("Log my dream about \(\.$dream)")
     }
 
     func perform() async throws -> some IntentResult {
@@ -26,11 +27,9 @@ struct LogDreamIntent: AppIntent {
         print("📝 Dream received from Siri: \(dream)")
 
         await MainActor.run {
-            print("📨 Setting pendingDreamText on DreamRouter")
             DreamRouter.shared.pendingDreamText = dream
         }
 
-        print("🚀 Returning result and opening Reverie")
         return .result()
     }
 }
