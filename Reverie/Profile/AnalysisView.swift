@@ -308,10 +308,11 @@ struct AnalysisView: View {
                             }
                             .padding(.horizontal, 10)
                             .padding(.top, 4)
-                            .cornerRadius(12)
+                            //                                .background(Color.orange.opacity(0.15))
+                            //                                .cornerRadius(12)
                         }
                     )
-
+                    //                        .padding(.top, -2)
                     
                     AnalysisSection (
                         title: "Themes",
@@ -349,29 +350,27 @@ struct AnalysisView: View {
                     //                            //sleep view stuff here
                     //                        )
                 }
-                .padding(.top, 70)
+                .padding(.top, 75)
 //                .padding(.horizontal)
-                .padding(.horizontal, 16)
+                .padding(.bottom, 50)
             }
             LinearGradient(
                 gradient: Gradient(colors: [
                     Color.black.opacity(0.9),
                     Color.black.opacity(0.6),
                     Color.black.opacity(0.3),
-                    Color.black.opacity(0)
-                ]),
-                startPoint: .top,
-                endPoint: .bottom
-            )
-            .frame(height: 90)
-            .ignoresSafeArea(edges: .top)
-            .blendMode(.overlay)
-            
-           
+                   Color.black.opacity(0)
+               ]),
+               startPoint: .top,
+               endPoint: .bottom
+           )
+           .frame(height: 90)
+           .ignoresSafeArea(edges: .top)
+           .blendMode(.overlay)
+                               
             HStack {
                 Text("Analysis")
-                    .bold()
-                    .font(.system(size: 32, weight: .bold))
+                    .font(.custom("InstrumentSans-Bold", size: 32))
                     .foregroundColor(.white)
                 Spacer()
                 NavigationLink(destination: ConstellationView(dreams: ProfileService.shared.dreams, similarityMatrix: simMatrix, threshold: 0.65)) {
@@ -417,19 +416,19 @@ struct AnalysisView: View {
                     //                        .padding(.top, 8)
                 }
             }
-            .padding(.leading, 17)
-            .padding(.top, 8)
-            .padding(.bottom, 40)
-            .background(
-                LinearGradient(
-                    gradient: Gradient(stops: [
-                        .init(color: DreamModel.Color(hex: "#010023"), location: 0.0),
-                        .init(color: Color.clear, location: 1.0)
-                    ]),
-                    startPoint: .top,
-                    endPoint: .bottom
-                )
-            )
+           .padding(.leading, 32)
+           //                .padding(.top, 12)
+           .padding(.bottom, 30)
+           .background(
+               LinearGradient(
+                   gradient: Gradient(stops: [
+                       .init(color: DreamModel.Color(hex: "#010023"), location: 0.0),
+                       .init(color: Color.clear, location: 1.0)
+                   ]),
+                   startPoint: .top,
+                   endPoint: .bottom
+               )
+           )
             .task {
                 do {
                     try await HealthKitChartService.shared.requestAuthorization()
@@ -477,21 +476,18 @@ struct AnalysisSection<Preview: View, Destination: View, Trailing: View>: View {
         VStack(alignment: .leading, spacing: 20) {
             HStack {
                 Text(title)
-                    .font(.system(size:18))
-                    .fontWeight(.semibold)
+                    .font(.title3.bold())
                     .foregroundStyle(.white)
                     .dreamGlow()
                     
                 Spacer()
                 trailingView()
             }
-            //.padding(.horizontal)
+            .padding(.horizontal)
 
             NavigationLink(destination: destination()) {
                 previewContent()
-                    .padding(.leading, -17)
             }
-            
         }
     }
 }
