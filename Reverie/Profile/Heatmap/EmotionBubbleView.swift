@@ -121,6 +121,9 @@ struct EmotionBubbleChart: View {
                 .font(.subheadline)
                 .font(.system(size: 17, weight: .medium))
                 .foregroundColor(.white)
+                .padding(.top, 25)
+                .padding(.bottom, 20)
+            
             ZStack {
                 //            RoundedRectangle(cornerRadius: 36, style: .continuous)
                 //                .fill(containerColor)
