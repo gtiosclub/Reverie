@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct StartView: View {
-    @Binding var showLogging: Bool
     @EnvironmentObject var ts: TabState
     @State private var isOnHomeScreen = false
     @State private var characters: [CardModel] = FirebaseLoginService.shared.currUser?.dreamCards ?? []
@@ -28,7 +27,7 @@ struct StartView: View {
             
             ScrollView(.vertical) {
                 VStack(spacing: 0) {
-                    HomeView(characters: $characters, showLogging: $showLogging)
+                    HomeView(characters: $characters)
                         .frame(height: UIScreen.main.bounds.height)
                     
                     DreamCardView(
@@ -127,7 +126,7 @@ struct StartView: View {
 }
 
 #Preview {
-    StartView(showLogging: .constant(false))
+    StartView()
         .environment(FirebaseLoginService.shared)
         .environmentObject(TabState())
 }
