@@ -15,6 +15,7 @@ struct StartView: View {
     @State private var selectedCharacter: CardModel? = nil
     @State private var unlockCards: Bool = false
     @State private var showArchive: Bool = false
+    @State private var progress: Float = 1.0
     @State private var lockedCharacters: [CardModel] = []
     @State private var showCardsCarousel: Bool = false
     @State private var currentPage: Int = 0
@@ -36,7 +37,8 @@ struct StartView: View {
                         lockedCharacters: $lockedCharacters,
                         selectedCharacter: $selectedCharacter,
                         unlockCards: $unlockCards,
-                        showArchive: $showArchive
+                        showArchive: $showArchive,
+                        progress: $progress,
                     )
                         .frame(height: UIScreen.main.bounds.height)
                 }
@@ -84,7 +86,8 @@ struct StartView: View {
                     cards: $lockedCharacters,
                     showUnlockView: $unlockCards,
                     showCardsCarousel: $showCardsCarousel,
-                    currentPage: $currentPage
+                    currentPage: $currentPage,
+                    progress: $progress
                 )
 //                .transition(.opacity.combined(with: .scale(scale: 0.9)))
             }
@@ -128,4 +131,3 @@ struct StartView: View {
         .environment(FirebaseLoginService.shared)
         .environmentObject(TabState())
 }
-
