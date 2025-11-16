@@ -30,3 +30,9 @@ struct CaloriesBurnedChartModel: Identifiable {
     let date: Date
     let calories: Double
 }
+
+struct MetricPoint: Identifiable {
+    let id = UUID()
+    let date: Date
+    let value: Double
+}
