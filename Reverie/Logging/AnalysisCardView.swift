@@ -29,9 +29,10 @@ struct AnalysisCardView: View {
 
                 VStack(alignment: .leading, spacing: 16) {
                     Text("Themes")
-                        .font(.system(size: 19).weight(.bold))
+                        .font(.custom("InstrumentSans-SemiBold", size: 19))
                         .foregroundColor(.white)
                         .padding(.horizontal, 20)
+                        .dreamGlow()
 
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 24) {
@@ -80,7 +81,7 @@ struct AnalysisCardView: View {
                                                 .foregroundStyle(DreamModel.tagColors(tag: tag))
                                         }
 
-                                        Text(tag.rawValue.capitalized)        .font(.system(size: 10))
+                                        Text(tag.rawValue.capitalized)        .font(.custom("InstrumentSans-Regular", size: 11))
                                             .foregroundColor(.white.opacity(0.9))
                                     }
                                 }
@@ -93,6 +94,7 @@ struct AnalysisCardView: View {
 
                     if let themeCard = cards.first(where: { $0.title.lowercased().contains("theme") || $0.title.lowercased().contains("motif") }) {
                         AnalysisSectionCard(title: "Symbols", content: Text(themeCard.content))
+                            
                     }
                 }
 
@@ -144,14 +146,15 @@ struct AnalysisSectionCard: View {
             if (title != "") {
                 HStack(spacing: 6) {
                     Text(title)
-                        .font(.system(size: 19).weight(.bold))
+                        .font(.custom("InstrumentSans-SemiBold", size: 19))
                         .foregroundColor(.white)
+                        .dreamGlow()
                     
                 }
             }
 
             content
-                .font(.body)
+                .font(.custom("InstrumentSans-Regular", size: 14))
                 .foregroundColor(.white.opacity(0.95))
                 .lineSpacing(6)
                 .multilineTextAlignment(.leading)
