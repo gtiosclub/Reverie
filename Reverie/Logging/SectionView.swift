@@ -57,7 +57,8 @@ struct SectionView: View {
                     .foregroundColor(.white.opacity(0.8))
                     .font(.system(size: 14, weight: .medium))
             }
-            .padding(.vertical, 16)
+            .padding(.top, 10)
+            .padding(.bottom, 16)
             .padding(.horizontal, 20)
 
             Rectangle()
