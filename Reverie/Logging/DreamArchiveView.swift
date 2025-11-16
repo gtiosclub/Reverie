@@ -175,7 +175,7 @@ struct DreamArchiveView: View {
                 .shadow(color: Color.black.opacity(0.1), radius: 4, y: 2)
                 
                 ZStack(alignment: .top) {
-                    ScrollView {
+                    ScrollView(showsIndicators: false) {
                         VStack(alignment: .leading, spacing: 40) {
                             Spacer(minLength: 30)
                             
@@ -190,7 +190,6 @@ struct DreamArchiveView: View {
                                         Rectangle()
                                             .fill(Color.white.opacity(0.5))
                                             .frame(height: 1)
-                                        //    .padding(.leading, 5)
                                         
                                         ForEach(group.dreams, id: \.id) { dream in
                                             NavigationLink(
@@ -246,7 +245,6 @@ struct DreamArchiveView: View {
                     
                     HStack {
                         ZStack {
-                            // INNER content
                             HStack {
                                 Image(systemName: "magnifyingglass")
                                     .foregroundColor(.white)
@@ -256,14 +254,14 @@ struct DreamArchiveView: View {
                                     .accentColor(.white)
                             }
                             .padding(.horizontal, 15)
-                            .frame(width: 315, height: 52.5)
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 52.5)
                             .background(
                                 Color.black.opacity(0.15)
                                     .clipShape(Capsule())
                                     .glassEffect(.regular)
                             )
 
-                            // OUTER stroke — forced ABOVE EVERYTHING
                             Capsule()
                                 .strokeBorder(
                                     AngularGradient(
@@ -280,10 +278,11 @@ struct DreamArchiveView: View {
                                     ),
                                     lineWidth: 0.2
                                 )
-                                .allowsHitTesting(false)  // important
-                                .frame(width: 315, height: 52.5)
+                                .allowsHitTesting(false)
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 52.5)
                         }
-                        .compositingGroup()               // ensures stroke isn’t blended away
+                        .compositingGroup()
 
                         .shadow(
                             color: Color(red: 60/255, green: 53/255, blue: 151/255)
@@ -301,7 +300,6 @@ struct DreamArchiveView: View {
 
                                 Group {
                                     if filtersOff {
-                                        // 🔹 MATCHES SEARCH BAR EXACTLY (glass + dark tint)
                                         Color.clear
                                             .background(
                                                 Color.black.opacity(0.15)
