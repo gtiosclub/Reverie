@@ -23,34 +23,35 @@ struct HealthKitSleepDashboardView: View {
                     // Top sleep card (graph + compare buttons)
                     SleepGraphsSection(vm: vm)
                         .padding(.top, 8)
+                        .darkGloss()
 
                     // Metric cards below
-                    VStack(spacing: 24) {
-                        MetricSection(title: "Health Metrics") {
-                            MetricRow(label: "Heart Rate (bpm)", value: vm.heartRate)
-                            MetricRow(label: "Resting HR (bpm)", value: vm.restingHeartRate)
-                            MetricRow(label: "Steps", value: vm.stepCount)
-                            MetricRow(label: "Distance (km)", value: vm.distanceWalkingRunning)
-                            MetricRow(label: "Active Energy (kcal)", value: vm.activeEnergy)
-                        }
-
-                        MetricSection(title: "Sleep — Previous Night") {
-                            MetricRow(label: "Asleep (hrs)", value: vm.sleepDuration)
-                            MetricRow(label: "In Bed (hrs)", value: vm.inBedTime)
-                            MetricRow(label: "REM (hrs)", value: vm.remHours)
-                            MetricRow(label: "Deep (hrs)", value: vm.deepHours)
-                            MetricRow(label: "Core (hrs)", value: vm.coreHours)
-                            MetricRow(label: "Awakenings", value: vm.awakenings)
-                            MetricRow(label: "Total (hrs)", value: vm.totalSleepHours)
-                        }
-
-                        MetricSection(title: "Sleep-related Signals") {
-                            MetricRow(label: "Respiratory Rate (min⁻¹)", value: vm.respiratoryRate)
-                            MetricRow(label: "Oxygen Saturation", value: vm.oxygenSaturation)
-                            MetricRow(label: "HRV SDNN (ms)", value: vm.hrv)
-                        }
-                    }
-                    .padding(.bottom, 32)
+//                    VStack(spacing: 24) {
+//                        MetricSection(title: "Health Metrics") {
+//                            MetricRow(label: "Heart Rate (bpm)", value: vm.heartRate)
+//                            MetricRow(label: "Resting HR (bpm)", value: vm.restingHeartRate)
+//                            MetricRow(label: "Steps", value: vm.stepCount)
+//                            MetricRow(label: "Distance (km)", value: vm.distanceWalkingRunning)
+//                            MetricRow(label: "Active Energy (kcal)", value: vm.activeEnergy)
+//                        }
+//
+//                        MetricSection(title: "Sleep — Previous Night") {
+//                            MetricRow(label: "Asleep (hrs)", value: vm.sleepDuration)
+//                            MetricRow(label: "In Bed (hrs)", value: vm.inBedTime)
+//                            MetricRow(label: "REM (hrs)", value: vm.remHours)
+//                            MetricRow(label: "Deep (hrs)", value: vm.deepHours)
+//                            MetricRow(label: "Core (hrs)", value: vm.coreHours)
+//                            MetricRow(label: "Awakenings", value: vm.awakenings)
+//                            MetricRow(label: "Total (hrs)", value: vm.totalSleepHours)
+//                        }
+//
+//                        MetricSection(title: "Sleep-related Signals") {
+//                            MetricRow(label: "Respiratory Rate (min⁻¹)", value: vm.respiratoryRate)
+//                            MetricRow(label: "Oxygen Saturation", value: vm.oxygenSaturation)
+//                            MetricRow(label: "HRV SDNN (ms)", value: vm.hrv)
+//                        }
+//                    }
+//                    .padding(.bottom, 32)
                 }
                 .padding(.horizontal, 20)
             }
@@ -68,11 +69,15 @@ struct HealthKitSleepDashboardView: View {
 private struct SleepGraphsSection: View {
     @ObservedObject var vm: HealthKitSleepViewModel
 
-    @State private var selectedMetric: HealthKitSleepViewModel.MetricKey? = .heartRate
+    @State private var selectedMetric: HealthKitSleepViewModel.MetricKey? = nil
     @State private var daysBack: Int = 14
 
     private let compareMetrics: [HealthKitSleepViewModel.MetricKey] = [
-        .heartRate, .restingHeartRate, .stepCount, .distanceKm, .activeEnergy, .asleepHours
+//        .heartRate, .restingHeartRate, .stepCount, .distanceKm, .activeEnergy, .asleepHours
+        .intranightHR,
+//        .intranightHRV,
+        .intranightRespRate,
+//        .intranightO2,
     ]
 
     private var overlayPoints: [HealthKitManager.DataPoint] {
@@ -173,16 +178,16 @@ private struct SleepGraphsSection: View {
                 }
 
                 // Days slider (for daily series)
-                HStack {
-                    Text("Last \(daysBack) days")
-                        .foregroundColor(.white.opacity(0.7))
-                        .font(.footnote)
-                    Spacer()
-                    Stepper("", value: $daysBack, in: 7...60, step: 7) { _ in
-                        vm.loadDefaultSeries(daysBack: daysBack)
-                    }
-                    .labelsHidden()
-                }
+//                HStack {
+//                    Text("Last \(daysBack) days")
+//                        .foregroundColor(.white.opacity(0.7))
+//                        .font(.footnote)
+//                    Spacer()
+//                    Stepper("", value: $daysBack, in: 7...60, step: 7) { _ in
+//                        vm.loadDefaultSeries(daysBack: daysBack)
+//                    }
+//                    .labelsHidden()
+//                }
             }
         }
         .padding(18)
@@ -216,18 +221,27 @@ private struct SleepGraphsSection: View {
 
     private func metricTitle(_ key: HealthKitSleepViewModel.MetricKey) -> String {
         switch key {
+        case .intranightHR:     return "HR During Sleep"
+//        case .intranightHRV:    return "HRV During Sleep"
+        case .intranightRespRate: return "Resp Rate"
+//        case .intranightO2:     return "O2 Saturation"
         case .heartRate:        return "Heart Rate"
         case .restingHeartRate: return "Resting HR"
         case .stepCount:        return "Steps"
         case .distanceKm:       return "Distance"
         case .activeEnergy:     return "Active Energy"
         case .asleepHours:      return "Sleep Duration"
+            
         default:                return key.label
         }
     }
 
     private func metricIcon(_ key: HealthKitSleepViewModel.MetricKey) -> String {
         switch key {
+        case .intranightHR:                 return "heart.circle.fill"
+//        case .intranightHRV:                return "waveform.path.ecg"
+        case .intranightRespRate:           return "lungs.fill"
+//        case .intranightO2:                 return "drop.fill"
         case .heartRate, .restingHeartRate: return "heart.fill"
         case .stepCount:                    return "figure.walk"
         case .distanceKm:                   return "map"
@@ -388,12 +402,12 @@ private struct SleepOverlayChart: View {
             // FOREGROUND: selected metric as a filled “graph” + line
             if !metricPoints.isEmpty {
                 Chart(metricPoints) { point in
-                    AreaMark(
-                        x: .value("Time", point.date),
-                        y: .value("Value", point.value)
-                    )
-                    .interpolationMethod(.catmullRom)
-                    .opacity(0.35)
+//                    AreaMark(
+//                        x: .value("Time", point.date),
+//                        y: .value("Value", point.value)
+//                    )
+//                    .interpolationMethod(.catmullRom)
+//                    .opacity(0.35)
 
                     LineMark(
                         x: .value("Time", point.date),
