@@ -207,17 +207,20 @@ struct AnalysisSection<Preview: View, Destination: View, Trailing: View>: View {
         VStack(alignment: .leading, spacing: 20) {
             HStack {
                 Text(title)
-                    .font(.title3.bold())
+                    .font(.system(size:18))
+                    .fontWeight(.semibold)
                     .foregroundStyle(.white)
                     .dreamGlow()
                     
                 Spacer()
                 trailingView()
             }
-            .padding(.horizontal)
+            //.padding(.horizontal)
 
+            
             NavigationLink(destination: destination()) {
                 previewContent()
+                    .padding(.leading, -17)
             }
         }
     }
