@@ -238,7 +238,7 @@ struct HealthChartView: View {
                     }
                 }
                 .chartXAxis {
-                    AxisMarks(values: .automatic(desiredCount: 14)) { value in
+                    AxisMarks(values: .automatic(desiredCount: 6)) { value in
                         AxisGridLine()
                         AxisValueLabel(format: .dateTime.month(.abbreviated), centered: true)
                     }
