@@ -22,7 +22,7 @@ struct AnalysisView: View {
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading, spacing: 20) {
                     AnalysisSection(
-                        title: "Insights",
+                        title: "Activity",
                         previewContent: {
                             VStack(alignment: .leading, spacing: 8) {
                                 DreamFrequencyChartView(isHomeView: true)
@@ -100,7 +100,7 @@ struct AnalysisView: View {
            .blendMode(.overlay)
                                
             HStack {
-                Text("Analysis")
+                Text("Insights")
                     .font(.custom("InstrumentSans-Bold", size: 32))
                     .foregroundColor(.white)
                 Spacer()
