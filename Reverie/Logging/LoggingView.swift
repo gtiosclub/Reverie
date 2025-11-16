@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct LoggingView: View {
-    @EnvironmentObject var ts: TabState
     @State private var dream = ""
     @State private var title = ""
     @State private var date = Date()
@@ -40,8 +39,7 @@ struct LoggingView: View {
                     
                     HStack {
                         Button(action: {
-                            ts.activeTab = .home
-//                            dismiss()
+                            dismiss()
                         }) {
                             ZStack {
                                 Circle()
@@ -296,9 +294,6 @@ struct LoggingView: View {
             .ignoresSafeArea(.keyboard, edges: .bottom)
 
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .onAppear {
-                ts.activeTab = .logging
-            }
         }
     }
 }
@@ -312,5 +307,4 @@ extension UIApplication {
 
 #Preview {
     LoggingView()
-        .environmentObject(TabState())
 }

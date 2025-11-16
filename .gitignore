@@ -60,3 +60,9 @@ StableDiffusionResources/
 Reverie/StableDiffusionResources/merges.txt
 Reverie/StableDiffusionResources/vocab.json
 
+# Xcode
+*.xcodeproj/
+*.xcworkspace/
+DerivedData/
+xcuserdata/
+.DS_Store
