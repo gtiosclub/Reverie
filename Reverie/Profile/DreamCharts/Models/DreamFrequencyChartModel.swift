@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct DreamFrequencyChartModel: Identifiable {
+struct DreamFrequencyChartModel: Identifiable, Equatable {
     let id = UUID()
     let date: Date
     let count: Int
