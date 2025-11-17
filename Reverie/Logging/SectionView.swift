@@ -31,28 +31,28 @@ struct SectionView: View {
                             .foregroundColor(.white)
                             .lineLimit(1)
                             .dreamGlow()
-
+                        
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack(spacing: 6) {
                                 ForEach(tags, id: \.self) { tag in
                                     Image(systemName: DreamModel.tagImages(tag: tag))
                                         .foregroundColor(DreamModel.tagColors(tag: tag))
                                         .font(.headline)
-//                                        .dreamGlow()
+                                    //                                        .dreamGlow()
                                 }
                             }
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
                     }
-
+                    
                     Text(date)
                         .font(.subheadline)
                         .foregroundColor(.white.opacity(0.6))
                 }
                 .padding(.leading, -9)
-
+                
                 Spacer()
-
+                
                 Image(systemName: "chevron.right")
                     .foregroundColor(.white.opacity(0.8))
                     .font(.system(size: 14, weight: .medium))
@@ -60,11 +60,13 @@ struct SectionView: View {
             .padding(.top, 10)
             .padding(.bottom, 16)
             .padding(.horizontal, 20)
-
-            Rectangle()
-                .fill(Color.white.opacity(0.5))
-                .frame(height: 1)
-              //  .padding(.leading, 5)
+            
+            if line {
+                Rectangle()
+                    .fill(Color.white.opacity(0.5))
+                    .frame(height: 1)
+                //  .padding(.leading, 5)
+            }
         }
         .background(Color.clear)
     }
