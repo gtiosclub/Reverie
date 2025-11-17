@@ -61,11 +61,7 @@ private struct SleepGraphsSection: View {
             
             
             // REM summary
-            Text(remSummaryText)
-                .foregroundColor(.white.opacity(0.7))
-                .font(.system(size: 14))
-                .padding(.horizontal, 20)
-                .padding(.top, 10)
+
             //.padding(.bottom, 4)
             
             // Date pill
@@ -74,13 +70,13 @@ private struct SleepGraphsSection: View {
             }) {
                 HStack(spacing: 0) {
                     Text("Analyze sleep for: ")
-                        .foregroundColor(.white.opacity(0.7))
-                        .font(.system(size: 14))
+                        .foregroundColor(.white)
+                        .font(.system(size: 16))
                     /*Image(systemName: "calendar")
                         .foregroundColor(.white)*/
                     Text(previousNightString)
                         .foregroundColor(Color(red: 95/255, green: 85/255, blue: 236/255 ))
-                        .font(.system(size: 14, weight: .bold))
+                        .font(.system(size: 16, weight: .bold))
 
                 }
                 .padding(.horizontal, 20)
@@ -94,6 +90,11 @@ private struct SleepGraphsSection: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             //.padding(.horizontal,)
             
+            remSummaryText
+                .foregroundColor(.white)
+                .font(.system(size: 14))
+                .padding(.horizontal, 20)
+                .padding(.top, 10)
             
             
             // CHART CARD - All content inside the darkGloss frame
@@ -238,16 +239,20 @@ private struct SleepGraphsSection: View {
         return formatter.string(from: selectedDate)
     }
     
-    private var remSummaryText: String {
+    private var remSummaryText:Text {
         guard let hours = Double(vm.remHours) else {
-            return "REM sleep data will appear here once available."
+            return Text ("REM sleep data will appear here once available.")
         }
         let h = Int(hours)
         let minutes = Int((hours - Double(h)) * 60.0)
         if h == 0 && minutes == 0 {
-            return "No REM sleep recorded last night."
+            return Text("No REM sleep recorded last night.")
         }
-        return "You spent \(h) hours and \(minutes) minutes in REM sleep."
+        return  Text("You spent ").foregroundColor(.white.opacity(0.8)) +
+        Text("\(h) hours").fontWeight(.heavy) +
+        Text(" and ").fontWeight(.heavy) +
+        Text("\(minutes) minutes").fontWeight(.heavy) +
+        Text(" in REM sleep.").foregroundColor(.white.opacity(0.8))
     }
     
     private func metricTitle(_ key: HealthKitSleepViewModel.MetricKey) -> String {
