@@ -452,8 +452,8 @@ struct SaveDreamView: View {
             
             createdDream = try await FirebaseDreamService.shared.fetchDream(dreamID: createdDreamID)
             FirebaseLoginService.shared.currUser?.dreams.append(createdDream!)
-//            FirebaseDCService.shared.generateImage(for: createdDream!) // COMMMENT THIS OUT WHEN HARD CODING
-//            FirebaseDCService.shared.generateImageForDC(for: createdDream!) // COMMMENT THIS OUT WHEN HARD CODING
+//            FirebaseDCService.shared.generateImage(for: createdDream!) // COMMMENT THIS OUT WHEN PULLING DOG
+//            FirebaseDCService.shared.generateImageForDC(for: createdDream!) // COMMMENT THIS OUT WHEN PULLING DOG
             navigateToDreamEntry = true
             
             updateTagDescriptions(tags: newDream.tags)
