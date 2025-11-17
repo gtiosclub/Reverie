@@ -14,17 +14,24 @@ struct TabRouting: View {
         ZStack {
             switch ts.activeTab {
             case .home:
-                StartView()
+                NavigationStack(path: $ts.homePath) { StartView() }
             case .archive:
-                DreamArchiveView()
+                NavigationStack(path: $ts.archivePath) {
+                    DreamArchiveView()
+                        .navigationDestination(for: DreamModel.self) { dream in
+                            DreamEntryView(dream: dream, backToArchive: true)
+                        }
+                }
             case .analytics:
-                AnalysisView()
+                NavigationStack(path: $ts.analyticsPath) { AnalysisView() }
             default: LoggingView()
             }
 
-            VStack {
-                Spacer()
-                TabbarView()
+            if ts.showTabBar {
+                VStack {
+                    Spacer()
+                    TabbarView()
+                }
             }
         }
     }
