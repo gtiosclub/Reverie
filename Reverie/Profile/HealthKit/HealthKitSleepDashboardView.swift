@@ -156,14 +156,7 @@ private struct SleepGraphsSection: View {
             
             // COMPARE SECTION (outside the card)
             VStack(alignment: .leading, spacing: 12) {
-                Text("Compare to")
-                    .font(.system(size: 18))
-                    .fontWeight(.semibold)
-                    .dreamGlow()
-                    .foregroundColor(.white)
-                    //.frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.horizontal, 20)
-                    .padding(.bottom, 4)
+               
                 
                 let cols = [GridItem(.flexible()), GridItem(.flexible())]
                 LazyVGrid(columns: cols, spacing: 12) {
@@ -365,6 +358,7 @@ private struct DreamPredictionSummary: View {
             }
         }
         .padding(16)
+        .padding(.top, -10)
 //        .background(
 //            RoundedRectangle(cornerRadius: 20)
 //                .fill(Color.white.opacity(0.04))
