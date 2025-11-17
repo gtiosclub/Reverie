@@ -96,7 +96,9 @@ struct ProfileView: View {
         }
         .onAppear {
             ts.activeTab = .analytics
+            ts.showTabBar = true
         }
+        .onDisappear { withAnimation(nil) { ts.showTabBar = false } }
     }
 }
 

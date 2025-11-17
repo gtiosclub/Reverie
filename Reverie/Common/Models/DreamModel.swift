@@ -10,7 +10,7 @@ import FoundationModels
 import SwiftUI
 
 
-struct DreamModel: Decodable {
+struct DreamModel: Decodable, Hashable {
     var id: String
     var userID: String
     var title: String
