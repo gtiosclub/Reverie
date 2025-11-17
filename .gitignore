@@ -66,3 +66,6 @@ Reverie/StableDiffusionResources/vocab.json
 DerivedData/
 xcuserdata/
 .DS_Store
+
+# Firebase config
+GoogleService-Info.plist
