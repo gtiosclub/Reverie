@@ -551,7 +551,10 @@ struct DreamArchiveView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .onAppear {
             ts.activeTab = .archive
+            ts.showTabBar = true
         }
+        .onDisappear { withAnimation(nil) { ts.showTabBar = false } }
+        
         .preferredColorScheme(.dark)
         .overlay(alignment: .bottom) {
             TabbarView()

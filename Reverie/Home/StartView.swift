@@ -93,7 +93,9 @@ struct StartView: View {
         }
         .onAppear {
             ts.activeTab = .home
+//            ts.showTabBar = true
         }
+//        .onDisappear { withAnimation(nil) { ts.showTabBar = false } }
         .task {
             self.lockedCharacters = characters.filter { !$0.isUnlocked }
         }
