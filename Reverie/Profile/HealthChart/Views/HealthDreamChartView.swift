@@ -18,10 +18,10 @@ enum HealthMetric: String, CaseIterable, Identifiable {
 }
 
 enum HealthMetricExpanded: String, CaseIterable, Identifiable {
-    case sleep = "Hours Slept"
-    case exercise = "Exercise Minutes"
-    case calories = "Calories Burned"
-    case steps = "Steps Taken"
+    case sleep = "Avg Hours Slept"
+    case exercise = "Avg Exercise Minutes"
+    case calories = "Avg Calories Burned"
+    case steps = "Avg Steps Taken"
 
     var id: String { rawValue }
     
@@ -47,7 +47,10 @@ struct HealthDreamChartView: View {
     @State var isHomeView: Bool
     
     @State var selectedMetric: HealthMetric = .sleep
+    @State private var allInsights: [HealthMetric: DreamCorrelationInsight] = [:]
     
+
+
     var selectedMetricExpanded: HealthMetricExpanded {
         HealthMetricExpanded(from: selectedMetric)
     }
@@ -58,6 +61,10 @@ struct HealthDreamChartView: View {
     
     private var exerciseData: [ExerciseMinutesChartModel] {
         dreamHealthData.map { ExerciseMinutesChartModel(date: $0.date, minutes: $0.exerciseMinutes) }
+    }
+    
+    private var currentInsight: DreamCorrelationInsight? {
+        allInsights[selectedMetric]
     }
     
     private var stepsData: [StepsChartModel] {
@@ -72,10 +79,14 @@ struct HealthDreamChartView: View {
         private var maxSteps: Int { Int(ceil(stepsData.map { Double($0.steps) }.max() ?? 5000)) }
         private var maxCalories: Int { Int(ceil(caloriesData.map { $0.calories }.max() ?? 200)) }
     
+
     var body: some View {
         if !isHomeView {
-            
-
+//            allInsights = DreamCorrelationService.shared.findAllOptimalValues(
+//                dreams: dreamData,
+//                healthData: dreamHealthData
+//            )
+//
             Picker("Metric", selection: $selectedMetric) {
                 ForEach(HealthMetric.allCases) { metric in
                     Text(metric.rawValue).tag(metric)
@@ -83,7 +94,8 @@ struct HealthDreamChartView: View {
             }
             .pickerStyle(SegmentedPickerStyle())
             .padding(.horizontal, 20)
-            .padding(.bottom, 20)
+            .padding(.top, 20)
+            .padding(.bottom, 10)
         }
         VStack(alignment: .leading, spacing: 14) {
             VStack(alignment: .leading, spacing: 14) {
@@ -107,6 +119,13 @@ struct HealthDreamChartView: View {
                     }
                 }
                 .padding(.top, 6)
+                
+                if let insight = currentInsight {
+                    Text(insight.message)
+                        .foregroundColor(.white.opacity(0.8))
+                        .font(.subheadline)
+                        .multilineTextAlignment(.leading)
+                }
                 
                 Rectangle()
                     .fill(Color.white.opacity(0.15))
@@ -135,6 +154,43 @@ struct HealthDreamChartView: View {
         .padding()
         .darkGloss()
         
+//        .onChange(of: dreamData) {
+//            // Calculate all insights once when view appears
+//            print("dream data changed")
+//            allInsights = DreamCorrelationService.shared.findAllOptimalValues(
+//                dreams: dreamData,
+//                healthData: dreamHealthData
+//            )
+//        }
+//        .task() {
+//            allInsights = DreamCorrelationService.shared.findAllOptimalValues(
+//                dreams: dreamData,
+//                healthData: dreamHealthData
+//            )
+//        }
+        .onChange(of: dreamHealthData) { oldValue, newValue in
+            // Only calculate if we have actual data
+            if !newValue.isEmpty {
+                print("🔍 Health data updated, recalculating insights...")
+                allInsights = DreamCorrelationService.shared.findAllOptimalValues(
+                    dreams: dreamData,
+                    healthData: newValue
+                )
+                print("🔍 Insights calculated: \(allInsights.keys)")
+            }
+        }
+        .task {
+            // Initial calculation if data is already available
+            if !dreamHealthData.isEmpty {
+                print("🔍 Initial calculation...")
+                allInsights = DreamCorrelationService.shared.findAllOptimalValues(
+                    dreams: dreamData,
+                    healthData: dreamHealthData
+                )
+                print("🔍 Insights calculated: \(allInsights.keys)")
+            }
+        }
+//
                 
         // .padding(.bottom, 5)
     }

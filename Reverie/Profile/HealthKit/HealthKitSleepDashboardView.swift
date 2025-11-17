@@ -90,10 +90,10 @@ private struct SleepGraphsSection: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             //.padding(.horizontal,)
             
-            remSummaryText
-                .foregroundColor(.white)
-                .font(.system(size: 14))
-                .padding(.horizontal, 20)
+//            remSummaryText
+//                .foregroundColor(.white)
+//                .font(.system(size: 14))
+//                .padding(.horizontal, 20)
 //                .padding(.top, 10)
             
             
@@ -116,6 +116,11 @@ private struct SleepGraphsSection: View {
                        
                     }
                     .padding(.top, 6)
+                    
+                    remSummaryText
+                        .foregroundColor(.white)
+                        .font(.system(size: 14))
+//                        .padding(.horizontal, 20)
                     
                     Rectangle()
                         .fill(Color.white.opacity(0.15))
@@ -150,25 +155,25 @@ private struct SleepGraphsSection: View {
                     .padding(.horizontal, 67)
                 }
                 
-                VStack(alignment: .leading, spacing: 12) {
-                    let cols = [GridItem(.flexible()), GridItem(.flexible())]
-                    LazyVGrid(columns: cols, spacing: 12) {
-                        ForEach(compareMetrics, id: \.self) { metric in
-                            MetricButton(
-                                title: metricTitle(metric),
-                                systemImage: metricIcon(metric),
-                                isSelected: selectedMetrics.contains(metric),
-                                accentColor: colorForMetric(metric)
-                            ) {
-                                if selectedMetrics.contains(metric) {
-                                    selectedMetrics.remove(metric)
-                                } else {
-                                    selectedMetrics.insert(metric)
-                                }
-                            }
-                        }
-                    }.padding(.horizontal, 20)
-                }
+//                VStack(alignment: .leading, spacing: 12) {
+//                    let cols = [GridItem(.flexible()), GridItem(.flexible())]
+//                    LazyVGrid(columns: cols, spacing: 12) {
+//                        ForEach(compareMetrics, id: \.self) { metric in
+//                            MetricButton(
+//                                title: metricTitle(metric),
+//                                systemImage: metricIcon(metric),
+//                                isSelected: selectedMetrics.contains(metric),
+//                                accentColor: colorForMetric(metric)
+//                            ) {
+//                                if selectedMetrics.contains(metric) {
+//                                    selectedMetrics.remove(metric)
+//                                } else {
+//                                    selectedMetrics.insert(metric)
+//                                }
+//                            }
+//                        }
+//                    }.padding(.horizontal, 20)
+//                }
 
             }
         
