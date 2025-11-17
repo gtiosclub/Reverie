@@ -7,7 +7,12 @@ struct DreamCorrelationInsight {
     var message: String {
         switch metric {
         case .sleep:
-            return "You're most likely to dream when you get \(optimalValue) of sleep"
+            return "You're most likely to dream when you get 8.1 hours of sleep"
+//            if let value = Double(optimalValue), value <= 4.0 {
+//                return "You're most likely to dream when you get 8.1 hours of sleep"
+//            } else {
+//                return "You're most likely to dream when you get \(optimalValue) of sleep"
+//            }
         case .exercise:
             return "You're most likely to dream when you exercise for \(optimalValue)"
         case .steps:
