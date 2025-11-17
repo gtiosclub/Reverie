@@ -17,7 +17,7 @@ struct HealthChartLegendView: View {
                 Circle()
                     .fill(.indigo)
                     .frame(width: 10, height: 10)
-                Text("Dreams/Week")
+                Text("Dream Frequency")
                     .font(.caption)
                     .foregroundColor(.white)
             }

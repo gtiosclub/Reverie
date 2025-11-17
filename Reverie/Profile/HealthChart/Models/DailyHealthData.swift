@@ -7,7 +7,7 @@
 
 import HealthKit
 
-struct DailyHealthData {
+struct DailyHealthData : Equatable{
     var date: Date
     var sleepDuration: TimeInterval
     var remSleep: TimeInterval
