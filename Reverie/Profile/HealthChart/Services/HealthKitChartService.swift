@@ -38,7 +38,7 @@ class HealthKitChartService {
         let calendar = Calendar.current
         
         let endDate = Date()
-        guard let startDate = calendar.date(byAdding: .weekOfYear, value: -7, to: endDate) else {
+        guard let startDate = calendar.date(byAdding: .weekOfYear, value: -13, to: endDate) else {
             throw NSError(domain: "", code: -1)
         }
         
@@ -155,7 +155,7 @@ class HealthKitChartService {
                 var weeklyBuckets: [Date: [(Double,Double,Double,Double,Int)]] = [:]
                 
                 // Build 49 days of points → bucket into weeks
-                let days = (0..<49).compactMap { offset -> Date? in
+                let days = (0..<91).compactMap { offset -> Date? in
                     calendar.date(byAdding: .day, value: -offset, to: endDate)
                 }
                 

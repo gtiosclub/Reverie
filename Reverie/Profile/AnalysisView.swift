@@ -70,9 +70,9 @@ struct AnalysisView: View {
                         trailingView: {EmptyView()}
                                             //sleep view stuff here
                     )
-                    Button("LOG OUT") {
-                        FirebaseLoginService().signOut()
-                    }
+//                    Button("LOG OUT") {
+//                        FirebaseLoginService().signOut()
+//                    }
                                         
                     //                        .padding(.bottom, 30) // test
                     
@@ -247,11 +247,11 @@ func moodSummary() -> Text {
     }
     
     let prefix = Text("Your average dream mood is ")
-        .foregroundColor(baseColor)
         .font(.subheadline)
         .foregroundColor(.white.opacity(0.8))
     let suffix = Text(".")
-        .foregroundColor(baseColor)
+        .font(.subheadline)
+        .foregroundColor(.white.opacity(0.8))
     let highlight = Text(dominantEmotion.rawValue.capitalized)
         .foregroundColor(DreamModel.emotionColors(emotion: dominantEmotion))
         .fontWeight(.semibold)
