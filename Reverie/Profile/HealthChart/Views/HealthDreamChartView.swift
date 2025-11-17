@@ -75,9 +75,9 @@ struct HealthDreamChartView: View {
         dreamHealthData.map { CaloriesBurnedChartModel(date: $0.date, calories: $0.caloriesBurned) }
     }
     private var maxSleep: Int { Int(ceil(sleepData.map { $0.hours }.max() ?? 10)) }
-        private var maxExercise: Int { Int(ceil(exerciseData.map { $0.minutes }.max() ?? 20)) }
-        private var maxSteps: Int { Int(ceil(stepsData.map { Double($0.steps) }.max() ?? 5000)) }
-        private var maxCalories: Int { Int(ceil(caloriesData.map { $0.calories }.max() ?? 200)) }
+    private var maxExercise: Int { Int(ceil(exerciseData.map { $0.minutes }.max() ?? 20)) }
+    private var maxSteps: Int { Int(ceil(stepsData.map { Double($0.steps) }.max() ?? 5000)) }
+    private var maxCalories: Int { Int(ceil(caloriesData.map { $0.calories }.max() ?? 200)) }
     
 
     var body: some View {
@@ -205,19 +205,19 @@ struct HealthChartView: View {
     
     @State var maxDream: Int = 10
      var maxSleep: Int
-        var maxExercise: Int
-        var maxSteps: Int
-        var maxCalories: Int
+    var maxExercise: Int
+    var maxSteps: Int
+    var maxCalories: Int
     @Binding var selectedMetric: HealthMetric
     @Binding var isHomeView: Bool
     
     var dreamDataPercent: [DreamRelativeFrequencyChartModel] {
-        let totalCount = dreamData.map { $0.count }.reduce(0, +)
+        let maxCount = dreamData.map { $0.count }.max() ?? 20
         return dreamData.map { data in
             DreamRelativeFrequencyChartModel(
                 id: data.id,
                 date: data.date,
-                count: Int(Double(data.count) / (Double(totalCount) + 0.001) * 100)
+                count: Int(Double(data.count) / (Double(maxCount) + 0.001) * 100)
             )
         }
     }
@@ -305,7 +305,7 @@ struct HealthChartView: View {
                     }
                 }
                 .chartXAxis {
-                    AxisMarks(values: .automatic(desiredCount: 6)) { value in
+                    AxisMarks(values: .automatic(desiredCount: 10)) { value in
                         AxisGridLine()
                         AxisValueLabel(format: .dateTime.month(.abbreviated), centered: true)
                     }
