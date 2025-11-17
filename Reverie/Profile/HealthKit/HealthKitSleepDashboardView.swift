@@ -225,9 +225,9 @@ private struct SleepGraphsSection: View {
         var body: some View {
             NavigationView {
                 VStack(spacing: 20) {
-                    Text("Select Night")
-                        .font(.headline)
-                        .padding(.top)
+//                    Text("Select Night")
+//                        .font(.headline)
+//                        .padding(.top)
                     
                     DatePicker(
                         "Date",
@@ -238,8 +238,10 @@ private struct SleepGraphsSection: View {
                     .datePickerStyle(.graphical)
                     .padding()
                     
-                    Spacer()
+//                    Spacer()
                 }
+                .navigationTitle("Select Night")
+                .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItem(placement: .confirmationAction) {
                         Button("Done") {
