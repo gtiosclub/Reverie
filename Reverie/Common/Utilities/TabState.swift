@@ -25,4 +25,8 @@ enum TabType {
 
 class TabState: ObservableObject {
     @Published var activeTab: TabType = .home
+    @Published var showTabBar = false
+    @Published var homePath = NavigationPath()
+    @Published var archivePath = NavigationPath()
+    @Published var analyticsPath = NavigationPath()
 }

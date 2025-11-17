@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct LoggingView: View {
+    @EnvironmentObject var ts: TabState
+    
     @State private var dream = ""
     @State private var title = ""
     @State private var date = Date()
@@ -30,7 +32,7 @@ struct LoggingView: View {
        }
     
     var body: some View {
-        NavigationStack {
+//        NavigationStack {
             ZStack(alignment: .bottom) {
                 BackgroundView()
                     .ignoresSafeArea()
@@ -295,9 +297,12 @@ struct LoggingView: View {
 
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .navigationBarHidden(true)
+            .onAppear {
+                ts.showTabBar = false
+            }
 
         }
-    }
+//    }
 }
 
 extension UIApplication {

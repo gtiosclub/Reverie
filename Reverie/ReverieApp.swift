@@ -44,18 +44,18 @@ struct ReverieApp: App {
 
     var body: some Scene {
         WindowGroup {
-            NavigationStack {
+//            NavigationStack {
                 AuthRoutingView()
                     .navigationDestination(isPresented: $router.navigateToLog) {
                         LoggingView(initialText: router.injectedDreamText)
                     }
-            }
-            .environmentObject(tabState)
-            .onChange(of: scenePhase) { phase in
-                if phase == .active {
-                    handlePendingDreamIfNeeded()
+//            }
+                .environmentObject(tabState)
+                .onChange(of: scenePhase) { phase in
+                    if phase == .active {
+                        handlePendingDreamIfNeeded()
+                    }
                 }
-            }
         }
     }
 
