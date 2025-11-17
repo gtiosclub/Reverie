@@ -266,7 +266,6 @@ struct LoggingView: View {
                                         .glassEffect()
                                 )
                         })
-                        .padding(.bottom, 70)
                     }
                 }
                 .padding()
