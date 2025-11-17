@@ -107,6 +107,7 @@ struct SaveDreamView: View {
             BackgroundView()
                     .ignoresSafeArea()
             
+            
             HStack {
                 Button(action: {
                     presentationMode.wrappedValue.dismiss()
@@ -217,7 +218,7 @@ struct SaveDreamView: View {
                 .buttonStyle(.plain)
                 .padding(.leading, 8)
             }
-            .padding(.horizontal, 10)
+            .padding(.horizontal, 20)
 
             VStack(alignment: .leading, spacing: 20) {
                 
