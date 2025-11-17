@@ -111,6 +111,51 @@ class FirebaseDreamService {
         
     }
     
+    func createDreamWithImage(dream: DreamModel) async throws -> String {
+        var newDream = dream
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .short
+        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+        
+        let tagArray = dream.tags.map { $0.rawValue }
+        
+        print("USER ID: \(dream.userID)")
+        
+        let dreamData: [String: Any] = [
+            "date": dream.date,
+            "emotion": dream.emotion.rawValue,
+            "generatedContent": dream.generatedContent,
+            "title": dream.title,
+            "loggedContent": dream.loggedContent,
+            "tags": tagArray,
+            "userID": dream.userID,
+            "finishedDream": dream.finishedDream,
+            "image": dream.image,
+        ]
+        
+        do {
+            let ref = try await fb.db.collection("DREAMS").addDocument(data: dreamData)
+            let dreamRef = ref.documentID
+            print("Added Data with ref: \(dreamRef)")
+            
+            try await ref.updateData(["id": dreamRef])
+            newDream.id = dreamRef
+
+            let userRef = fb.db.collection("USERS").document(dream.userID)
+            try await userRef.updateData([
+                "dreams": FieldValue.arrayUnion([dreamRef])
+            ])
+            
+            print("Appended \(dreamRef) to user \(dream.userID)")
+            
+            return dreamRef
+        } catch {
+            print("Error adding document: \(error)")
+            throw error
+        }
+        
+    }
+    
     func storeImages(dream: DreamModel, urls: [String]) async {
         do {
             try await self.fb.db.collection("DREAMS").document(dream.id).updateData(["image": urls])
