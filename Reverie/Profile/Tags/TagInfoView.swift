@@ -59,7 +59,7 @@ struct TagInfoView: View {
                                 .frame(width: 1.2, height: 50)
                                 .foregroundColor(.white)
                                 .padding(.top, -16)
-                                .padding(.bottom, -8)
+                                .padding(.bottom, -30)
                         }
                         .padding(.top, 110)
 
