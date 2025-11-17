@@ -22,7 +22,7 @@ struct HealthView: View {
                     VStack {
                         HealthDreamChartView(dreamHealthData: $dreamHealthData, isHomeView: isHomeView)
                         .padding(.bottom, 40)
-                        .padding(.top, -40)
+                        .padding(.top, -25)
                         HealthKitSleepDashboardView()
                             .padding(.horizontal, -22)
                     }
