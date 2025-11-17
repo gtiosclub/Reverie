@@ -18,17 +18,15 @@ struct HealthView: View {
             ZStack (alignment: .top){
                 BackgroundView()
                     .ignoresSafeArea()
-
                 ScrollView {
                     VStack {
                         HealthDreamChartView(dreamHealthData: $dreamHealthData, isHomeView: isHomeView)
+                        .padding(.bottom, 40)
+                        .padding(.top, -40)
                         HealthKitSleepDashboardView()
                             .padding(.horizontal, -22)
                     }
-                    .padding(.bottom, 80)
                     .padding(.top, 90)
-                
-                    
                 }
                     LinearGradient(
                            gradient: Gradient(colors: [
