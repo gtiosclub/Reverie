@@ -321,6 +321,8 @@ private struct SleepGraphsSection: View {
             Text(label)
                 .font(.caption2)
                 .foregroundColor(.white.opacity(0.8))
+                .lineLimit(1)
+                .fixedSize(horizontal: true, vertical: false)
         }
     }
 }
