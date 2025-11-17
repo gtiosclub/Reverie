@@ -70,9 +70,9 @@ struct AnalysisView: View {
                         trailingView: {EmptyView()}
                                             //sleep view stuff here
                     )
-                    Button("LOG OUT") {
-                        FirebaseLoginService().signOut()
-                    }
+//                    Button("LOG OUT") {
+//                        FirebaseLoginService().signOut()
+//                    }
                                         
                     //                        .padding(.bottom, 30) // test
                     
