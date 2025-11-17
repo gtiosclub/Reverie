@@ -15,6 +15,7 @@ struct AnalysisView: View {
     
     @State var dreamHealthData: [DailyHealthData] = []
     
+//    private var analysisDreamFreq = DreamCorelationService.shared.findAllOptimalValues()
     var body: some View {
         ZStack(alignment:.top) {
             BackgroundView()
@@ -69,6 +70,9 @@ struct AnalysisView: View {
                         trailingView: {EmptyView()}
                                             //sleep view stuff here
                     )
+                    Button("LOG OUT") {
+                        FirebaseLoginService().signOut()
+                    }
                                         
                     //                        .padding(.bottom, 30) // test
                     
