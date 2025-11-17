@@ -32,14 +32,14 @@ struct ReverieApp: App {
         HealthKitService.shared.requestAuthorization { success in
             print("HK authorized:", success)
 
-            if success {
-                Task {
-                    await NotificationService.shared.scheduleNotificationsFromSleep()
-                }
-            }
+//            if success {
+//                Task {
+//                    await NotificationService.shared.scheduleNotificationsFromSleep()
+//                }
+//            }
         }
 
-        NotificationService.shared.requestAuthorization()
+//        NotificationService.shared.requestAuthorization()
     }
 
     var body: some Scene {
