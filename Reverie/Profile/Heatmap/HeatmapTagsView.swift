@@ -26,6 +26,7 @@ struct HeatmapTagsView: View {
 
                         .padding(.horizontal, 20)
                         .padding(.bottom, 4)
+                        .padding(.top, -10)
                 }
                 
                 Picker("Timeframe", selection: $selectedTimeframe) {
