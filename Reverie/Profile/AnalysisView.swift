@@ -244,6 +244,8 @@ func moodSummary() -> Text {
     
     let prefix = Text("Your average dream mood is ")
         .foregroundColor(baseColor)
+        .font(.subheadline)
+        .foregroundColor(.white.opacity(0.8))
     let suffix = Text(".")
         .foregroundColor(baseColor)
     let highlight = Text(dominantEmotion.rawValue.capitalized)
