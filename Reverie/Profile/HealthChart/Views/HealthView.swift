@@ -24,7 +24,8 @@ struct HealthView: View {
                         .padding(.bottom, 40)
                         .padding(.top, -25)
                         HealthKitSleepDashboardView()
-                            .padding(.horizontal, -22)
+                            .padding(.horizontal, -20)
+                            .padding(.top, -28)
                     }
                     .padding(.top, 90)
                 }
