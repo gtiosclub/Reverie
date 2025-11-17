@@ -67,9 +67,15 @@ struct HealthDreamChartView: View {
     private var caloriesData: [CaloriesBurnedChartModel] {
         dreamHealthData.map { CaloriesBurnedChartModel(date: $0.date, calories: $0.caloriesBurned) }
     }
+    private var maxSleep: Int { Int(ceil(sleepData.map { $0.hours }.max() ?? 10)) }
+        private var maxExercise: Int { Int(ceil(exerciseData.map { $0.minutes }.max() ?? 20)) }
+        private var maxSteps: Int { Int(ceil(stepsData.map { Double($0.steps) }.max() ?? 5000)) }
+        private var maxCalories: Int { Int(ceil(caloriesData.map { $0.calories }.max() ?? 200)) }
     
     var body: some View {
         if !isHomeView {
+            
+
             Picker("Metric", selection: $selectedMetric) {
                 ForEach(HealthMetric.allCases) { metric in
                     Text(metric.rawValue).tag(metric)
@@ -111,20 +117,26 @@ struct HealthDreamChartView: View {
             }
             
             HealthChartView(
-                dreamData: $dreamData,
-                sleepData: .constant(sleepData),
-                exerciseData: .constant(exerciseData),
-                stepsData: .constant(stepsData),
-                caloriesData: .constant(caloriesData),
-                selectedMetric: $selectedMetric,
-                isHomeView: $isHomeView
-            )
+               dreamData: $dreamData,
+               sleepData: .constant(sleepData),
+               exerciseData: .constant(exerciseData),
+               stepsData: .constant(stepsData),
+               caloriesData: .constant(caloriesData),
+               maxSleep: maxSleep,
+               maxExercise: maxExercise,
+               maxSteps: maxSteps,
+               maxCalories: maxCalories,
+               selectedMetric: $selectedMetric,
+               isHomeView: $isHomeView
+           )
             
             HealthChartLegendView(selectedMetricExpanded: selectedMetricExpanded)
         }
         .padding()
         .darkGloss()
-        .padding(.bottom, 30)
+        
+                
+        // .padding(.bottom, 5)
     }
 }
 
@@ -136,11 +148,10 @@ struct HealthChartView: View {
     @Binding var caloriesData: [CaloriesBurnedChartModel]
     
     @State var maxDream: Int = 10
-    @State var maxSleep: Int = 10
-    @State var maxExercise: Int = 20
-    @State var maxSteps: Int = 5000
-    @State var maxCalories: Int = 200
-    
+     var maxSleep: Int
+        var maxExercise: Int
+        var maxSteps: Int
+        var maxCalories: Int
     @Binding var selectedMetric: HealthMetric
     @Binding var isHomeView: Bool
     
@@ -248,13 +259,13 @@ struct HealthChartView: View {
         }
         .padding(.horizontal)
         .frame(height: 260)
-        .task {
+       /* .task {
             maxSleep = Int(ceil((sleepData.map { $0.hours }.max() ?? 9)))
             maxExercise = Int(ceil((exerciseData.map { $0.minutes }.max() ?? 20)))
             maxSteps = Int(ceil((stepsData.map { Double($0.steps) }.max() ?? 5000)))
             maxCalories = Int(ceil((caloriesData.map { $0.calories }.max() ?? 200)))
             maxDream = (dreamData.map { $0.count }.max() ?? 9)
-        }
+        }*/
     }
 }
 

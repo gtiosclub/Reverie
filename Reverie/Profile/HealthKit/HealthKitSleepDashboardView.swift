@@ -58,39 +58,72 @@ private struct SleepGraphsSection: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
             // Title
-            Text("Sleep")
-                .font(.title.bold())
-                .foregroundColor(.white)
-                .frame(maxWidth: .infinity, alignment: .center)
+            
             
             // REM summary
             Text(remSummaryText)
-                .foregroundColor(.white.opacity(0.8))
-                .font(.subheadline)
+                .foregroundColor(.white.opacity(0.7))
+                .font(.system(size: 14))
+                .padding(.horizontal, 20)
+                .padding(.top, 10)
+            //.padding(.bottom, 4)
             
             // Date pill
             Button(action: {
                 showDatePicker = true
             }) {
-                HStack(spacing: 8) {
-                    Image(systemName: "calendar")
-                        .foregroundColor(.white)
+                HStack(spacing: 0) {
+                    Text("Analyze sleep for: ")
+                        .foregroundColor(.white.opacity(0.7))
+                        .font(.system(size: 14))
+                    /*Image(systemName: "calendar")
+                        .foregroundColor(.white)*/
                     Text(previousNightString)
-                        .foregroundColor(.white)
-                        .font(.subheadline.weight(.medium))
+                        .foregroundColor(Color(red: 95/255, green: 85/255, blue: 236/255 ))
+                        .font(.system(size: 14, weight: .bold))
+
                 }
-                .padding(.horizontal, 14)
-                .padding(.vertical, 8)
-                .background(
+                .padding(.horizontal, 20)
+                //.padding(.vertical, 8)
+                /*.background(
                     RoundedRectangle(cornerRadius: 20)
                         .fill(Color.white.opacity(0.06))
-                )
+                )*/
             }
             .buttonStyle(.plain)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            //.padding(.horizontal,)
+            
             
             
             // CHART CARD - All content inside the darkGloss frame
             VStack(alignment: .leading, spacing: 12) {
+                VStack(alignment: .leading, spacing: 14) {
+                    HStack {
+                        Image(systemName: "moon.fill")
+                            .foregroundColor(.indigo)
+                            .font(.system(size: 14, weight: .bold))
+                            .padding(.trailing, 1)
+                        
+                        Text("Sleep")
+                            .foregroundColor(.indigo)
+                            .font(.system(size: 14))
+                            .bold()
+                        
+                        Spacer()
+                        
+                       
+                    }
+                    .padding(.top, 6)
+                    
+                    Rectangle()
+                        .fill(Color.white.opacity(0.15))
+                        .frame(height: 1)
+                        .padding(.horizontal, 8)
+                        .padding(.top, 6)
+                        .padding(.bottom, 4)
+                }
+                
                 if vm.previousNightSegments.isEmpty {
                     Text("Sleep stages will appear here once data loads.")
                         .foregroundColor(.white.opacity(0.7))
@@ -115,14 +148,22 @@ private struct SleepGraphsSection: View {
                     }
                 }
             }
-            .padding(16) // Single padding for entire card content
-            .darkGloss()
+        
+                .padding(16) // Single padding for entire card content
+               .darkGloss()
+            //}.darkGloss()
+            
             
             // COMPARE SECTION (outside the card)
             VStack(alignment: .leading, spacing: 12) {
                 Text("Compare to")
-                    .font(.headline)
+                    .font(.system(size: 18))
+                    .fontWeight(.semibold)
+                    .dreamGlow()
                     .foregroundColor(.white)
+                    //.frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, 20)
+                    .padding(.bottom, 4)
                 
                 let cols = [GridItem(.flexible()), GridItem(.flexible())]
                 LazyVGrid(columns: cols, spacing: 12) {
@@ -140,7 +181,7 @@ private struct SleepGraphsSection: View {
                             }
                         }
                     }
-                }
+                }.padding(.horizontal, 20)
             }
             // --- DREAM PREDICTIONS SUMMARY ---
             if !vm.dreamPredictions.isEmpty {
@@ -347,6 +388,9 @@ private struct MetricButton: View {
                     .foregroundColor(isSelected ? accentColor : accentColor.opacity(0.6))
                 Text(title)
                     .font(.subheadline.weight(.medium))
+                    //.foregroundColor(.white)
+                    .foregroundColor(isSelected ? .white : .white.opacity(0.7))
+
                 Spacer()
             }
             .padding(.horizontal, 14)
