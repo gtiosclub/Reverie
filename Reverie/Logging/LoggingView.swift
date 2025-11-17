@@ -185,6 +185,7 @@ struct LoggingView: View {
                     ZStack(alignment: .topLeading) {
                         if (dream.isEmpty && audioManager.audioCapturerState == .stopped) {
                             Text("Last night I dreamed about...")
+                                .font(.custom("InstrumentSans-Regular", size: 14))
                                 .foregroundColor(.white.opacity(0.5))
                                 .padding(.vertical, 8)
                                 .padding(.top, 30)
