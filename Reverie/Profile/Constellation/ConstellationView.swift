@@ -587,6 +587,8 @@ struct ConstellationView: View {
                                    description: dream.loggedContent,
                                    line: false
                                )
+                               .padding(.horizontal, 5)
+                               .padding(.top, 3)
                                .darkGloss()
                                .padding(.bottom, 40)
                            }
