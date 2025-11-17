@@ -55,7 +55,7 @@ struct EmotionBubbleView: View {
         )
         let newRotation = Angle.degrees(Double.random(in: -8...8))
         let newScale    = CGFloat.random(in: 0.96...1.04)
-        let duration    = Double.random(in: 8...14)
+        let duration    = Double.random(in: 6...10)
         withAnimation(.easeInOut(duration: duration)) {
             position = target
             rotation = newRotation
@@ -173,7 +173,9 @@ struct EmotionBubbleChart: View {
                 }
             }
             .frame(height: chartHeight)
+            .padding(.bottom, -35)
             .darkGloss()
+
         }
 
     }

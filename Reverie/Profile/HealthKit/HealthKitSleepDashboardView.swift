@@ -94,7 +94,7 @@ private struct SleepGraphsSection: View {
                 .foregroundColor(.white)
                 .font(.system(size: 14))
                 .padding(.horizontal, 20)
-                .padding(.top, 10)
+//                .padding(.top, 10)
             
             
             // CHART CARD - All content inside the darkGloss frame

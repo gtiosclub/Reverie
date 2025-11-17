@@ -54,90 +54,96 @@ struct HeatmapView: View {
     }
     
     var body: some View {
-        ZStack {
-            ScrollView {
-                VStack(spacing: 20) {
-                    
-                    if !showSummaryText {
-                        HStack {
-                            moodSummary()
-                                .font(.subheadline)
-//                                .font(.system(size: 14, weight: .medium))
-                                .foregroundColor(.white.opacity(0.8))
-                                .multilineTextAlignment(.leading)
-                                .font(.subheadline)
-                                .foregroundColor(.white.opacity(0.8))
-                            
-                            Spacer()
-                        }
-                        .padding(.horizontal, 20)
+            ZStack {
+                ScrollView {
+                    VStack(spacing: 20) {
+                        
+                        if !showSummaryText {
+                            HStack {
+                                moodSummary()
+                                    .font(.subheadline)
+                                //                                .font(.system(size: 14, weight: .medium))
+                                    .foregroundColor(.white.opacity(0.8))
+                                    .multilineTextAlignment(.leading)
+                                    .font(.subheadline)
+                                    .foregroundColor(.white.opacity(0.8))
                                 
-            
-                        Picker("Timeframe", selection: $selectedTimeframe) {
-                            Text("30 Days").tag(0)
-                            Text("1 Year").tag(1)
-                            Text("All").tag(2)
+                                Spacer()
+                            }
+                            .padding(.horizontal, 20)
+                            
+                            
+                            Picker("Timeframe", selection: $selectedTimeframe) {
+                                Text("30 Days").tag(0)
+                                Text("1 Year").tag(1)
+                                Text("All").tag(2)
+                            }
+                            .pickerStyle(SegmentedPickerStyle())
+                            .padding(.horizontal, 20)
+                            .padding(.top, 6)
+                            .padding(.bottom, 8)
                         }
-                        .pickerStyle(SegmentedPickerStyle())
-                        .padding(.horizontal, 20)
-                        .padding(.top, 6)
-                        .padding(.bottom, 8)
-                    }
-                    
-                    ZStack {
-//                        RoundedRectangle(cornerRadius: 18)
-//                            .fill(sectionColor)
-                        VStack(alignment: .leading, spacing: 10) {
-                            if showSummaryText {
-                                VStack(alignment: .leading, spacing: 6) {
-                                    HStack {
-                                        moodSummary()
-                                            .font(.system(size: 14))
-                                        .foregroundColor(.white.opacity(0.7))
-                                            .multilineTextAlignment(.leading)
+                        
+                        ZStack {
+                            //                        RoundedRectangle(cornerRadius: 18)
+                            //                            .fill(sectionColor)
+                            VStack(alignment: .leading, spacing: 10) {
+                                if showSummaryText {
+                                    VStack(alignment: .leading, spacing: 6) {
+                                        HStack {
+                                            moodSummary()
+                                                .font(.system(size: 14))
+                                                .foregroundColor(.white.opacity(0.7))
+                                                .multilineTextAlignment(.leading)
+                                            
+                                            Spacer()
+                                            
+                                            Image(systemName: "chevron.right")
+                                                .foregroundColor(.gray)
+                                                .font(Font.system(size: 14))
+                                            
+                                        }
+                                        .padding(.horizontal)
+                                        .padding(.top, 8)
+                                        .padding(.bottom, 3)
                                         
-                                        Spacer()
-                                        
-                                        Image(systemName: "chevron.right")
-                                            .foregroundColor(.gray)
-                                            .font(Font.system(size: 14))
-                                        
+                                        Rectangle()
+                                            .fill(Color.white.opacity(0.15))
+                                            .frame(height: 1)
+                                            .padding(.horizontal, 8)
+                                            .padding(.top, 6)
+                                            .padding(.bottom, 4)
                                     }
-                                    .padding(.horizontal)
-                                    .padding(.top, 8)
-                                    .padding(.bottom, 3)
+                                }
+                                
+                                VStack(alignment:.leading) {
+                                    HeatmapContainerView(
+                                        selectedTimeframe: $selectedTimeframe,
+                                        dreams: ProfileService.shared.dreams,
+                                        enabledEmotions: $enabledEmotions
+                                    )
                                     
-                                    Rectangle()
-                                        .fill(Color.white.opacity(0.15))
-                                        .frame(height: 1)
-                                        .padding(.horizontal, 8)
-                                        .padding(.top, 6)
-                                        .padding(.bottom, 4)
                                 }
                             }
-   
-                            VStack(alignment:.leading) {
-                                HeatmapContainerView(
-                                    selectedTimeframe: $selectedTimeframe,
-                                    dreams: ProfileService.shared.dreams,
-                                    enabledEmotions: $enabledEmotions
-                                )
-
-                            }
+                            .padding(.vertical, 10)
                         }
-                        .padding(.vertical, 10)
+                        .darkGloss()
+                        
+                        
+                        if !showSummaryText {
+                            GeometryReader{ geometry in
+                                EmotionLegendView(enabledEmotions: $enabledEmotions)
+                                    .padding(.horizontal, 20)
+                                    .padding(.leading, 50)
+                                    .frame(width: geometry.size.width, alignment: .center)
+                                    .frame(height: 120)
+                            }
+                            .frame(height: 120)
+                        }
                     }
-                    .darkGloss()
-                    
-                                        
-                    if !showSummaryText {
-                        EmotionLegendView(enabledEmotions: $enabledEmotions)
-                        .padding(.horizontal, 20)
-                        .frame(maxWidth: .infinity, alignment: .center)                  }
+                    //                .padding(.top, 15)
                 }
-//                .padding(.top, 15)
             }
-        }
     }}
     
     // MARK: - Heatmap Container (Handles different timeframe views)
