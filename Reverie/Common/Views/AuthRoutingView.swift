@@ -15,13 +15,13 @@ struct AuthRoutingView: View {
 //    @Environment(FirebaseDCService.self) private var fbdcs
 
     var body: some View {
-        NavigationStack {
+//        NavigationStack {
             if FirebaseLoginService.shared.currUser != nil {
                 TabRouting()
 //                    .environment(FirebaseLoginService.shared)
             } else {
                 LoginView()
             }
-        }
+//        }
     }
 }
