@@ -56,7 +56,7 @@ class DCFoundationModelService {
                 throw NSError(domain: "DCFoundationModelService", code: 2, userInfo: [NSLocalizedDescriptionKey: "Model returned an invalid array count."])
             }
             
-            let styleSuffix = ", cute chibi style, vector illustration, die-cut sticker, vibrant glossy, thick cartoon outline, simple white background, centered, and circular."
+            let styleSuffix = ", cute character, flat vector illustration, thick bold outline, die-cut sticker style, smooth shading, vibrant colors, simple white background, centered composition, high contrast"
             
             let contentPrompt = characterDetails[0]
             characterDetails[0] = contentPrompt + styleSuffix
