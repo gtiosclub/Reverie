@@ -132,7 +132,7 @@ struct StatNumberView: View {
             
             HStack(alignment: .firstTextBaseline, spacing: 4) {
                 Text("\(value)")
-                    .font(.system(size: 60, weight: .bold))
+                    .font(.system(size: 50, weight: .bold))
                     .foregroundColor(.black)
                 
                 Text(label)
