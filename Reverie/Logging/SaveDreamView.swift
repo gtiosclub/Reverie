@@ -275,7 +275,7 @@ struct SaveDreamView: View {
 
                     HStack() {
 
-                        let activeWidth: CGFloat = showTagDropdown ? 300 : 373
+                        let activeWidth: CGFloat = showTagDropdown ? 330 : 373
 
                         ZStack {
                             Capsule()
@@ -378,6 +378,7 @@ struct SaveDreamView: View {
                             )
                         }
                     }
+                    .padding(.leading, 30)
                     .frame(width: 370)
 
                     
