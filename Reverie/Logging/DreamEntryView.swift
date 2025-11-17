@@ -8,9 +8,10 @@
 import SwiftUI
 
 struct DreamEntryView: View {
+    @EnvironmentObject var ts: TabState
+    
     let dream: DreamModel
     let backToArchive: Bool
-    @State private var goBack = false
     @State private var selectedTab = 0
     @State private var showBook = false
     @State private var glowPulse = false
@@ -46,7 +47,11 @@ struct DreamEntryView: View {
                 HStack {
                     Button(action: {
                         if backToArchive {
-                            goBack = true
+                            ts.homePath = NavigationPath()
+                            ts.archivePath = NavigationPath()
+                            ts.analyticsPath = NavigationPath()
+                            
+                            ts.activeTab = .archive
                         } else {
                             dismiss()
                         }
@@ -425,11 +430,7 @@ struct DreamEntryView: View {
                 .zIndex(1000)
             }
         }
-        
         .navigationBarHidden(true)
-        .navigationDestination(isPresented: $goBack) {
-            DreamArchiveView()
-        }
     }
 }
 
