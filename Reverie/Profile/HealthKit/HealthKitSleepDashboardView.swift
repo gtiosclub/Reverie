@@ -534,7 +534,7 @@ private struct SleepOverlayChart: View {
                                 }
                             }
                             .frame(width: max(width, 20))
-                            .position(x: xStart + width/2, y: geo.size.height / 2)
+                            .position(x: xStart + width/2, y: geo.size.height / 4)
                         }
                     }
                     .allowsHitTesting(false)
