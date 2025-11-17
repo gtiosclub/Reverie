@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "Home Screen Widget - iPhone.png",
+      "filename" : "Widget.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "Home Screen Widget - iPhone 1.png",
+      "filename" : "Widget 1.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "Home Screen Widget - iPhone 2.png",
+      "filename" : "Widget 2.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
