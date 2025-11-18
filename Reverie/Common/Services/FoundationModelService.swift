@@ -27,7 +27,7 @@ class FoundationModelService {
         You are an expert dream analyst.  
         For every dream description provided, write a structured analysis that follows this exact format with four categories.  
         Keep the tone empathetic, thoughtful, and insightful. Avoid repetition.  
-        Use complete sentences and keep each section a short paragraph (3–6 sentences). 
+        Use complete sentences and keep each section a short paragraph (2–4 sentences). 
         Do now use ":" after each title, just use **Title** Text.
         
         Categories:

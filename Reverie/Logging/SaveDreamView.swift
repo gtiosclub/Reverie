@@ -445,15 +445,13 @@ struct SaveDreamView: View {
     
     func saveDream() async {
         do {
-            newDream = try await FirebaseDreamService.shared.fetchDream(dreamID: "FTg5JuchpAgW553xcf9F")!
             newDream.date = selectedDate
-            var createdDreamID = try await FirebaseDreamService.shared.createDreamWithImage(dream: newDream)
-//            var createdDreamID = try await FirebaseDreamService.shared.createDream(dream: newDream)
+            let createdDreamID = try await FirebaseDreamService.shared.createDream(dream: newDream)
             
             createdDream = try await FirebaseDreamService.shared.fetchDream(dreamID: createdDreamID)
             FirebaseLoginService.shared.currUser?.dreams.append(createdDream!)
-//            FirebaseDCService.shared.generateImage(for: createdDream!) // COMMMENT THIS OUT WHEN HARD CODING
-//            FirebaseDCService.shared.generateImageForDC(for: createdDream!) // COMMMENT THIS OUT WHEN HARD CODING
+            FirebaseDCService.shared.generateImage(for: createdDream!)
+            FirebaseDCService.shared.generateImageForDC(for: createdDream!)
             navigateToDreamEntry = true
             
             updateTagDescriptions(tags: newDream.tags)
