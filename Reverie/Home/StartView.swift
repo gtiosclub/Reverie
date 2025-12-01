@@ -49,7 +49,7 @@ struct StartView: View {
             
             VStack {
                 Spacer()
-                TabbarView()
+//                TabbarView()
             }
             
             if showArchive {

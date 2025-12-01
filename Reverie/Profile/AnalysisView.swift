@@ -195,7 +195,7 @@ struct AnalysisView: View {
             }
             VStack {
                 Spacer()
-                TabbarView()
+//                TabbarView()
             }
         }
     }

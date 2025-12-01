@@ -105,11 +105,11 @@ struct LoggingView: View {
                                 
                                 do {
                                     UIApplication.shared.hideKeyboard()
-                                    analysis = try await fms.getOverallAnalysis(dream_description: dream)
+//                                    analysis = try await fms.getOverallAnalysis(dream_description: dream)
                                     emotion = try await fms.getEmotion(dreamText: dream)
                                     tags = try await fms.getRecommendedTags(dreamText: dream)
                                     
-                                    finishedContent = try await fms.getFinishedDream(dream_description: dream)
+//                                    finishedContent = try await fms.getFinishedDream(dream_description: dream)
                                     
                                     print(analysis, emotion, tags)
                                     canNavigate = true

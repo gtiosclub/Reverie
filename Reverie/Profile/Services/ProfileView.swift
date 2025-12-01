@@ -87,7 +87,7 @@ struct ProfileView: View {
             
             VStack {
                 Spacer()
-                TabbarView()
+//                TabbarView()
             }
         }
         .task {

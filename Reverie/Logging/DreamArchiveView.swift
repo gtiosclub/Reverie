@@ -556,11 +556,11 @@ struct DreamArchiveView: View {
         .onDisappear { withAnimation(nil) { ts.showTabBar = false } }
         
         .preferredColorScheme(.dark)
-        .overlay(alignment: .bottom) {
-            TabbarView()
-                .ignoresSafeArea(.container, edges: .bottom)
-                .ignoresSafeArea(.keyboard, edges: .bottom)
-        }
+//        .overlay(alignment: .bottom) {
+//            TabbarView()
+//                .ignoresSafeArea(.container, edges: .bottom)
+//                .ignoresSafeArea(.keyboard, edges: .bottom)
+//        }
         .ignoresSafeArea(.keyboard, edges: .bottom)
     }
     

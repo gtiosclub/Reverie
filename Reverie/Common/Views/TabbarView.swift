@@ -107,20 +107,25 @@ import SwiftUI
 //}
 
 struct TabbarView: View {
-    @EnvironmentObject var ts: TabState
+    @Binding var ts: TabType
     
     var body: some View {
-        HStack(spacing: 0) {
-            TabButton(title: Image(systemName: "house"), text: "Home", tab: .home)
-            TabButton(title: Image(systemName: "star.fill"), text: "Archive", tab: .archive)
-            TabButton(title: Image(systemName: "chart.bar"), text: "Insights", tab: .analytics)
-        }
-        .frame(maxWidth: 300, maxHeight: 60)
-        .glassEffect(.regular)
-        .background(Color.black.opacity(0.5))
-        .cornerRadius(100)
-        .padding(.bottom, -20)
-        .padding(.horizontal)
+        
+        TabView(selection: $ts, content: {
+            
+        })
+        
+//        HStack(spacing: 0) {
+//            TabButton(title: Image(systemName: "house"), text: "Home", tab: .home)
+//            TabButton(title: Image(systemName: "star.fill"), text: "Archive", tab: .archive)
+//            TabButton(title: Image(systemName: "chart.bar"), text: "Insights", tab: .analytics)
+//        }
+//        .frame(maxWidth: 300, maxHeight: 60)
+//        .glassEffect(.regular)
+//        .background(Color.black.opacity(0.5))
+//        .cornerRadius(100)
+//        .padding(.bottom, -20)
+//        .padding(.horizontal)
     }
 }
 

@@ -11,28 +11,52 @@ struct TabRouting: View {
     @EnvironmentObject var ts: TabState
 
     var body: some View {
-        ZStack {
-            switch ts.activeTab {
-            case .home:
-                NavigationStack(path: $ts.homePath) { StartView() }
-            case .archive:
-                NavigationStack(path: $ts.archivePath) {
-                    DreamArchiveView()
-                        .navigationDestination(for: DreamModel.self) { dream in
-                            DreamEntryView(dream: dream, backToArchive: true)
-                        }
+//        ZStack {
+//            switch ts.activeTab {
+//            case .home:
+//                NavigationStack(path: $ts.homePath) { StartView() }
+//            case .archive:
+//                NavigationStack(path: $ts.archivePath) {
+//                    DreamArchiveView()
+//                        .navigationDestination(for: DreamModel.self) { dream in
+//                            DreamEntryView(dream: dream, backToArchive: true)
+//                        }
+//                }
+//            case .analytics:
+//                NavigationStack(path: $ts.analyticsPath) { AnalysisView() }
+//            default: LoggingView()
+//            }
+//
+//            if ts.showTabBar {
+//                VStack {
+//                    Spacer()
+//                    TabbarView()
+//                }
+//            }
+//        }
+        
+        TabView {
+            NavigationStack(path: $ts.homePath) { StartView() }
+                .tabItem {
+                    Image(systemName: "house")
+                    Text("Home")
                 }
-            case .analytics:
-                NavigationStack(path: $ts.analyticsPath) { AnalysisView() }
-            default: LoggingView()
+            NavigationStack(path: $ts.archivePath) {
+                DreamArchiveView()
+                    .navigationDestination(for: DreamModel.self) { dream in
+                        DreamEntryView(dream: dream, backToArchive: true)
+                    }
             }
-
-            if ts.showTabBar {
-                VStack {
-                    Spacer()
-                    TabbarView()
+            .tabItem {
+                Image(systemName: "star.fill")
+                Text("Archive")
+            }
+            NavigationStack(path: $ts.analyticsPath) { AnalysisView() }
+                .tabItem {
+                    Image(systemName: "chart.bar")
+                    Text("Insights")
                 }
-            }
         }
+        .glassEffect(.regular)
     }
 }
