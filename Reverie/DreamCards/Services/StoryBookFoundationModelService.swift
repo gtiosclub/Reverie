@@ -8,9 +8,6 @@
 import Foundation
 import FoundationModels
 
-import Foundation
-import FoundationModels
-
 class StoryBookFoundationModelService {
     static let shared = StoryBookFoundationModelService()
     

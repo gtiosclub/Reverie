@@ -57,6 +57,7 @@ struct TabRouting: View {
                     Text("Insights")
                 }
         }
-        .glassEffect(.regular)
+//        .glassEffect(.regular)
+        .tint(.indigo)
     }
 }
